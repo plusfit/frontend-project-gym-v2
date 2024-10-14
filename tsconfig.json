@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json", // see: https://github.com/google/gts
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
@@ -15,7 +15,8 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "types": ["node", "@types/bonjour", "@types/connect", "@types/connect-history-api-fallback"]
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "angularCompilerOptions": {
