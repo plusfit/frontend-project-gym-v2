@@ -1,0 +1,63 @@
+<div class="max-w-sm mx-auto space-y-10">
+  <div class="space-y-4">
+    <h1 class="text-display-sm font-poppins text-neutral-1000">
+      Log in to your account
+    </h1>
+    <p class="text-body-lg text-neutral-700">
+      Welcome back! Please enter your details.
+    </p>
+  </div>
+  <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-10">
+    <div class="space-y-6">
+      <input
+        appInput
+        type="text"
+        label="Email"
+        placeholder="Enter your work email"
+        formControlName="identifier"
+        autocomplete="off"
+      />
+      <div class="space-y-2">
+        <div class="relative">
+          <button
+            title="showPassword"
+            type="button"
+            (click)="showPassword = !showPassword"
+            class="input-icon-right"
+          >
+            <i [ngClass]="showPassword ? 'ph-eye-slash' : 'ph-eye'"></i>
+          </button>
+          <input
+            appInput
+            [type]="showPassword ? 'text' : 'password'"
+            label="Password"
+            placeholder="Enter your credentials"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="w-full inline-flex justify-end">
+          <a routerLink="/auth/forgot" class="text-link">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center space-y-4">
+       <button
+        appBtn
+        class="w-full btn-primary"
+        type="submit"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        [disabled]="loginForm.invalid || (loading$ | async)"
+      >
+        <span>
+          {{
+            loading$ | async | conditionalText: "Cargando..." : "Ingresar"
+          }}</span
+        >
+      </button>
+    </div>
+  </form>
+</div>
