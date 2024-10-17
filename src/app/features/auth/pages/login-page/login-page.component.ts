@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginFormComponent } from '../../components/login-form/login-form.component';
-import {BaseLayoutComponent} from "@shared/components/base-layout/base-layout.component";
+import { BaseLayoutComponent } from '@shared/components/base-layout/base-layout.component';
 
 @Component({
   selector: 'app-login-page',

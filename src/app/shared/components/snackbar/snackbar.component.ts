@@ -5,7 +5,7 @@ import {
 } from '@angular/material/snack-bar';
 import { ESeverity, SeverityIcon } from '@shared/enums/severity.enum';
 import { SnackBar } from '@shared/interfaces/snackbar.interface';
-import {NgClass} from "@angular/common";
+import { NgClass } from '@angular/common';
 
 /**
  * The SnackBarComponent displays a snackbar with a message and an icon based on the specified severity level.
@@ -15,9 +15,7 @@ import {NgClass} from "@angular/common";
   templateUrl: './snackbar.component.html',
   styleUrls: ['./snackbar.component.scss'],
   standalone: true,
-  imports: [
-    NgClass
-  ]
+  imports: [NgClass],
 })
 export class SnackBarComponent {
   /**
