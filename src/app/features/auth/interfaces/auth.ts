@@ -10,8 +10,11 @@ export interface AuthCredentials {
 }
 
 export interface AuthResponse {
-  jwt: string;
-  user: User;
+  data: {
+    refreshToken: string;
+    accessToken: string;
+  };
+  success: boolean;
 }
 
 export interface FirebaseAuthResponse {
