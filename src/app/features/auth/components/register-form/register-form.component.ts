@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, CommonModule, NgClass } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
@@ -9,12 +9,14 @@ import {
 import { Router } from '@angular/router';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { passwordValidator } from '@core/validators/password.validator';
+import { Register } from '@features/auth/state/auth.actions';
 import { AuthState } from '@features/auth/state/auth.state';
-import { Actions, Store } from '@ngxs/store';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
-import { Observable, Subject } from 'rxjs';
+import { matchPasswordValidator } from '@shared/validators/passwordMatcher.validator';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-register-form',
@@ -26,6 +28,7 @@ import { Observable, Subject } from 'rxjs';
     AsyncPipe,
     ConditionalTextPipe,
     InputDirective,
+    CommonModule,
   ],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
@@ -48,11 +51,14 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.registerForm = this.fb.group({
-      identifier: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required, passwordValidator()]],
-      confirmPassword: [null, [Validators.required, passwordValidator()]],
-    });
+    this.registerForm = this.fb.group(
+      {
+        identifier: [null, [Validators.required, Validators.email]],
+        password: [null, [Validators.required, passwordValidator()]],
+        confirmPassword: [null, [Validators.required]],
+      },
+      { validators: matchPasswordValidator() },
+    );
   }
 
   ngOnDestroy(): void {
@@ -66,9 +72,14 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
    */
   register(): void {
     if (this.registerForm.valid) {
-      console.log('VALID');
+      this.store.dispatch(new Register(this.registerForm.value));
+      this.actions
+        .pipe(ofActionSuccessful(Register), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.router.navigate(['/']);
+          this.snackbar.showSuccess('Login successful', 'OK');
+        });
     }
-    console.log('INVALID');
   }
 
   registerWithGoogle(): void {}

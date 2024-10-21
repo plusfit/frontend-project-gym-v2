@@ -7,11 +7,12 @@ import { Observable, catchError, tap, throwError, exhaustMap } from 'rxjs';
 import {
   AuthResponse,
   FirebaseAuthResponse,
+  FirebaseRegisterResponse,
   Profile,
   UserPreferences,
 } from '../interfaces/auth';
 import { AuthService } from '../services/auth.service';
-import { GetUserPreferences, Login, Logout } from './auth.actions';
+import { GetUserPreferences, Login, Logout, Register } from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
 
@@ -116,5 +117,30 @@ export class AuthState {
       preferences: null,
     });
     this.utilsService.cleanStorage();
+  }
+
+  @Action(Register, { cancelUncompleted: true })
+  register(
+    ctx: StateContext<AuthStateModel>,
+    action: Register,
+  ): Observable<AuthResponse> {
+    ctx.patchState({ loading: true });
+    const { identifier, password } = action.payload;
+    return this.authService.registerFirebase(identifier, password).pipe(
+      exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
+        return this.authService.register(firebaseResponse.user.email).pipe(
+          tap((auth: AuthResponse) => {
+            ctx.patchState({ auth });
+          }),
+        );
+      }),
+      tap(() => {
+        ctx.patchState({ loading: false });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(() => err);
+      }),
+    );
   }
 }
