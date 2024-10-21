@@ -1,62 +1,35 @@
 import {
   HttpErrorResponse,
-  HttpHandler,
-  HttpInterceptor,
+  HttpHandlerFn,
   HttpRequest,
+  HttpInterceptorFn,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { AuthState } from '@features/auth/state/auth.state';
 import { Store } from '@ngxs/store';
-import { Observable, catchError, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
 /**
- * Interceptor to handle Tokens
- * @implements HttpInterceptor
+ * Interceptor to handle Tokens using HttpInterceptorFn.
  */
-@Injectable()
-export class TokenInterceptor implements HttpInterceptor {
-  /**
-   * Creates an instance of the TokenInterceptor class.
-   * @param {Store} store - The store to use for the interceptor.
-   */
-  constructor(public store: Store) {}
+export const tokenInterceptor: HttpInterceptorFn = (
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+) => {
+  const store = inject(Store);
+  const token = store.selectSnapshot(AuthState.accessToken);
 
-  /**
-   * Intercepts an outgoing HTTP request and adds an access token to it.
-   * @param {HttpRequest<unknown>} request The outgoing HTTP request.
-   * @param {HttpHandler} next The next HTTP handler in the chain.
-   * @returns An observable of the HTTP response.
-   */
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<any> {
-    const token = this.store.selectSnapshot(AuthState.accessToken);
-
-    if (token) {
-      request = this.addToken(request, token, 'Bearer');
-    }
-
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => error);
-      }),
-    );
-  }
-
-  /**
-   * Adds an access token to an HTTP request.
-   * @param request The HTTP request to modify.
-   * @param token The access token to add.
-   * @param tokenType The type of the access token.
-   * @returns The modified HTTP request.
-   */
-  private addToken(
-    request: HttpRequest<unknown>,
-    token: string,
-    tokenType: string,
-  ): HttpRequest<unknown> {
-    return request.clone({
+  if (token) {
+    request = request.clone({
       setHeaders: {
-        Authorization: `${tokenType} ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
-}
+
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) => {
+      return throwError(() => error);
+    }),
+  );
+};
