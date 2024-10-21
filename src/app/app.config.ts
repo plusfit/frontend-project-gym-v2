@@ -15,14 +15,19 @@ import {
 } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { AuthState } from '@features/auth/state/auth.state';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
+import { errorInterceptor } from '@core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([errorInterceptor])),
     provideFirebaseApp(() =>
       initializeApp({
         projectId: 'project-gym-e5005',

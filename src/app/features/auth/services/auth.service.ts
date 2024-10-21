@@ -19,7 +19,6 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  // private _auth = Inject(Auth);
   constructor(
     private http: HttpClient,
     private utilsService: UtilsService,
