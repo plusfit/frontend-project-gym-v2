@@ -1,1 +1,91 @@
-<p>register-form works!</p>
+<div class="max-w-sm mx-auto space-y-10">
+  <div class="space-y-4">
+    <h1 class="text-center text-2xl font-bold text-neutral-900">
+      STEEL PARADISE
+    </h1>
+    <p class="text-lg text-center text-neutral-700">
+      Bienvenido, ingresa tus credenciales.
+    </p>
+  </div>
+  <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-10">
+    <div class="space-y-6">
+      <input
+        appInput
+        type="text"
+        label="Email"
+        placeholder="Ingresa tu email"
+        formControlName="identifier"
+        autocomplete="off"
+      />
+      <div class="space-y-2">
+        <div class="relative">
+          <button
+            title="showPassword"
+            type="button"
+            (click)="showPassword = !showPassword"
+            class="input-icon-right"
+          >
+            <i [ngClass]="showPassword ? 'ph-eye-slash' : 'ph-eye'"></i>
+          </button>
+          <input
+            appInput
+            [type]="showPassword ? 'text' : 'password'"
+            label="Contraseña"
+            placeholder="Ingresa tu contraseña"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+        </div>
+      </div>
+      <div class="space-y-2">
+        <div class="relative">
+          <button
+            title="showPassword"
+            type="button"
+            (click)="confirmPassword = !confirmPassword"
+            class="input-icon-right"
+          >
+            <i [ngClass]="confirmPassword ? 'ph-eye-slash' : 'ph-eye'"></i>
+          </button>
+          <input
+            appInput
+            [type]="confirmPassword ? 'text' : 'password'"
+            label="Repetir contraseña"
+            placeholder="Repetir tu contraseña"
+            formControlName="confirmPassword"
+            autocomplete="new-confirmPassword"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center space-y-4">
+      <button
+        appBtn
+        class="w-full btn-primary"
+        type="submit"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        [disabled]="registerForm.invalid || (loading$ | async)"
+      >
+        <span>
+          {{
+            loading$ | async | conditionalText: "Cargando..." : "Ingresar"
+          }}</span
+        >
+      </button>
+      <button
+        class="w-full bg-white border border-neutral-300 text-neutral-700 font-semibold py-3 rounded flex items-center justify-center hover:bg-neutral-100 transition-colors"
+        type="button"
+        (click)="registerWithGoogle()"
+      >
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          alt="Google Logo"
+          class="w-5 h-5 mr-2"
+        />
+        Registrarme con Google
+      </button>
+    </div>
+  </form>
+</div>
