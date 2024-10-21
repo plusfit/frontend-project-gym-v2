@@ -32,12 +32,12 @@ export class AuthState {
 
   @Selector()
   static accessToken(state: AuthStateModel): string | undefined {
-    return state.auth?.jwt;
+    return state.auth?.data.accessToken;
   }
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return !!state.auth?.jwt;
+    return !!state.auth?.success;
   }
 
   @Selector()
@@ -95,7 +95,7 @@ export class AuthState {
     ctx: StateContext<AuthStateModel>,
   ): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
-    const accessToken = ctx.getState().auth?.jwt;
+    const accessToken = ctx.getState().auth?.data.accessToken;
     const userId = this.utilsService.getUserIdFromToken(accessToken!);
 
     return this.authService.getUserPreferences(userId).pipe(
