@@ -44,8 +44,8 @@ export class AuthService {
     });
   }
 
-  getUserPreferences(userId: string): Observable<UserPreferences> {
-    return this.http.get<UserPreferences>(`${environment.api}/user/${userId}`);
+  getUserPreferences(): Observable<UserPreferences> {
+    return this._getUserPreferences();
   }
 
   requestReset(): void {
@@ -54,5 +54,9 @@ export class AuthService {
 
   resetPassword(): void {
     // TODO
+  }
+
+  _getUserPreferences(): any {
+    return sessionStorage.getItem('auth');
   }
 }

@@ -96,9 +96,9 @@ export class AuthState {
   ): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
     const accessToken = ctx.getState().auth?.data.accessToken;
-    const userId = this.utilsService.getUserIdFromToken(accessToken!);
+    console.log(accessToken);
 
-    return this.authService.getUserPreferences(userId).pipe(
+    return this.authService.getUserPreferences().pipe(
       tap((preferences: UserPreferences) => {
         ctx.patchState({ preferences });
       }),
