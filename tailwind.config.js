@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Quicksand', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif']
+        sans: ['Rubik'],
+        poppins: ['Rubik']
       },
       colors: {
         primary: {
