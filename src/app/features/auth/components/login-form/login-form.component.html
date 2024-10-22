@@ -40,7 +40,10 @@
         </div>
 
         <div class="w-full inline-flex justify-end">
-          <a routerLink="/auth/forgot" class="text-link cursor-pointer"
+          <a
+            routerLink="/auth/forgot"
+            class="text-link cursor-pointer"
+            (click)="goToForgotPassword()"
             >Olvidaste tu contraseña?</a
           >
         </div>
@@ -74,6 +77,17 @@
         />
         Iniciar sesión con Google
       </button>
+    </div>
+    <div>
+      <p class="text-center text-neutral-700">
+        No tienes una cuenta?
+        <a
+          routerLink="/auth/register"
+          class="text-link cursor-pointer"
+          (click)="goToRegister()"
+          >Regístrate</a
+        >
+      </p>
     </div>
   </form>
 </div>

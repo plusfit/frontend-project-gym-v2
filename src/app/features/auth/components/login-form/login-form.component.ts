@@ -71,7 +71,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(Login), takeUntil(this.destroy))
         .subscribe(() => {
-          //this.router.navigate(['/']);
+          this.router.navigate(['/']);
           this.store.dispatch(GetUserPreferences);
           this.snackbar.showSuccess('Login successful', 'OK');
         });
@@ -79,4 +79,12 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   loginWithGoogle(): void {}
+  goToForgotPassword(): void {
+    console.log('Forgot password');
+    this.router.navigate(['auth/forgot-password']);
+  }
+  goToRegister(): void {
+    console.log('Register');
+    this.router.navigate(['auth/register']);
+  }
 }
