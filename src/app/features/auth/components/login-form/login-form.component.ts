@@ -17,6 +17,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
 import { InputDirective } from '@shared/directives/btn/input.directive';
+import { LoadingOverlayService } from '@core/services/loading-overlay.service';
 
 @Component({
   selector: 'app-login-form',
@@ -28,6 +29,7 @@ import { InputDirective } from '@shared/directives/btn/input.directive';
     AsyncPipe,
     ConditionalTextPipe,
     InputDirective,
+    LoadingOverlayService,
   ],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
@@ -46,6 +48,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     private store: Store,
     private actions: Actions,
     private snackbar: SnackBarService,
+    private loadingService: LoadingOverlayService,
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +57,10 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       identifier: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, passwordValidator()]],
     });
+    this.loadingService.show();
+    setTimeout(() => {
+      this.loadingService.hide();
+    }, 5000);
   }
 
   ngOnDestroy(): void {
