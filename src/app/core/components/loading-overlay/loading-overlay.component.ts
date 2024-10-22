@@ -2,11 +2,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { LoadingOverlayService } from '@core/services/loading-overlay.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-loading-overlay',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatProgressSpinnerModule],
   templateUrl: './loading-overlay.component.html',
   styleUrl: './loading-overlay.component.css',
 })
