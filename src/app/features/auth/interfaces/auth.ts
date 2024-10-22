@@ -10,11 +10,8 @@ export interface AuthCredentials {
 }
 
 export interface AuthResponse {
-  data: {
-    refreshToken: string;
-    accessToken: string;
-  };
-  success: boolean;
+  refreshToken: string;
+  accessToken: string;
 }
 
 export interface FirebaseAuthResponse {

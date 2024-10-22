@@ -33,12 +33,12 @@ export class AuthState {
 
   @Selector()
   static accessToken(state: AuthStateModel): string | undefined {
-    return state.auth?.data.accessToken;
+    return state.auth?.accessToken;
   }
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return !!state.auth?.success;
+    return !!state.auth?.accessToken;
   }
 
   @Selector()
@@ -76,8 +76,16 @@ export class AuthState {
     return this.authService.loginFirebase(action.payload).pipe(
       exhaustMap((response: FirebaseAuthResponse) => {
         return this.authService.login(response._tokenResponse.idToken).pipe(
-          tap((auth: AuthResponse) => {
-            ctx.patchState({ auth });
+          tap((authResponse: any) => {
+            const { accessToken, refreshToken } = authResponse.data;
+            ctx.patchState({
+              auth: {
+                accessToken,
+                refreshToken,
+              },
+            });
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
           }),
         );
       }),
@@ -96,7 +104,7 @@ export class AuthState {
     ctx: StateContext<AuthStateModel>,
   ): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
-    const accessToken = ctx.getState().auth?.data.accessToken;
+    const accessToken = ctx.getState().auth?.accessToken;
     console.log(accessToken);
 
     return this.authService.getUserPreferences().pipe(
