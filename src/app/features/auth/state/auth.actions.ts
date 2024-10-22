@@ -22,3 +22,8 @@ export class Logout {
 export class GetUserPreferences {
   static readonly type = '[Auth] Get User Preferences';
 }
+
+export class Register {
+  static readonly type = '[Auth] Register';
+  constructor(public readonly payload: AuthCredentials) {}
+}

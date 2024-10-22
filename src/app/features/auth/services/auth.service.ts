@@ -19,7 +19,6 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  // private _auth = Inject(Auth);
   constructor(
     private http: HttpClient,
     private utilsService: UtilsService,
@@ -29,7 +28,7 @@ export class AuthService {
   //   return from(signInWithPopup(this._auth, new GoogleAuthProvider()));
   // }
 
-  register(email: string, password: string) {
+  registerFirebase(email: string, password: string): any {
     return from(createUserWithEmailAndPassword(this._auth, email, password));
   }
 
@@ -58,5 +57,10 @@ export class AuthService {
 
   _getUserPreferences(): any {
     return sessionStorage.getItem('auth');
+  }
+  register(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.api}/auth/register`, {
+      email,
+    });
   }
 }

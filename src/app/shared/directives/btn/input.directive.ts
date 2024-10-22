@@ -152,39 +152,57 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
 
   ngAfterViewInit(): void {
     this.isRequired = this.ngControl.hasError('required');
+    this.subscribeToStatusChanges();
+    this.initializeInput();
+  }
 
+  private subscribeToStatusChanges(): void {
     this.ngControl.statusChanges
       ?.pipe(takeUntil(this.unsubscription))
-      .subscribe((res) => {
-        if (res === 'INVALID' && this.paragraphErrorDesc) {
-          this.addClass(true);
-          if (this.notMessageError) return;
-          const errors = this.ngControl?.control?.errors || {};
-          const errorMessage = this.validatorMessage.getFirstErrorMessage(
-            errors,
-          ) as string;
-
-          this.addErrorDescription(errorMessage);
+      .subscribe((status) => {
+        if (status === 'INVALID' && this.paragraphErrorDesc) {
+          this.handleInvalidStatus();
         }
 
-        if (res === 'VALID') {
-          this.addClass(false);
-          this.addErrorDescription('');
-          if (!this.paragraphHelpDesc) {
-            this.addDescription();
-          }
+        if (status === 'VALID') {
+          this.handleValidStatus();
         }
 
-        const validators =
-          this.ngControl.control?.validator &&
-          this.ngControl.control.validator({} as any);
-        const validatorRequired = validators && validators['required'];
-        if (this.isRequired != validatorRequired) {
-          this.isRequired = this.ngControl.hasError('required');
-          this.addLabel();
-        }
+        this.updateRequiredValidator();
       });
+  }
 
+  private handleInvalidStatus(): void {
+    this.addClass(true);
+    if (this.notMessageError) return;
+    const errors = this.ngControl?.control?.errors || {};
+    const errorMessage = this.validatorMessage.getFirstErrorMessage(
+      errors,
+    ) as string;
+    this.addErrorDescription(errorMessage);
+  }
+
+  private handleValidStatus(): void {
+    this.addClass(false);
+    this.addErrorDescription('');
+    if (!this.paragraphHelpDesc) {
+      this.addDescription();
+    }
+  }
+
+  private updateRequiredValidator(): void {
+    const validators =
+      this.ngControl.control?.validator &&
+      this.ngControl.control.validator({} as any);
+    const validatorRequired = validators && validators['required'];
+
+    if (this.isRequired !== validatorRequired) {
+      this.isRequired = this.ngControl.hasError('required');
+      this.addLabel();
+    }
+  }
+
+  private initializeInput(): void {
     this.addInputLabel();
     this.updateIcon();
     this.addDescription();

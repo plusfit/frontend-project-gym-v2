@@ -18,6 +18,7 @@ export class SnackBarService {
    * @param {string} message The message of the snack bar notification.
    */
   showError(title: string, message: string): void {
+    console.log('SnackBarService.showError');
     this.showSnackBar(ESeverity.ERROR, title, message);
   }
 

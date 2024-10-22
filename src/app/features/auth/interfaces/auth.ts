@@ -25,6 +25,10 @@ export interface FirebaseAuthResponse {
   };
 }
 
+export interface FirebaseRegisterResponse {
+  user: any;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -61,4 +65,10 @@ export interface Profile {
   lastName: string;
   email: string;
   role: string;
+}
+
+export interface Register {
+  identifier: string;
+  password: string;
+  confirmPassowrd: string;
 }
