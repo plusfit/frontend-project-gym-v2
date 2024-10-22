@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { passwordValidator } from '@core/validators/password.validator';
 import { Register } from '@features/auth/state/auth.actions';
@@ -29,6 +29,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
     ConditionalTextPipe,
     InputDirective,
     CommonModule,
+    RouterLink,
   ],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
