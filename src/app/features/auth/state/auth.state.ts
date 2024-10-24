@@ -7,11 +7,12 @@ import { Observable, catchError, tap, throwError, exhaustMap } from 'rxjs';
 import {
   AuthResponse,
   FirebaseAuthResponse,
+  FirebaseRegisterResponse,
   Profile,
   UserPreferences,
 } from '../interfaces/auth';
 import { AuthService } from '../services/auth.service';
-import { GetUserPreferences, Login, Logout } from './auth.actions';
+import { GetUserPreferences, Login, Logout, Register } from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
 
@@ -32,12 +33,12 @@ export class AuthState {
 
   @Selector()
   static accessToken(state: AuthStateModel): string | undefined {
-    return state.auth?.data.accessToken;
+    return state.auth?.accessToken;
   }
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return !!state.auth?.success;
+    return !!state.auth?.accessToken;
   }
 
   @Selector()
@@ -75,8 +76,16 @@ export class AuthState {
     return this.authService.loginFirebase(action.payload).pipe(
       exhaustMap((response: FirebaseAuthResponse) => {
         return this.authService.login(response._tokenResponse.idToken).pipe(
-          tap((auth: AuthResponse) => {
-            ctx.patchState({ auth });
+          tap((authResponse: any) => {
+            const { accessToken, refreshToken } = authResponse.data;
+            ctx.patchState({
+              auth: {
+                accessToken,
+                refreshToken,
+              },
+            });
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
           }),
         );
       }),
@@ -95,10 +104,10 @@ export class AuthState {
     ctx: StateContext<AuthStateModel>,
   ): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
-    const accessToken = ctx.getState().auth?.data.accessToken;
-    const userId = this.utilsService.getUserIdFromToken(accessToken!);
+    const accessToken = ctx.getState().auth?.accessToken;
+    console.log(accessToken);
 
-    return this.authService.getUserPreferences(userId).pipe(
+    return this.authService.getUserPreferences().pipe(
       tap((preferences: UserPreferences) => {
         ctx.patchState({ preferences });
       }),
@@ -116,5 +125,30 @@ export class AuthState {
       preferences: null,
     });
     this.utilsService.cleanStorage();
+  }
+
+  @Action(Register, { cancelUncompleted: true })
+  register(
+    ctx: StateContext<AuthStateModel>,
+    action: Register,
+  ): Observable<AuthResponse> {
+    ctx.patchState({ loading: true });
+    const { identifier, password } = action.payload;
+    return this.authService.registerFirebase(identifier, password).pipe(
+      exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
+        return this.authService.register(firebaseResponse.user.email).pipe(
+          tap((auth: AuthResponse) => {
+            ctx.patchState({ auth });
+          }),
+        );
+      }),
+      tap(() => {
+        ctx.patchState({ loading: false });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(() => err);
+      }),
+    );
   }
 }

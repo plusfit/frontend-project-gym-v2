@@ -10,11 +10,8 @@ export interface AuthCredentials {
 }
 
 export interface AuthResponse {
-  data: {
-    refreshToken: string;
-    accessToken: string;
-  };
-  success: boolean;
+  refreshToken: string;
+  accessToken: string;
 }
 
 export interface FirebaseAuthResponse {
@@ -23,6 +20,10 @@ export interface FirebaseAuthResponse {
     refreshToken: string;
     expiresIn: string;
   };
+}
+
+export interface FirebaseRegisterResponse {
+  user: any;
 }
 
 export interface User {
@@ -61,4 +62,10 @@ export interface Profile {
   lastName: string;
   email: string;
   role: string;
+}
+
+export interface Register {
+  identifier: string;
+  password: string;
+  confirmPassowrd: string;
 }

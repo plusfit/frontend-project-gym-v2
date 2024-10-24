@@ -28,7 +28,7 @@ export class AuthService {
   //   return from(signInWithPopup(this._auth, new GoogleAuthProvider()));
   // }
 
-  register(email: string, password: string) {
+  registerFirebase(email: string, password: string): any {
     return from(createUserWithEmailAndPassword(this._auth, email, password));
   }
 
@@ -43,8 +43,8 @@ export class AuthService {
     });
   }
 
-  getUserPreferences(userId: string): Observable<UserPreferences> {
-    return this.http.get<UserPreferences>(`${environment.api}/user/${userId}`);
+  getUserPreferences(): Observable<UserPreferences> {
+    return this._getUserPreferences();
   }
 
   requestReset(): void {
@@ -53,5 +53,14 @@ export class AuthService {
 
   resetPassword(): void {
     // TODO
+  }
+
+  _getUserPreferences(): any {
+    return sessionStorage.getItem('auth');
+  }
+  register(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.api}/auth/register`, {
+      email,
+    });
   }
 }

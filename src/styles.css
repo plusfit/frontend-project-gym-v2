@@ -82,7 +82,7 @@ body {
   }
 
   .input-icon-right {
-    @apply absolute text-neutral-1000 right-0 top-[1.85rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
+    @apply absolute text-neutral-1000 right-0 top-[2rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
   }
   .input-icon {
     @apply absolute text-neutral-1000 right-0 top-[0.85rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
@@ -118,7 +118,7 @@ body {
 /* BGs */
 /* TODO: Agregar foto bg- */
 .auth-cover {
-  @apply bg-center bg-no-repeat bg-cover;
+  @apply bg-center bg-no-repeat bg-cover bg-[url('./assets/backgrounds/fede-bg-2-min.jpg')];
 }
 
 /* TODO: Agregar foto  bg-*/

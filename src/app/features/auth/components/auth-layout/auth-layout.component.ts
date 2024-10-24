@@ -9,4 +9,9 @@ import { BaseLayoutComponent } from '@shared/components/base-layout/base-layout.
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.css',
 })
-export class AuthLayoutComponent {}
+export class AuthLayoutComponent {
+  constructor() {}
+  getYear(): number {
+    return new Date().getFullYear();
+  }
+}
