@@ -72,7 +72,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         .pipe(ofActionSuccessful(Login), takeUntil(this.destroy))
         .subscribe(() => {
           this.router.navigate(['/']);
-          this.store.dispatch(GetUserPreferences);
+          //this.store.dispatch(GetUserPreferences);
           this.snackbar.showSuccess('Login successful', 'OK');
         });
     }
