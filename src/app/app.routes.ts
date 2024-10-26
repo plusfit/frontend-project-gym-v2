@@ -14,7 +14,12 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     // Cuando este el guard activo, se debe descomentar la siguiente linea
     canActivate: [signInGuard],
-    children: [],
+    children: [
+      {
+        path: 'exercises/list',
+        component: ExerciseComponent,
+      },
+    ],
   },
   {
     path: 'auth',
@@ -30,11 +35,6 @@ export const routes: Routes = [
         component: RegisterPageComponent,
       },
     ],
-  },
-  {
-    // canActivate: [authGuard], NO ME ANDA ESO
-    path: 'exercises/list',
-    component: ExerciseComponent,
   },
   {
     path: '**',

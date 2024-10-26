@@ -1,1 +1,110 @@
-<p>EXAMPLE</p>
+<div class="mat-elevation-z8 rounded-lg overflow-hidden shadow-lg">
+  <!-- Barra de búsqueda -->
+  <div class="p-4 bg-gray-100 flex items-center">
+    <input
+      matInput
+      placeholder="Buscar ejercicio..."
+      (input)="applyFilter($event)"
+      class="p-2 border border-gray-300 rounded w-full max-w-xs"
+    />
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="min-w-full bg-gray-100">
+    <!-- Nombre Column -->
+    <ng-container matColumnDef="name">
+      <th
+        *matHeaderCellDef
+        class="px-6 py-4 bg-blue-700 text-white font-bold uppercase tracking-wider text-sm text-left"
+      >
+        Ejercicio
+      </th>
+      <td
+        *matCellDef="let element"
+        class="px-6 py-4 text-gray-800 hover:bg-blue-50 transition-colors duration-200"
+      >
+        {{ element.name }}
+      </td>
+    </ng-container>
+
+    <!-- Modo Column -->
+    <ng-container matColumnDef="mode">
+      <th
+        *matHeaderCellDef
+        class="px-6 py-4 bg-blue-700 text-white font-bold uppercase tracking-wider text-sm text-left"
+      >
+        Modalidad
+      </th>
+      <td
+        *matCellDef="let element"
+        class="px-6 py-4 text-gray-800 hover:bg-blue-50 transition-colors duration-200"
+      >
+        {{ element.mode }}
+      </td>
+    </ng-container>
+
+    <!-- Descripción Column -->
+    <ng-container matColumnDef="description">
+      <th
+        *matHeaderCellDef
+        class="px-6 py-4 bg-blue-700 text-white font-bold uppercase tracking-wider text-sm text-left"
+      >
+        Descripción
+      </th>
+      <td
+        *matCellDef="let element"
+        class="px-6 py-4 text-gray-800 hover:bg-blue-50 transition-colors duration-200"
+      >
+        {{ element.description }}
+      </td>
+    </ng-container>
+
+    <!-- Opciones Column -->
+    <ng-container matColumnDef="options">
+      <th
+        *matHeaderCellDef
+        class="px-6 py-4 bg-blue-700 text-white font-bold uppercase tracking-wider text-sm text-left"
+      >
+        Opciones
+      </th>
+      <td
+        *matCellDef="let element"
+        class="px-6 py-4 text-gray-800 hover:bg-blue-50 transition-colors duration-200"
+      >
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          aria-label="Opciones"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="editExercise(element)">
+            <mat-icon>edit</mat-icon>
+            <span>Editar</span>
+          </button>
+          <button mat-menu-item (click)="deleteExercise(element)">
+            <mat-icon>delete</mat-icon>
+            <span>Borrar</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <!-- Definición de filas de encabezado y contenido -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      class="hover:bg-blue-100 transition-colors duration-200"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [pageSizeOptions]="[5, 10]"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements"
+    class="bg-gray-200 px-4 py-2 border-t border-gray-300"
+  >
+  </mat-paginator>
+</div>
