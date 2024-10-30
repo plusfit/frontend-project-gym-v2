@@ -7,8 +7,10 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import {
+  LOCAL_STORAGE_ENGINE,
   NgxsStoragePluginModule,
   SESSION_STORAGE_ENGINE,
+  StorageOption,
 } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { AuthState } from '@features/auth/state/auth.state';
@@ -65,7 +67,7 @@ export const appConfig: ApplicationConfig = {
         keys: [
           {
             key: AuthState,
-            engine: SESSION_STORAGE_ENGINE,
+            engine: LOCAL_STORAGE_ENGINE,
           },
         ],
       }),
