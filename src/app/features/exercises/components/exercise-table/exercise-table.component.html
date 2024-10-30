@@ -128,7 +128,8 @@
   </table>
 
   <mat-paginator
-    [pageSizeOptions]="[8]"
+    [pageSizeOptions]="[8, 5]"
+    (page)="handlePageEvent($event)"
     showFirstLastButtons
     aria-label="Select page of periodic elements"
     class="bg-gray-200 px-4 py-2 border-t border-gray-300"

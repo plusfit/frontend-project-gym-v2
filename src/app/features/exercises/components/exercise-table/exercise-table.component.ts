@@ -1,5 +1,9 @@
 import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Exercise } from '../../interfaces/exercise.interface';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +14,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { Store } from '@ngxs/store';
 import { GetExercisesByPage } from '@features/exercises/state/exercise.actions';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-exercise-table',
@@ -22,20 +27,26 @@ import { GetExercisesByPage } from '@features/exercises/state/exercise.actions';
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
+    CommonModule,
   ],
 })
 export class ExerciseTableComponent implements AfterViewInit, OnInit {
   constructor(private store: Store) {}
-
+  limitPerPage = 8;
+  page = 1;
+  totalExercises$: Observable<number> = this.store.select(
+    ExerciseState.totalExercises,
+  );
   displayedColumns: string[] = ['name', 'description', 'mode', 'options'];
   dataSource = new MatTableDataSource<Exercise>(ELEMENT_DATA);
   searchTerm$ = new Subject<string>();
   loading$: Observable<boolean> = this.store.select(
     ExerciseState.exerciseLoading,
   );
+  exercises$: Observable<Exercise[]> = this.store.select(
+    ExerciseState.exercises,
+  );
   searchValue: string = '';
-  selectedMode: string = '';
-  selectedType: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -48,6 +59,9 @@ export class ExerciseTableComponent implements AfterViewInit, OnInit {
       .subscribe((searchValue) => {
         this.performSearch(searchValue); // Llama a la funcion que hace la busqueda
       });
+    this.store.dispatch(
+      new GetExercisesByPage({ page: this.page, limit: this.limitPerPage }),
+    );
   }
 
   ngAfterViewInit() {
@@ -60,10 +74,11 @@ export class ExerciseTableComponent implements AfterViewInit, OnInit {
     this.searchTerm$.next(searchValue);
   }
   performSearch(searchValue: string): void {
-    console.log('Realizando búsqueda para:', searchValue);
     this.dataSource.filter = searchValue.trim().toLowerCase();
     this.store
-      .dispatch(new GetExercisesByPage({ page: 1, limit: 10 }))
+      .dispatch(
+        new GetExercisesByPage({ page: this.page, limit: this.limitPerPage }),
+      )
       .subscribe(
         (data) => {
           console.log('Data:', data);
@@ -80,6 +95,10 @@ export class ExerciseTableComponent implements AfterViewInit, OnInit {
 
   deleteExercise(exercise: Exercise) {
     console.log('Borrando ejercicio:', exercise);
+  }
+  handlePageEvent(e: PageEvent) {
+    this.page = e.pageIndex;
+    this.limitPerPage = e.pageSize;
   }
 }
 

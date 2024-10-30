@@ -9,4 +9,5 @@ export class ExerciseStateModel {
   exercises?: Exercise[];
   page?: PageExercise | null;
   filters?: FiltersExercise | null;
+  totalExercises?: number;
 }

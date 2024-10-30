@@ -15,9 +15,11 @@ export class ExerciseService {
   ) {}
 
   getExercisesByPage(page: number, limit: number): Observable<any> {
-    console.log('SERVICEEEEEE');
-
     const url = `/exercises?page=${page}&limit=${limit}`;
+    return this.http.get<any>(`${environment.api}${url}`);
+  }
+  getExercisesByName(name: string): Observable<any> {
+    const url = `/exercises?name=${name}`;
     return this.http.get<any>(`${environment.api}${url}`);
   }
 }

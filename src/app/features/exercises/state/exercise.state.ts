@@ -13,6 +13,7 @@ import { GetExercisesByPage } from './exercise.actions';
   name: 'excercise',
   defaults: {
     exercises: [],
+    totalExercises: 0,
     page: null,
     filters: null,
     loading: false,
@@ -26,8 +27,13 @@ export class ExerciseState {
   }
 
   @Selector()
-  static exercises(state: ExerciseStateModel): Exercise[] | undefined {
-    return state.exercises;
+  static exercises(state: ExerciseStateModel): Exercise[] {
+    return state.exercises || [];
+  }
+
+  @Selector()
+  static totalExercises(state: ExerciseStateModel): number {
+    return state.totalExercises || 0;
   }
 
   constructor(private exerciseService: ExerciseService) {}
@@ -42,8 +48,13 @@ export class ExerciseState {
     return this.exerciseService
       .getExercisesByPage(action.payload.page, action.payload.limit)
       .pipe(
-        tap((exercises) => {
-          ctx.patchState({ exercises, loading: false });
+        tap((response) => {
+          const exercises = response.data.data;
+          ctx.patchState({
+            exercises,
+            loading: false,
+            totalExercises: response.data.total,
+          });
         }),
         catchError((error: HttpErrorResponse) => {
           ctx.patchState({ loading: false });
