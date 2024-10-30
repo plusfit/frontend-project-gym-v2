@@ -39,7 +39,7 @@ export class ExerciseState {
   constructor(private exerciseService: ExerciseService) {}
 
   @Action(GetExercisesByPage, { cancelUncompleted: true })
-  login(
+  getExercises(
     ctx: StateContext<ExerciseStateModel>,
     action: GetExercisesByPage,
   ): Observable<Exercise[]> {

@@ -118,7 +118,7 @@ body {
 /* BGs */
 /* TODO: Agregar foto bg- */
 .auth-cover {
-  @apply bg-center bg-no-repeat bg-cover bg-[url('./assets/backgrounds/fede-bg-2-min.jpg')];
+  @apply bg-center bg-no-repeat bg-cover bg-[url('./assets/backgrounds/fede-bg-2-min.png')];
 }
 
 /* TODO: Agregar foto  bg-*/

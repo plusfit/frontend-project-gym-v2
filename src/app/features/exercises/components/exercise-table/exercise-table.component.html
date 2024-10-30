@@ -1,4 +1,10 @@
-<div class="mat-elevation-z8 rounded-lg overflow-hidden shadow-lg">
+<app-table
+  [displayedColumns]="displayedColumns"
+  [data]="exercises$ | async"
+  [loading]="loading$ | async"
+></app-table>
+<ng-content></ng-content>
+<!-- <div class="mat-elevation-z8 rounded-lg overflow-hidden shadow-lg">
   <div
     class="relative z-0 flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-2"
   >
@@ -37,7 +43,6 @@
   </div>
 
   <table mat-table [dataSource]="dataSource" class="min-w-full bg-gray-100">
-    <!-- Nombre Column -->
     <ng-container matColumnDef="name">
       <th
         *matHeaderCellDef
@@ -53,7 +58,6 @@
       </td>
     </ng-container>
 
-    <!-- Modo Column -->
     <ng-container matColumnDef="mode">
       <th
         *matHeaderCellDef
@@ -69,7 +73,6 @@
       </td>
     </ng-container>
 
-    <!-- Descripción Column -->
     <ng-container matColumnDef="description">
       <th
         *matHeaderCellDef
@@ -85,7 +88,6 @@
       </td>
     </ng-container>
 
-    <!-- Opciones Column -->
     <ng-container matColumnDef="options">
       <th
         *matHeaderCellDef
@@ -118,7 +120,6 @@
       </td>
     </ng-container>
 
-    <!-- Definición de filas de encabezado y contenido -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
       mat-row
@@ -135,4 +136,4 @@
     class="bg-gray-200 px-4 py-2 border-t border-gray-300"
   >
   </mat-paginator>
-</div>
+</div> -->

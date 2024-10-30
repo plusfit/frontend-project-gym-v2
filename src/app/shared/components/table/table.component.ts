@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EColorBadge } from '../../enums/badge-color.enum';
+import { CdkTableModule } from '@angular/cdk/table';
 import {
-  CdkColumnDef,
-  CdkHeaderRow,
-  CdkHeaderRowDef,
-  CdkRow,
-  CdkRowDef,
-  CdkTable,
-} from '@angular/cdk/table';
-import { NgClass } from '@angular/common';
+  AsyncPipe,
+  JsonPipe,
+  NgClass,
+  NgFor,
+  NgIf,
+  TitleCasePipe,
+} from '@angular/common';
 import {
   MatMenu,
   MatMenuContent,
@@ -18,7 +18,7 @@ import {
 } from '@angular/material/menu';
 import { MatNoDataRow } from '@angular/material/table';
 import { BadgeComponent } from '@shared/components/badge/badge.component';
-import {LoaderComponent} from "@shared/components/loader/loader.component";
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 
 /**
  * The TableComponent displays a table of data.
@@ -28,20 +28,20 @@ import {LoaderComponent} from "@shared/components/loader/loader.component";
   templateUrl: './table.componnent.html',
   standalone: true,
   imports: [
-    CdkTable,
-    CdkColumnDef,
     NgClass,
     MatMenuTrigger,
     MatMenu,
     MatMenuContent,
     MatMenuItem,
-    CdkHeaderRow,
-    CdkHeaderRowDef,
-    CdkRow,
-    CdkRowDef,
     MatNoDataRow,
     BadgeComponent,
     LoaderComponent,
+    NgFor,
+    NgIf,
+    AsyncPipe,
+    TitleCasePipe,
+    JsonPipe,
+    CdkTableModule,
   ],
 })
 export class TableComponent {
@@ -58,7 +58,7 @@ export class TableComponent {
    * The data to display in the table.
    * @type {Observable} observable of data
    */
-  @Input() data!: Observable<any[]>;
+  @Input() data!: any[] | null;
 
   /**
    * The total number of items in the data set.
