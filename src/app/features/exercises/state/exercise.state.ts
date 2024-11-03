@@ -7,7 +7,7 @@ import { Observable, catchError, tap, throwError } from 'rxjs';
 import { ExerciseStateModel } from './exercise.model';
 import { Exercise } from '../interfaces/exercise.interface';
 import { ExerciseService } from '../services/exercise.service';
-import { GetExercisesByPage } from './exercise.actions';
+import { GetExercisesByName, GetExercisesByPage } from './exercise.actions';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -44,9 +44,36 @@ export class ExerciseState {
     action: GetExercisesByPage,
   ): Observable<Exercise[]> {
     ctx.patchState({ loading: true });
-    console.log('GetExercisesByPage', action.payload);
     return this.exerciseService
       .getExercisesByPage(action.payload.page, action.payload.limit)
+      .pipe(
+        tap((response) => {
+          const exercises = response.data.data;
+          ctx.patchState({
+            exercises,
+            loading: false,
+            totalExercises: response.data.total,
+          });
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ctx.patchState({ loading: false });
+          return throwError(error);
+        }),
+      );
+  }
+
+  @Action(GetExercisesByName, { cancelUncompleted: true })
+  getExercisesByName(
+    ctx: StateContext<ExerciseStateModel>,
+    action: GetExercisesByName,
+  ): Observable<Exercise[]> {
+    ctx.patchState({ loading: true });
+    return this.exerciseService
+      .getExercisesByName(
+        action.pageInformation.page,
+        action.pageInformation.limit,
+        action.filtersInformation,
+      )
       .pipe(
         tap((response) => {
           const exercises = response.data.data;

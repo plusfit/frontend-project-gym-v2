@@ -17,15 +17,17 @@
         <!-- | translation | camelToTitle  -->
       </th>
       <td cdk-cell *cdkCellDef="let element">
-        <ng-container *ngIf="column !== 'isActive'; else badge">
+        <ng-container *ngIf="column === 'mode'">
+          <app-badge
+            [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+          ></app-badge>
+        </ng-container>
+
+        <ng-container *ngIf="column !== 'isActive' && column !== 'mode'">
           {{ element[column] }}
         </ng-container>
-        <ng-template #badge>
-          <app-badge
-            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
-            [textBadge]="element[column] ? 'Activo' : 'Inactivo'"
-          ></app-badge>
-        </ng-template>
+
         <ng-container *ngIf="column === 'acciones'">
           <!-- Actions menu -->
 
