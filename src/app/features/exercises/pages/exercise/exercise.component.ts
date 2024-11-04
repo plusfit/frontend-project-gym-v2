@@ -15,6 +15,8 @@ import {
   GetExercisesByPage,
 } from '@features/exercises/state/exercise.actions';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
 @Component({
   selector: 'app-exercise',
   standalone: true,
@@ -23,7 +25,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './exercise.component.css',
 })
 export class ExerciseComponent implements AfterViewInit, OnInit {
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private dialog: MatDialog,
+  ) {}
   limitPerPage = 8;
   currentPage = 1;
   totalExercises$: Observable<number> = this.store.select(
@@ -83,19 +88,26 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
   }
 
   editExercise(exercise: Exercise) {
-    console.log('Editando ejercicio:', exercise);
+    this.dialog.open(ExerciseFormComponent, {
+      width: '800px',
+      data: { isEdit: true, exercise },
+    });
   }
 
   deleteExercise(exercise: Exercise) {
     console.log('Borrando ejercicio:', exercise);
   }
+
+  addExerciseModal() {
+    this.dialog.open(ExerciseFormComponent, {
+      width: '800px',
+      data: { isEdit: false },
+    });
+  }
+
   handlePageEvent(e: PageEvent) {
     this.currentPage = e.pageIndex + 1;
     this.limitPerPage = e.pageSize;
-
-    console.log('page', this.currentPage);
-    console.log('limit', this.limitPerPage);
-
     this.store.dispatch(
       new GetExercisesByPage({
         page: this.currentPage,

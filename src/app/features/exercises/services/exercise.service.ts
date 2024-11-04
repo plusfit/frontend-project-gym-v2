@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { UtilsService } from '@core/services/utils.service';
 import { environment } from '../../../../environments/environment';
 import { FiltersExercise } from '../interfaces/filters.excersise.interface';
+import { ExercisePayload } from '../interfaces/exercise.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -35,5 +36,8 @@ export class ExerciseService {
       url += `&mode=${filters.mode}`;
     }
     return this.http.get<any>(`${environment.api}${url}`);
+  }
+  createExercise(payload: ExercisePayload): Observable<any> {
+    return this.http.post<any>(`${environment.api}/exercises`, payload);
   }
 }

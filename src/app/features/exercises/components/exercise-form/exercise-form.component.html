@@ -1,0 +1,136 @@
+<div class="p-6">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6">Agregar Ejercicio</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="exerciseForm" class="space-y-4" (ngSubmit)="create()">
+      <div class="flex gap-4">
+        <div class="w-full md:w-1/2">
+          <label for="name" class="block text-sm font-medium text-gray-700"
+            >Nombre</label
+          >
+          <input
+            appInput
+            type="text"
+            id="name"
+            formControlName="name"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Nombre del ejercicio"
+          />
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700"
+            >Descripción</label
+          >
+          <textarea
+            id="description"
+            formControlName="description"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Descripción del ejercicio"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="type" class="block text-sm font-medium text-gray-700"
+          >Tipo</label
+        >
+        <select
+          id="type"
+          formControlName="type"
+          class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+        >
+          <option value="">Seleccione tipo</option>
+          <option value="cardio">Cardio</option>
+          <option value="room">Sala</option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="exerciseForm.get('type')?.value === 'cardio'"
+        class="flex gap-4"
+      >
+        <div class="w-full md:w-1/2">
+          <label for="minutes" class="block text-sm font-medium text-gray-700"
+            >Minutos</label
+          >
+          <input
+            appInput
+            type="number"
+            id="minutes"
+            formControlName="minutes"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Duración en minutos"
+            min="1"
+          />
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <label for="rest" class="block text-sm font-medium text-gray-700"
+            >Descanso</label
+          >
+          <input
+            appInput
+            type="number"
+            id="rest"
+            formControlName="rest"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Tiempo de descanso en segundos"
+            min="1"
+          />
+        </div>
+      </div>
+
+      <div
+        *ngIf="exerciseForm.get('type')?.value === 'room'"
+        class="flex gap-4"
+      >
+        <div class="w-full md:w-1/2">
+          <label for="reps" class="block text-sm font-medium text-gray-700"
+            >Repeticiones</label
+          >
+          <input
+            appInput
+            type="number"
+            id="reps"
+            formControlName="reps"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Cantidad de repeticiones"
+            min="1"
+          />
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <label for="series" class="block text-sm font-medium text-gray-700"
+            >Series</label
+          >
+          <input
+            appInput
+            type="number"
+            id="series"
+            formControlName="series"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Cantidad de series"
+            min="1"
+          />
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <div class="flex justify-end space-x-2 mt-4">
+    <button appBtn (click)="cancel()">Cancelar</button>
+    <button
+      appBtn
+      class="btn-primary"
+      [loader]="(loading$ | async)!"
+      [animate]="true"
+      (click)="create()"
+    >
+      Agregar
+    </button>
+  </div>
+</div>
+<!-- [disabled]="exerciseForm.invalid || (loading$ | async)" -->

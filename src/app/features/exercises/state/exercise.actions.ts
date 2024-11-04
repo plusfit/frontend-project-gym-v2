@@ -1,3 +1,4 @@
+import { ExercisePayload } from '../interfaces/exercise.interface';
 import {
   FiltersExercise,
   PageExercise,
@@ -13,4 +14,9 @@ export class GetExercisesByName {
     public readonly pageInformation: PageExercise,
     public readonly filtersInformation: FiltersExercise,
   ) {}
+}
+
+export class CreateExercise {
+  static readonly type = '[Exercise] CreateExercise';
+  constructor(public readonly payload: ExercisePayload) {}
 }

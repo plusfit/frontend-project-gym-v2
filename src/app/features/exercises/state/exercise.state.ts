@@ -7,7 +7,12 @@ import { Observable, catchError, tap, throwError } from 'rxjs';
 import { ExerciseStateModel } from './exercise.model';
 import { Exercise } from '../interfaces/exercise.interface';
 import { ExerciseService } from '../services/exercise.service';
-import { GetExercisesByName, GetExercisesByPage } from './exercise.actions';
+import {
+  CreateExercise,
+  GetExercisesByName,
+  GetExercisesByPage,
+} from './exercise.actions';
+import { environment } from '../../../../environments/environment.prod';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -88,5 +93,28 @@ export class ExerciseState {
           return throwError(error);
         }),
       );
+  }
+
+  @Action(CreateExercise, { cancelUncompleted: true })
+  createExercise(
+    ctx: StateContext<ExerciseStateModel>,
+    action: CreateExercise,
+  ): Observable<Exercise> {
+    ctx.patchState({ loading: true });
+    return this.exerciseService.createExercise(action.payload).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
+        ctx.dispatch(
+          new GetExercisesByPage({
+            page: 1,
+            limit: environment.exerciseTableLimit,
+          }),
+        );
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(error);
+      }),
+    );
   }
 }

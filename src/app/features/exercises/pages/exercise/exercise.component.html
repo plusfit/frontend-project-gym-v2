@@ -5,9 +5,9 @@
     >
       Ejercicios 🏋️
     </h2>
-    <div class="w-full md:w-1/2 pb-1">
-      <form class="flex items-center">
-        <label for="simple-search" class="sr-only">Search</label>
+    <div class="w-full pb-1 flex justify-between items-center">
+      <form class="flex items-center w-full md:w-1/2 mr-4">
+        <label for="simple-search" class="sr-only">Buscar</label>
         <div class="relative w-full">
           <div
             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
@@ -36,7 +36,15 @@
           />
         </div>
       </form>
+
+      <button
+        class="bg-primary-500 text-white px-4 py-2 rounded-md w-auto"
+        (click)="addExerciseModal()"
+      >
+        Crear ejercicio
+      </button>
     </div>
+
     <app-exercise-table
       [displayedColumns]="displayedColumns"
       [exercises$]="exercises$"
