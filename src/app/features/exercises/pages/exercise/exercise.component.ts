@@ -43,6 +43,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
   exercises$: Observable<any[]> = this.store.select(ExerciseState.exercises);
 
   searchValue: string = '';
+  isSearching: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -70,10 +71,11 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
 
   searchExercises(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    const searchValue = inputElement.value.trim();
-    this.searchTerm$.next(searchValue);
+    this.searchValue = inputElement.value.trim();
+    this.searchTerm$.next(this.searchValue);
   }
   performSearch(searchValue: string): void {
+    this.isSearching = !!searchValue;
     this.store.dispatch(
       new GetExercisesByName(
         {
@@ -108,11 +110,26 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
   handlePageEvent(e: PageEvent) {
     this.currentPage = e.pageIndex + 1;
     this.limitPerPage = e.pageSize;
-    this.store.dispatch(
-      new GetExercisesByPage({
-        page: this.currentPage,
-        limit: this.limitPerPage,
-      }),
-    );
+
+    if (this.isSearching) {
+      this.store.dispatch(
+        new GetExercisesByName(
+          {
+            page: this.currentPage,
+            limit: this.limitPerPage,
+          },
+          {
+            name: this.searchValue,
+          },
+        ),
+      );
+    } else {
+      this.store.dispatch(
+        new GetExercisesByPage({
+          page: this.currentPage,
+          limit: this.limitPerPage,
+        }),
+      );
+    }
   }
 }
