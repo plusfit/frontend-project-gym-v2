@@ -13,8 +13,7 @@
       [cdkColumnDef]="column"
     >
       <th cdk-header-cell *cdkHeaderCellDef [ngClass]="headerCssClass">
-        {{ column }}
-        <!-- | translation | camelToTitle  -->
+        {{ column | translation | camelToTitle }}
       </th>
       <td cdk-cell *cdkCellDef="let element">
         <ng-container *ngIf="column === 'mode'">

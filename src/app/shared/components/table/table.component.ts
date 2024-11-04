@@ -19,6 +19,8 @@ import {
 import { MatNoDataRow } from '@angular/material/table';
 import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
+import { TranslationPipe } from '@shared/pipes/translation.pipe';
+import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
 
 /**
  * The TableComponent displays a table of data.
@@ -42,6 +44,8 @@ import { LoaderComponent } from '@shared/components/loader/loader.component';
     TitleCasePipe,
     JsonPipe,
     CdkTableModule,
+    TranslationPipe,
+    CamelToTitlePipe,
   ],
 })
 export class TableComponent {
