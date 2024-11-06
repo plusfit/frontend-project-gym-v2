@@ -42,7 +42,7 @@
           <mat-menu #actionsMenu="matMenu" class="w-fit">
             <ng-template matMenuContent>
               <button
-                (click)="emitEdit(element.id)"
+                (click)="emitEdit(element._id)"
                 type="button"
                 class="group"
                 mat-menu-item
@@ -54,7 +54,7 @@
               </button>
 
               <button
-                (click)="emitDeactivate(element.id)"
+                (click)="emitDelete(element._id)"
                 type="button"
                 class="group"
                 mat-menu-item
@@ -64,7 +64,7 @@
                     class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
                   ></i>
                   <span class="text-error-100 group-hover:text-error-200"
-                    >Desactivar</span
+                    >Borrar</span
                   >
                 </div>
               </button>

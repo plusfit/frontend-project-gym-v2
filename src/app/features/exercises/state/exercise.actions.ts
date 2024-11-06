@@ -15,8 +15,11 @@ export class GetExercisesByName {
     public readonly filtersInformation: FiltersExercise,
   ) {}
 }
-
 export class CreateExercise {
   static readonly type = '[Exercise] CreateExercise';
   constructor(public readonly payload: ExercisePayload) {}
+}
+export class DeleteExercise {
+  static readonly type = '[Exercise] DeleteExercise';
+  constructor(public readonly id: string) {}
 }

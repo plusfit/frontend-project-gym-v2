@@ -9,6 +9,7 @@ import { Exercise } from '../interfaces/exercise.interface';
 import { ExerciseService } from '../services/exercise.service';
 import {
   CreateExercise,
+  DeleteExercise,
   GetExercisesByName,
   GetExercisesByPage,
 } from './exercise.actions';
@@ -110,6 +111,29 @@ export class ExerciseState {
             limit: environment.exerciseTableLimit,
           }),
         );
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(error);
+      }),
+    );
+  }
+
+  @Action(DeleteExercise, { cancelUncompleted: true })
+  deleteExercise(
+    ctx: StateContext<ExerciseStateModel>,
+    action: DeleteExercise,
+  ): Observable<void> {
+    ctx.patchState({ loading: true });
+    return this.exerciseService.deleteExercise(action.id).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
+        ctx.dispatch(
+          new GetExercisesByPage({
+            page: 1,
+            limit: environment.exerciseTableLimit,
+          }),
+        ); //pasar al TS
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });

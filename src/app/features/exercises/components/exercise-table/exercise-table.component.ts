@@ -1,9 +1,5 @@
-import { Component, Input, signal } from '@angular/core';
-import {
-  MatPaginator,
-  MatPaginatorModule,
-  PageEvent,
-} from '@angular/material/paginator';
+import { Component, input, Input, signal } from '@angular/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -32,14 +28,11 @@ export class ExerciseTableComponent {
   @Input() exercises$!: Observable<any[]>;
   @Input() loading$!: Observable<boolean>;
 
-  // Signals
-  displayedColumnsSignal = signal<string[]>([]);
-  exercisesSignal = signal<any[]>([]);
-  loadingSignal = signal<boolean>(false);
+  handleEdit(id: string): void {
+    console.log('Edit ID:', id);
+  }
 
-  constructor() {}
-
-  ngOnChanges() {
-    this.displayedColumnsSignal.set(this.displayedColumns);
+  handleDelete(id: string): void {
+    console.log('Delete ID:', id);
   }
 }

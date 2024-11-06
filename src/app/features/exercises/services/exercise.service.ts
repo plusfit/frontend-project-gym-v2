@@ -40,4 +40,7 @@ export class ExerciseService {
   createExercise(payload: ExercisePayload): Observable<any> {
     return this.http.post<any>(`${environment.api}/exercises`, payload);
   }
+  deleteExercise(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.api}/exercises/${id}`);
+  }
 }

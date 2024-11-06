@@ -51,7 +51,7 @@ import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
 export class TableComponent {
   EColorBadge: typeof EColorBadge = EColorBadge;
   @Output() readonly edit = new EventEmitter<any>();
-  @Output() readonly deactivate = new EventEmitter<any>();
+  @Output() readonly delete = new EventEmitter<any>();
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -100,7 +100,7 @@ export class TableComponent {
    * Emit identifier to deactivate organization
    * @param id Organization identifier
    */
-  emitDeactivate(id: string): void {
-    this.deactivate.emit(id);
+  emitDelete(id: string): void {
+    this.delete.emit(id);
   }
 }
