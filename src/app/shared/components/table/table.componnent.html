@@ -16,14 +16,14 @@
         {{ column | translation | camelToTitle }}
       </th>
       <td cdk-cell *cdkCellDef="let element">
-        <ng-container *ngIf="column === 'mode'">
+        <ng-container *ngIf="column === 'type'">
           <app-badge
             [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
             [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
           ></app-badge>
         </ng-container>
 
-        <ng-container *ngIf="column !== 'isActive' && column !== 'mode'">
+        <ng-container *ngIf="column !== 'isActive' && column !== 'type'">
           {{ element[column] }}
         </ng-container>
 
