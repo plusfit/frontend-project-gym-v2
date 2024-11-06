@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input, output, signal } from '@angular/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { Observable } from 'rxjs';
+import { log } from 'console';
 
 @Component({
   selector: 'app-exercise-table',
@@ -28,11 +29,14 @@ export class ExerciseTableComponent {
   @Input() exercises$!: Observable<any[]>;
   @Input() loading$!: Observable<boolean>;
 
+  editEmitter = output<string>();
+  deleteEmitter = output<string>();
+
   handleEdit(id: string): void {
-    console.log('Edit ID:', id);
+    this.editEmitter.emit(id);
   }
 
   handleDelete(id: string): void {
-    console.log('Delete ID:', id);
+    this.deleteEmitter.emit(id);
   }
 }

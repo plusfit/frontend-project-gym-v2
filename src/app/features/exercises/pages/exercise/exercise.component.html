@@ -49,6 +49,8 @@
       [displayedColumns]="displayedColumns"
       [exercises$]="exercises$"
       [loading$]="loading$"
+      (editEmitter)="editExercise($event)"
+      (deleteEmitter)="deleteExercise($event)"
     >
       <mat-paginator
         [pageSizeOptions]="[8, 5]"

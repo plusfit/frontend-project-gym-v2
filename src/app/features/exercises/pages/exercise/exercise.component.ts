@@ -89,15 +89,17 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
     );
   }
 
-  editExercise(exercise: Exercise) {
-    this.dialog.open(ExerciseFormComponent, {
-      width: '800px',
-      data: { isEdit: true, exercise },
-    });
+  editExercise(e: string) {
+    console.log('Editando ejercicio:', e);
+
+    // this.dialog.open(ExerciseFormComponent, {
+    //   width: '800px',
+    //   data: { isEdit: true, exercise },
+    // });
   }
 
-  deleteExercise(exercise: Exercise) {
-    console.log('Borrando ejercicio:', exercise);
+  deleteExercise(e: string) {
+    console.log('Borrando ejercicio:', e);
   }
 
   addExerciseModal() {

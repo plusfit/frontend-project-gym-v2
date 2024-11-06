@@ -2,5 +2,7 @@
   [displayedColumns]="displayedColumns"
   [data]="exercises$ | async"
   [loading]="loading$ | async"
+  (edit)="handleEdit($event)"
+  (delete)="handleDelete($event)"
 ></app-table>
 <ng-content></ng-content>
