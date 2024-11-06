@@ -13,8 +13,12 @@ import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { CreateExercise } from '@features/exercises/state/exercise.actions';
+import {
+  CreateExercise,
+  GetExercisesByPage,
+} from '@features/exercises/state/exercise.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
+import { environment } from '../../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-exercise-form',
@@ -44,6 +48,7 @@ export class ExerciseFormComponent implements OnInit {
     ExerciseState.exerciseLoading,
   );
   exerciseForm!: FormGroup;
+  limitPerPage = 8;
   private destroy = new Subject<void>();
 
   ngOnDestroy(): void {
@@ -129,7 +134,14 @@ export class ExerciseFormComponent implements OnInit {
         .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
         .subscribe(() => {
           this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
+          this.store.dispatch(new CreateExercise(this.exerciseForm.value));
           this.dialogRef.close();
+          this.store.dispatch(
+            new GetExercisesByPage({
+              page: 1,
+              limit: environment.exerciseTableLimit,
+            }),
+          );
         });
     }
   }

@@ -13,7 +13,6 @@ import {
   GetExercisesByName,
   GetExercisesByPage,
 } from './exercise.actions';
-import { environment } from '../../../../environments/environment.prod';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -21,6 +20,7 @@ import { environment } from '../../../../environments/environment.prod';
     exercises: [],
     totalExercises: 0,
     page: null,
+    limit: 8,
     filters: null,
     loading: false,
   },

@@ -8,6 +8,7 @@ export class ExerciseStateModel {
   loading?: boolean;
   exercises?: Exercise[] = [];
   page?: PageExercise | null;
+  limit?: number;
   filters?: FiltersExercise | null;
   totalExercises?: number;
 }
