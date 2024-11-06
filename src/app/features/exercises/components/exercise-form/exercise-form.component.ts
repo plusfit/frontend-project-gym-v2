@@ -10,10 +10,11 @@ import {
 import { CommonModule, NgIf } from '@angular/common';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
-import { Store } from '@ngxs/store';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { CreateExercise } from '@features/exercises/state/exercise.actions';
+import { SnackBarService } from '@core/services/snackbar.service';
 
 @Component({
   selector: 'app-exercise-form',
@@ -35,12 +36,20 @@ export class ExerciseFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private store: Store,
+    private actions: Actions,
+    private snackbar: SnackBarService,
   ) {}
 
   loading$: Observable<boolean> = this.store.select(
     ExerciseState.exerciseLoading,
   );
   exerciseForm!: FormGroup;
+  private destroy = new Subject<void>();
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
+  }
 
   ngOnInit(): void {
     this.exerciseForm = this.fb.group({
@@ -115,16 +124,13 @@ export class ExerciseFormComponent implements OnInit {
   create(): void {
     if (this.exerciseForm.valid) {
       this.exerciseForm.value.mode = 'NO SE QUE PONER ACA';
-      this.store
-        .dispatch(new CreateExercise(this.exerciseForm.value))
-        .subscribe(
-          () => {
-            this.dialogRef.close();
-          },
-          (error) => {
-            console.error(error);
-          },
-        );
+      this.store.dispatch(new CreateExercise(this.exerciseForm.value));
+      this.actions
+        .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
+          this.dialogRef.close();
+        });
     }
   }
 }

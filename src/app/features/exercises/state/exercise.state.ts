@@ -105,12 +105,6 @@ export class ExerciseState {
     return this.exerciseService.createExercise(action.payload).pipe(
       tap(() => {
         ctx.patchState({ loading: false });
-        ctx.dispatch(
-          new GetExercisesByPage({
-            page: 1,
-            limit: environment.exerciseTableLimit,
-          }),
-        );
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
@@ -128,12 +122,6 @@ export class ExerciseState {
     return this.exerciseService.deleteExercise(action.id).pipe(
       tap(() => {
         ctx.patchState({ loading: false });
-        ctx.dispatch(
-          new GetExercisesByPage({
-            page: 1,
-            limit: environment.exerciseTableLimit,
-          }),
-        ); //pasar al TS
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
