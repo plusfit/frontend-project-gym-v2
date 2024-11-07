@@ -5,5 +5,4 @@ export interface FiltersExercise {
 }
 export interface PageExercise {
   page: number;
-  limit: number;
 }

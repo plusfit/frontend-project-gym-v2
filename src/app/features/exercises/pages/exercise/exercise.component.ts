@@ -13,10 +13,12 @@ import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import {
   GetExercisesByName,
   GetExercisesByPage,
+  SetLimitPerPage,
 } from '@features/exercises/state/exercise.actions';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
+import { environment } from '../../../../../environments/environment.prod';
 @Component({
   selector: 'app-exercise',
   standalone: true,
@@ -29,7 +31,8 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
     private store: Store,
     private dialog: MatDialog,
   ) {}
-  limitPerPage = 8;
+  limitPerPage = environment.exerciseTableLimit ?? 8;
+  exerciseTableLimitOptions = environment.exerciseTableLimitOptions;
   currentPage = 1;
   totalExercises$: Observable<number> = this.store.select(
     ExerciseState.totalExercises,
@@ -60,7 +63,6 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
     this.store.dispatch(
       new GetExercisesByPage({
         page: this.currentPage,
-        limit: this.limitPerPage,
       }),
     );
   }
@@ -79,8 +81,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
     this.store.dispatch(
       new GetExercisesByName(
         {
-          page: this.currentPage,
-          limit: this.limitPerPage,
+          page: 1,
         },
         {
           name: searchValue,
@@ -113,12 +114,13 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
     this.currentPage = e.pageIndex + 1;
     this.limitPerPage = e.pageSize;
 
+    this.store.dispatch(new SetLimitPerPage(this.limitPerPage));
+
     if (this.isSearching) {
       this.store.dispatch(
         new GetExercisesByName(
           {
             page: this.currentPage,
-            limit: this.limitPerPage,
           },
           {
             name: this.searchValue,
@@ -129,7 +131,6 @@ export class ExerciseComponent implements AfterViewInit, OnInit {
       this.store.dispatch(
         new GetExercisesByPage({
           page: this.currentPage,
-          limit: this.limitPerPage,
         }),
       );
     }

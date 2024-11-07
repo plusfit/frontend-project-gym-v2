@@ -53,7 +53,7 @@
       (deleteEmitter)="deleteExercise($event)"
     >
       <mat-paginator
-        [pageSizeOptions]="[8]"
+        [pageSizeOptions]="exerciseTableLimitOptions"
         (page)="handlePageEvent($event)"
         [length]="totalExercises$ | async"
         showFirstLastButtons

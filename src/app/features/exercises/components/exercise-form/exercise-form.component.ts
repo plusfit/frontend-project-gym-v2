@@ -48,7 +48,6 @@ export class ExerciseFormComponent implements OnInit {
     ExerciseState.exerciseLoading,
   );
   exerciseForm!: FormGroup;
-  limitPerPage = 8;
   private destroy = new Subject<void>();
 
   ngOnDestroy(): void {
@@ -139,7 +138,6 @@ export class ExerciseFormComponent implements OnInit {
           this.store.dispatch(
             new GetExercisesByPage({
               page: 1,
-              limit: environment.exerciseTableLimit,
             }),
           );
         });

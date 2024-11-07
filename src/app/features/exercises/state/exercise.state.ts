@@ -13,6 +13,7 @@ import {
   GetExercisesByName,
   GetExercisesByPage,
 } from './exercise.actions';
+import { environment } from '../../../../environments/environment.prod';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -20,7 +21,7 @@ import {
     exercises: [],
     totalExercises: 0,
     page: null,
-    limit: 8,
+    limit: environment.exerciseTableLimit,
     filters: null,
     loading: false,
   },
@@ -42,6 +43,11 @@ export class ExerciseState {
     return state.totalExercises || 0;
   }
 
+  @Selector()
+  static page(state: ExerciseStateModel): number {
+    return state.limit;
+  }
+
   constructor(private exerciseService: ExerciseService) {}
 
   @Action(GetExercisesByPage, { cancelUncompleted: true })
@@ -51,7 +57,7 @@ export class ExerciseState {
   ): Observable<Exercise[]> {
     ctx.patchState({ loading: true });
     return this.exerciseService
-      .getExercisesByPage(action.payload.page, action.payload.limit)
+      .getExercisesByPage(action.payload.page, ctx.getState().limit)
       .pipe(
         tap((response) => {
           const exercises = response.data.data;
@@ -77,7 +83,7 @@ export class ExerciseState {
     return this.exerciseService
       .getExercisesByName(
         action.pageInformation.page,
-        action.pageInformation.limit,
+        ctx.getState().limit,
         action.filtersInformation,
       )
       .pipe(
