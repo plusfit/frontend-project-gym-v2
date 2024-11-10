@@ -10,7 +10,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { Router } from '@angular/router';
 import { AuthState } from '../../state/auth.state';
-import { GetUserPreferences, Login } from '../../state/auth.actions';
+import { Login } from '../../state/auth.actions';
 import { passwordValidator } from '@core/validators/password.validator';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { AsyncPipe, NgClass } from '@angular/common';
@@ -72,7 +72,8 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         .pipe(ofActionSuccessful(Login), takeUntil(this.destroy))
         .subscribe(() => {
           this.router.navigate(['/']);
-          this.store.dispatch(GetUserPreferences);
+          //TODO
+          //this.store.dispatch(GetUserPreferences);
           this.snackbar.showSuccess('Login successful', 'OK');
         });
     }
