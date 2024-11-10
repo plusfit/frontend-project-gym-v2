@@ -26,6 +26,7 @@ import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
 import { environment } from '../environments/environment';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
+import { SettingsState } from '@features/settings/state/settings.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -53,7 +54,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAuth(() => getAuth()),
     importProvidersFrom(
-      NgxsModule.forRoot([AuthState], {
+      NgxsModule.forRoot([AuthState, SettingsState], {
         developmentMode: true,
       }),
     ),
