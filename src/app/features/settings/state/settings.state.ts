@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { UtilsService } from '@core/services/utils.service';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs';
-import { Settings } from '../interfaces/settings.interface';
+// import { Settings } from '../interfaces/settings.interface';
 import { SettingsService } from '../services/settings.service';
-import { CrateSettings, GetSettings } from './settings.actions';
+import { CrateSettings, GetSettings, UpdateSettings } from './settings.actions';
 import { SettingsStateModel } from './settings.model';
 
 @State<SettingsStateModel>({
@@ -22,8 +22,8 @@ export class SettingsState {
   }
 
   @Selector()
-  static settings(state: SettingsStateModel): Settings | null | undefined {
-    return state.settings;
+  static settings(state: SettingsStateModel): any {
+    return state?.settings;
   }
 
   constructor(
@@ -36,7 +36,7 @@ export class SettingsState {
     ctx: StateContext<SettingsStateModel>,
     { payload }: CrateSettings,
   ) {
-    const token = localStorage.getItem('token') || ''; // Provide a default value for token if it is null
+    const token = localStorage.getItem('accessToken') || ''; // Provide a default value for token if it is null
     return this.settingsService.createSettings(token, payload).pipe(
       tap((settings: any) => {
         ctx.patchState({ settings });
@@ -47,6 +47,21 @@ export class SettingsState {
   @Action(GetSettings)
   getSettings(ctx: StateContext<SettingsStateModel>) {
     return this.settingsService.getSettings().pipe(
+      tap((settings: any) => {
+        ctx.patchState({ settings });
+      }),
+    );
+  }
+
+  @Action(UpdateSettings)
+  updateSettings(
+    ctx: StateContext<SettingsStateModel>,
+    action: UpdateSettings,
+  ) {
+    const _id = action._id;
+    const schedule = action.payload.schedule;
+
+    return this.settingsService.updateSettings(_id, schedule).pipe(
       tap((settings: any) => {
         ctx.patchState({ settings });
       }),

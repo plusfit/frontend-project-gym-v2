@@ -1,7 +1,11 @@
 export interface Settings {
-  day: string;
+  days: string;
   hours: number[];
   maxCount: number;
+}
+
+export interface SettingsUpdate {
+  schedule: Settings;
 }
 
 export interface SettingsResponse {

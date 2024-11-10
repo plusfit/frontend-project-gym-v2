@@ -1,4 +1,4 @@
-import { Settings } from '../interfaces/settings.interface';
+import { Settings, SettingsUpdate } from '../interfaces/settings.interface';
 
 export class CrateSettings {
   static readonly type = '[Settings] Create Settings';
@@ -11,5 +11,8 @@ export class GetSettings {
 
 export class UpdateSettings {
   static readonly type = '[Settings] Update Settings';
-  constructor(public readonly payload: Settings) {}
+  constructor(
+    public readonly _id: string,
+    public readonly payload: SettingsUpdate,
+  ) {}
 }

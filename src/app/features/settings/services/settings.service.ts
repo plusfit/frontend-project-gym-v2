@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UtilsService } from '@core/services/utils.service';
@@ -29,10 +30,10 @@ export class SettingsService {
     return this.http.get<SettingsResponse>(`${environment.api}/config`);
   }
 
-  updateSettings(id: string, settings: Settings) {
-    return this.http.put<SettingsResponse>(
-      `${environment.api}/config/${id}`,
-      settings,
+  updateSettings(id: string, schedule: Settings) {
+    return this.http.patch<SettingsResponse>(
+      `${environment.api}/schedules/updateScheduleConfig/${id}`,
+      { schedule },
     );
   }
 }
