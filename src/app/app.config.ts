@@ -9,8 +9,6 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import {
   LOCAL_STORAGE_ENGINE,
   NgxsStoragePluginModule,
-  SESSION_STORAGE_ENGINE,
-  StorageOption,
 } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { AuthState } from '@features/auth/state/auth.state';
@@ -27,6 +25,7 @@ import { environment } from '../environments/environment';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
 import { SettingsState } from '@features/settings/state/settings.state';
+import { ScheduleState } from '@features/schedule/state/schedule.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -54,7 +53,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAuth(() => getAuth()),
     importProvidersFrom(
-      NgxsModule.forRoot([AuthState, SettingsState], {
+      NgxsModule.forRoot([AuthState, SettingsState, ScheduleState], {
         developmentMode: true,
       }),
     ),
