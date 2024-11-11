@@ -21,7 +21,6 @@ import {
 } from '@features/exercises/state/exercise.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
-
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -96,10 +95,10 @@ export class ExerciseFormComponent implements OnInit {
     }
   }
 
-  setDataForEdit(exerciseEditing: any): void {
+  setDataForEdit(exerciseEditing: Exercise): void {
     this.title = 'Editar ejercicio';
     this.btnTitle = 'Guardar';
-    this.exerciseForm.patchValue(exerciseEditing.exercise);
+    this.exerciseForm.patchValue(exerciseEditing);
     this.toggleExerciseFields(exerciseEditing.type);
   }
 

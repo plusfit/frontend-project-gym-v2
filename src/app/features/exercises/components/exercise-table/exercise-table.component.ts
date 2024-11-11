@@ -1,4 +1,10 @@
-import { Component, Input, output } from '@angular/core';
+import {
+  Component,
+  Input,
+  output,
+  ChangeDetectorRef,
+  AfterViewInit,
+} from '@angular/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,13 +29,19 @@ import { Observable } from 'rxjs';
     TableComponent,
   ],
 })
-export class ExerciseTableComponent {
+export class ExerciseTableComponent implements AfterViewInit {
   @Input() displayedColumns: string[] = [];
   @Input() exercises$!: Observable<any[]>;
   @Input() loading$!: Observable<boolean>;
 
   editEmitter = output<string>();
   deleteEmitter = output<string>();
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
+  }
 
   handleEdit(id: string): void {
     this.editEmitter.emit(id);

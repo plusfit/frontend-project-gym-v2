@@ -114,6 +114,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   editExercise(e: string) {
+    //TODO: Ver el error en consola al abrir el modal
     this.dialog.open(ExerciseFormComponent, {
       width: '800px',
       data: { isEdit: true, exerciseId: e },
