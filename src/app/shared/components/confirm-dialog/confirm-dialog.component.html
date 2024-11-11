@@ -1,8 +1,21 @@
-<h2 mat-dialog-title>{{ title() }}</h2>
-<mat-dialog-content> {{ contentMessage() }} </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close (click)="handleConfirm()">No</button>
-  <button mat-button mat-dialog-close cdkFocusInitial (click)="handleConfirm()">
-    Ok
-  </button>
-</mat-dialog-actions>
+<div class="flex flex-col p-4 gap-4 text-center">
+  <h2 mat-dialog-title class="text-xl font-bold text-gray-800">
+    {{ data.title }}
+  </h2>
+  <mat-dialog-content class="text-base text-gray-600">{{
+    data.contentMessage
+  }}</mat-dialog-content>
+  <div class="flex justify-end space-x-4">
+    <button
+      appBtn
+      mat-dialog-close
+      class="btn-destructive"
+      (click)="handleCancel()"
+    >
+      Cancelar
+    </button>
+    <button appBtn mat-dialog-close class="" (click)="handleConfirm()">
+      Ok
+    </button>
+  </div>
+</div>
