@@ -1,4 +1,4 @@
-import { Component, input, Input, output, signal } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { Observable } from 'rxjs';
-import { log } from 'console';
 
 @Component({
   selector: 'app-exercise-table',

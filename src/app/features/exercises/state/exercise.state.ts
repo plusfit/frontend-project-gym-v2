@@ -10,6 +10,7 @@ import { ExerciseService } from '../services/exercise.service';
 import {
   CreateExercise,
   DeleteExercise,
+  GetExerciseById,
   GetExercisesByName,
   GetExercisesByPage,
 } from './exercise.actions';
@@ -18,6 +19,7 @@ import { environment } from '../../../../environments/environment.prod';
 @State<ExerciseStateModel>({
   name: 'excercise',
   defaults: {
+    exerciseEditing: null,
     exercises: [],
     totalExercises: 0,
     page: null,
@@ -46,6 +48,11 @@ export class ExerciseState {
   @Selector()
   static page(state: ExerciseStateModel): number {
     return state.limit;
+  }
+
+  @Selector()
+  static exerciseEditing(state: ExerciseStateModel): Exercise | null {
+    return state.exerciseEditing || null;
   }
 
   constructor(private exerciseService: ExerciseService) {}
@@ -128,6 +135,23 @@ export class ExerciseState {
     return this.exerciseService.deleteExercise(action.id).pipe(
       tap(() => {
         ctx.patchState({ loading: false });
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(error);
+      }),
+    );
+  }
+
+  @Action(GetExerciseById, { cancelUncompleted: true })
+  getExerciseById(
+    ctx: StateContext<ExerciseStateModel>,
+    action: GetExerciseById,
+  ): Observable<Exercise> {
+    ctx.patchState({ loading: true });
+    return this.exerciseService.getExerciseById(action.id).pipe(
+      tap((response) => {
+        ctx.patchState({ loading: false, exerciseEditing: response.data });
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });

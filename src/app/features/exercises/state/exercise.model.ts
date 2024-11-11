@@ -12,4 +12,5 @@ export class ExerciseStateModel {
   limit: number = environment.exerciseTableLimit;
   filters?: FiltersExercise | null;
   totalExercises?: number;
+  exerciseEditing?: Exercise | null;
 }

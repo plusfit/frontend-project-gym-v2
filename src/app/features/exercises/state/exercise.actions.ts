@@ -24,6 +24,11 @@ export class DeleteExercise {
   constructor(public readonly id: string) {}
 }
 
+export class GetExerciseById {
+  static readonly type = '[Exercise] GetExerciseById';
+  constructor(public readonly id: string) {}
+}
+
 export class SetLimitPerPage {
   static readonly type = '[Exercise] SetLimitPerPage';
   constructor(public readonly limit: number) {}

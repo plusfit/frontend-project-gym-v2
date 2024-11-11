@@ -15,10 +15,11 @@ import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import {
   CreateExercise,
+  GetExerciseById,
   GetExercisesByPage,
 } from '@features/exercises/state/exercise.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
-import { environment } from '../../../../../environments/environment.prod';
+import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 
 @Component({
   selector: 'app-exercise-form',
@@ -37,7 +38,8 @@ import { environment } from '../../../../../environments/environment.prod';
 export class ExerciseFormComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ExerciseFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { isEdit: boolean; exerciseId: string },
     private fb: FormBuilder,
     private store: Store,
     private actions: Actions,
@@ -49,6 +51,13 @@ export class ExerciseFormComponent implements OnInit {
   );
   exerciseForm!: FormGroup;
   private destroy = new Subject<void>();
+  title = 'Agregar ejercicio';
+  btnTitle = 'Crear';
+
+  types = [
+    { value: 'cardio', viewValue: 'Cardio' },
+    { value: 'room', viewValue: 'Sala' },
+  ];
 
   ngOnDestroy(): void {
     this.destroy.next();
@@ -63,20 +72,36 @@ export class ExerciseFormComponent implements OnInit {
       type: ['', Validators.required],
       //mode: ['', Validators.required],
 
-      // Los valores se inician deshabilitados y sin validadores específicos.
       minutes: [{ value: '', disabled: true }],
       rest: [{ value: '', disabled: true }],
       reps: [{ value: '', disabled: true }],
       series: [{ value: '', disabled: true }],
     });
 
-    // Observa los cambios en el campo 'type' para habilitar/deshabilitar campos condicionales
     this.exerciseForm.get('type')?.valueChanges.subscribe((type) => {
       this.toggleExerciseFields(type);
     });
+
+    if (this.data.isEdit && this.data.exerciseId) {
+      this.store.dispatch(new GetExerciseById(this.data.exerciseId));
+      this.actions
+        .pipe(ofActionSuccessful(GetExerciseById), takeUntil(this.destroy))
+        .subscribe(() => {
+          const exerciseEditing = this.store.selectSnapshot(
+            ExerciseState.exerciseEditing,
+          );
+          if (exerciseEditing) this.setDataForEdit(exerciseEditing);
+        });
+    }
   }
 
-  // Método para habilitar/deshabilitar campos condicionales y agregar validadores específicos
+  setDataForEdit(exerciseEditing: any): void {
+    this.title = 'Editar ejercicio';
+    this.btnTitle = 'Guardar';
+    this.exerciseForm.patchValue(exerciseEditing.exercise);
+    this.toggleExerciseFields(exerciseEditing.type);
+  }
+
   toggleExerciseFields(type: string): void {
     if (type === 'cardio') {
       this.exerciseForm.get('minutes')?.enable();
@@ -133,7 +158,6 @@ export class ExerciseFormComponent implements OnInit {
         .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
         .subscribe(() => {
           this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
-          this.store.dispatch(new CreateExercise(this.exerciseForm.value));
           this.dialogRef.close();
           this.store.dispatch(
             new GetExercisesByPage({

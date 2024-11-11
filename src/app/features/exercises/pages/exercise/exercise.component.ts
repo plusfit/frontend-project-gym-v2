@@ -114,12 +114,10 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   editExercise(e: string) {
-    console.log('Editando ejercicio:', e);
-
-    // this.dialog.open(ExerciseFormComponent, {
-    //   width: '800px',
-    //   data: { isEdit: true, exercise },
-    // });
+    this.dialog.open(ExerciseFormComponent, {
+      width: '800px',
+      data: { isEdit: true, exerciseId: e },
+    });
   }
 
   deleteExercise(e: string) {

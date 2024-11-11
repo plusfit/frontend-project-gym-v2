@@ -43,4 +43,7 @@ export class ExerciseService {
   deleteExercise(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.api}/exercises/${id}`);
   }
+  getExerciseById(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.api}/exercises/${id}`);
+  }
 }
