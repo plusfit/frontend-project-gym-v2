@@ -6,6 +6,7 @@ import { AuthLayoutComponent } from '@features/auth/components/auth-layout/auth-
 import { LoginPageComponent } from '@features/auth/pages/login-page/login-page.component';
 import { RegisterPageComponent } from '@features/auth/pages/register-page/register-page.component';
 import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
+import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
@@ -18,6 +19,10 @@ export const routes: Routes = [
       {
         path: 'exercises/list',
         component: ExerciseComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsPagesComponent,
       },
     ],
   },
