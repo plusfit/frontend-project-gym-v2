@@ -17,6 +17,7 @@ import {
   CreateExercise,
   GetExerciseById,
   GetExercisesByPage,
+  UpdateExercise,
 } from '@features/exercises/state/exercise.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
@@ -150,21 +151,43 @@ export class ExerciseFormComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  create(): void {
+  save(): void {
     if (this.exerciseForm.valid) {
-      this.exerciseForm.value.mode = 'NO SE QUE PONER ACA';
-      this.store.dispatch(new CreateExercise(this.exerciseForm.value));
-      this.actions
-        .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
-        .subscribe(() => {
-          this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
-          this.dialogRef.close();
-          this.store.dispatch(
-            new GetExercisesByPage({
-              page: 1,
-            }),
-          );
-        });
+      if (this.data.isEdit && this.data.exerciseId) this.update();
+      else this.create();
     }
+  }
+
+  update(): void {
+    this.store.dispatch(
+      new UpdateExercise(this.exerciseForm.value, this.data.exerciseId),
+    );
+    this.actions
+      .pipe(ofActionSuccessful(UpdateExercise), takeUntil(this.destroy))
+      .subscribe(() => {
+        this.store.dispatch(
+          new GetExercisesByPage({
+            page: 1,
+          }),
+        );
+        this.snackbar.showSuccess('Ejercicio actualizado correctamente', 'OK');
+        this.dialogRef.close();
+      });
+  }
+
+  create(): void {
+    this.exerciseForm.value.mode = 'NO SE QUE PONER ACA';
+    this.store.dispatch(new CreateExercise(this.exerciseForm.value));
+    this.actions
+      .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
+      .subscribe(() => {
+        this.store.dispatch(
+          new GetExercisesByPage({
+            page: 1,
+          }),
+        );
+        this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
+        this.dialogRef.close();
+      });
   }
 }

@@ -13,6 +13,7 @@ import {
   GetExerciseById,
   GetExercisesByName,
   GetExercisesByPage,
+  UpdateExercise,
 } from './exercise.actions';
 import { environment } from '../../../../environments/environment.prod';
 
@@ -152,6 +153,23 @@ export class ExerciseState {
     return this.exerciseService.getExerciseById(action.id).pipe(
       tap((response) => {
         ctx.patchState({ loading: false, exerciseEditing: response.data });
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(error);
+      }),
+    );
+  }
+
+  @Action(UpdateExercise, { cancelUncompleted: true })
+  updateExercise(
+    ctx: StateContext<ExerciseStateModel>,
+    action: UpdateExercise,
+  ): Observable<Exercise> {
+    ctx.patchState({ loading: true });
+    return this.exerciseService.updateExercise(action.payload, action.id).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });

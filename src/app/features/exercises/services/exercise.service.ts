@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { UtilsService } from '@core/services/utils.service';
 import { environment } from '../../../../environments/environment';
 import { FiltersExercise } from '../interfaces/filters.excersise.interface';
-import { ExercisePayload } from '../interfaces/exercise.interface';
+import { Exercise, ExercisePayload } from '../interfaces/exercise.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -45,5 +45,8 @@ export class ExerciseService {
   }
   getExerciseById(id: string): Observable<any> {
     return this.http.get<any>(`${environment.api}/exercises/${id}`);
+  }
+  updateExercise(payload: ExercisePayload, id: string): Observable<any> {
+    return this.http.patch<any>(`${environment.api}/exercises/${id}`, payload);
   }
 }

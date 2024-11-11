@@ -1,4 +1,4 @@
-import { ExercisePayload } from '../interfaces/exercise.interface';
+import { Exercise, ExercisePayload } from '../interfaces/exercise.interface';
 import {
   FiltersExercise,
   PageExercise,
@@ -23,13 +23,18 @@ export class DeleteExercise {
   static readonly type = '[Exercise] DeleteExercise';
   constructor(public readonly id: string) {}
 }
-
 export class GetExerciseById {
   static readonly type = '[Exercise] GetExerciseById';
   constructor(public readonly id: string) {}
 }
-
 export class SetLimitPerPage {
   static readonly type = '[Exercise] SetLimitPerPage';
   constructor(public readonly limit: number) {}
+}
+export class UpdateExercise {
+  static readonly type = '[Exercise] UpdateExercise';
+  constructor(
+    public readonly payload: Exercise,
+    public readonly id: string,
+  ) {}
 }
