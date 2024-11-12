@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+//import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
   name: 'translation',
@@ -29,6 +29,12 @@ export class TranslationPipe implements PipeTransform {
       case 'type':
         // return this.translateService.instant('Tipo');
         return 'Tipo';
+      case 'createdAt':
+        // return this.translateService.instant('Tipo');
+        return 'Creado';
+      case 'updatedAt':
+        // return this.translateService.instant('Tipo');
+        return 'Actualizado';
       default:
         return value;
     }

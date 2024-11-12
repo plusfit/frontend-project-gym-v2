@@ -21,6 +21,7 @@ import {
 } from '@features/exercises/state/exercise.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -33,6 +34,7 @@ import { Exercise } from '@features/exercises/interfaces/exercise.interface';
     BtnDirective,
     InputDirective,
     CommonModule,
+    LoaderComponent,
   ],
 })
 export class ExerciseFormComponent implements OnInit {
