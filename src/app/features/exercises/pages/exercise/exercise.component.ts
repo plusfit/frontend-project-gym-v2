@@ -56,7 +56,14 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   totalExercises$: Observable<number> = this.store.select(
     ExerciseState.totalExercises,
   );
-  displayedColumns: string[] = ['name', 'description', 'type', 'acciones'];
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'type',
+    'createdAt',
+    'updatedAt',
+    'acciones',
+  ];
   dataSource = new MatTableDataSource<Exercise>();
   searchTerm$ = new Subject<string>();
   loading$: Observable<boolean> = this.store.select(

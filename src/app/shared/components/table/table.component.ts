@@ -4,6 +4,7 @@ import { EColorBadge } from '../../enums/badge-color.enum';
 import { CdkTableModule } from '@angular/cdk/table';
 import {
   AsyncPipe,
+  DatePipe,
   JsonPipe,
   NgClass,
   NgFor,
@@ -46,6 +47,7 @@ import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
     CdkTableModule,
     TranslationPipe,
     CamelToTitlePipe,
+    DatePipe,
   ],
 })
 export class TableComponent {

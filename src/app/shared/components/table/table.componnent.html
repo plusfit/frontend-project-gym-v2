@@ -23,8 +23,14 @@
           ></app-badge>
         </ng-container>
 
-        <ng-container *ngIf="column !== 'isActive' && column !== 'type'">
+        <ng-container
+          *ngIf="column !== 'isActive' && column !== 'type' && column !== 'createdAt' && column !== 'updatedAt'"
+        >
           {{ element[column] }}
+        </ng-container>
+
+        <ng-container *ngIf="column === 'createdAt' || column === 'updatedAt'">
+          {{ element[column] | date:"d MMM y"}}
         </ng-container>
 
         <ng-container *ngIf="column === 'acciones'">
