@@ -1,71 +1,52 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { DeleteHour } from '@features/schedule/state/schedule.actions';
+import { SnackBarService } from '@core/services/snackbar.service';
 
 @Component({
   selector: 'app-calendar-schedule',
   standalone: true,
-  imports: [],
+  imports: [CardScheduleComponent],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
-export class CalendarScheduleComponent {
-  daysArray = [
-    {
-      day: 'Lunes',
-      hours: [
-        { startTime: '08:00', endTime: '09:00', clients: [], maxCount: 3 },
-        { startTime: '10:00', endTime: '11:00', clients: [], maxCount: 3 },
-        { startTime: '14:00', endTime: '15:00', clients: [], maxCount: 3 },
-      ],
-    },
-    {
-      day: 'Martes',
-      hours: [
-        { startTime: '09:00', endTime: '10:00', clients: [], maxCount: 2 },
-        { startTime: '11:00', endTime: '12:00', clients: [], maxCount: 2 },
-      ],
-    },
-    {
-      day: 'Miércoles',
-      hours: [
-        { startTime: '07:00', endTime: '08:00', clients: [], maxCount: 2 },
-        { startTime: '12:00', endTime: '13:00', clients: [], maxCount: 2 },
-      ],
-    },
-    {
-      day: 'Jueves',
-      hours: [
-        { startTime: '10:00', endTime: '11:00', clients: [], maxCount: 2 },
-        { startTime: '16:00', endTime: '17:00', clients: [], maxCount: 2 },
-      ],
-    },
-    {
-      day: 'Viernes',
-      hours: [
-        { startTime: '09:00', endTime: '10:00', clients: [], maxCount: 3 },
-        { startTime: '11:00', endTime: '12:00', clients: [], maxCount: 3 },
-        { startTime: '15:00', endTime: '16:00', clients: [], maxCount: 3 },
-      ],
-    },
-    {
-      day: 'Sábado',
-      hours: [
-        { startTime: '08:00', endTime: '09:00', clients: [], maxCount: 2 },
-        { startTime: '12:00', endTime: '13:00', clients: [], maxCount: 2 },
-      ],
-    },
-  ];
+export class CalendarScheduleComponent implements OnInit, OnChanges {
+  schedule = input<any>();
 
-  editarHorario(day: any, hour: any) {
-    console.log(
-      `Editando el horario de ${day.day} de ${hour.startTime} a ${hour.endTime}`,
-    );
+  constructor(
+    private store: Store,
+    private actions: Actions,
+    private snackbar: SnackBarService,
+  ) {}
+  ngOnInit(): void {
+    console.log(this.schedule());
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['schedule']) {
+      console.log('changes', this.schedule());
+    }
+  }
+
+  editarHorario(event: Event) {
+    console.log('Evento editando', event);
     // Lógica para abrir un formulario de edición
   }
 
-  eliminarHorario(day: any, hour: any) {
-    console.log(
-      `Eliminando el horario de ${day.day} de ${hour.startTime} a ${hour.endTime}`,
-    );
+  eliminarHorario(event: { _id: string }) {
+    const _id = event._id;
+    this.store.dispatch(new DeleteHour(_id));
+    this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
+      this.snackbar.showSuccess('Horario eliminado', 'Cerrar');
+      this.schedule = this.schedule()?.filter((hour: any) => hour._id !== _id);
+    });
+    console.log('Evento eliminado', event);
     // Lógica para eliminar el horario
   }
 }

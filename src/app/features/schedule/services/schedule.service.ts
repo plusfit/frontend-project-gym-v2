@@ -17,8 +17,12 @@ export class ScheduleService {
   }
 
   updateSchedule(id: string, schedule: any) {
-    return this.http.patch<any>(`${environment.api}/schedules${id}`, {
+    return this.http.patch<any>(`${environment.api}/schedules/${id}`, {
       schedule,
     });
+  }
+
+  deleteHour(id: string) {
+    return this.http.delete<any>(`${environment.api}/schedules/${id}`);
   }
 }

@@ -29,7 +29,27 @@ export class SchedulePageComponent implements OnInit {
         tap(() => {
           const schedule = this.store.selectSnapshot(ScheduleState.schedule);
           this.schedule = schedule;
-          console.log(this.schedule);
+          this.schedule = this.schedule?.data?.reduce((acc: any, hour: any) => {
+            // Buscar si el día ya existe en el array de días agrupados
+            let dayEntry = acc.find((d: any) => d.day === hour.day);
+
+            if (!dayEntry) {
+              // Si el día no existe, lo añadimos con un array vacío de horas
+              dayEntry = { day: hour.day, hours: [] };
+              acc.push(dayEntry);
+            }
+
+            // Añadimos el horario a la lista de horas de ese día
+            dayEntry.hours.push({
+              _id: hour._id,
+              startTime: hour.startTime,
+              endTime: hour.endTime,
+              clients: hour.clients,
+              maxCount: hour.maxCount,
+            });
+
+            return acc;
+          }, []);
         }),
       )
       .subscribe(() => {});
