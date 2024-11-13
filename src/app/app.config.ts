@@ -24,6 +24,7 @@ import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
 import { environment } from '../environments/environment';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
+import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { SettingsState } from '@features/settings/state/settings.state';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 
@@ -53,9 +54,12 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAuth(() => getAuth()),
     importProvidersFrom(
-      NgxsModule.forRoot([AuthState, SettingsState, ScheduleState], {
-        developmentMode: true,
-      }),
+      NgxsModule.forRoot(
+        [AuthState, SettingsState, ExerciseState, ScheduleState],
+        {
+          developmentMode: true,
+        },
+      ),
     ),
     importProvidersFrom(
       NgxsReduxDevtoolsPluginModule.forRoot({
