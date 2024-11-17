@@ -36,8 +36,6 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     InputDirective,
     CommonModule,
     LoaderComponent,
-    MatFormField,
-    MatLabel,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
