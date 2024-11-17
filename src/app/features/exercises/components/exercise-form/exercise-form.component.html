@@ -6,28 +6,24 @@
     <mat-dialog-content>
       <form [formGroup]="exerciseForm" class="space-y-4" (ngSubmit)="create()">
         <div class="flex gap-4">
-          <div class="w-full md:w-1/2">
-            <label for="name" class="block text-sm font-medium text-gray-700"
-              >Nombre</label
-            >
-            <input
-              appInput
-              type="text"
-              id="name"
-              formControlName="name"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Nombre del ejercicio"
-            />
-          </div>
+            <div class="w-full md:w-1/2">
+              <input
+                appInput
+                label="Nombre"
+                type="text"
+                id="name"
+                formControlName="name"
+                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Nombre del ejercicio"
+              />
+            </div>
+
 
           <div class="w-full md:w-1/2">
-            <label
-              for="description"
-              class="block text-sm font-medium text-gray-700"
-              >Descripción</label
-            >
             <textarea
+              appInput
               id="description"
+              label="Descripción"
               formControlName="description"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
               placeholder="Descripción del ejercicio"
@@ -56,11 +52,9 @@
           class="flex gap-4"
         >
           <div class="w-full md:w-1/2">
-            <label for="minutes" class="block text-sm font-medium text-gray-700"
-              >Minutos</label
-            >
             <input
               appInput
+              label="Minutos"
               type="number"
               id="minutes"
               formControlName="minutes"
@@ -71,11 +65,9 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <label for="rest" class="block text-sm font-medium text-gray-700"
-              >Descanso</label
-            >
             <input
               appInput
+              label="Descanso"
               type="number"
               id="rest"
               formControlName="rest"
@@ -91,11 +83,10 @@
           class="flex gap-4"
         >
           <div class="w-full md:w-1/2">
-            <label for="reps" class="block text-sm font-medium text-gray-700"
-              >Repeticiones</label
-            >
             <input
               appInput
+              label="Repeticiones"
+              [outline]=true
               type="number"
               id="reps"
               formControlName="reps"
@@ -106,11 +97,9 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <label for="series" class="block text-sm font-medium text-gray-700"
-              >Series</label
-            >
             <input
               appInput
+              label="Series"
               type="number"
               id="series"
               formControlName="series"
@@ -124,7 +113,7 @@
     </mat-dialog-content>
   }
   <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn (click)="cancel()">Cancelar</button>
+    <button appBtn color="secondary" class="btn-secondary" (click)="cancel()">Cancelar</button>
     <button
       appBtn
       class="btn-primary"

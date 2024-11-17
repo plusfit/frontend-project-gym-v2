@@ -41,9 +41,6 @@ import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
     LoaderComponent,
     NgFor,
     NgIf,
-    AsyncPipe,
-    TitleCasePipe,
-    JsonPipe,
     CdkTableModule,
     TranslationPipe,
     CamelToTitlePipe,
@@ -85,7 +82,7 @@ export class TableComponent {
   @Input() filteredData = false;
 
   /**
-   * Header css class
+   * Header CSS class
    * @type {string} css class
    */
   @Input() headerCssClass = 'header-default';

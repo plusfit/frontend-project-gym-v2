@@ -35,10 +35,11 @@ import { environment } from '../../../../../environments/environment.prod';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { title } from 'process';
 import { SnackBarService } from '@core/services/snackbar.service';
+import {BtnDirective} from "@shared/directives/btn/btn.directive";
 @Component({
   selector: 'app-exercise',
   standalone: true,
-  imports: [ExerciseTableComponent, MatPaginatorModule, CommonModule],
+  imports: [ExerciseTableComponent, MatPaginatorModule, CommonModule, BtnDirective],
   templateUrl: './exercise.component.html',
   styleUrl: './exercise.component.css',
 })

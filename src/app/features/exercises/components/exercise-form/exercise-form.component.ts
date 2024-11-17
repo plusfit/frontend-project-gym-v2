@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import {
@@ -22,6 +22,7 @@ import {
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -35,9 +36,11 @@ import { LoaderComponent } from '../../../../shared/components/loader/loader.com
     InputDirective,
     CommonModule,
     LoaderComponent,
+    MatFormField,
+    MatLabel,
   ],
 })
-export class ExerciseFormComponent implements OnInit {
+export class ExerciseFormComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<ExerciseFormComponent>,
     @Inject(MAT_DIALOG_DATA)
