@@ -4,3 +4,14 @@ export interface IHour {
   maxCount: number;
   clients: string[];
 }
+
+export interface ISchedule {
+  _id: string;
+  name: string;
+  hours: IHour[];
+}
+
+export interface IScheduleResponse {
+  data: ISchedule[];
+  success: boolean;
+}

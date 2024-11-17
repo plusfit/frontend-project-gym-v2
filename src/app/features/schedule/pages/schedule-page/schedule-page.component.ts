@@ -48,10 +48,34 @@ export class SchedulePageComponent implements OnInit {
               maxCount: hour.maxCount,
             });
 
+            // Ordenamos las horas dentro del día
+            dayEntry.hours.sort((a: any, b: any) => {
+              return parseInt(a.startTime, 10) - parseInt(b.startTime, 10);
+            });
+
+            acc = acc.sort((a: any, b: any) => {
+              const days = [
+                'Lunes',
+                'Martes',
+                'Miercoles',
+                'Jueves',
+                'Viernes',
+                'Sabado',
+              ];
+
+              const dayA = days.indexOf(a.day);
+              const dayB = days.indexOf(b.day);
+              return dayA - dayB;
+            });
+
             return acc;
           }, []);
         }),
       )
       .subscribe(() => {});
+  }
+
+  actualizarSchedule(nuevoHorario: any[]) {
+    this.schedule = nuevoHorario;
   }
 }

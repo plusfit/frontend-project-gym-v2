@@ -1,0 +1,57 @@
+<div class="p-4 bg-white shadow-md rounded">
+  <form [formGroup]="editForm" (ngSubmit)="save()" class="space-y-4">
+    <div>
+      <label for="maxCount" class="block text-sm font-medium text-gray-700"
+        >Cantidad Máxima</label
+      >
+      <input
+        id="maxCount"
+        type="number"
+        formControlName="maxCount"
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      />
+    </div>
+
+    <div>
+      <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
+      <div formArrayName="clients" class="space-y-2">
+        @for (client of editForm.get("clients")?.value; track $index) {
+          <div class="flex items-center space-x-2">
+            <input
+              type="text"
+              formControlName="0"
+              class="block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              class="text-red-500 hover:text-red-700"
+              (click)="removeClient($index)"
+            >
+              Eliminar
+            </button>
+          </div>
+        }
+      </div>
+      <button
+        type="button"
+        class="mt-2 inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+        (click)="addClient()"
+      >
+        Agregar Cliente
+      </button>
+    </div>
+    <div class="flex justify-between">
+      <button
+        class="w-full px-4 py-2 text-white bg-error-100 rounded hover:bg-green-700"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="w-full px-4 py-2 text-white bg-primary-500 rounded hover:bg-green-700"
+      >
+        Guardar Cambios
+      </button>
+    </div>
+  </form>
+</div>

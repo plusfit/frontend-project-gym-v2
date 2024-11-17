@@ -4,12 +4,13 @@ import { ScheduleStateModel } from './schedule.model';
 import { ScheduleService } from '../services/schedule.service';
 import { UtilsService } from '@core/services/utils.service';
 import { tap } from 'rxjs';
-import { DeleteHour, GetSchedule } from './schedule.actions';
+import { DeleteHour, GetClientsById, GetSchedule } from './schedule.actions';
 
 @State<ScheduleStateModel>({
   name: 'schedule',
   defaults: {
     schedule: null,
+    clients: null,
     loading: false,
   },
 })
@@ -30,11 +31,28 @@ export class ScheduleState {
     return state?.schedule;
   }
 
+  @Selector()
+  static clients(state: ScheduleStateModel): any {
+    return state?.clients;
+  }
+
   @Action(GetSchedule)
   getSchedule(ctx: StateContext<ScheduleStateModel>) {
     return this.scheduleService.getSchedule().pipe(
       tap((schedule: any) => {
         ctx.patchState({ schedule });
+      }),
+    );
+  }
+
+  @Action(GetClientsById)
+  getClientsById(
+    ctx: StateContext<ScheduleStateModel>,
+    action: GetClientsById,
+  ) {
+    return this.scheduleService.getClientsByid(action._id).pipe(
+      tap((clients: any) => {
+        ctx.patchState({ clients });
       }),
     );
   }

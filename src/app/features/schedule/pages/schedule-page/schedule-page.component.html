@@ -1,1 +1,4 @@
-<app-calendar-schedule [schedule]="schedule"></app-calendar-schedule>
+<app-calendar-schedule
+  [schedule]="schedule"
+  (scheduleUpdated)="actualizarSchedule($event)"
+></app-calendar-schedule>
