@@ -113,10 +113,10 @@
     </mat-dialog-content>
   }
   <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn color="secondary" class="btn-secondary" (click)="cancel()">Cancelar</button>
+    <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
     <button
       appBtn
-      class="btn-primary"
+      color="primary"
       [loader]="(loading$ | async)!"
       [animate]="true"
       (click)="save()"
