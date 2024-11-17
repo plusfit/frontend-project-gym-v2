@@ -11,11 +11,12 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import { GetClientsById } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
 
 @Component({
   selector: 'app-schedule-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, BtnDirective],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
 })
