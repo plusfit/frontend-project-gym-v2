@@ -15,6 +15,7 @@ import { AuthService } from '../services/auth.service';
 import { GetUserPreferences, Login, Logout, Register } from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
+import { SnackBarService } from '@core/services/snackbar.service';
 
 @State<AuthStateModel>({
   name: 'auth',
@@ -65,6 +66,7 @@ export class AuthState {
   constructor(
     private authService: AuthService,
     private utilsService: UtilsService,
+    private snackbar: SnackBarService,
   ) {}
 
   @Action(Login, { cancelUncompleted: true })
@@ -92,6 +94,11 @@ export class AuthState {
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
+        //TODO: convertir los mensajes
+        this.snackbar.showError(
+          'Login Erroneo',
+          err.error?.data?.message ?? err.message,
+        );
         return throwError(() => err);
       }),
     );
@@ -103,8 +110,9 @@ export class AuthState {
   ): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
     const accessToken = ctx.getState().auth?.accessToken;
-    console.log(accessToken);
-
+    if (!accessToken) {
+      return throwError(() => new Error('No hay token de acceso'));
+    }
     return this.authService.getUserPreferences().pipe(
       tap((preferences: UserPreferences) => {
         ctx.patchState({ preferences });
@@ -145,6 +153,8 @@ export class AuthState {
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
+        //TODO: convertir los mensajes
+        this.snackbar.showError('Registro Erroneo', err.message);
         return throwError(() => err);
       }),
     );

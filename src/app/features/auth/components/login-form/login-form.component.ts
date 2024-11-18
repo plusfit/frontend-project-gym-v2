@@ -81,11 +81,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   loginWithGoogle(): void {}
   goToForgotPassword(): void {
-    console.log('Forgot password');
     this.router.navigate(['auth/forgot-password']);
   }
   goToRegister(): void {
-    console.log('Register');
     this.router.navigate(['auth/register']);
   }
 }

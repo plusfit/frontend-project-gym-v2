@@ -18,9 +18,7 @@ export function errorInterceptor(
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       let message = '';
-      console.log('entrei no errorInterceptor');
       if (err.error instanceof ProgressEvent) {
-        console.log('entrei no if');
         // Client Side
         switch (err.status) {
           case 0:

@@ -29,7 +29,6 @@ export class SettingsPagesComponent implements OnInit {
         tap(() => {
           const settings = this.store.selectSnapshot(SettingsState.settings);
           this.settings = settings?.data;
-          console.log(this.settings);
         }),
       )
       .subscribe(() => {});

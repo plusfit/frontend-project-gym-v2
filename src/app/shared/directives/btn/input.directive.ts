@@ -260,7 +260,7 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
 
     this.labelInputEl = this.rendered.createElement('label');
     let labelText = this.label;
-    labelText += this.isRequired ? ' (*)' : '';
+    labelText += this.isRequired ? '*' : '';
     const text = this.rendered.createText(labelText);
     this.rendered.addClass(this.labelInputEl, 'block');
 
