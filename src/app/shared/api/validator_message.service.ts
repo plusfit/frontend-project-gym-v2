@@ -13,13 +13,13 @@ export class ValidatorMessage {
    * The default error messages for validation errors.
    */
   errorsDesc: IValidatorsErrors = {
-    required: 'This field is required',
-    email: 'Invalid email',
-    max: 'This number is higher than allowed',
-    min: 'This number is less than allowed',
-    maxlength: 'This text is higher than allowed',
-    minlength: 'This text is less than allowed',
-    pattern: 'This text does not match the defined pattern',
+    required: 'Este campo es obligatorio',
+    email: 'Correo electrónico inválido',
+    max: 'Este número es mayor al permitido',
+    min: 'Este número es menor al permitido',
+    maxlength: 'Este texto es más largo de lo permitido',
+    minlength: 'Este texto es más corto de lo permitido',
+    pattern: 'Este texto no coincide con el patrón definido',
   };
 
   /**

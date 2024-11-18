@@ -1,5 +1,5 @@
 <div
-  class="w-full overflow-hidden ring-1 ring-neutral-400 shadow-100 rounded-sm"
+  class="w-full overflow-hidden ring-1 ring-neutral-400 shadow-200 rounded-sm"
   [ngClass]="{ 'ring-1 ring-neutral-400': headerCssClass !== 'header-primary' }"
 >
   <table
@@ -30,7 +30,7 @@
         </ng-container>
 
         <ng-container *ngIf="column === 'createdAt' || column === 'updatedAt'">
-          {{ element[column] | date:"d MMM y"}}
+          {{ element[column] | date:"d MMM y, h:mm a" }}
         </ng-container>
 
         <ng-container *ngIf="column === 'acciones'">
@@ -98,7 +98,7 @@
           <div
             class="flex flex-col text-center justify-center items-center space-y-4"
           >
-            <span>No hay ejercicios para mostrar 😢</span>
+            <span>No hay elementos para mostrar 😢</span>
           </div>
         </ng-container>
       </td>

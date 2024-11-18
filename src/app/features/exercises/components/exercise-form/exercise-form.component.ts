@@ -22,6 +22,7 @@ import {
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],

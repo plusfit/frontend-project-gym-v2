@@ -16,85 +16,31 @@ import { Subject, takeUntil } from 'rxjs';
 import { ValidatorMessage } from '../../api/validator_message.service';
 import { IHelpDescription } from '../../interfaces/help_description.interface';
 
-/**
- * The InputDirective is a directive for input elements.
- * @directive
- */
 @Directive({
   selector: '[appInput]',
   standalone: true,
 })
 export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
-  /**
-   * A subject for managing unsubscriptions.
-   */
   unsubscription = new Subject();
 
-  /** The label text of the input. */
   @Input() label = '';
-
-  /** The class of the left icon. */
   @Input() iconLeft = '';
-
-  /**  The class of the right icon. */
   @Input() iconRight = '';
-
-  /** The class of the error icon. */
   @Input() iconError = '';
-  /**
-   * The description and help text for the input.
-   */
   @Input() helpDesc: IHelpDescription | null = null;
-
-  /**  Defines whether error message is displayed or not. */
   @Input() notMessageError = false;
+  @Input() outline = true; // New input property for outline style
 
-  /**
-   * The icon element for the right side of the input element.
-   */
   iconElementRight: any = null;
-  /**
-   * The icon element for the left side of the input element.
-   */
   iconElementLeft: any = null;
-  /**
-   * The parent div for the icon element on the right side of the input element.
-   */
   iconRightParentDiv: any = null;
-  /**
-   * The parent div for the icon element on the left side of the input element.
-   */
   iconLeftParentDiv: any = null;
-  /**
-   * The paragraph element for the help description of the input element.
-   */
   paragraphHelpDesc: any = null;
-  /**
-   * The paragraph element for the error description of the input element.
-   */
   paragraphErrorDesc: any = null;
-  /**
-   * The label input element for the input directive.
-   */
   labelInputEl: ElementRef | null = null;
-  /**
-   * The wrap element for the input directive.
-   */
   wrap: HTMLElement | null = null;
-  /**
-   * A boolean indicating whether the input element is required or not.
-   */
   isRequired = false;
 
-  /**
-   * Creates an instance of the InputDirective class.
-   * @param {ElementRef} el - The element reference to use for the directive.
-   * @param {Renderer2} rendered - The renderer to use for the directive.
-   * @param {ChangeDetectorRef} cd - The change detector reference to use for the directive.
-   * @param {ValidatorMessage} validatorMessage - The validator message to use for the directive.
-   * @param {NgModel} ngModel - The ngModel to use for the directive.
-   * @param {NgControl} ngControl - The ngControl to use for the directive.
-   */
   constructor(
     public el: ElementRef,
     public rendered: Renderer2,
@@ -104,16 +50,7 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     @Optional() public ngControl: NgControl,
   ) {}
 
-  /**
-   * Handles the blur event for the input element.
-   * @param {any} target - The target of the blur event.
-   */
   @HostListener('blur', ['$event.target'])
-  /**
-   * Handles the blur event of the input element.
-   * If the input is invalid, adds an error class to the element and displays an error message.
-   * If the input is valid, removes the error class and error message.
-   */
   onBlur(): void {
     if (this.ngControl.invalid) {
       this.addClass(true);
@@ -207,11 +144,11 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     this.updateIcon();
     this.addDescription();
     this.rendered.addClass(this.el.nativeElement, 'input-default');
+    if (this.outline) {
+      this.rendered.addClass(this.el.nativeElement, 'mat-form-field-outline');
+    }
   }
 
-  /**
-   * Remove the description paragraph from the DOM.
-   */
   removeDescription(): void {
     if (this.paragraphHelpDesc) {
       const currentElement = this.el.nativeElement;
@@ -223,9 +160,6 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  /**
-   * Add the help description to the DOM.
-   */
   addDescription(): void {
     if (this.helpDesc) {
       const currentElement = this.el.nativeElement;
@@ -255,10 +189,6 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  /**
-   * Add an error message to the DOM.
-   * @param {string} message The error message to be displayed.
-   */
   addErrorDescription(message = ''): void {
     const currentElement = this.el.nativeElement;
     const parentCurrentElement = currentElement.parentNode;
@@ -299,9 +229,7 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
       this.paragraphErrorDesc = null;
     }
   }
-  /**
-   * Remove the label from the input field in the DOM.
-   */
+
   removeInputLabel(): void {
     if (this.labelInputEl) {
       const currentElement = this.el.nativeElement;
@@ -311,17 +239,13 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
       );
     }
   }
-  /**
-   * Add a label to the input field in the DOM.
-   */
+
   addLabel(): void {
     let labelText = this.label;
     labelText += this.isRequired ? '*' : '';
     this.rendered.setProperty(this.labelInputEl, 'textContent', labelText);
   }
-  /**
-   * Adds the label element to the input field in the DOM.
-   */
+
   addInputLabel(): void {
     const currentElement = this.el.nativeElement;
 
@@ -336,7 +260,7 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
 
     this.labelInputEl = this.rendered.createElement('label');
     let labelText = this.label;
-    labelText += this.isRequired ? '*' : '';
+    labelText += this.isRequired ? ' (*)' : '';
     const text = this.rendered.createText(labelText);
     this.rendered.addClass(this.labelInputEl, 'block');
 
@@ -351,9 +275,7 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
 
     this.rendered.addClass(currentElement, 'w-full');
   }
-  /**
-   * Updates the icon on the right side of the input field.
-   */
+
   updateIcon(): void {
     const currentElement = this.el.nativeElement;
     const parentNode = currentElement.parentNode;
@@ -407,10 +329,6 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  /**
-   * Add or remove class depending on error status.
-   * @param {boolean} error The error status.
-   */
   addClass(error: boolean): void {
     if (error) {
       this.rendered.removeClass(this.el.nativeElement, 'input-default');
@@ -434,9 +352,6 @@ export class InputDirective implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  /**
-   * Clean up any subscriptions when the directive is destroyed.
-   */
   ngOnDestroy(): void {
     this.unsubscription.next(null);
     this.unsubscription.complete();

@@ -1,10 +1,10 @@
 <main>
   <section class="mb-4 sm:p-5">
-    <h2
-      class="text-center text-6xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
+    <span
+      class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
     >
       Ejercicios 🏋️
-    </h2>
+    </span>
     <div class="w-full pb-1 flex justify-between items-center">
       <div class="flex items-center w-full md:w-1/2 mr-4">
         <label for="simple-search" class="sr-only">Buscar</label>
@@ -29,7 +29,7 @@
           <input
             type="text"
             id="ssearch"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2"
             placeholder="Buscar ejercicio"
             (input)="searchExercises($event)"
             required=""
@@ -37,10 +37,7 @@
         </div>
       </div>
 
-      <button
-        class="bg-primary-500 text-white px-4 py-2 rounded-md w-auto"
-        (click)="addExerciseModal()"
-      >
+      <button appBtn color="primary" (click)="addExerciseModal()">
         Crear ejercicio
       </button>
     </div>
