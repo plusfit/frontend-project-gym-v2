@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  OnChanges,
 } from '@angular/core';
 import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
 import {
@@ -33,13 +34,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
 import { environment } from '../../../../../environments/environment.prod';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { title } from 'process';
 import { SnackBarService } from '@core/services/snackbar.service';
-import {BtnDirective} from "@shared/directives/btn/btn.directive";
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
 @Component({
   selector: 'app-exercise',
   standalone: true,
-  imports: [ExerciseTableComponent, MatPaginatorModule, CommonModule, BtnDirective],
+  imports: [
+    ExerciseTableComponent,
+    MatPaginatorModule,
+    CommonModule,
+    BtnDirective,
+  ],
   templateUrl: './exercise.component.html',
   styleUrl: './exercise.component.css',
 })
@@ -54,9 +59,6 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   limitPerPage = environment.exerciseTableLimit ?? 8;
   exerciseTableLimitOptions = environment.exerciseTableLimitOptions;
   currentPage = 1;
-  totalExercises$: Observable<number> = this.store.select(
-    ExerciseState.totalExercises,
-  );
   displayedColumns: string[] = [
     'name',
     'description',
@@ -66,6 +68,9 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     'acciones',
   ];
   dataSource = new MatTableDataSource<Exercise>();
+  totalExercises$: Observable<number> = this.store.select(
+    ExerciseState.totalExercises,
+  );
   searchTerm$ = new Subject<string>();
   loading$: Observable<boolean> = this.store.select(
     ExerciseState.exerciseLoading,
@@ -92,7 +97,13 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
         page: this.currentPage,
       }),
     );
+    this.actions.pipe(ofActionSuccessful(GetExercisesByPage)).subscribe(() => {
+      this.totalExercises$.subscribe((total) => {
+        this.paginator.length = total;
+      });
+    });
   }
+
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
@@ -141,7 +152,6 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
       this.store.dispatch(new DeleteExercise(e));
-      //TODO: Ver el tema del paginado luego de borrar, se hacen llamadas innecesarias
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))
         .subscribe(() => {

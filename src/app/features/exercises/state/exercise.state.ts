@@ -13,6 +13,7 @@ import {
   GetExerciseById,
   GetExercisesByName,
   GetExercisesByPage,
+  SetLimitPerPage,
   UpdateExercise,
 } from './exercise.actions';
 import { environment } from '../../../../environments/environment.prod';
@@ -176,5 +177,12 @@ export class ExerciseState {
         return throwError(error);
       }),
     );
+  }
+  @Action(SetLimitPerPage, { cancelUncompleted: true })
+  setLimitPerPage(
+    ctx: StateContext<ExerciseStateModel>,
+    action: SetLimitPerPage,
+  ): void {
+    ctx.patchState({ limit: action.limit });
   }
 }
