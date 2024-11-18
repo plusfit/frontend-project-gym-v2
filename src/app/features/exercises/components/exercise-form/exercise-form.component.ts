@@ -73,9 +73,9 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
       //gifUrl: [''],
       type: ['', Validators.required],
       //mode: ['', Validators.required],
+      rest: ['', [Validators.required, Validators.min(1)]],
 
       minutes: [{ value: '', disabled: true }],
-      rest: [{ value: '', disabled: true }],
       reps: [{ value: '', disabled: true }],
       series: [{ value: '', disabled: true }],
     });
@@ -111,11 +111,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         .get('minutes')
         ?.setValidators([Validators.required, Validators.min(1)]);
 
-      this.exerciseForm.get('rest')?.enable();
-      this.exerciseForm
-        .get('rest')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
       // Deshabilita y quita validadores para los campos que no aplican
       this.exerciseForm.get('reps')?.disable();
       this.exerciseForm.get('reps')?.clearValidators();
@@ -136,9 +131,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
       // Deshabilita y quita validadores para los campos que no aplican
       this.exerciseForm.get('minutes')?.disable();
       this.exerciseForm.get('minutes')?.clearValidators();
-
-      this.exerciseForm.get('rest')?.disable();
-      this.exerciseForm.get('rest')?.clearValidators();
     }
 
     // Actualiza la validez de los campos condicionales

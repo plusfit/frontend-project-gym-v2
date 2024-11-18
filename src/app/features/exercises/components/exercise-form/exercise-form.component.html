@@ -91,6 +91,20 @@
           class="flex gap-4"
         >
           <div class="w-full md:w-1/2">
+            <label for="series" class="block text-sm font-medium text-gray-700"
+              >Series</label
+            >
+            <input
+              appInput
+              type="number"
+              id="series"
+              formControlName="series"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              placeholder="Cantidad de series"
+              min="1"
+            />
+          </div>
+          <div class="w-full md:w-1/2">
             <label for="reps" class="block text-sm font-medium text-gray-700"
               >Repeticiones</label
             >
@@ -106,16 +120,16 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <label for="series" class="block text-sm font-medium text-gray-700"
-              >Series</label
+            <label for="rest" class="block text-sm font-medium text-gray-700"
+              >Descanso</label
             >
             <input
               appInput
               type="number"
-              id="series"
-              formControlName="series"
+              id="rest"
+              formControlName="rest"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Cantidad de series"
+              placeholder="Tiempo de descanso en segundos"
               min="1"
             />
           </div>
