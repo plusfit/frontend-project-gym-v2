@@ -170,7 +170,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   }
 
   create(): void {
-    this.exerciseForm.value.mode = 'NO SE QUE PONER ACA';
     this.store.dispatch(new CreateExercise(this.exerciseForm.value));
     this.actions
       .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))

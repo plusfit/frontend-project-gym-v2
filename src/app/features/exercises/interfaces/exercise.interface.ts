@@ -4,9 +4,8 @@ export interface Exercise {
   description: string;
   gifUrl: string;
   type: string;
-  mode: string;
   minutes?: number;
-  reps?: number;
+  reps: number;
   series?: number;
   restTime?: number;
   updatedAt: { $date: string };
@@ -18,9 +17,8 @@ export interface ExercisePayload {
   description: string;
   gifUrl?: string;
   type: string;
-  mode: string;
   minutes?: number;
-  reps?: number;
+  reps: number;
   series?: number;
   restTime?: number;
 }
