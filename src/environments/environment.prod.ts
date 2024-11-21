@@ -4,4 +4,6 @@ export const environment = {
   apiUrl: 'http://localhost:4200/api',
   exerciseTableLimit: 8,
   exerciseTableLimitOptions: [8, 5],
+  routineTableLimit: 8,
+  routineTableLimitOptions: [8, 5],
 };

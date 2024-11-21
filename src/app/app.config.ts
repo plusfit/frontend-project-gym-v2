@@ -26,6 +26,7 @@ import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { SettingsState } from '@features/settings/state/settings.state';
+import { RoutineState } from '@features/routines/state/routine.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -53,9 +54,12 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAuth(() => getAuth()),
     importProvidersFrom(
-      NgxsModule.forRoot([AuthState, SettingsState, ExerciseState], {
-        developmentMode: true,
-      }),
+      NgxsModule.forRoot(
+        [AuthState, SettingsState, ExerciseState, RoutineState],
+        {
+          developmentMode: true,
+        },
+      ),
     ),
     importProvidersFrom(
       NgxsReduxDevtoolsPluginModule.forRoot({
