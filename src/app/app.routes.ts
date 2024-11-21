@@ -8,14 +8,18 @@ import { RegisterPageComponent } from '@features/auth/pages/register-page/regist
 import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
+import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: DashboardLayoutComponent,
-    // Cuando este el guard activo, se debe descomentar la siguiente linea
     canActivate: [signInGuard],
     children: [
+      {
+        path: 'sub-rutinas',
+        component: SubRoutinePageComponent,
+      },
       {
         path: 'exercises/list',
         component: ExerciseComponent,
