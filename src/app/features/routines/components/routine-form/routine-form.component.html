@@ -5,121 +5,94 @@
   } @else {
     <mat-dialog-content>
       <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="create()">
-        <div class="flex gap-4">
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Nombre"
-              type="text"
-              id="name"
-              formControlName="name"
-              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Nombre del ejercicio"
-            />
-          </div>
+        <div class="flex flex-col justify-around">
+          <div class="flex gap-4">
+            <div class="w-full md:w-1/2">
+              <input
+                appInput
+                label="Nombre"
+                type="text"
+                id="name"
+                formControlName="name"
+                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Nombre del ejercicio"
+              />
+            </div>
 
-          <div class="w-full md:w-1/2">
-            <textarea
-              appInput
-              id="description"
-              label="Descripción"
-              formControlName="description"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Descripción del ejercicio"
-            ></textarea>
+            <div class="w-full md:w-1/2 h-40">
+              <textarea
+                appInput
+                id="description"
+                label="Descripción"
+                formControlName="description"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Descripción del ejercicio"
+              ></textarea>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="w-full md:w-1/3">
+              <label for="type" class="block text-sm font-medium text-gray-700"
+                >Categoria</label
+              >
+              <select
+                id="category"
+                formControlName="category"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">Seleccione tipo</option>
+                <option
+                  *ngFor="let option of categories"
+                  [value]="option.value"
+                >
+                  {{ option.viewValue }}
+                </option>
+              </select>
+            </div>
+
+            <div class="w-full md:w-1/3 flex items-center">
+              <label
+                for="isCustom"
+                class="block text-sm font-medium text-gray-700 mr-4"
+                >Personalizada</label
+              >
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  label="Personalizada"
+                  type="checkbox"
+                  id="isCustom"
+                  formControlName="isCustom"
+                  class="sr-only peer"
+                />
+                <div
+                  class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:bg-primary-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"
+                ></div>
+              </label>
+            </div>
+
+            <div class="w-full md:w-1/6">
+              <input
+                appInput
+                label="Días"
+                type="number"
+                id="days"
+                formControlName="days"
+                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Días"
+              />
+            </div>
           </div>
         </div>
 
-        <div class="mb-4">
-          <label for="type" class="block text-sm font-medium text-gray-700"
-            >Tipo</label
-          >
-          <select
-            id="type"
-            formControlName="type"
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-          >
-            <option value="">Seleccione tipo</option>
-            <option *ngFor="let option of types" [value]="option.value">
-              {{ option.viewValue }}
-            </option>
-          </select>
-        </div>
-
-        <div
-          *ngIf="routineForm.get('type')?.value === 'cardio'"
-          class="flex gap-4"
+        <button
+          appBtn
+          color="primary"
+          type="button"
+          (click)="addSubroutines()"
+          class="mt-4"
         >
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Minutos"
-              type="number"
-              id="minutes"
-              formControlName="minutes"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Duración en minutos"
-              min="1"
-            />
-          </div>
-
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Descanso"
-              type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
-          </div>
-        </div>
-
-        <div
-          *ngIf="routineForm.get('type')?.value === 'room'"
-          class="flex gap-4"
-        >
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Series"
-              type="number"
-              id="series"
-              formControlName="series"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Cantidad de series"
-              min="1"
-            />
-          </div>
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Repeticiones"
-              [outline]="true"
-              type="number"
-              id="reps"
-              formControlName="reps"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Cantidad de repeticiones"
-              min="1"
-            />
-          </div>
-
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Descanso"
-              type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
-          </div>
-        </div>
+          Agregar Subrutinas
+        </button>
       </form>
     </mat-dialog-content>
   }

@@ -35,6 +35,15 @@ export class TranslationPipe implements PipeTransform {
       case 'updatedAt':
         // return this.translateService.instant('Tipo');
         return 'Actualizado';
+      case 'category':
+        // return this.translateService.instant('Tipo');
+        return 'Categoria';
+      case 'isCustom':
+        // return this.translateService.instant('Tipo');
+        return 'Personalizada';
+      case 'days':
+        // return this.translateService.instant('Tipo');
+        return 'Días';
       default:
         return value;
     }

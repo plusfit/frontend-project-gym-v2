@@ -62,9 +62,9 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = [
     'name',
     'description',
-    'type',
-    'createdAt',
-    'updatedAt',
+    'category',
+    'isCustom',
+    'days',
     'acciones',
   ];
   dataSource = new MatTableDataSource<Routine>();

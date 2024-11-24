@@ -56,7 +56,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
   title = 'Agregar ejercicio';
   btnTitle = 'Crear';
 
-  types = [
+  categories = [
     { value: 'cardio', viewValue: 'Cardio' },
     { value: 'room', viewValue: 'Sala' },
   ];
@@ -70,18 +70,9 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
     this.routineForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      //gifUrl: [''],
-      type: ['', Validators.required],
-      //mode: ['', Validators.required],
-      rest: ['', [Validators.required, Validators.min(1)]],
-
-      minutes: [{ value: '', disabled: true }],
-      reps: [{ value: '', disabled: true }],
-      series: [{ value: '', disabled: true }],
-    });
-
-    this.routineForm.get('type')?.valueChanges.subscribe((type) => {
-      this.toggleRoutineFields(type);
+      category: ['', [Validators.required, Validators.min(1)]],
+      isCustom: ['', Validators.required],
+      days: ['', [Validators.required, Validators.min(1)]],
     });
 
     if (this.data.isEdit && this.data.routineId) {
@@ -101,42 +92,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
     this.title = 'Editar ejercicio';
     this.btnTitle = 'Guardar';
     this.routineForm.patchValue(routineEditing);
-  }
-
-  toggleRoutineFields(type: string): void {
-    if (type === 'cardio') {
-      this.routineForm.get('minutes')?.enable();
-      this.routineForm
-        .get('minutes')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.routineForm.get('reps')?.disable();
-      this.routineForm.get('reps')?.clearValidators();
-
-      this.routineForm.get('series')?.disable();
-      this.routineForm.get('series')?.clearValidators();
-    } else if (type === 'room') {
-      this.routineForm.get('reps')?.enable();
-      this.routineForm
-        .get('reps')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      this.routineForm.get('series')?.enable();
-      this.routineForm
-        .get('series')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.routineForm.get('minutes')?.disable();
-      this.routineForm.get('minutes')?.clearValidators();
-    }
-
-    // Actualiza la validez de los campos condicionales
-    this.routineForm.get('minutes')?.updateValueAndValidity();
-    this.routineForm.get('rest')?.updateValueAndValidity();
-    this.routineForm.get('reps')?.updateValueAndValidity();
-    this.routineForm.get('series')?.updateValueAndValidity();
   }
 
   cancel(): void {
@@ -180,5 +135,9 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
         this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
         this.dialogRef.close();
       });
+  }
+
+  addSubroutines(): void {
+    this.dialogRef.close();
   }
 }
