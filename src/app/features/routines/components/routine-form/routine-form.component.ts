@@ -1,5 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import {
   FormBuilder,
@@ -22,6 +21,7 @@ import {
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-routine-form',
   styleUrls: ['./routine-form.component.css'],
@@ -39,13 +39,11 @@ import { LoaderComponent } from '../../../../shared/components/loader/loader.com
 })
 export class RoutineFormComponent implements OnInit, OnDestroy {
   constructor(
-    public dialogRef: MatDialogRef<RoutineFormComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { isEdit: boolean; routineId: string },
     private fb: FormBuilder,
     private store: Store,
     private actions: Actions,
     private snackbar: SnackBarService,
+    private route: ActivatedRoute,
   ) {}
 
   loading$: Observable<boolean> = this.store.select(
@@ -60,6 +58,8 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
     { value: 'cardio', viewValue: 'Cardio' },
     { value: 'room', viewValue: 'Sala' },
   ];
+  routineId: string = '';
+  isEdit: boolean = false;
 
   ngOnDestroy(): void {
     this.destroy.next();
@@ -67,6 +67,23 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.routineId = params.get('id') ?? '';
+      this.isEdit = !!this.routineId;
+
+      if (this.isEdit && this.routineId) {
+        this.store.dispatch(new GetRoutineById(this.routineId));
+        this.actions
+          .pipe(ofActionSuccessful(GetRoutineById), takeUntil(this.destroy))
+          .subscribe(() => {
+            const routineEditing = this.store.selectSnapshot(
+              RoutineState.routineEditing,
+            );
+            if (routineEditing) this.setDataForEdit(routineEditing);
+          });
+      }
+    });
+
     this.routineForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -74,18 +91,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
       isCustom: ['', Validators.required],
       days: ['', [Validators.required, Validators.min(1)]],
     });
-
-    if (this.data.isEdit && this.data.routineId) {
-      this.store.dispatch(new GetRoutineById(this.data.routineId));
-      this.actions
-        .pipe(ofActionSuccessful(GetRoutineById), takeUntil(this.destroy))
-        .subscribe(() => {
-          const routineEditing = this.store.selectSnapshot(
-            RoutineState.routineEditing,
-          );
-          if (routineEditing) this.setDataForEdit(routineEditing);
-        });
-    }
   }
 
   setDataForEdit(routineEditing: Routine): void {
@@ -95,19 +100,19 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.dialogRef.close();
+    console.log('cancel');
   }
 
   save(): void {
     if (this.routineForm.valid) {
-      if (this.data.isEdit && this.data.routineId) this.update();
+      if (this.isEdit && this.routineId) this.update();
       else this.create();
     }
   }
 
   update(): void {
     this.store.dispatch(
-      new UpdateRoutine(this.routineForm.value, this.data.routineId),
+      new UpdateRoutine(this.routineForm.value, this.routineId),
     );
     this.actions
       .pipe(ofActionSuccessful(UpdateRoutine), takeUntil(this.destroy))
@@ -118,7 +123,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
           }),
         );
         this.snackbar.showSuccess('Ejercicio actualizado correctamente', 'OK');
-        this.dialogRef.close();
       });
   }
 
@@ -133,11 +137,10 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
           }),
         );
         this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
-        this.dialogRef.close();
       });
   }
 
   addSubroutines(): void {
-    this.dialogRef.close();
+    console.log('addSubroutines');
   }
 }

@@ -35,6 +35,7 @@ import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confir
 import { RoutineState } from '@features/routines/state/routine.state';
 import { RoutineTableComponent } from '@features/routines/components/routine-table/routine-table.component';
 import { RoutineFormComponent } from '@features/routines/components/routine-form/routine-form.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-routine',
@@ -54,6 +55,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     private dialog: MatDialog,
     private actions: Actions,
     private snackbar: SnackBarService,
+    private router: Router,
   ) {}
   private destroy = new Subject<void>();
   limitPerPage = environment.routineTableLimit ?? 8;
@@ -133,11 +135,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   editRoutine(e: string) {
-    //TODO: Ver el error en consola al abrir el modal
-    this.dialog.open(RoutineFormComponent, {
-      width: '800px',
-      data: { isEdit: true, routineId: e },
-    });
+    this.router.navigate(['/exercises/edit', e]);
   }
 
   deleteRoutine(e: string) {
@@ -170,10 +168,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   addRoutineModal() {
-    this.dialog.open(RoutineFormComponent, {
-      width: '800px',
-      data: { isEdit: false },
-    });
+    this.router.navigate(['/exercises/create']);
   }
 
   handlePageEvent(e: PageEvent) {

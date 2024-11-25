@@ -6,6 +6,7 @@ import { AuthLayoutComponent } from '@features/auth/components/auth-layout/auth-
 import { LoginPageComponent } from '@features/auth/pages/login-page/login-page.component';
 import { RegisterPageComponent } from '@features/auth/pages/register-page/register-page.component';
 import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
+import { AddEditRoutinePageComponent } from '@features/routines/pages/add-edit-page/add-edit-routine.page.component';
 import { RoutinePageComponent } from '@features/routines/pages/routine/routine.component';
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
@@ -20,6 +21,14 @@ export const routes: Routes = [
       {
         path: 'exercises/list',
         component: ExerciseComponent,
+      },
+      {
+        path: 'exercises/create',
+        component: AddEditRoutinePageComponent,
+      },
+      {
+        path: 'exercises/edit/:id',
+        component: AddEditRoutinePageComponent,
       },
       {
         path: 'settings',
