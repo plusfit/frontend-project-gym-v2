@@ -32,10 +32,29 @@ export class GetClientsById {
 
 export class AssignClient {
   static readonly type = '[Schedule] Assign Client';
-  constructor(public readonly payload: any) {}
+  constructor(
+    public readonly _id: string,
+    public readonly client: string,
+  ) {}
 }
 
 export class DeleteClient {
   static readonly type = '[Schedule] Delete Client';
-  constructor(public readonly payload: any) {}
+  constructor(
+    public readonly _id: string,
+    public readonly client: string,
+  ) {}
+}
+
+export class getClientsAssignable {
+  static readonly type = '[Schedule] Get Clients Assignable';
+}
+
+export class getClientsArray {
+  static readonly type = '[Schedule] Get Clients Array';
+  constructor(public readonly ids: string[]) {}
+}
+
+export class ClearClients {
+  static readonly type = '[Schedule] Clear Clients';
 }

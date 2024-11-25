@@ -1,10 +1,11 @@
 <div class="p-4 bg-white shadow-md rounded">
-  <form [formGroup]="editForm" (ngSubmit)="save()" class="space-y-4">
+  <form [formGroup]="editForm" class="space-y-4">
     <div>
       <label for="maxCount" class="block text-sm font-medium text-gray-700"
         >Cantidad Máxima</label
       >
       <input
+        appInput
         id="maxCount"
         type="number"
         formControlName="maxCount"
@@ -15,21 +16,21 @@
     <div>
       <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
       <div formArrayName="clients" class="space-y-2">
-        @for (client of editForm.get("clients")?.value; track $index) {
-          <div class="flex items-center space-x-2">
-            <input
-              type="text"
-              formControlName="0"
-              class="block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              class="text-red-500 hover:text-red-700"
-              (click)="removeClient($index)"
-            >
-              Eliminar
-            </button>
-          </div>
+        @if (clients && clients.length) {
+          @for (client of clients; track $index) {
+            <div class="flex items-center space-x-2">
+              <span>
+                {{ client.email }}
+              </span>
+              <button
+                type="button"
+                class="text-red-500 hover:text-red-700"
+                (click)="removeClient($index)"
+              >
+                Eliminar
+              </button>
+            </div>
+          }
         }
       </div>
       <button
@@ -37,19 +38,11 @@
         class="mt-2 inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
         (click)="addClient()"
       >
-        Agregar Cliente
+        Seleccionar Cliente
       </button>
     </div>
     <div class="flex justify-between">
       <button appBtn color="secondary">Cancelar</button>
-      <button
-        appBtn
-        type="submit"
-        [animate]="true"
-        [disabled]="editForm.invalid"
-      >
-        Guardar Cambios
-      </button>
     </div>
   </form>
 </div>

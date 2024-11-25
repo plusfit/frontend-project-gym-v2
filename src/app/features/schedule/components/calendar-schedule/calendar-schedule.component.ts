@@ -3,17 +3,17 @@ import {
   ChangeDetectorRef,
   Component,
   input,
-  OnChanges,
-  OnInit,
   output,
-  SimpleChanges,
 } from '@angular/core';
-import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { DeleteHour } from '@features/schedule/state/schedule.actions';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SnackBarService } from '@core/services/snackbar.service';
+import {
+  ClearClients,
+  DeleteHour,
+} from '@features/schedule/state/schedule.actions';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
 
 @Component({
@@ -23,9 +23,7 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
-export class CalendarScheduleComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class CalendarScheduleComponent implements AfterViewInit {
   schedule = input<any>();
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
@@ -39,28 +37,43 @@ export class CalendarScheduleComponent
     private dialog: MatDialog,
   ) {}
 
-  ngOnInit(): void {
-    console.log(this.schedule());
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['schedule']) {
-      console.log('changes', this.schedule());
-    }
-  }
   ngAfterViewInit() {
     this.cdr.detectChanges();
   }
 
   editarHorario(event: Event) {
-    console.log('Evento editando', event);
     // Lógica para abrir un formulario de edición
-    this.dialog.open(ScheduleFormComponent, {
-      width: '500px',
-      data: {
-        title: 'Editar horario',
-        day: event,
-      },
-    });
+    this.dialog
+      .open(ScheduleFormComponent, {
+        width: '500px',
+        data: {
+          title: 'Editar horario',
+          day: event,
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        this.updateSchedule(event, result);
+        // Despacha la acción para limpiar el estado de clientes
+        this.store.dispatch(new ClearClients());
+      });
+  }
+
+  updateSchedule(data: any, result: any) {
+    const hourToUpdate = this.schedule().find((day: any) =>
+      day.hours.some((hour: any) => hour._id === data._id),
+    );
+
+    if (hourToUpdate) {
+      const specificHour = hourToUpdate.hours.find(
+        (hour: any) => hour._id === data._id,
+      );
+
+      if (specificHour) {
+        specificHour.clients = result.clients.map((client: any) => client._id); // Actualiza los clientes
+        specificHour.maxCount = result.maxCount; // Actualiza el maxCount
+      }
+    }
   }
 
   eliminarHorario(event: { _id: string }) {
@@ -86,7 +99,6 @@ export class CalendarScheduleComponent
         });
         this.scheduleUpdated.emit(updatedSchedule);
       });
-      console.log('Evento eliminado', event);
     });
   }
 }

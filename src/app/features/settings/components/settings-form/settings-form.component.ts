@@ -1,4 +1,4 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   Component,
   Input,
@@ -8,7 +8,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -41,7 +40,6 @@ import { Observable, Subject } from 'rxjs';
     ReactiveFormsModule,
     InputDirective,
     BtnDirective,
-    JsonPipe,
     AsyncPipe,
     ConditionalTextPipe,
   ],
@@ -77,8 +75,6 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    console.log('Settings', this.settings);
-
     for (let i = 6; i <= 22; i++) {
       this.hoursList.push(i);
     }
@@ -102,20 +98,12 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
         (day: any) => day.hours,
       ); // Combina todas las horas de los días
       this.settingsForm.get('hours')?.patchValue(hoursArray);
-      console.log('Settings', this.settings);
 
       // Establece el valor de `maxCount` con el valor recibido
       this.settingsForm
         .get('maxCount')
         ?.patchValue(this.settings?.schedule[0]?.maxCount);
     }
-  }
-
-  // Getter para obtener el FormArray `days`
-  get daysArray() {
-    const days = this.settingsForm?.get('days') as FormArray;
-    console.log('Days', days.controls);
-    return days.controls;
   }
 
   ngOnDestroy(): void {
@@ -142,7 +130,6 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
           };
         }),
       };
-      console.log('DataSend', dataSend);
       this.store.dispatch(new UpdateSettings(_id, dataSend));
       this.actions.pipe(ofActionSuccessful(UpdateSettings)).subscribe(() => {
         this.snackbar.showSuccess('Settings updated', 'OK');

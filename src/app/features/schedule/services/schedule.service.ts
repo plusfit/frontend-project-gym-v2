@@ -21,6 +21,14 @@ export class ScheduleService {
     return this.http.get<any>(`${environment.api}/clients/${id}`);
   }
 
+  getClientsAssignable() {
+    return this.http.get<any>(`${environment.api}/plans/assignableClients`);
+  }
+
+  getClientsArray(clientsIds: string[]) {
+    return this.http.get<any>(`${environment.api}/clients/list/${clientsIds}`);
+  }
+
   updateSchedule(id: string, schedule: ISchedule) {
     return this.http.patch<IScheduleResponse>(
       `${environment.api}/schedules/${id}`,
@@ -31,7 +39,7 @@ export class ScheduleService {
   }
   assignClientToHour(id: string, client: string) {
     return this.http.patch<IScheduleResponse>(
-      `${environment.api}/assignClient/${id}/${client}`,
+      `${environment.api}/schedules/assignClient/${id}/${client}`,
       {
         client,
       },
@@ -40,7 +48,7 @@ export class ScheduleService {
 
   deleteClientFromHour(id: string, client: string) {
     return this.http.delete<any>(
-      `${environment.api}/deletClient/${id}/${client}`,
+      `${environment.api}/schedules/deleteClient/${id}/${client}`,
       {
         body: {
           client,
