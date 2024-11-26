@@ -47,7 +47,6 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.subRoutines = this.store.select(SubRoutinesState.getSubRoutines);
     this.loading = this.store.select(SubRoutinesState.isLoading);
     this.total = this.store.select(SubRoutinesState.getTotal);
-    console.log('entre');
     const payload = {
       page: 1,
       pageSize: this.pageSize,
@@ -65,7 +64,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetSubRoutines(payload));
   }
 
-  onSearch(searchQuery: { searchQ: string; }): void {
+  onSearch(searchQuery: { searchQ: string }): void {
     this.filterValues = {
       page: 1,
       pageSize: this.pageSize,
