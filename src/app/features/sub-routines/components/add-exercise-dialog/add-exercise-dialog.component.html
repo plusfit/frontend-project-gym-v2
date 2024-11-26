@@ -1,0 +1,32 @@
+<section class="min-h-72 min-w-72">
+  <div class="p-6">
+    <h2 class="text-lg font-semibold">Seleccionar Ejercicios</h2>
+
+    <!-- Filter Bar -->
+    <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
+
+    <!-- Exercises Table -->
+    <app-table
+      [data]="exercises$ | async"
+      [displayedColumns]="['name', 'type', 'description']"
+      [isSelect]="true"
+      [loading]="loading$ | async"
+      [total]="totalExercises$ | async"
+      [selected]="subRoutineExercises"
+      (selectionChange)="toggleExercise($event)"
+    ></app-table>
+
+    <mat-paginator
+      [length]="(totalExercises$ | async) || 0"
+      [pageSize]="pageSize"
+      (page)="paginate($event)"
+    ></mat-paginator>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-4 space-x-4">
+      <button appBtn color="secondary" type="button" (click)="close()">Cancelar</button>
+      <button appBtn color="primary" type="button" (click)="addSelectedExercisesToSubRoutine()">Agregar</button>
+    </div>
+  </div>
+
+</section>

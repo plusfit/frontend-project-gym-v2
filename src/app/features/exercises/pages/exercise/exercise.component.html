@@ -50,8 +50,8 @@
       (deleteEmitter)="deleteExercise($event)"
     >
       <mat-paginator
-        [pageSizeOptions]="exerciseTableLimitOptions"
         (page)="handlePageEvent($event)"
+        [pageSize]="pageSize"
         [length]="totalExercises$ | async"
         showFirstLastButtons
         aria-label="Select page of periodic elements"

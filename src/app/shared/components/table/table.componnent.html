@@ -8,6 +8,23 @@
     aria-describedby="table"
     [dataSource]="data || []"
   >
+    <ng-container cdkColumnDef="select">
+      <th cdk-header-cell *cdkHeaderCellDef>
+        <input
+          type="checkbox"
+          [checked]="isAllSelected()"
+          (change)="toggleSelectAll()"
+        />
+      </th>
+      <td cdk-cell *cdkCellDef="let element">
+        <input
+          type="checkbox"
+          [checked]="isSelected(element)"
+          (change)="toggleSelection(element)"
+        />
+      </td>
+    </ng-container>
+
     <ng-container
       *ngFor="let column of displayedColumns"
       [cdkColumnDef]="column"
@@ -34,8 +51,6 @@
         </ng-container>
 
         <ng-container *ngIf="column === 'acciones'">
-          <!-- Actions menu -->
-
           <button
             title="actions"
             type="button"
@@ -70,7 +85,7 @@
                     class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
                   ></i>
                   <span class="text-error-100 group-hover:text-error-200"
-                    >Borrar</span
+                  >Borrar</span
                   >
                 </div>
               </button>
@@ -80,10 +95,10 @@
       </td>
     </ng-container>
 
-    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+    <tr cdk-header-row *cdkHeaderRowDef="tableColumns"></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: tableColumns"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell h-[30vh]" [attr.colspan]="displayedColumns.length">
+      <td class="mat-cell h-[30vh]" [attr.colspan]="displayedColumns.length + 1">
         <ng-container *ngIf="loading">
           <app-loader [text]="'Cargando...'"></app-loader>
         </ng-container>

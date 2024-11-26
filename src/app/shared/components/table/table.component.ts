@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  OnInit,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { EColorBadge } from '../../enums/badge-color.enum';
 import { CdkTableModule } from '@angular/cdk/table';
@@ -47,8 +54,9 @@ import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
     DatePipe,
   ],
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
   EColorBadge: typeof EColorBadge = EColorBadge;
+  @Output() readonly selectionChange = new EventEmitter<any[]>();
   @Output() readonly edit = new EventEmitter<any>();
   @Output() readonly delete = new EventEmitter<any>();
   /**
@@ -87,6 +95,23 @@ export class TableComponent {
    */
   @Input() headerCssClass = 'header-default';
 
+  @Input() isSelect = false;
+  @Input() selected: any[] = [];
+
+  /**
+   * The selected exercises.
+   * @type {Set<string>} set of selected exercises
+   */
+  selection: any[] = [];
+
+  get tableColumns(): string[] {
+    const isSelect = this.isSelect;
+    const tableColums = isSelect
+      ? ['select', ...this.displayedColumns]
+      : this.displayedColumns;
+    return tableColums;
+  }
+
   /**
    * Emit identifier to edit seats of an organization
    * @param id Organization identifier
@@ -101,5 +126,42 @@ export class TableComponent {
    */
   emitDelete(id: string): void {
     this.delete.emit(id);
+  }
+
+  toggleSelection(element: any): void {
+    const index = this.selection.findIndex((item) => item._id === element._id);
+    if (index > -1) {
+      this.selection.splice(index, 1);
+    } else {
+      this.selection.push(element);
+    }
+    this.selectionChange.emit(this.selection);
+  }
+
+  toggleSelectAll(): void {
+    if (this.isAllSelected()) {
+      this.selection = [];
+    } else {
+      this.selection = [...(this.data || [])];
+    }
+    this.selectionChange.emit([...this.selection]);
+  }
+
+  isAllSelected(): boolean {
+    if (this.data) {
+      return this.data?.every((item) =>
+        this.selection.some((selected) => selected._id === item._id),
+      );
+    } else {
+      return false;
+    }
+  }
+
+  isSelected(element: any): boolean {
+    return this.selection.some((item) => item._id === element._id);
+  }
+
+  ngOnInit() {
+    this.selection = [...this.selected];
   }
 }
