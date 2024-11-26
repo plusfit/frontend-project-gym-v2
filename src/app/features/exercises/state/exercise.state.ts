@@ -16,7 +16,7 @@ import {
   SetLimitPerPage,
   UpdateExercise,
 } from './exercise.actions';
-import { environment } from '../../../../environments/environment.prod';
+import { environment } from '../../../../environments/environment';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -25,7 +25,7 @@ import { environment } from '../../../../environments/environment.prod';
     exercises: [],
     totalExercises: 0,
     page: null,
-    limit: environment.exerciseTableLimit,
+    limit: environment.config.pageSize,
     filters: null,
     loading: false,
   },
@@ -106,7 +106,7 @@ export class ExerciseState {
         }),
         catchError((error: HttpErrorResponse) => {
           ctx.patchState({ loading: false });
-          return throwError(error);
+          return throwError(() => error);
         }),
       );
   }

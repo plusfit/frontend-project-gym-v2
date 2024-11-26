@@ -13,9 +13,11 @@ import {
   GetSubRoutine,
   GetSubRoutines,
   SetSelectedSubRoutine,
+  UpdateSelectedSubRoutine,
   UpdateSubRoutine,
 } from '@features/sub-routines/state/sub-routine.actions';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 
 @State<SubRoutineStateModel>({
   name: 'subRoutines',
@@ -35,43 +37,46 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 })
 export class SubRoutinesState {
   @Selector()
-  static getSubRoutines(
-    state: SubRoutineStateModel,
-  ): SubRoutine[] | undefined | null {
-    return state.subRoutines;
+  static getSubRoutines(state: SubRoutineStateModel): SubRoutine[] | null {
+    return state?.subRoutines ?? [];
   }
 
   @Selector()
-  static getTotal(state: SubRoutineStateModel): number | undefined | null {
-    return state.total;
+  static getTotal(state: SubRoutineStateModel): number | null {
+    return state.total ?? 0;
   }
 
   @Selector()
   static getSubRoutineById(
     state: SubRoutineStateModel,
-  ): (id: string) => SubRoutine | undefined {
-    return (id: string): SubRoutine | undefined => {
-      return state.subRoutines?.find((subRoutine) => subRoutine._id === id);
+  ): (id: string) => SubRoutine | null {
+    return (id: string): SubRoutine | null => {
+      return (
+        state.subRoutines?.find((subRoutine) => subRoutine._id === id) ?? null
+      );
     };
   }
 
   @Selector()
-  static isLoading(state: SubRoutineStateModel): boolean | undefined | null {
-    return state.loading;
+  static isLoading(state: SubRoutineStateModel): boolean | null {
+    return state.loading ?? false;
   }
 
   @Selector()
-  static getError(
-    state: SubRoutineStateModel,
-  ): HttpErrorResponse | null | undefined {
-    return state.error;
+  static getError(state: SubRoutineStateModel): HttpErrorResponse | null {
+    return state.error ?? null;
   }
 
   @Selector()
-  static getSelectedSubRoutine(
+  static getSelectedSubRoutine(state: SubRoutineStateModel): SubRoutine | null {
+    return state.selectedSubRoutine ?? null;
+  }
+
+  @Selector()
+  static getSelectedSubRoutineExercises(
     state: SubRoutineStateModel,
-  ): SubRoutine | undefined | null {
-    return state.selectedSubRoutine;
+  ): Exercise[] {
+    return state.selectedSubRoutine?.exercises || [];
   }
 
   constructor(private subRoutineService: SubRoutineService) {}
@@ -101,11 +106,10 @@ export class SubRoutinesState {
 
     return getSubRoutinesObservable.pipe(
       tap((response: any) => {
-        const subRoutines = response.data.map((subRoutine: any) => ({
-          id: subRoutine._id,
-          ...subRoutine.attributes,
+        const subRoutines = response.data.data.map((subRoutine: any) => ({
+          ...subRoutine,
         }));
-        const total = response.meta.pagination.total;
+        const total = response.data.total;
         const pageCount = Math.ceil(total / pageSize);
 
         ctx.patchState({
@@ -133,19 +137,9 @@ export class SubRoutinesState {
     return this.subRoutineService.getSubRoutine(id).pipe(
       tap((res: any) => {
         const { data } = res;
-        const { attributes } = data;
-        const { routines } = attributes;
-        const routinesToAdd = routines.data.map(
-          (routine: any) =>
-            ({ id: routine._id, ...routine.attributes }) as SubRoutine,
-        );
-        const subRoutine = {
-          id: data.id,
-          ...attributes,
-          routines: routinesToAdd,
-        };
+
         ctx.patchState({
-          selectedSubRoutine: subRoutine,
+          selectedSubRoutine: data,
           loading: false,
         });
       }),
@@ -218,7 +212,7 @@ export class SubRoutinesState {
           .getState()
           .subRoutines?.map((subRoutine) =>
             subRoutine._id === id
-              ? { ...subRoutine, isActive: false }
+              ? { ...subRoutine }
               : subRoutine,
           );
 
@@ -229,5 +223,13 @@ export class SubRoutinesState {
         return throwError(() => error);
       }),
     );
+  }
+
+  @Action(UpdateSelectedSubRoutine, { cancelUncompleted: true })
+  updateSelectedSubRoutine(
+    ctx: StateContext<SubRoutineStateModel>,
+    { subRoutine }: UpdateSelectedSubRoutine,
+  ): void {
+    ctx.patchState({ selectedSubRoutine: subRoutine });
   }
 }

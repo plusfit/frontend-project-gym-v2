@@ -4,7 +4,6 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
-  OnChanges,
 } from '@angular/core';
 import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
 import {
@@ -32,10 +31,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
-import { environment } from '../../../../../environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
+
 @Component({
   selector: 'app-exercise',
   standalone: true,
@@ -56,8 +56,8 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     private snackbar: SnackBarService,
   ) {}
   private destroy = new Subject<void>();
-  limitPerPage = environment.exerciseTableLimit ?? 8;
-  exerciseTableLimitOptions = environment.exerciseTableLimitOptions;
+  limitPerPage = environment.config.pageSize ?? 8;
+  pageSize = environment.config.pageSize;
   currentPage = 1;
   displayedColumns: string[] = [
     'name',

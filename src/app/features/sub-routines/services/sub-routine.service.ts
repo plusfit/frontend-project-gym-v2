@@ -44,7 +44,7 @@ export class SubRoutineService {
     );
   }
 
-  getSubRoutine(id: number): Observable<SubRoutine> {
+  getSubRoutine(id: string): Observable<SubRoutine> {
     const url = `${environment.api}/routines/subRoutine/${id}`;
     return this.http.get<SubRoutine>(url);
   }

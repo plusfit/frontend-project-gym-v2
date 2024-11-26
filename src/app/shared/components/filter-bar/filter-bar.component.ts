@@ -26,7 +26,6 @@ export class FiltersBarComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder) {
     this.filterForm = this.fb.group({
       searchQ: [null, [whiteSpaceValidator]],
-      isActive: [false],
     });
   }
 

@@ -13,7 +13,7 @@ export class GetSubRoutines {
 
 export class GetSubRoutine {
   static readonly type = '[SubRoutine] Get SubRoutine';
-  constructor(public readonly id: number) {}
+  constructor(public readonly id: string) {}
 }
 
 export class SetSelectedSubRoutine {
@@ -38,5 +38,10 @@ export class DeleteSubRoutine {
 
 export class CreateSubRoutine {
   static readonly type = '[User] Create SubRoutine';
+  constructor(public readonly subRoutine: SubRoutine) {}
+}
+
+export class UpdateSelectedSubRoutine {
+  static readonly type = '[SubRoutine] Update Selected SubRoutine';
   constructor(public readonly subRoutine: SubRoutine) {}
 }

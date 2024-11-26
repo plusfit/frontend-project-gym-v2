@@ -35,6 +35,9 @@ export class TranslationPipe implements PipeTransform {
       case 'updatedAt':
         // return this.translateService.instant('Tipo');
         return 'Actualizado';
+      case 'checkbox':
+        // return this.translateService.instant('Tipo');
+        return 'Seleccionar';
       default:
         return value;
     }

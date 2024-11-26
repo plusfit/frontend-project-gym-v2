@@ -9,6 +9,7 @@ import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.c
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
 import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
+import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 
 export const routes: Routes = [
   {
@@ -17,15 +18,23 @@ export const routes: Routes = [
     canActivate: [signInGuard],
     children: [
       {
-        path: 'sub-rutinas',
+        path: 'subrutinas',
         component: SubRoutinePageComponent,
       },
       {
-        path: 'exercises/list',
+        path: 'subrutinas/:id',
+        component: AddEditSubRoutineComponent,
+      },
+      {
+        path: 'subrutinas/create',
+        component: AddEditSubRoutineComponent,
+      },
+      {
+        path: 'ejercicios',
         component: ExerciseComponent,
       },
       {
-        path: 'settings',
+        path: 'configuracion',
         component: SettingsPagesComponent,
       },
     ],
