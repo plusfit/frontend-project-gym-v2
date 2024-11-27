@@ -11,11 +11,5 @@ import { TableComponent } from '@shared/components/table/table.component';
 })
 export class AddEditRoutinePageComponent {
   constructor() {}
-  displayedColumns: string[] = [
-    'name',
-    'isCustom',
-    'day',
-    'exercises',
-    'actions',
-  ];
+  displayedColumns: string[] = ['name', 'isCustom', 'day'];
 }

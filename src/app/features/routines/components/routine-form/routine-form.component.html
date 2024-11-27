@@ -1,9 +1,4 @@
-<div class="p-6">
-  <span
-    class="text-center w-full text-4xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
-  >
-    {{ title }} 📄
-  </span>
+<div class="w-3/2 bg-white rounded-lg shadow-md p-8">
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {

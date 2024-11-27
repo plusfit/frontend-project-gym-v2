@@ -75,11 +75,11 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   }
 
   createSubRoutine() {
-    this.router.navigate(['/sub-rutinas/create']);
+    this.router.navigate(['/subrutinas/crear']);
   }
 
   editSubRoutine(id: any): void {
-    this.router.navigate([`/sub-rutinas/${id}`]);
+    this.router.navigate([`/subrutinas/${id}`]);
   }
   deleteSubRoutine(event: any): void {
     this.store.dispatch(new DeleteSubRoutine(event));

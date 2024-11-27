@@ -134,10 +134,6 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     );
   }
 
-  editRoutine(e: string) {
-    this.router.navigate(['/exercises/edit', e]);
-  }
-
   deleteRoutine(e: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
@@ -168,7 +164,10 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   addRoutineModal() {
-    this.router.navigate(['/exercises/create']);
+    this.router.navigate(['/rutinas/crear']);
+  }
+  editRoutine(e: string) {
+    this.router.navigate(['/rutinas/', e]);
   }
 
   handlePageEvent(e: PageEvent) {
