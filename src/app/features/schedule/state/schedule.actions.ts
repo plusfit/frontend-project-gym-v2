@@ -22,7 +22,10 @@ export class DeleteHour {
 
 export class EditHour {
   static readonly type = '[Schedule] Edit Hour';
-  constructor(public readonly payload: any) {}
+  constructor(
+    public readonly _id: string,
+    public readonly schedule: any,
+  ) {}
 }
 
 export class GetClientsById {
@@ -57,4 +60,9 @@ export class getClientsArray {
 
 export class ClearClients {
   static readonly type = '[Schedule] Clear Clients';
+}
+
+export class getMaxCount {
+  static readonly type = '[Schedule] Get Max Count';
+  constructor(public readonly _id: string) {}
 }

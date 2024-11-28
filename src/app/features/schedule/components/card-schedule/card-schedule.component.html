@@ -1,6 +1,6 @@
 <div class="p-4 bg-white rounded shadow mb-2 max-h-[90rem]">
   <p class="text-gray-700 font-semibold">
-    {{ hour()?.startTime }} - {{ hour()?.endTime }}
+    {{ hour()?.startTime ?? "" | hourPipe }}
   </p>
   <p class="text-gray-500">Máximo de clientes: {{ hour()?.maxCount }}</p>
   <p class="text-gray-500">
@@ -9,13 +9,13 @@
   <div class="flex justify-between mt-4">
     <button
       class="text-blue-500 hover:text-blue-700"
-      (click)="editarHorario(hour())"
+      (click)="editarHorario(hour() ?? defaultHour, day())"
     >
       Editar
     </button>
     <button
       class="text-red-500 hover:text-red-700"
-      (click)="eliminarHorario(hour())"
+      (click)="eliminarHorario(hour() ?? defaultHour)"
     >
       Eliminar
     </button>

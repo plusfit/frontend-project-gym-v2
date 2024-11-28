@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@100;200;300;400;500;600;700');
-@import url('https://unpkg.com/phosphor-icons@1.4.2/src/css/icons.css');
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@100;200;300;400;500;600;700");
+@import url("https://unpkg.com/phosphor-icons@1.4.2/src/css/icons.css");
 
 @tailwind base;
 @tailwind components;
@@ -13,7 +13,7 @@ html {
 html,
 body {
   height: 100%;
-  font-family: 'Rubik'
+  font-family: "Rubik";
 }
 
 body {
@@ -61,7 +61,8 @@ body {
     @apply inline-flex items-center justify-center truncate text-button-md px-5 py-2 rounded-sm text-white bg-primary-400 hover:bg-primary-400 disabled:bg-teal-100 focus-visible:outline-none focus:outline-teal-50 focus:shadow-button-100;
   }
 
-  button, .button-link {
+  button,
+  .button-link {
     @apply flex flex-row space-x-2 items-center justify-center truncate text-button-md px-5 py-2 rounded-sm;
   }
 

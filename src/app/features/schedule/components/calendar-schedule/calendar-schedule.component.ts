@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  input,
+  Input,
   output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,7 +24,7 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
   styleUrl: './calendar-schedule.component.css',
 })
 export class CalendarScheduleComponent implements AfterViewInit {
-  schedule = input<any>();
+  @Input() schedule: any;
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
   });
@@ -52,28 +52,10 @@ export class CalendarScheduleComponent implements AfterViewInit {
         },
       })
       .afterClosed()
-      .subscribe((result) => {
-        this.updateSchedule(event, result);
+      .subscribe(() => {
         // Despacha la acción para limpiar el estado de clientes
         this.store.dispatch(new ClearClients());
       });
-  }
-
-  updateSchedule(data: any, result: any) {
-    const hourToUpdate = this.schedule().find((day: any) =>
-      day.hours.some((hour: any) => hour._id === data._id),
-    );
-
-    if (hourToUpdate) {
-      const specificHour = hourToUpdate.hours.find(
-        (hour: any) => hour._id === data._id,
-      );
-
-      if (specificHour) {
-        specificHour.clients = result.clients.map((client: any) => client._id); // Actualiza los clientes
-        specificHour.maxCount = result.maxCount; // Actualiza el maxCount
-      }
-    }
   }
 
   eliminarHorario(event: { _id: string }) {

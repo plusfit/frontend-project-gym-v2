@@ -14,6 +14,7 @@
     [formControl]="clientsControl"
     name="shoes"
     [multiple]="false"
+    class="overflow-y-auto h-50"
   >
     @for (client of filteredClients; track client) {
       <mat-list-option [value]="client._id">{{ client.email }}</mat-list-option>

@@ -11,6 +11,7 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import {
   AssignClient,
   getClientsAssignable,
+  getMaxCount,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
@@ -43,7 +44,6 @@ export class AddClientListComponent implements OnInit {
   loading$: Observable<boolean> = this.store.select(
     ScheduleState.scheduleLoading,
   );
-
   constructor(
     private store: Store,
     private actions: Actions,
@@ -58,6 +58,7 @@ export class AddClientListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(new getMaxCount(this.data.id));
     this.store.dispatch(new getClientsAssignable());
     this.actions
       .pipe(ofActionSuccessful(getClientsAssignable))
@@ -83,6 +84,7 @@ export class AddClientListComponent implements OnInit {
   addClient() {
     const client = this.form.value.clients[0];
     const clients = this.store.selectSnapshot(ScheduleState.clients);
+    const maxCount = this.store.selectSnapshot(ScheduleState.maxCount);
     let validClient = true;
     clients.forEach((c: any) => {
       if (c._id === client) {
@@ -91,6 +93,12 @@ export class AddClientListComponent implements OnInit {
         return;
       }
     });
+
+    if (maxCount && clients.length >= maxCount) {
+      this.snackbar.showError('No se pueden asignar más clientes', 'Aceptar');
+      validClient = false;
+    }
+
     if (validClient) {
       this.store.dispatch(new AssignClient(this.data.id, client));
       this.actions.pipe(ofActionSuccessful(AssignClient)).subscribe(() => {
@@ -111,7 +119,6 @@ export class AddClientListComponent implements OnInit {
     if (!searchTerm) {
       return this.clients; // Devuelve todos los clientes si no hay término
     }
-    console.log('validClient', this.clientsControl);
 
     const lowerCaseTerm = searchTerm.toLowerCase();
     return this.clients.filter((client: any) =>

@@ -4,20 +4,27 @@
       <label for="maxCount" class="block text-sm font-medium text-gray-700"
         >Cantidad Máxima</label
       >
-      <input
-        appInput
-        id="maxCount"
-        type="number"
-        formControlName="maxCount"
-        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-      />
+      <div class="flex justify-between">
+        <div class="w-1/2">
+          <input
+            appInput
+            id="maxCount"
+            type="number"
+            formControlName="maxCount"
+            class="mt-1 block rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <button appBtn color="secondary" type="button" (click)="editCount()">
+          Editar Cantidad
+        </button>
+      </div>
     </div>
 
     <div>
       <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
-      <div formArrayName="clients" class="space-y-2">
-        @if (clients && clients.length) {
-          @for (client of clients; track $index) {
+      <div class="space-y-2">
+        @if (clients$ | async) {
+          @for (client of clients$ | async; track $index) {
             <div class="flex items-center space-x-2">
               <span>
                 {{ client.email }}
@@ -25,7 +32,7 @@
               <button
                 type="button"
                 class="text-red-500 hover:text-red-700"
-                (click)="removeClient($index)"
+                (click)="removeClient(client._id)"
               >
                 Eliminar
               </button>
@@ -33,16 +40,12 @@
           }
         }
       </div>
-      <button
-        type="button"
-        class="mt-2 inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
-        (click)="addClient()"
-      >
+      <button appBtn type="button" color="primary" (click)="addClient()">
         Seleccionar Cliente
       </button>
     </div>
-    <div class="flex justify-between">
-      <button appBtn color="secondary">Cancelar</button>
+    <div class="flex justify-center">
+      <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
     </div>
   </form>
 </div>

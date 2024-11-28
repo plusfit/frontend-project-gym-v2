@@ -9,9 +9,11 @@ import {
   ClearClients,
   DeleteClient,
   DeleteHour,
+  EditHour,
   getClientsArray,
   getClientsAssignable,
   GetClientsById,
+  getMaxCount,
   GetSchedule,
 } from './schedule.actions';
 
@@ -20,6 +22,7 @@ import {
   defaults: {
     schedule: null,
     clients: [],
+    maxCount: 0,
     clientsAssignable: [],
     loading: false,
   },
@@ -51,11 +54,51 @@ export class ScheduleState {
     return state?.clientsAssignable.data || [];
   }
 
+  @Selector()
+  static maxCount(state: ScheduleStateModel): number | undefined {
+    return state?.maxCount;
+  }
+
   @Action(GetSchedule)
   getSchedule(ctx: StateContext<ScheduleStateModel>) {
     return this.scheduleService.getSchedule().pipe(
       tap((schedule: any) => {
-        ctx.patchState({ schedule });
+        const sortSchedule = schedule.data.reduce((acc: any, hour: any) => {
+          // Buscar si el día ya existe en el array de días agrupados
+          let dayEntry = acc.find((d: any) => d.day === hour.day);
+          if (!dayEntry) {
+            // Si el día no existe, lo añadimos con un array vacío de horas
+            dayEntry = { day: hour.day, hours: [] };
+            acc.push(dayEntry);
+          }
+          // Añadimos el horario a la lista de horas de ese día
+          dayEntry.hours.push({
+            _id: hour._id,
+            startTime: hour.startTime,
+            endTime: hour.endTime,
+            clients: hour.clients,
+            maxCount: hour.maxCount,
+          });
+          // Ordenamos las horas dentro del día
+          dayEntry.hours.sort((a: any, b: any) => {
+            return parseInt(a.startTime, 10) - parseInt(b.startTime, 10);
+          });
+          acc = acc.sort((a: any, b: any) => {
+            const days = [
+              'Lunes',
+              'Martes',
+              'Miercoles',
+              'Jueves',
+              'Viernes',
+              'Sabado',
+            ];
+            const dayA = days.indexOf(a.day);
+            const dayB = days.indexOf(b.day);
+            return dayA - dayB;
+          });
+          return acc;
+        }, []);
+        ctx.patchState({ schedule: sortSchedule });
       }), // Provide an argument for the tap operator
     );
   }
@@ -104,8 +147,35 @@ export class ScheduleState {
         });
 
         ctx.patchState({ clients: [...currentClients, ...updatedClients] });
+        ctx.patchState({ maxCount: state.schedule?.maxCount });
       }),
     );
+  }
+
+  @Action(EditHour)
+  editHour(ctx: StateContext<ScheduleStateModel>, action: EditHour) {
+    return this.scheduleService
+      .updateSchedule(action._id, action.schedule)
+      .pipe(
+        tap(() => {
+          const state = ctx.getState();
+          const schedule = state.schedule?.map((day: any) => {
+            return {
+              ...day,
+              hours: day.hours.map((hour: any) => {
+                if (hour._id === action._id) {
+                  return {
+                    ...hour,
+                    ...action.schedule,
+                  };
+                }
+                return hour;
+              }),
+            };
+          });
+          ctx.patchState({ schedule });
+        }),
+      );
   }
 
   @Action(DeleteHour)
@@ -134,14 +204,22 @@ export class ScheduleState {
               const state = ctx.getState();
 
               // Actualiza el cliente en el horario correspondiente
-              const schedule = state.schedule?.data?.map((hour: any) => {
-                if (hour._id === action._id) {
-                  return {
-                    ...hour,
-                    client: clientDetails.data, // Incluye toda la información del cliente
-                  };
-                }
-                return hour;
+              const schedule = state.schedule?.map((day: any) => {
+                return {
+                  ...day,
+                  hours: day.hours.map((hour: any) => {
+                    if (hour._id === action._id) {
+                      if (hour.clients.length >= hour.maxCount) {
+                        return hour;
+                      }
+                      return {
+                        ...hour,
+                        clients: [...hour.clients, clientDetails.data._id],
+                      };
+                    }
+                    return hour;
+                  }),
+                };
               });
 
               // Actualiza la lista de clientes en el estado
@@ -174,19 +252,24 @@ export class ScheduleState {
       .pipe(
         tap(() => {
           const state = ctx.getState();
-          const schedule = state.schedule?.data?.map((hour: any) => {
-            if (hour._id === action._id) {
-              return {
-                ...hour,
-                client: null,
-              };
-            }
-            return hour;
-          });
           const updatedClients = state.clients.filter(
             (client: any) => client._id !== action.client,
           );
           ctx.patchState({ clients: updatedClients });
+          const schedule = state.schedule?.map((day: any) => {
+            return {
+              ...day,
+              hours: day.hours.map((hour: any) => {
+                if (hour._id === action._id) {
+                  return {
+                    ...hour,
+                    clients: [...updatedClients.map((c: any) => c._id)],
+                  };
+                }
+                return hour;
+              }),
+            };
+          });
           ctx.patchState({ schedule });
         }),
       );
@@ -199,5 +282,34 @@ export class ScheduleState {
       ...state,
       clients: [], // Limpia la lista de clientes
     });
+  }
+
+  @Action(getMaxCount)
+  getMaxCount(ctx: StateContext<ScheduleStateModel>, action: getMaxCount) {
+    const state = ctx.getState();
+
+    // Buscar el día correspondiente
+    const dayToEdit = state.schedule?.find((day: any) =>
+      day.hours.some((hour: any) => hour._id === action._id),
+    );
+
+    if (!dayToEdit) {
+      console.log('No se encontró el día con el horario especificado.');
+      return;
+    }
+
+    // Encontrar el horario específico dentro del día
+    const hourToEdit = dayToEdit.hours.find(
+      (hour: any) => hour._id === action._id,
+    );
+
+    if (!hourToEdit) {
+      console.log('No se encontró el horario especificado.');
+      return;
+    }
+
+    // Actualizar el maxCount en el estado
+    const maxCount = hourToEdit.maxCount;
+    ctx.patchState({ maxCount });
   }
 }

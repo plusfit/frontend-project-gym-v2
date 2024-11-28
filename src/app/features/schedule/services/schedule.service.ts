@@ -29,12 +29,10 @@ export class ScheduleService {
     return this.http.get<any>(`${environment.api}/clients/list/${clientsIds}`);
   }
 
-  updateSchedule(id: string, schedule: ISchedule) {
+  updateSchedule(id: string, data: ISchedule) {
     return this.http.patch<IScheduleResponse>(
       `${environment.api}/schedules/${id}`,
-      {
-        schedule,
-      },
+      data,
     );
   }
   assignClientToHour(id: string, client: string) {

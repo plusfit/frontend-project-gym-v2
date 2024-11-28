@@ -3,4 +3,5 @@ export class ScheduleStateModel {
   schedule?: any | null;
   clients?: any | null;
   clientsAssignable?: any | null;
+  maxCount?: number;
 }
