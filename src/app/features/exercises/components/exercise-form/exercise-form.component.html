@@ -6,18 +6,17 @@
     <mat-dialog-content>
       <form [formGroup]="exerciseForm" class="space-y-4" (ngSubmit)="create()">
         <div class="flex gap-4">
-            <div class="w-full md:w-1/2">
-              <input
-                appInput
-                label="Nombre"
-                type="text"
-                id="name"
-                formControlName="name"
-                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-                placeholder="Nombre del ejercicio"
-              />
-            </div>
-
+          <div class="w-full md:w-1/2">
+            <input
+              appInput
+              label="Nombre"
+              type="text"
+              id="name"
+              formControlName="name"
+              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              placeholder="Nombre del ejercicio"
+            />
+          </div>
 
           <div class="w-full md:w-1/2">
             <textarea
@@ -85,8 +84,20 @@
           <div class="w-full md:w-1/2">
             <input
               appInput
+              label="Series"
+              type="number"
+              id="series"
+              formControlName="series"
+              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              placeholder="Cantidad de series"
+              min="1"
+            />
+          </div>
+          <div class="w-full md:w-1/2">
+            <input
+              appInput
               label="Repeticiones"
-              [outline]=true
+              [outline]="true"
               type="number"
               id="reps"
               formControlName="reps"
@@ -99,12 +110,12 @@
           <div class="w-full md:w-1/2">
             <input
               appInput
-              label="Series"
+              label="Descanso"
               type="number"
-              id="series"
-              formControlName="series"
+              id="rest"
+              formControlName="rest"
               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Cantidad de series"
+              placeholder="Tiempo de descanso en segundos"
               min="1"
             />
           </div>

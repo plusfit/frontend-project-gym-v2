@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 /**
- * Returns a validator function that checks if the password meets certain criteria.
- * @returns {ValidatorFn} A validator function.
+ * Devuelve una función validadora que verifica si la contraseña cumple con ciertos criterios.
+ * @returns {ValidatorFn} Una función de validación.
  */
 export function passwordValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -10,35 +10,35 @@ export function passwordValidator(): ValidatorFn {
     if (value?.length < 6)
       return {
         invalidPassword: {
-          message: 'Password must be at least 6 characters long',
+          message: 'La contraseña debe tener al menos 6 caracteres',
         },
       };
 
     if (!/\d/.test(value)) {
       return {
         invalidPassword: {
-          message: 'The password must have a number',
+          message: 'La contraseña debe tener al menos un número',
         },
       };
     }
     if (!/[a-z]/.test(value)) {
       return {
         invalidPassword: {
-          message: 'The password must have lowercase characters',
+          message: 'La contraseña debe tener letras minúsculas',
         },
       };
     }
     if (!/[A-Z]/.test(value)) {
       return {
         invalidPassword: {
-          message: 'The password must have uppercase characters',
+          message: 'La contraseña debe tener letras mayúsculas',
         },
       };
     }
     if (!/\W/.test(value)) {
       return {
         invalidPassword: {
-          message: 'The password must have special characters',
+          message: 'La contraseña debe tener caracteres especiales',
         },
       };
     }
