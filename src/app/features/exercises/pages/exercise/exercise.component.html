@@ -1,63 +1,60 @@
-<main>
-  <section class="mb-4 sm:p-5">
-    <span
-      class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
-    >
-      Ejercicios 🏋️
-    </span>
-    <div class="w-full pb-1 flex justify-between items-center">
-      <div class="flex items-center w-full md:w-1/2 mr-4">
-        <label for="simple-search" class="sr-only">Buscar</label>
-        <div class="relative w-full">
-          <div
-            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+<section class="mb-4 sm:p-5 w-full flex flex-col">
+  <span
+    class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
+  >
+    Ejercicios 🏋️
+  </span>
+  <div class="w-full mt-8 pb-1 flex justify-between items-center">
+    <form class="flex items-center w-full md:w-1/2 mr-4">
+      <div class="relative w-full my-4">
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5 text-gray-500 dark:text-gray-400"
+            fill="currentColor"
+            viewbox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="w-5 h-5 text-gray-500 dark:text-gray-400"
-              fill="currentColor"
-              viewbox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            id="ssearch"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2"
-            placeholder="Buscar ejercicio"
-            (input)="searchExercises($event)"
-            required=""
-          />
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </div>
+        <input
+          type="text"
+          id="ssearch"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2"
+          placeholder="Buscar ejercicio"
+          (input)="searchExercises($event)"
+          required=""
+        />
       </div>
+    </form>
 
-      <button appBtn color="primary" (click)="addExerciseModal()">
-        Crear ejercicio
-      </button>
-    </div>
+    <button appBtn color="primary" (click)="addExerciseModal()">
+      Crear ejercicio
+    </button>
+  </div>
 
-    <app-exercise-table
-      [displayedColumns]="displayedColumns"
-      [exercises$]="exercises$"
-      [loading$]="loading$"
-      (editEmitter)="editExercise($event)"
-      (deleteEmitter)="deleteExercise($event)"
+  <app-exercise-table
+    [displayedColumns]="displayedColumns"
+    [exercises$]="exercises$"
+    [loading$]="loading$"
+    (editEmitter)="editExercise($event)"
+    (deleteEmitter)="deleteExercise($event)"
+  >
+    <mat-paginator
+      [pageSizeOptions]="exerciseTableLimitOptions"
+      (page)="handlePageEvent($event)"
+      [length]="totalExercises$ | async"
+      showFirstLastButtons
+      aria-label="Select page of periodic elements"
+      class="bg-gray-200 px-4 py-2 border-t border-gray-300"
     >
-      <mat-paginator
-        [pageSizeOptions]="exerciseTableLimitOptions"
-        (page)="handlePageEvent($event)"
-        [length]="totalExercises$ | async"
-        showFirstLastButtons
-        aria-label="Select page of periodic elements"
-        class="bg-gray-200 px-4 py-2 border-t border-gray-300"
-      >
-      </mat-paginator>
-    </app-exercise-table>
-  </section>
-</main>
+    </mat-paginator>
+  </app-exercise-table>
+</section>

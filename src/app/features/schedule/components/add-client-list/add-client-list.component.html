@@ -1,0 +1,34 @@
+<form
+  [formGroup]="form"
+  class="m-auto mb-5 justify-center flex flex-col items-center gap-4"
+>
+  <h3>Asignar Clientes</h3>
+  <input
+    appInput
+    type="text"
+    placeholder="Buscar"
+    [formControl]="searchControl"
+  />
+  <mat-selection-list
+    #shoesList
+    [formControl]="clientsControl"
+    name="shoes"
+    [multiple]="false"
+    class="overflow-y-auto h-50"
+  >
+    @for (client of filteredClients; track client) {
+      <mat-list-option [value]="client._id">{{ client.email }}</mat-list-option>
+    }
+  </mat-selection-list>
+  <div class="flex justify-center">
+    <button
+      appBtn
+      mat-raised-button
+      color="primary"
+      (click)="addClient()"
+      [disabled]="!clientsControl.value"
+    >
+      Agregar cliente
+    </button>
+  </div>
+</form>

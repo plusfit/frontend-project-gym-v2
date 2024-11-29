@@ -1,4 +1,4 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   Component,
   Input,
@@ -8,7 +8,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -29,7 +28,7 @@ import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-settings-form',
@@ -41,7 +40,6 @@ import { Observable } from 'rxjs';
     ReactiveFormsModule,
     InputDirective,
     BtnDirective,
-    JsonPipe,
     AsyncPipe,
     ConditionalTextPipe,
   ],
@@ -51,6 +49,7 @@ import { Observable } from 'rxjs';
 export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
   settingsForm!: FormGroup;
   @Input() settings!: any;
+  private destroy = new Subject<void>();
 
   loading$: Observable<boolean> = this.store.select(
     SettingsState.settingsLoading,
@@ -107,14 +106,9 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  // Getter para obtener el FormArray `days`
-  get daysArray() {
-    const days = this.settingsForm?.get('days') as FormArray;
-    return days.controls;
-  }
-
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   createSettings(): void {
