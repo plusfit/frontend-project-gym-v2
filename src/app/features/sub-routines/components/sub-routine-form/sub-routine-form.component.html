@@ -7,32 +7,43 @@
   } @else {
     <!-- Form Content -->
     <mat-dialog-content>
-      <form [formGroup]="subRoutineForm" class="space-y-4" (ngSubmit)="save()">
+      <form [formGroup]="subRoutineForm" class="space-y-4">
         <!-- SubRoutine Fields -->
         <div class="flex gap-4">
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Nombre"
-              type="text"
-              id="name"
-              formControlName="name"
-              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Nombre de la Sub-Rutina"
-            />
+          <div class="w-full md:w-1/3">
+              <input
+                appInput
+                label="Nombre"
+                type="text"
+                id="name"
+                formControlName="name"
+                class="mt-1 h-14 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Nombre de la Sub-Rutina"
+              />
           </div>
 
-          <div class="w-full md:w-1/2">
-            <input
-              appInput
-              label="Personalizada"
-              type="text"
-              id="isCustom"
-              formControlName="isCustom"
-              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Es personalizada"
-              [disabled]="true"
-            />
+          <div class="w-full pt-6 md:w-1/3">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Es Personalizada ? </mat-label>
+              <mat-select formControlName="isCustom">
+                <mat-option [value]="true">
+                 Si
+                </mat-option>
+                <mat-option [value]="false">
+                  No
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="w-full pt-6 md:w-1/3">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Día</mat-label>
+              <mat-select formControlName="day">
+                <mat-option *ngFor="let day of days" [value]="day.value">
+                  {{ day.label | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
 
@@ -50,6 +61,7 @@
           <button
             appBtn
             color="primary"
+            type="button"
             (click)="openAddExerciseDialog()"
             class="mt-4"
           >
@@ -62,7 +74,7 @@
 
   <!-- Action Buttons -->
   <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn color="secondary" (click)="goBack()">Volver</button>
+    <button appBtn  color="basic" (click)="goBack()">Volver</button>
     <button
       appBtn
       color="primary"

@@ -13,7 +13,7 @@ import {
 } from '@features/exercises/state/exercise.actions';
 import { AsyncPipe } from '@angular/common';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import {environment} from "../../../../../environments/environment";
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-add-exercise-dialog',
@@ -63,27 +63,11 @@ export class AddExerciseDialogComponent implements OnInit {
   }
 
   toggleExercise(element: any): void {
-    console.log(element);
     this.selectedExercises = element;
   }
 
   addSelectedExercisesToSubRoutine(): void {
-    const selectedSubRoutine = this.store.selectSnapshot(
-      SubRoutinesState.getSelectedSubRoutine,
-    );
-
-    const newExercises = this.selectedExercises.filter(
-      (exercise) =>
-        !this.subRoutineExercises.some(
-          (subRoutineExercise) => subRoutineExercise._id === exercise._id,
-        ),
-    );
-
-    const newSelectedSubRoutine = {
-      ...selectedSubRoutine,
-      exercises: newExercises,
-    };
-    this.dialogRef.close(newSelectedSubRoutine);
+    this.dialogRef.close(this.selectedExercises);
   }
 
   paginate(event: PageEvent): void {
