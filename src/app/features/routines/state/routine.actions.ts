@@ -41,7 +41,7 @@ export class UpdateRoutine {
 }
 export class UpdateSubRoutines {
   static readonly type = '[Routine] UpdateSubRoutines';
-  constructor(public readonly subRoutines: SubRoutine[]) {}
+  constructor(public readonly newRoutine: Routine) {}
 }
 export class SetSelectedRoutine {
   static readonly type = '[Routine] SetSelectedRoutine';

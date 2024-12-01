@@ -25,7 +25,7 @@ import { Routine } from '@features/routines/interfaces/routine.interface';
   ],
   templateUrl: './add-subrutine-dialog.component.html',
 })
-export class AddSubrutineDialogComponent implements OnInit {
+export class AddSubroutineDialogComponent implements OnInit {
   subrutines$!: Observable<SubRoutine[]>;
   totalSubrutines$!: Observable<number>;
   loading$!: Observable<boolean>;
@@ -36,7 +36,7 @@ export class AddSubrutineDialogComponent implements OnInit {
 
   constructor(
     private store: Store,
-    private dialogRef: MatDialogRef<AddSubrutineDialogComponent>,
+    private dialogRef: MatDialogRef<AddSubroutineDialogComponent>,
   ) {}
 
   ngOnInit(): void {

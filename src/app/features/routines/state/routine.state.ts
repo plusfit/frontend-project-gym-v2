@@ -14,7 +14,6 @@ import {
   GetRoutinesByName,
   GetRoutinesByPage,
   SetLimitPerPage,
-  SetSelectedRoutine,
   UpdateRoutine,
   UpdateSubRoutines,
 } from './routine.actions';
@@ -200,7 +199,7 @@ export class RoutineState {
     action: UpdateSubRoutines,
   ) {
     ctx.patchState({
-      subRoutines: action.subRoutines,
+      selectedRoutine: action.newRoutine,
     });
   }
 }

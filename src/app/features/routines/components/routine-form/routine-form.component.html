@@ -3,7 +3,7 @@
     <app-loader></app-loader>
   } @else {
     <mat-dialog-content>
-      <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="create()">
+      <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="save()">
         <div class="flex flex-col justify-around">
           <div class="flex gap-4">
             <div class="w-full md:w-1/2">
@@ -87,7 +87,7 @@
           appBtn
           color="primary"
           type="button"
-          (click)="addSubroutines()"
+          (click)="openAddSubRoutinesDialog()"
           class="mt-4"
         >
           Agregar Subrutinas
@@ -96,7 +96,7 @@
     </mat-dialog-content>
   }
   <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
+    <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
     <button
       appBtn
       color="primary"
