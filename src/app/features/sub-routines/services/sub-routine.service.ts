@@ -49,9 +49,9 @@ export class SubRoutineService {
     return this.http.get<SubRoutine>(url);
   }
 
-  updateSubRoutine(subRoutine: SubRoutine): Observable<SubRoutine> {
-    const url = `${environment.api}/routines/subRoutine/${subRoutine._id}`;
-    return this.http.put<SubRoutine>(url, { data: subRoutine });
+  updateSubRoutine(id: string, subRoutine: SubRoutine): Observable<SubRoutine> {
+    const url = `${environment.api}/routines/subRoutine/${id}`;
+    return this.http.put<SubRoutine>(url, subRoutine);
   }
 
   createSubRoutine(subRoutine: SubRoutine): Observable<SubRoutine> {

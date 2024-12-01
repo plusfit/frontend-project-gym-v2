@@ -20,6 +20,10 @@ body {
   margin: 0;
 }
 
+.mdc-notched-outline__notch {
+  border-right: none !important;
+}
+
 @layer components {
   input {
     @apply border-neutral-600 w-full border rounded-sm shadow-100 text-body-md p-3 text-neutral-800 placeholder:text-neutral-600 !outline-offset-0;
@@ -71,6 +75,10 @@ body {
 
   .btn-secondary {
     @apply text-neutral-800  bg-white hover:bg-neutral-100 focus-visible:outline-none focus:bg-white focus:outline-primary-400 focus:border-primary-400 focus:shadow-button-200 disabled:bg-neutral-400 disabled:text-neutral-500 border border-neutral-600 shadow-100;
+  }
+
+  .btn-basic {
+    @apply shadow-100 text-white bg-error-100 hover:bg-error-200 disabled:bg-error-50 focus-visible:outline-none focus:outline-error-100 focus:bg-error-100  focus:shadow-button-400;
   }
 
   .btn-destructive {

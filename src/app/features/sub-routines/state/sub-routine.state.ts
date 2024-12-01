@@ -161,7 +161,11 @@ export class SubRoutinesState {
         const subRoutines = ctx
           .getState()
           .subRoutines?.concat(createdSubRoutine);
-        ctx.patchState({ subRoutines, loading: false });
+        ctx.patchState({
+          subRoutines,
+          loading: false,
+          selectedSubRoutine: null,
+        });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
@@ -173,17 +177,21 @@ export class SubRoutinesState {
   @Action(UpdateSubRoutine, { cancelUncompleted: true })
   updateSubRoutine(
     ctx: StateContext<SubRoutineStateModel>,
-    { subRoutine }: UpdateSubRoutine,
+    { id, subRoutine }: UpdateSubRoutine,
   ): Observable<SubRoutine> {
     ctx.patchState({ loading: true, error: null });
-    return this.subRoutineService.updateSubRoutine(subRoutine).pipe(
+    return this.subRoutineService.updateSubRoutine(id, subRoutine).pipe(
       tap((updatedSubRoutine: SubRoutine) => {
         const subRoutines = ctx
           .getState()
           .subRoutines?.map((u) =>
             u._id === updatedSubRoutine._id ? updatedSubRoutine : u,
           );
-        ctx.patchState({ subRoutines, loading: false });
+        ctx.patchState({
+          subRoutines,
+          loading: false,
+          selectedSubRoutine: null,
+        });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
@@ -210,9 +218,7 @@ export class SubRoutinesState {
       tap(() => {
         const subRoutines = ctx
           .getState()
-          .subRoutines?.map((subRoutine) =>
-            subRoutine._id === id ? { ...subRoutine } : subRoutine,
-          );
+          .subRoutines?.filter((subRoutine) => subRoutine._id !== id);
 
         ctx.patchState({ subRoutines, loading: false });
       }),

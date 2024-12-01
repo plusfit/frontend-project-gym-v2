@@ -12,6 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './add-edit-sub-routine.component.html',
 })
 export class AddEditSubRoutineComponent implements OnInit, OnDestroy {
+  id: string = '';
   isEdit = false;
   private destroy = new Subject<void>();
   constructor(
@@ -21,10 +22,10 @@ export class AddEditSubRoutineComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    console.log(this.isEdit);
-    if (id) {
-      this.store.dispatch(new GetSubRoutine(id));
+    this.id = this.route.snapshot.paramMap.get('id') ?? '';
+
+    if (this.id) {
+      this.store.dispatch(new GetSubRoutine(this.id));
       this.actions
         .pipe(ofActionSuccessful(GetSubRoutine), takeUntil(this.destroy))
         .subscribe(() => {

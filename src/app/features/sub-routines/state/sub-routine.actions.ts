@@ -28,7 +28,10 @@ export class SetSubRoutines {
 
 export class UpdateSubRoutine {
   static readonly type = '[SubRoutine] Update SubRoutine';
-  constructor(public readonly subRoutine: SubRoutine) {}
+  constructor(
+    public readonly id: string,
+    public readonly subRoutine: SubRoutine,
+  ) {}
 }
 
 export class DeleteSubRoutine {

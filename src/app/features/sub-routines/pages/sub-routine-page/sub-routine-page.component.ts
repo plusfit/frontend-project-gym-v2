@@ -9,7 +9,6 @@ import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interf
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 import {
   DeleteSubRoutine,
-  GetSubRoutine,
   GetSubRoutines,
 } from '@features/sub-routines/state/sub-routine.actions';
 import { TableComponent } from '@shared/components/table/table.component';
@@ -27,9 +26,8 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = ['name', 'isCustom', 'exercises', 'acciones']; // TODO: Change colums
+  displayedColumns: string[] = ['name', 'isCustom', 'day', 'acciones']; // TODO: Change colums
   pageSize = environment.config.pageSize;
-  defaultSort = 'name desc';
   filterValues: any | null = null;
 
   private destroy = new Subject<void>();
@@ -83,6 +81,11 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   }
   deleteSubRoutine(event: any): void {
     this.store.dispatch(new DeleteSubRoutine(event));
+    this.actions
+      .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
+      .subscribe(() => {
+        this.snackbar.showSuccess('Exito', 'Subrutina eliminada correctamente');
+      });
   }
 
   ngOnDestroy(): void {

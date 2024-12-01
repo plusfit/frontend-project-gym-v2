@@ -1,6 +1,6 @@
 <div class="w-full flex flex-col justify-start space-y-4 md:space-y-0 md:items-center md:flex-row md:justify-between">
   <form [formGroup]="filterForm" class="flex items-center">
-    <div class="flex relative w-96 items-center">
+    <div class="flex relative min-w-96 items-center">
       <button
         type="button"
         (click)="reset()"
@@ -11,7 +11,7 @@
       <input appInput type="text" placeholder="Buscar..." class="rounded-full font-normal" formControlName="searchQ" />
     </div>
   </form>
-  <div class="w-1/4">
+  <div class="w-1/7">
     <ng-content></ng-content>
   </div>
 </div>
