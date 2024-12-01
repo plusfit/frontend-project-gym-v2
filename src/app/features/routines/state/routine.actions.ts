@@ -1,3 +1,4 @@
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import {
   FiltersRoutine,
   PageRoutine,
@@ -37,4 +38,12 @@ export class UpdateRoutine {
     public readonly payload: Routine,
     public readonly id: string,
   ) {}
+}
+export class UpdateSubRoutines {
+  static readonly type = '[Routine] UpdateSubRoutines';
+  constructor(public readonly subRoutines: SubRoutine[]) {}
+}
+export class SetSelectedRoutine {
+  static readonly type = '[Routine] SetSelectedRoutine';
+  constructor(public readonly routine: Routine) {}
 }

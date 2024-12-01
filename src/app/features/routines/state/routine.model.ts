@@ -1,3 +1,4 @@
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import { environment } from '../../../../environments/environment.prod';
 import {
   FiltersRoutine,
@@ -12,5 +13,6 @@ export class RoutineStateModel {
   limit: number = environment.routineTableLimit;
   filters?: FiltersRoutine | null;
   totalRoutines?: number;
-  routineEditing?: Routine | null;
+  selectedRoutine?: Routine | null;
+  subRoutines?: SubRoutine[] = [];
 }

@@ -37,12 +37,12 @@ import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 })
 export class SubRoutinesState {
   @Selector()
-  static getSubRoutines(state: SubRoutineStateModel): SubRoutine[] | null {
-    return state?.subRoutines ?? [];
+  static getSubRoutines(state: SubRoutineStateModel): SubRoutine[] {
+    return state.subRoutines ?? [];
   }
 
   @Selector()
-  static getTotal(state: SubRoutineStateModel): number | null {
+  static getTotal(state: SubRoutineStateModel): number {
     return state.total ?? 0;
   }
 
@@ -58,7 +58,7 @@ export class SubRoutinesState {
   }
 
   @Selector()
-  static isLoading(state: SubRoutineStateModel): boolean | null {
+  static isLoading(state: SubRoutineStateModel): boolean {
     return state.loading ?? false;
   }
 
@@ -211,9 +211,7 @@ export class SubRoutinesState {
         const subRoutines = ctx
           .getState()
           .subRoutines?.map((subRoutine) =>
-            subRoutine._id === id
-              ? { ...subRoutine }
-              : subRoutine,
+            subRoutine._id === id ? { ...subRoutine } : subRoutine,
           );
 
         ctx.patchState({ subRoutines, loading: false });

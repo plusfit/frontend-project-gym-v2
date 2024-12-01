@@ -2,10 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SubRoutine } from '../interfaces/sub-routine.interface';
 
 export class SubRoutineStateModel {
-  subRoutines?: SubRoutine[] | null;
+  subRoutines?: SubRoutine[];
   selectedSubRoutine?: SubRoutine | null;
-  loading?: boolean | null;
-  total?: number | null;
+  loading?: boolean;
+  total?: number;
   error?: HttpErrorResponse | null;
   currentPage?: number | null;
   pageSize?: number | null;

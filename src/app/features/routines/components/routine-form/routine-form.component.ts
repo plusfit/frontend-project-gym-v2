@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   FormBuilder,
   FormGroup,
@@ -17,11 +17,15 @@ import {
   GetRoutineById,
   GetRoutinesByPage,
   UpdateRoutine,
+  UpdateSubRoutines,
 } from '@features/routines/state/routine.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { ActivatedRoute } from '@angular/router';
+import { AddSubrutineDialogComponent } from '../add-subrutine-dialog/add-subrutine-dialog.component';
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+import { TableComponent } from '@shared/components/table/table.component';
 @Component({
   selector: 'app-routine-form',
   styleUrls: ['./routine-form.component.css'],
@@ -35,6 +39,7 @@ import { ActivatedRoute } from '@angular/router';
     InputDirective,
     CommonModule,
     LoaderComponent,
+    TableComponent,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy {
@@ -44,6 +49,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
     private actions: Actions,
     private snackbar: SnackBarService,
     private route: ActivatedRoute,
+    private dialog: MatDialog,
   ) {}
 
   loading$: Observable<boolean> = this.store.select(
@@ -58,6 +64,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
     { value: 'cardio', viewValue: 'Cardio' },
     { value: 'room', viewValue: 'Sala' },
   ];
+  displayedColumns = ['name', 'isCustom', 'day'];
   routineId: string = '';
   isEdit: boolean = false;
 
@@ -71,15 +78,17 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
       this.routineId = params.get('id') ?? '';
       this.isEdit = !!this.routineId;
 
-      if (this.isEdit && this.routineId) {
+      if (this.isEdit) {
         this.store.dispatch(new GetRoutineById(this.routineId));
         this.actions
           .pipe(ofActionSuccessful(GetRoutineById), takeUntil(this.destroy))
           .subscribe(() => {
             const routineEditing = this.store.selectSnapshot(
-              RoutineState.routineEditing,
+              RoutineState.selectedRoutine,
             );
-            if (routineEditing) this.setDataForEdit(routineEditing);
+            if (routineEditing) {
+              this.setDataForEdit(routineEditing);
+            }
           });
       }
     });
@@ -94,7 +103,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
   }
 
   setDataForEdit(routineEditing: Routine): void {
-    this.title = 'Editar ejercicio';
+    this.title = 'Editar Rutina';
     this.btnTitle = 'Guardar';
     this.routineForm.patchValue(routineEditing);
   }
@@ -136,11 +145,20 @@ export class RoutineFormComponent implements OnInit, OnDestroy {
             page: 1,
           }),
         );
-        this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
+        this.snackbar.showSuccess('Rutina creada correctamente', 'OK');
       });
   }
 
   addSubroutines(): void {
-    console.log('addSubroutines');
+    const dialogRef = this.dialog.open(AddSubrutineDialogComponent, {
+      width: '800px',
+    });
+    dialogRef
+      .afterClosed()
+      .subscribe((updatedSubRoutines: SubRoutine[] | null) => {
+        if (updatedSubRoutines) {
+          this.store.dispatch(new UpdateSubRoutines(updatedSubRoutines));
+        }
+      });
   }
 }

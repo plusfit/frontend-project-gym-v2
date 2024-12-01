@@ -14,24 +14,38 @@ import {
   GetRoutinesByName,
   GetRoutinesByPage,
   SetLimitPerPage,
+  SetSelectedRoutine,
   UpdateRoutine,
+  UpdateSubRoutines,
 } from './routine.actions';
 import { environment } from '../../../../environments/environment.prod';
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 
 @State<RoutineStateModel>({
   name: 'routine',
   defaults: {
-    routineEditing: null,
     routines: [],
     totalRoutines: 0,
     page: null,
     limit: environment.routineTableLimit,
     filters: null,
     loading: false,
+    selectedRoutine: null,
+    subRoutines: [],
   },
 })
 @Injectable({ providedIn: 'root' })
 export class RoutineState {
+  @Selector()
+  static subRoutines(state: RoutineStateModel): SubRoutine[] {
+    return state.subRoutines || [];
+  }
+
+  @Selector()
+  static selectedRoutine(state: RoutineStateModel): Routine | null {
+    return state.selectedRoutine || null;
+  }
+
   @Selector()
   static routineLoading(state: RoutineStateModel): boolean {
     return state.loading || false;
@@ -50,11 +64,6 @@ export class RoutineState {
   @Selector()
   static page(state: RoutineStateModel): number {
     return state.limit;
-  }
-
-  @Selector()
-  static routineEditing(state: RoutineStateModel): Routine | null {
-    return state.routineEditing || null;
   }
 
   constructor(private routineService: RoutineService) {}
@@ -153,7 +162,7 @@ export class RoutineState {
     ctx.patchState({ loading: true });
     return this.routineService.getRoutineById(action.id).pipe(
       tap((response) => {
-        ctx.patchState({ loading: false, routineEditing: response.data });
+        ctx.patchState({ loading: false, selectedRoutine: response.data });
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
@@ -184,5 +193,14 @@ export class RoutineState {
     action: SetLimitPerPage,
   ): void {
     ctx.patchState({ limit: action.limit });
+  }
+  @Action(UpdateSubRoutines)
+  updateSubroutines(
+    ctx: StateContext<RoutineStateModel>,
+    action: UpdateSubRoutines,
+  ) {
+    ctx.patchState({
+      subRoutines: action.subRoutines,
+    });
   }
 }

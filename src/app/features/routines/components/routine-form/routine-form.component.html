@@ -108,5 +108,11 @@
       {{ btnTitle }}
     </button>
   </div>
+  <!-- tabla para mostrar las subrutinas -->
+  <app-table
+    [displayedColumns]="displayedColumns"
+    [data]="[]"
+    [loading]="false"
+  ></app-table>
 </div>
 <!-- [disabled]="routineForm.invalid || (loading$ | async)" -->

@@ -7,13 +7,11 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import {
-  GetSubrutinesByName,
-  GetSubRoutines,
-} from '@features/exercises/state/exercise.actions';
+import { RoutineState } from '@features/routines/state/routine.state';
+import { GetSubRoutines } from '@features/sub-routines/state/sub-routine.actions';
 import { AsyncPipe } from '@angular/common';
-import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import {environment} from "../../../../../environments/environment";
+import { environment } from '../../../../../environments/environment';
+import { Routine } from '@features/routines/interfaces/routine.interface';
 
 @Component({
   selector: 'app-add-subrutine-dialog',
@@ -31,9 +29,10 @@ export class AddSubrutineDialogComponent implements OnInit {
   subrutines$!: Observable<SubRoutine[]>;
   totalSubrutines$!: Observable<number>;
   loading$!: Observable<boolean>;
-  selectedSubrutines: SubRoutine[] = [];
-  subRoutineSubrutines: SubRoutine[] = [];
+  selectedSubroutines: SubRoutine[] = [];
+  subRoutines: SubRoutine[] = [];
   pageSize = environment.config.pageSize;
+  selectedRoutine!: Routine | null;
 
   constructor(
     private store: Store,
@@ -41,50 +40,40 @@ export class AddSubrutineDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //datos de las subrutinas
-    this.subrutines$ = this.store.select(SubRoutinesState.subrutines);
-    this.totalSubrutines$ = this.store.select(SubRoutinesState.totalSubrutines);
-    this.loading$ = this.store.select(SubRoutinesState.exerciseLoading);
+    //datos de las subrutinas para tabla
+    this.subrutines$ = this.store.select(SubRoutinesState.getSubRoutines);
+    this.totalSubrutines$ = this.store.select(SubRoutinesState.getTotal);
+    //fin datos de las subrutinas para tabla
 
-    this.subRoutineSubrutines = this.store.selectSnapshot(
-      SubRoutinesState.selectedSubRoutine,
-    );
-
+    this.loading$ = this.store.select(SubRoutinesState.isLoading);
+    if (this.selectedRoutine) {
+      this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
+    }
     this.loadSubrutines(1);
   }
 
   loadSubrutines(page: number): void {
-    this.store.dispatch(new GetSubRoutines({ page }));
+    this.store.dispatch(
+      new GetSubRoutines({ page: page, pageSize: this.pageSize }),
+    );
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
     this.store.dispatch(
-      new GetSubrutinesByName({ page: 1 }, { name: filters.searchQ }),
+      new GetSubRoutines({
+        page: 1,
+        searchQ: filters.searchQ,
+        pageSize: this.pageSize,
+      }),
     );
   }
 
-  toggleExercise(element: any): void {
-    console.log(element);
-    this.selectedSubrutines = element;
+  toggleRoutine(element: any): void {
+    this.selectedSubroutines = element;
   }
 
-  addSelectedSubrutinesToSubRoutine(): void {
-    const selectedSubRoutine = this.store.selectSnapshot(
-      SubRoutinesState.getSelectedSubRoutine,
-    );
-
-    const newSubrutines = this.selectedSubrutines.filter(
-      (exercise) =>
-        !this.subRoutineSubrutines.some(
-          (subRoutineExercise) => subRoutineExercise._id === exercise._id,
-        ),
-    );
-
-    const newSelectedSubRoutine = {
-      ...selectedSubRoutine,
-      subrutines: newSubrutines,
-    };
-    this.dialogRef.close(newSelectedSubRoutine);
+  addSelectedSubroutinesToRoutine(): void {
+    this.dialogRef.close(this.selectedSubroutines);
   }
 
   paginate(event: PageEvent): void {

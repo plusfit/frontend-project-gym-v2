@@ -1,3 +1,5 @@
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+
 export interface Routine {
   _id: { $oid: string };
   name: string;
@@ -5,7 +7,7 @@ export interface Routine {
   category: string;
   days: number[];
   isCustom: boolean;
-  subRoutines: any[];
+  subroutines: SubRoutine[];
   // updatedAt: { $date: string };
   // createdAt: { $date: string };
   __v: number;
@@ -16,5 +18,5 @@ export interface RoutinePayload {
   category: string;
   days: number[];
   isCustom: boolean;
-  subRoutines: any[];
+  subroutines: SubRoutine[];
 }
