@@ -37,7 +37,7 @@ import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interf
 export class RoutineState {
   @Selector()
   static subRoutines(state: RoutineStateModel): SubRoutine[] {
-    return state.subRoutines || [];
+    return state.selectedRoutine?.subroutines || [];
   }
 
   @Selector()

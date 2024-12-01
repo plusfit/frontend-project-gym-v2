@@ -111,7 +111,8 @@
   <!-- tabla para mostrar las subrutinas -->
   <app-table
     [displayedColumns]="displayedColumns"
-    [data]="[]"
+    [data]="selectedSubroutines"
+    [total]="selectedSubroutines.length"
     [loading]="false"
   ></app-table>
 </div>

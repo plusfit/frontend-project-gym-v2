@@ -4,8 +4,8 @@
 
     <!-- Filter Bar -->
     <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
-
-    <!-- Exercises Table -->
+    {{ selectedSubroutines }}
+    <!-- Exercises Table || subRoutines -->
     <app-table
       [data]="subrutines$ | async"
       [displayedColumns]="['name', 'type']"

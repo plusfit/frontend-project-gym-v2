@@ -37,6 +37,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
+import { UpdateSubRoutines } from '@features/routines/state/routine.actions';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -64,7 +65,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   loading$!: Observable<boolean | null>;
   title = 'Agregar Rutina';
   btnTitle = 'Crear';
-  displayedColumns: string[] = ['name', 'category', 'days'];
+  displayedColumns: string[] = ['name', 'type', 'isCustom', 'day'];
 
   categories = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -128,7 +129,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
           subroutines: newSubRoutines,
         };
         this.selectedSubroutines = newSubRoutines;
-        this.store.dispatch(new UpdateSelectedSubRoutine(newRoutine));
+        this.store.dispatch(new UpdateSubRoutines(newRoutine));
       }
     });
   }

@@ -40,15 +40,14 @@ export class AddSubroutineDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //datos de las subrutinas para tabla
     this.subrutines$ = this.store.select(SubRoutinesState.getSubRoutines);
     this.totalSubrutines$ = this.store.select(SubRoutinesState.getTotal);
-    //fin datos de las subrutinas para tabla
 
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
-    if (this.selectedRoutine) {
-      this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
-    }
+
+    this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
+    console.log('this.subRoutines', this.subRoutines);
+
     this.loadSubrutines(1);
   }
 
