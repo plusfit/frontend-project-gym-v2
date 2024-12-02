@@ -4,7 +4,6 @@
 
     <!-- Filter Bar -->
     <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
-    {{ selectedSubroutines }}
     <!-- Exercises Table || subRoutines -->
     <app-table
       [data]="subRoutines$ | async"
