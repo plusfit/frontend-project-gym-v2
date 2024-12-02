@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ScheduleStateModel } from './schedule.model';
 import { ScheduleService } from '../services/schedule.service';
-import { UtilsService } from '@core/services/utils.service';
 import { switchMap, tap } from 'rxjs';
 import {
   AssignClient,
@@ -29,10 +28,7 @@ import {
 })
 @Injectable({ providedIn: 'root' })
 export class ScheduleState {
-  constructor(
-    private scheduleService: ScheduleService,
-    private utilsService: UtilsService,
-  ) {}
+  constructor(private scheduleService: ScheduleService) {}
 
   @Selector()
   static scheduleLoading(state: ScheduleStateModel): boolean {
@@ -154,6 +150,7 @@ export class ScheduleState {
 
   @Action(EditHour)
   editHour(ctx: StateContext<ScheduleStateModel>, action: EditHour) {
+    ctx.patchState({ loading: true });
     return this.scheduleService
       .updateSchedule(action._id, action.schedule)
       .pipe(
@@ -174,6 +171,7 @@ export class ScheduleState {
             };
           });
           ctx.patchState({ schedule });
+          ctx.patchState({ loading: false });
         }),
       );
   }

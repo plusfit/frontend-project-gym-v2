@@ -34,6 +34,9 @@ import { AsyncPipe } from '@angular/common';
 export class ScheduleFormComponent implements OnInit, OnDestroy {
   editForm!: FormGroup;
   clients$: Observable<any[]> = this.store.select(ScheduleState.clients);
+  loading$: Observable<boolean> = this.store.select(
+    ScheduleState.scheduleLoading,
+  );
 
   private destroy = new Subject<void>();
 
