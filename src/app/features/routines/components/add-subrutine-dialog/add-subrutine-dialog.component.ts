@@ -26,7 +26,7 @@ import { Routine } from '@features/routines/interfaces/routine.interface';
   templateUrl: './add-subrutine-dialog.component.html',
 })
 export class AddSubroutineDialogComponent implements OnInit {
-  subrutines$!: Observable<SubRoutine[]>;
+  subRoutines$!: Observable<SubRoutine[]>;
   totalSubrutines$!: Observable<number>;
   loading$!: Observable<boolean>;
   selectedSubroutines: SubRoutine[] = [];
@@ -40,7 +40,7 @@ export class AddSubroutineDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.subrutines$ = this.store.select(SubRoutinesState.getSubRoutines);
+    this.subRoutines$ = this.store.select(SubRoutinesState.getSubRoutines);
     this.totalSubrutines$ = this.store.select(SubRoutinesState.getTotal);
 
     this.loading$ = this.store.select(SubRoutinesState.isLoading);

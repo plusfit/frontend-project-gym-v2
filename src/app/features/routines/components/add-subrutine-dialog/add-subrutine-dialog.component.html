@@ -7,7 +7,7 @@
     {{ selectedSubroutines }}
     <!-- Exercises Table || subRoutines -->
     <app-table
-      [data]="subrutines$ | async"
+      [data]="subRoutines$ | async"
       [displayedColumns]="['name', 'type']"
       [isSelect]="true"
       [loading]="loading$ | async"

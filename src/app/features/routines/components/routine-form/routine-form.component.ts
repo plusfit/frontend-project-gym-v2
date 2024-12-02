@@ -37,7 +37,10 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
-import { UpdateSubRoutines } from '@features/routines/state/routine.actions';
+import {
+  UpdateRoutine,
+  UpdateSubRoutines,
+} from '@features/routines/state/routine.actions';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -106,7 +109,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       const routine: Routine | null = this.store.selectSnapshot(
         RoutineState.selectedRoutine,
       );
-      this.selectedSubroutines = routine?.subroutines || [];
+      this.selectedSubroutines = routine?.subRoutines || [];
 
       if (routine) this.routineForm.patchValue(routine);
     }
@@ -126,7 +129,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       if (newSubRoutines) {
         const newRoutine = {
           ...this.routineForm.value,
-          subroutines: newSubRoutines,
+          subRoutines: newSubRoutines,
         };
         this.selectedSubroutines = newSubRoutines;
         this.store.dispatch(new UpdateSubRoutines(newRoutine));
@@ -149,12 +152,12 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     }
     const payload = {
       ...this.routineForm.value,
-      subroutines: this.selectedSubroutines.map((r) => r._id),
+      subRoutines: this.selectedSubroutines.map((r) => r._id),
     };
 
     if (this.isEdit()) {
       this.store
-        .dispatch(new UpdateSubRoutine(this.id(), payload))
+        .dispatch(new UpdateRoutine(this.id(), payload))
         .subscribe(() => {
           this.snackBarService.showSuccess('Exito!', 'Rutina actualizada');
           this.router.navigate(['/rutinas']);

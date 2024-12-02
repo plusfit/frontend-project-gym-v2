@@ -7,7 +7,7 @@ export interface Routine {
   category: string;
   days: number[];
   isCustom: boolean;
-  subroutines: SubRoutine[];
+  subRoutines: SubRoutine[];
   // updatedAt: { $date: string };
   // createdAt: { $date: string };
   __v: number;
@@ -18,5 +18,5 @@ export interface RoutinePayload {
   category: string;
   days: number[];
   isCustom: boolean;
-  subroutines: SubRoutine[];
+  subRoutines: SubRoutine[];
 }

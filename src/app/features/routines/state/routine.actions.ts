@@ -35,8 +35,8 @@ export class SetLimitPerPage {
 export class UpdateRoutine {
   static readonly type = '[Routine] UpdateRoutine';
   constructor(
-    public readonly payload: Routine,
     public readonly id: string,
+    public readonly payload: Routine,
   ) {}
 }
 export class UpdateSubRoutines {
