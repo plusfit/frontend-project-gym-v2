@@ -115,27 +115,12 @@
     [data]="selectedSubroutines"
     [total]="selectedSubroutines.length"
     [loading]="false"
+    [showDelete]="false"
     (edit)="handleEditDay($event)"
-    (delete)="deleteSubRoutine($event)"
   ></app-table>
-
-  <div class="mt-6 bg-gray-100 rounded-lg p-4">
-    <h3 class="text-lg font-semibold mb-4">Subrutinas por día</h3>
-
-    <div
-      *ngIf="selectedSubroutines.length > 0"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-    >
-      <div
-        *ngFor="let subroutine of selectedSubroutines; let i = index"
-        class="bg-white border rounded-lg shadow-sm p-4"
-      >
-        <div class="flex justify-between items-center mb-2">
-          <span class="font-bold text-primary-600">Día {{ i + 1 }}</span>
-          <span class="text-sm text-gray-600">{{ subroutine.name }}</span>
-        </div>
-      </div>
-    </div>
+  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    @for (s of selectedSubroutines; let i = $index; track s) {
+      <div class="example-box" cdkDrag>{{ s.name }} - {{ i + 1 }}</div>
+    }
   </div>
-  <!-- [disabled]="routineForm.invalid || (loading$ | async)" -->
 </div>

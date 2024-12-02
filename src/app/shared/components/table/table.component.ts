@@ -59,6 +59,8 @@ export class TableComponent implements OnInit {
   @Output() readonly selectionChange = new EventEmitter<any[]>();
   @Output() readonly edit = new EventEmitter<any>();
   @Output() readonly delete = new EventEmitter<any>();
+
+  @Input() showDelete = true;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
