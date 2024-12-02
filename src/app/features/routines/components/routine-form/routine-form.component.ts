@@ -68,7 +68,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   loading$!: Observable<boolean | null>;
   title = 'Agregar Rutina';
   btnTitle = 'Crear';
-  displayedColumns: string[] = ['name', 'type', 'isCustom', 'day'];
+  displayedColumns: string[] = ['name', 'type', 'isCustom', 'acciones'];
 
   categories = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -146,7 +146,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     if (this.selectedSubroutines.length === 0) {
       this.snackBarService.showWarning(
         'Falta información',
-        'Debe seleccionar al menos una sub rutina',
+        'Debe seleccionar al menos una subrutina',
       );
       return;
     }
@@ -168,6 +168,14 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         this.router.navigate(['/rutinas']);
       });
     }
+  }
+
+  handleEditDay(e: Event): void {
+    console.log('handleEditDay', e);
+  }
+
+  deleteSubRoutine(e: Event): void {
+    console.log('handleDeleteDay', e);
   }
 
   goBack() {

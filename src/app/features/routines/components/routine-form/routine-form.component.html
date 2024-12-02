@@ -13,7 +13,7 @@
                 type="text"
                 id="name"
                 formControlName="name"
-                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                class="mt-1 h-14 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
                 placeholder="Nombre del ejercicio"
               />
             </div>
@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="w-full md:w-1/3">
+            <!-- <div class="w-full md:w-1/3">
               <label for="type" class="block text-sm font-medium text-gray-700"
                 >Categoria</label
               >
@@ -47,37 +47,38 @@
                   {{ option.viewValue }}
                 </option>
               </select>
+            </div> -->
+
+            <div class="w-full md:w-1/3">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Categoria</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option *ngFor="let c of categories" [value]="c.value">
+                    {{ c.viewValue | titlecase }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
 
-            <div class="w-full md:w-1/3 flex items-center">
-              <label
-                for="isCustom"
-                class="block text-sm font-medium text-gray-700 mr-4"
-                >Personalizada</label
-              >
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input
-                  label="Personalizada"
-                  type="checkbox"
-                  id="isCustom"
-                  formControlName="isCustom"
-                  class="sr-only peer"
-                />
-                <div
-                  class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:bg-primary-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"
-                ></div>
-              </label>
+            <div class="w-full md:w-1/3 flex items-cente">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Es Personalizada ? </mat-label>
+                <mat-select formControlName="isCustom">
+                  <mat-option [value]="true"> Si </mat-option>
+                  <mat-option [value]="false"> No </mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
 
-            <div class="w-full md:w-1/6">
+            <div class="w-full md:w-1/3">
               <input
                 appInput
                 label="Días"
                 type="number"
                 id="days"
                 formControlName="days"
-                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-                placeholder="Días"
+                class="mt-1 h-14 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Cantidad de días Sub-Rutina"
               />
             </div>
           </div>
@@ -114,6 +115,27 @@
     [data]="selectedSubroutines"
     [total]="selectedSubroutines.length"
     [loading]="false"
+    (edit)="handleEditDay($event)"
+    (delete)="deleteSubRoutine($event)"
   ></app-table>
+
+  <div class="mt-6 bg-gray-100 rounded-lg p-4">
+    <h3 class="text-lg font-semibold mb-4">Subrutinas por día</h3>
+
+    <div
+      *ngIf="selectedSubroutines.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
+      <div
+        *ngFor="let subroutine of selectedSubroutines; let i = index"
+        class="bg-white border rounded-lg shadow-sm p-4"
+      >
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-bold text-primary-600">Día {{ i + 1 }}</span>
+          <span class="text-sm text-gray-600">{{ subroutine.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- [disabled]="routineForm.invalid || (loading$ | async)" -->
 </div>
-<!-- [disabled]="routineForm.invalid || (loading$ | async)" -->

@@ -33,6 +33,8 @@ export class TranslationPipe implements PipeTransform {
         return 'Personalizada';
       case 'days':
         return 'Días';
+      case 'day':
+        return 'Día';
       case 'checkbox':
         return 'Seleccionar';
       default:
