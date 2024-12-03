@@ -1,0 +1,51 @@
+<div class="p-4 bg-white shadow-md rounded">
+  <form [formGroup]="editForm" class="space-y-4">
+    <div>
+      <label for="maxCount" class="block text-sm font-medium text-gray-700"
+        >Cantidad Máxima</label
+      >
+      <div class="flex justify-between">
+        <div class="w-1/2">
+          <input
+            appInput
+            id="maxCount"
+            type="number"
+            formControlName="maxCount"
+            class="mt-1 block rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <button appBtn color="secondary" type="button" (click)="editCount()">
+          Editar Cantidad
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
+      <div class="space-y-2">
+        @if (clients$ | async) {
+          @for (client of clients$ | async; track $index) {
+            <div class="flex items-center space-x-2">
+              <span>
+                {{ client.email }}
+              </span>
+              <button
+                type="button"
+                class="text-red-500 hover:text-red-700"
+                (click)="removeClient(client._id)"
+              >
+                Eliminar
+              </button>
+            </div>
+          }
+        }
+      </div>
+      <button appBtn type="button" color="primary" (click)="addClient()">
+        Seleccionar Cliente
+      </button>
+    </div>
+    <div class="flex justify-center">
+      <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,28 @@
+<section class="flex flex-col">
+  <span
+    class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 mb-4"
+  >
+    Horarios 🕒
+  </span>
+  <div class="grid grid-cols-6 gap-4 p-4 h-full overflow-y-auto">
+    @if (schedule) {
+      @for (day of schedule; track $index) {
+        <div
+          class="bg-gray-100 rounded-lg p-4 shadow-md flex flex-col overflow-hidden max-h-[calc(100vh-10rem)]"
+        >
+          <h3 class="text-lg font-semibold mb-2">{{ day.day }}</h3>
+          <div class="overflow-y-auto flex-grow">
+            @for (hour of day.hours; track $index) {
+              <app-card-schedule
+                [hour]="hour"
+                [day]="day"
+                (edit)="editarHorario($event)"
+                (delete)="eliminarHorario($event)"
+              ></app-card-schedule>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</section>

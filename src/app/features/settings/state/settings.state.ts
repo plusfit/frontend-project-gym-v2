@@ -60,10 +60,11 @@ export class SettingsState {
   ) {
     const _id = action._id;
     const schedule = action.payload.schedule;
-
+    ctx.patchState({ loading: true });
     return this.settingsService.updateSettings(_id, schedule).pipe(
       tap((settings: any) => {
         ctx.patchState({ settings });
+        ctx.patchState({ loading: false });
       }),
     );
   }

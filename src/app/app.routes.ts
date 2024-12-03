@@ -5,6 +5,7 @@ import { signInGuard } from '@core/guards/sign-in.guards';
 import { AuthLayoutComponent } from '@features/auth/components/auth-layout/auth-layout.component';
 import { LoginPageComponent } from '@features/auth/pages/login-page/login-page.component';
 import { RegisterPageComponent } from '@features/auth/pages/register-page/register-page.component';
+import { SchedulePageComponent } from '@features/schedule/pages/schedule-page/schedule-page.component';
 import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
 import { AddEditRoutinePageComponent } from '@features/routines/pages/add-edit-page/add-edit-routine.page.component';
 import { RoutinePageComponent } from '@features/routines/pages/routine/routine.component';
@@ -50,6 +51,10 @@ export const routes: Routes = [
       {
         path: 'rutinas',
         component: RoutinePageComponent,
+      },
+      {
+        path: 'horarios',
+        component: SchedulePageComponent,
       },
     ],
   },
