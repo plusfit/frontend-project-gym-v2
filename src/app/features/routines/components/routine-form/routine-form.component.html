@@ -110,17 +110,16 @@
     </button>
   </div>
   <!-- tabla para mostrar las subrutinas -->
-  <app-table
+  <!-- <app-table
     [displayedColumns]="displayedColumns"
     [data]="selectedSubroutines"
     [total]="selectedSubroutines.length"
     [loading]="false"
     [showDelete]="false"
     (edit)="handleEditDay($event)"
-  ></app-table>
-  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    @for (s of selectedSubroutines; let i = $index; track s) {
-      <div class="example-box" cdkDrag>{{ s.name }} - {{ i + 1 }}</div>
-    }
-  </div>
+  ></app-table> -->
+  <app-drag-and-drop-sorting
+    [list]="selectedSubroutines"
+    (listEmitter)="handleList($event)"
+  ></app-drag-and-drop-sorting>
 </div>

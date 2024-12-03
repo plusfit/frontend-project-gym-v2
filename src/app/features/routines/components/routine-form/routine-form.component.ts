@@ -26,7 +26,6 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { Router } from '@angular/router';
 import { AddSubroutineDialogComponent } from '@features/routines/components/add-subrutine-dialog/add-subrutine-dialog.component';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
-import { CreateSubRoutine } from '@features/sub-routines/state/sub-routine.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { EDay } from '@core/enums/day.enum';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -34,16 +33,13 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
 import {
+  CreateRoutine,
   UpdateRoutine,
   UpdateSubRoutines,
 } from '@features/routines/state/routine.actions';
 import { EditSubroutineDayDialogComponent } from '../edit-subroutine-day-dialog/edit-subroutine-day-dialog.component';
-import {
-  CdkDragDrop,
-  CdkDropList,
-  CdkDrag,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+
+import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -62,8 +58,7 @@ import {
     MatSelect,
     MatOption,
     MatLabel,
-    CdkDropList,
-    CdkDrag,
+    DragAndDropSortingComponent,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -138,11 +133,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
           subRoutines: newSubRoutines,
         };
         this.selectedSubroutines = newSubRoutines;
-        this.selectedSubroutines = this.selectedSubroutines.map(
-          (subRoutine, i) => {
-            return { ...subRoutine, day: i + 1 };
-          },
-        );
         this.store.dispatch(new UpdateSubRoutines(newRoutine));
       }
     });
@@ -174,7 +164,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
           this.router.navigate(['/rutinas']);
         });
     } else {
-      this.store.dispatch(new CreateSubRoutine(payload)).subscribe(() => {
+      this.store.dispatch(new CreateRoutine(payload)).subscribe(() => {
         this.snackBarService.showSuccess('Exito!', 'Rutina creada');
         this.router.navigate(['/rutinas']);
       });
@@ -191,16 +181,17 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(
-      this.selectedSubroutines,
-      event.previousIndex,
-      event.currentIndex,
-    );
-  }
-
   goBack() {
     this.router.navigate(['/rutinas']);
+  }
+
+  handleList(e: any[]) {
+    console.log(e);
+    const newRoutine = {
+      ...this.routineForm.value,
+      subRoutines: e,
+    };
+    this.store.dispatch(new UpdateSubRoutines(newRoutine));
   }
 
   protected readonly EDay = EDay;
