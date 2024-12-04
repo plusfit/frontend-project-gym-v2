@@ -1,0 +1,82 @@
+<div class="p-6 w-3/4 mx-auto">
+  <span class="text-4xl font-semibold text-gray-800 mb-8">{{ title }}</span>
+
+  <!-- Loading Indicator -->
+  @if (loading$ | async) {
+    <app-loader></app-loader>
+  } @else {
+    <!-- Form Content -->
+    <mat-dialog-content>
+      <form [formGroup]="subRoutineForm" class="space-y-4">
+        <!-- SubRoutine Fields -->
+        <div class="flex py-8 gap-4">
+          <div class="w-full md:w-1/2">
+              <input
+                appInput
+                label="Nombre"
+                type="text"
+                id="name"
+                formControlName="name"
+                class="mt-1 h-14 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Nombre de la Sub-Rutina"
+              />
+          </div>
+
+          <div class="w-full pt-6 md:w-1/2">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Es Personalizada ? </mat-label>
+              <mat-select formControlName="isCustom">
+                <mat-option [value]="true">
+                 Si
+                </mat-option>
+                <mat-option [value]="false">
+                  No
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Current Exercises Section -->
+        <div>
+          <div class="flex justify-between mb-8">
+            <span class="text-2xl font-semibold text-gray-800 ">Ejercicios actuales</span>
+            <button
+              appBtn
+              color="primary"
+              type="button"
+              (click)="openAddExerciseDialog()"
+              class=""
+            >
+              Agregar Ejercicio
+            </button>
+          </div>
+
+          <app-table
+            [data]="selectedExercises"
+            [total]="selectedExercises.length"
+            [loading]="false"
+            [displayedColumns]="['name', 'type', 'description']"
+            (delete)="removeExercise($event)"
+          ></app-table>
+        </div>
+      </form>
+    </mat-dialog-content>
+  }
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-2 mt-8">
+    <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
+    <button
+      appBtn
+      color="primary"
+      [loader]="(loading$ | async)!"
+      [animate]="true"
+      (click)="save()"
+      type="button"
+      [disabled]="subRoutineForm.invalid || (loading$ | async)"
+    >
+      {{ btnTitle }}
+    </button>
+  </div>
+</div>

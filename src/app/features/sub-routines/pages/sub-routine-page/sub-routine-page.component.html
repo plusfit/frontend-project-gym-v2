@@ -1,0 +1,30 @@
+<section class="flex flex-col space-y-6 w-3/4 mx-auto">
+  <span
+    class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 mb-8 my-8"
+  >
+    Sub-rutinas 🏋️
+  </span>
+  <app-filter-bar (formValues)="onSearch($event)">
+    <button class="btn-primary button-link" (click)="createSubRoutine()">
+      <i class="ph-plus text-white text-lg"></i> <span>Crear Sub-Rutina</span>
+    </button>
+  </app-filter-bar>
+
+  <app-table
+    [displayedColumns]="displayedColumns"
+    [data]="subRoutines | async"
+    [total]="total | async"
+    [loading]="loading | async"
+    (edit)="editSubRoutine($event)"
+    (delete)="deleteSubRoutine($event)"
+  >
+    <mat-paginator
+      appJumpPages
+      class="border-t rounded-b-md"
+      [length]="total | async"
+      [pageSize]="pageSize"
+      (page)="paginate($event)"
+    >
+    </mat-paginator>
+  </app-table>
+</section>

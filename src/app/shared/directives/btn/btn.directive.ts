@@ -1,7 +1,12 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 
 /** The possible colors for the button. */
-type BtnColor = 'primary' | 'secondary' | 'destructive' | 'destructive-outline';
+type BtnColor =
+  | 'primary'
+  | 'secondary'
+  | 'destructive'
+  | 'destructive-outline'
+  | 'basic';
 
 /**
  * The BtnDirective adds styles and an icon to a button element.

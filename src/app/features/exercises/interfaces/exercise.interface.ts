@@ -1,5 +1,5 @@
 export interface Exercise {
-  _id: { $oid: string };
+  _id: string;
   name: string;
   description: string;
   gifUrl: string;

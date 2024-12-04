@@ -26,6 +26,8 @@ import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { SettingsState } from '@features/settings/state/settings.state';
+import { RoutineState } from '@features/routines/state/routine.state';
+import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 
 export const appConfig: ApplicationConfig = {
@@ -55,7 +57,14 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     importProvidersFrom(
       NgxsModule.forRoot(
-        [AuthState, SettingsState, ExerciseState, ScheduleState],
+        [
+          AuthState,
+          SettingsState,
+          ExerciseState,
+          SubRoutinesState,
+          RoutineState,
+          ScheduleState,
+        ],
         {
           developmentMode: true,
         },

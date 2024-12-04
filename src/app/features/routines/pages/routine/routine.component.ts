@@ -1,11 +1,22 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  OnDestroy,
   OnInit,
   ViewChild,
-  OnDestroy,
 } from '@angular/core';
-import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { Routine } from '@features/routines/interfaces/routine.interface';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -13,69 +24,60 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExerciseState } from '@features/exercises/state/exercise.state';
+import { environment } from '../../../../../environments/environment.prod';
 import {
-  MatPaginator,
-  MatPaginatorModule,
-  PageEvent,
-} from '@angular/material/paginator';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Exercise } from '@features/exercises/interfaces/exercise.interface';
-import {
-  DeleteExercise,
-  GetExercisesByName,
-  GetExercisesByPage,
+  DeleteRoutine,
+  GetRoutinesByName,
+  GetRoutinesByPage,
   SetLimitPerPage,
-} from '@features/exercises/state/exercise.actions';
-import { CommonModule } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
-import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
-import { environment } from '../../../../../environments/environment';
+} from '@features/routines/state/routine.actions';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { RoutineState } from '@features/routines/state/routine.state';
+import { RoutineTableComponent } from '@features/routines/components/routine-table/routine-table.component';
+import { RoutineFormComponent } from '@features/routines/components/routine-form/routine-form.component';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-exercise',
+  selector: 'app-routine',
   standalone: true,
   imports: [
-    ExerciseTableComponent,
+    RoutineTableComponent,
     MatPaginatorModule,
     CommonModule,
     BtnDirective,
   ],
-  templateUrl: './exercise.component.html',
-  styleUrl: './exercise.component.css',
+  templateUrl: './routine.component.html',
+  styleUrl: './routine.component.css',
 })
-export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
+export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   constructor(
     private store: Store,
     private dialog: MatDialog,
     private actions: Actions,
     private snackbar: SnackBarService,
+    private router: Router,
   ) {}
   private destroy = new Subject<void>();
-  limitPerPage = environment.config.pageSize ?? 8;
-  pageSize = environment.config.pageSize;
+  limitPerPage = environment.routineTableLimit ?? 8;
+  routineTableLimitOptions = environment.routineTableLimitOptions;
   currentPage = 1;
   displayedColumns: string[] = [
     'name',
     'description',
-    'type',
-    'createdAt',
-    'updatedAt',
+    'category',
+    'isCustom',
+    'days',
     'acciones',
   ];
-  dataSource = new MatTableDataSource<Exercise>();
-  totalExercises$: Observable<number> = this.store.select(
-    ExerciseState.totalExercises,
+  dataSource = new MatTableDataSource<Routine>();
+  totalRoutines$: Observable<number> = this.store.select(
+    RoutineState.totalRoutines,
   );
   searchTerm$ = new Subject<string>();
   loading$: Observable<boolean> = this.store.select(
-    ExerciseState.exerciseLoading,
+    RoutineState.routineLoading,
   );
-  exercises$: Observable<any[]> = this.store.select(ExerciseState.exercises);
+  routines$: Observable<any[]> = this.store.select(RoutineState.routines);
 
   searchValue: string = '';
   isSearching: boolean = false;
@@ -93,12 +95,12 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       });
 
     this.store.dispatch(
-      new GetExercisesByPage({
+      new GetRoutinesByPage({
         page: this.currentPage,
       }),
     );
-    this.actions.pipe(ofActionSuccessful(GetExercisesByPage)).subscribe(() => {
-      this.totalExercises$.subscribe((total) => {
+    this.actions.pipe(ofActionSuccessful(GetRoutinesByPage)).subscribe(() => {
+      this.totalRoutines$.subscribe((total) => {
         this.paginator.length = total;
       });
     });
@@ -113,7 +115,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
   }
 
-  searchExercises(event: Event): void {
+  searchRoutines(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.searchValue = inputElement.value.trim();
     this.searchTerm$.next(this.searchValue);
@@ -121,7 +123,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   performSearch(searchValue: string): void {
     this.isSearching = !!searchValue;
     this.store.dispatch(
-      new GetExercisesByName(
+      new GetRoutinesByName(
         {
           page: 1,
         },
@@ -132,15 +134,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     );
   }
 
-  editExercise(e: string) {
-    //TODO: Ver el error en consola al abrir el modal
-    this.dialog.open(ExerciseFormComponent, {
-      width: '800px',
-      data: { isEdit: true, exerciseId: e },
-    });
-  }
-
-  deleteExercise(e: string) {
+  deleteRoutine(e: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
@@ -151,16 +145,16 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
-      this.store.dispatch(new DeleteExercise(e));
+      this.store.dispatch(new DeleteRoutine(e));
       this.actions
-        .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))
+        .pipe(ofActionSuccessful(DeleteRoutine), takeUntil(this.destroy))
         .subscribe(() => {
           this.snackbar.showSuccess('Ejercicio borrado correctamente', 'OK');
           this.currentPage = 1;
           this.store
-            .dispatch(new GetExercisesByPage({ page: this.currentPage }))
+            .dispatch(new GetRoutinesByPage({ page: this.currentPage }))
             .subscribe(() => {
-              this.totalExercises$.subscribe((total) => {
+              this.totalRoutines$.subscribe((total) => {
                 this.paginator.length = total;
                 this.paginator.firstPage();
               });
@@ -169,11 +163,11 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  addExerciseModal() {
-    this.dialog.open(ExerciseFormComponent, {
-      width: '800px',
-      data: { isEdit: false },
-    });
+  addRoutineModal() {
+    this.router.navigate(['/rutinas/crear']);
+  }
+  editRoutine(e: string) {
+    this.router.navigate(['/rutinas/', e]);
   }
 
   handlePageEvent(e: PageEvent) {
@@ -184,7 +178,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (this.isSearching) {
       this.store.dispatch(
-        new GetExercisesByName(
+        new GetRoutinesByName(
           {
             page: this.currentPage,
           },
@@ -195,7 +189,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       );
     } else {
       this.store.dispatch(
-        new GetExercisesByPage({
+        new GetRoutinesByPage({
           page: this.currentPage,
         }),
       );
