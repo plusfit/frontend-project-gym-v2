@@ -10,7 +10,7 @@
       <form [formGroup]="subRoutineForm" class="space-y-4">
         <!-- SubRoutine Fields -->
         <div class="flex py-8 gap-4">
-          <div class="w-full md:w-1/3">
+          <div class="w-full md:w-1/2">
               <input
                 appInput
                 label="Nombre"
@@ -22,7 +22,7 @@
               />
           </div>
 
-          <div class="w-full pt-6 md:w-1/3">
+          <div class="w-full pt-6 md:w-1/2">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Es Personalizada ? </mat-label>
               <mat-select formControlName="isCustom">
@@ -31,16 +31,6 @@
                 </mat-option>
                 <mat-option [value]="false">
                   No
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="w-full pt-6 md:w-1/3">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Día</mat-label>
-              <mat-select formControlName="day">
-                <mat-option *ngFor="let day of days" [value]="day.value">
-                  {{ day.label | titlecase }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
