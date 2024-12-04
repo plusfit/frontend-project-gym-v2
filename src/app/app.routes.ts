@@ -12,6 +12,8 @@ import { RoutinePageComponent } from '@features/routines/pages/routine/routine.c
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
 import { WelcomeComponent } from '@core/components/welcome/welcome.component';
+import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
+import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 
 export const routes: Routes = [
   {
@@ -24,7 +26,19 @@ export const routes: Routes = [
         component: WelcomeComponent,
       },
       {
-        path: 'exercises/list',
+        path: 'subrutinas',
+        component: SubRoutinePageComponent,
+      },
+      {
+        path: 'subrutinas/:id',
+        component: AddEditSubRoutineComponent,
+      },
+      {
+        path: 'subrutinas/crear',
+        component: AddEditSubRoutineComponent,
+      },
+      {
+        path: 'ejercicios',
         component: ExerciseComponent,
       },
       {
