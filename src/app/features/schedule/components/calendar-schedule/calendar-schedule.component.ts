@@ -15,11 +15,14 @@ import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
+import { ScheduleState } from '@features/schedule/state/schedule.state';
+import { AsyncPipe } from '@angular/common';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-calendar-schedule',
   standalone: true,
-  imports: [CardScheduleComponent],
+  imports: [CardScheduleComponent, AsyncPipe, LoaderComponent],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
@@ -28,6 +31,7 @@ export class CalendarScheduleComponent implements AfterViewInit {
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
   });
+  loading$ = this.store.select(ScheduleState.scheduleLoading);
 
   constructor(
     private store: Store,
