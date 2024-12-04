@@ -9,6 +9,7 @@ import { SchedulePageComponent } from '@features/schedule/pages/schedule-page/sc
 import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
+import { WelcomeComponent } from '@core/components/welcome/welcome.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,10 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     canActivate: [signInGuard],
     children: [
+      {
+        path: '',
+        component: WelcomeComponent,
+      },
       {
         path: 'exercises/list',
         component: ExerciseComponent,

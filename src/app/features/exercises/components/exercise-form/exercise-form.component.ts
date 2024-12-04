@@ -1,28 +1,32 @@
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatDialogModule } from '@angular/material/dialog';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CommonModule, NgIf } from '@angular/common';
-import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { ExerciseState } from '@features/exercises/state/exercise.state';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import {
   CreateExercise,
   GetExerciseById,
   GetExercisesByPage,
   UpdateExercise,
 } from '@features/exercises/state/exercise.actions';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { Exercise } from '@features/exercises/interfaces/exercise.interface';
+import { ExerciseState } from '@features/exercises/state/exercise.state';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { InputDirective } from '@shared/directives/btn/input.directive';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -36,6 +40,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     InputDirective,
     CommonModule,
     LoaderComponent,
+    FormsModule,
+    MatSelectModule,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {

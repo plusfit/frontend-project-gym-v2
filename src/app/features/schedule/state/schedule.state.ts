@@ -57,17 +57,15 @@ export class ScheduleState {
 
   @Action(GetSchedule)
   getSchedule(ctx: StateContext<ScheduleStateModel>) {
+    ctx.patchState({ loading: true });
     return this.scheduleService.getSchedule().pipe(
       tap((schedule: any) => {
         const sortSchedule = schedule.data.reduce((acc: any, hour: any) => {
-          // Buscar si el día ya existe en el array de días agrupados
           let dayEntry = acc.find((d: any) => d.day === hour.day);
           if (!dayEntry) {
-            // Si el día no existe, lo añadimos con un array vacío de horas
             dayEntry = { day: hour.day, hours: [] };
             acc.push(dayEntry);
           }
-          // Añadimos el horario a la lista de horas de ese día
           dayEntry.hours.push({
             _id: hour._id,
             startTime: hour.startTime,
@@ -75,7 +73,6 @@ export class ScheduleState {
             clients: hour.clients,
             maxCount: hour.maxCount,
           });
-          // Ordenamos las horas dentro del día
           dayEntry.hours.sort((a: any, b: any) => {
             return parseInt(a.startTime, 10) - parseInt(b.startTime, 10);
           });
@@ -95,6 +92,7 @@ export class ScheduleState {
           return acc;
         }, []);
         ctx.patchState({ schedule: sortSchedule });
+        ctx.patchState({ loading: false });
       }), // Provide an argument for the tap operator
     );
   }
