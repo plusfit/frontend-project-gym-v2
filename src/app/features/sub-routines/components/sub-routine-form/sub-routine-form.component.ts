@@ -36,6 +36,7 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import { EDay } from '@core/enums/day.enum';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -53,6 +54,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatSelect,
     MatOption,
     MatLabel,
+    DragAndDropSortingComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -158,6 +160,14 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
   goBack() {
     this.router.navigate(['/sub-rutinas']);
+  }
+
+  handleList(e: any[]) {
+    const newSubRoutine = {
+      ...this.subRoutineForm.value,
+      subRoutines: e,
+    };
+    this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
   }
 
   protected readonly EDay = EDay;
