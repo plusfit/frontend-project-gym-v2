@@ -6,6 +6,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.mdc-notched-outline__notch {
+  border-right: none !important;
+}
+
 html {
   overflow-y: scroll;
 }

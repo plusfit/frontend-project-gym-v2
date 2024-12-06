@@ -1,17 +1,24 @@
 <div class="flex flex-col space-y-6 h-full">
   <div class="flex-shrink-0">
-    <!-- <img title="logo" class="h-16 w-full" src="./assets/logo/logo-letra-prueba.png" [alt]="appName" /> -->
+    <a routerLink="/">
+      <img
+        title="logo"
+        class="scale-75 w-full"
+        src="./assets/logos/logo2.png"
+        [alt]="appName"
+      />
+    </a>
   </div>
   <div class="hidden md:block">
     <div class="flex flex-col space-y-2">
-      <a
+      <!-- <a
         routerLink="usuarios"
         routerLinkActive="nav-item-selected"
         class="nav-item cursor-pointer"
       >
         <i class="ph-users-light text-white text-xl"></i>
         <span> Usuarios</span>
-      </a>
+      </a> -->
 
       <a
         routerLink="/configuracion"
@@ -27,14 +34,6 @@
         ><i class="ph-calendar-light text-white text-xl"></i
         ><span> Horarios</span></a
       >
-      <a
-        routerLink="panel"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-grid-four-light text-white text-xl"></i>
-        <span> Panel</span>
-      </a>
       <a
         routerLink="/rutinas"
         routerLinkActive="nav-item-selected"

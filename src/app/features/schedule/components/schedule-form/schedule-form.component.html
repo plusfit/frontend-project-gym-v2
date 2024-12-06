@@ -14,7 +14,15 @@
             class="mt-1 block rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
-        <button appBtn color="secondary" type="button" (click)="editCount()">
+        <button
+          appBtn
+          color="primary"
+          type="button"
+          (click)="editCount()"
+          [loader]="(loading$ | async)!"
+          [animate]="true"
+          [disabled]="editForm.invalid || (loading$ | async)"
+        >
           Editar Cantidad
         </button>
       </div>
@@ -38,6 +46,8 @@
               </button>
             </div>
           }
+        } @else {
+          <p>No hay clientes seleccionados</p>
         }
       </div>
       <button appBtn type="button" color="primary" (click)="addClient()">

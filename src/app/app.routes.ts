@@ -11,6 +11,7 @@ import { AddEditRoutinePageComponent } from '@features/routines/pages/add-edit-p
 import { RoutinePageComponent } from '@features/routines/pages/routine/routine.component';
 import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
 import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
+import { WelcomeComponent } from '@core/components/welcome/welcome.component';
 import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
 import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 
@@ -20,6 +21,10 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     canActivate: [signInGuard],
     children: [
+      {
+        path: '',
+        component: WelcomeComponent,
+      },
       {
         path: 'subrutinas',
         component: SubRoutinePageComponent,

@@ -64,16 +64,6 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   title = 'Agregar Sub-Rutina';
   btnTitle = 'Crear';
 
-  days = [
-    { value: EDay.MONDAY, label: 'Lunes' },
-    { value: EDay.TUESDAY, label: 'Martes' },
-    { value: EDay.WEDNESDAY, label: 'Miércoles' },
-    { value: EDay.THURSDAY, label: 'Jueves' },
-    { value: EDay.FRIDAY, label: 'Viernes' },
-    { value: EDay.SATURDAY, label: 'Sábado' },
-    { value: EDay.SUNDAY, label: 'Domingo' },
-  ];
-
   private destroy = new Subject<void>();
 
   constructor(
@@ -94,7 +84,6 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     this.subRoutineForm = this.fb.group({
       name: ['', Validators.required],
       isCustom: [false],
-      day: [''],
     });
   }
 
