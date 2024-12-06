@@ -46,7 +46,6 @@ export class AddSubroutineDialogComponent implements OnInit {
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
 
     this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
-    console.log('this.subRoutines', this.subRoutines);
 
     this.loadSubrutines(1);
   }

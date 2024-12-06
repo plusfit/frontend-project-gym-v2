@@ -37,7 +37,6 @@ import {
   UpdateRoutine,
   UpdateSubRoutines,
 } from '@features/routines/state/routine.actions';
-import { EditSubroutineDayDialogComponent } from '../edit-subroutine-day-dialog/edit-subroutine-day-dialog.component';
 
 import e from 'express';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
@@ -172,16 +171,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         this.router.navigate(['/rutinas']);
       });
     }
-  }
-
-  handleEditDay(e: Event): void {
-    const dialogRef = this.dialog.open(EditSubroutineDayDialogComponent, {
-      width: '600px',
-      data: e,
-    });
-    dialogRef.afterClosed().subscribe((subroutines: SubRoutine[]) => {
-      console.log(subroutines);
-    });
   }
 
   goBack() {
