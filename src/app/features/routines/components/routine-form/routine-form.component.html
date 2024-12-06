@@ -109,15 +109,6 @@
       {{ btnTitle }}
     </button>
   </div>
-  <!-- tabla para mostrar las subrutinas -->
-  <!-- <app-table
-    [displayedColumns]="displayedColumns"
-    [data]="selectedSubroutines"
-    [total]="selectedSubroutines.length"
-    [loading]="false"
-    [showDelete]="false"
-    (edit)="handleEditDay($event)"
-  ></app-table> -->
   <app-drag-and-drop-sorting
     [list]="selectedSubroutines"
     (listEmitter)="handleList($event)"

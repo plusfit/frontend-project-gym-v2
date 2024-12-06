@@ -1,4 +1,4 @@
-import { Component, input, InputSignal, output } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import {
   CdkDragDrop,
   CdkDropList,
@@ -13,11 +13,21 @@ import {
   styleUrl: './drag-and-drop-sorting.component.css',
 })
 export class DragAndDropSortingComponent {
-  list: InputSignal<any[]> = input<any[]>([]);
+  //list: InputSignal<any[]> = input<any[]>([]);
+  @Input() list: any[] = [];
   listEmitter = output<any[]>();
 
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.list(), event.previousIndex, event.currentIndex);
-    this.listEmitter.emit(this.list());
+    const previousIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+
+    const updatedList = [...this.list];
+
+    const temp = updatedList[previousIndex];
+    updatedList[previousIndex] = updatedList[currentIndex];
+    updatedList[currentIndex] = temp;
+
+    this.list = updatedList;
+    this.listEmitter.emit(updatedList);
   }
 }

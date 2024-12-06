@@ -39,6 +39,7 @@ import {
 } from '@features/routines/state/routine.actions';
 import { EditSubroutineDayDialogComponent } from '../edit-subroutine-day-dialog/edit-subroutine-day-dialog.component';
 
+import e from 'express';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 @Component({
   selector: 'app-routine-form',
@@ -65,11 +66,13 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   isEdit: InputSignal<boolean> = input<boolean>(false);
   id: InputSignal<string> = input<string>('');
   routineForm!: FormGroup;
-  selectedSubroutines: SubRoutine[] = [];
+  selectedSubroutines: any[] = [];
   loading$!: Observable<boolean | null>;
   title = 'Agregar Rutina';
   btnTitle = 'Crear';
   displayedColumns: string[] = ['day', 'name', 'type', 'isCustom', 'acciones'];
+
+  listToSort: any[] = [];
 
   categories = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -186,7 +189,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   handleList(e: any[]) {
-    console.log(e);
     const newRoutine = {
       ...this.routineForm.value,
       subRoutines: e,

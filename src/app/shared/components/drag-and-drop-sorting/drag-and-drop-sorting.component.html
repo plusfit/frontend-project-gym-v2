@@ -1,8 +1,9 @@
+<h2>Arrastra y suelta para ordenar</h2>
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-  @for (l of list(); let i = $index; track l) {
+  @for (l of list; let i = $index; track l) {
     <div class="example-box" cdkDrag>{{ l.name }} - {{ i + 1 }}</div>
   }
-  @if (list().length === 0) {
+  @if (list.length === 0) {
     <div class="example-box" cdkDrag>No hay elementos para ordenar 😢</div>
   }
 </div>
