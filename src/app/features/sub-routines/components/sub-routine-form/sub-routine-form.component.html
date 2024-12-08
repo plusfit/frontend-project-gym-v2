@@ -11,18 +11,17 @@
         <!-- SubRoutine Fields -->
         <div class="flex py-8 gap-4">
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="nameControl"
               label="Nombre"
               type="text"
-              id="name"
-              formControlName="name"
-              class="mt-1 h-14 w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="name"
               placeholder="Nombre de la Sub-Rutina"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
 
-          <div class="w-full pt-6 md:w-1/2">
+          <div class="w-full md:w-1/2">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Es Personalizada ? </mat-label>
               <mat-select formControlName="isCustom">

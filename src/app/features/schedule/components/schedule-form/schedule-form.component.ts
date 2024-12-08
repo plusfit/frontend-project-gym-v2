@@ -1,6 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -23,11 +24,18 @@ import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { AsyncPipe } from '@angular/common';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-schedule-form',
   standalone: true,
-  imports: [ReactiveFormsModule, BtnDirective, InputDirective, AsyncPipe],
+  imports: [
+    ReactiveFormsModule,
+    BtnDirective,
+    InputDirective,
+    AsyncPipe,
+    InputComponent,
+  ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
 })
@@ -57,6 +65,10 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     });
 
     this.initClients();
+  }
+
+  get maxCountControl(): FormControl {
+    return this.editForm.get('maxCount') as FormControl;
   }
 
   // Inicializa los clientes existentes en el FormArray

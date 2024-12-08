@@ -26,9 +26,9 @@ import {
 import { SettingsState } from '@features/settings/state/settings.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
 import { Observable, Subject } from 'rxjs';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-settings-form',
@@ -38,10 +38,10 @@ import { Observable, Subject } from 'rxjs';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    InputDirective,
     BtnDirective,
     AsyncPipe,
     ConditionalTextPipe,
+    InputComponent,
   ],
   templateUrl: './settings-form.component.html',
   styleUrl: './settings-form.component.css',
@@ -109,6 +109,10 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  get maxCountControl(): FormControl {
+    return this.settingsForm.get('maxCount') as FormControl;
   }
 
   createSettings(): void {
