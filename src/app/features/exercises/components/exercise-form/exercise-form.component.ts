@@ -2,6 +2,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -27,6 +28,7 @@ import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { MatSelectModule } from '@angular/material/select';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -42,6 +44,7 @@ import { MatSelectModule } from '@angular/material/select';
     LoaderComponent,
     FormsModule,
     MatSelectModule,
+    InputComponent,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
@@ -188,5 +191,17 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
         this.dialogRef.close();
       });
+  }
+
+  get nameControl(): FormControl {
+    return this.exerciseForm.get('name') as FormControl;
+  }
+
+  get descriptionControl(): FormControl {
+    return this.exerciseForm.get('description') as FormControl;
+  }
+
+  get minutesControl(): FormControl {
+    return this.exerciseForm.get('minutes') as FormControl;
   }
 }

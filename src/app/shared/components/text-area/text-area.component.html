@@ -1,0 +1,18 @@
+<form class="example-form">
+  <mat-form-field class="example-full-width" [appearance]="appearance">
+    <mat-label>{{ label }}</mat-label>
+    <textarea
+      [type]="type"
+      matInput
+      [formControl]="control"
+      [errorStateMatcher]="matcher"
+      [placeholder]="placeholder"
+      class="shadow-none"
+    ></textarea>
+    <mat-error>
+      @if (control.errors) {
+        {{ control.errors | validationErrors: errorMessages?.[errorKey] }}
+      }
+    </mat-error>
+  </mat-form-field>
+</form>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,16 +7,16 @@ import {
 } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Router } from '@angular/router';
-import { AuthState } from '../../state/auth.state';
-import { Login } from '../../state/auth.actions';
-import { passwordValidator } from '@core/validators/password.validator';
-import { SnackBarService } from '@core/services/snackbar.service';
 import { AsyncPipe, NgClass } from '@angular/common';
+import { Router } from '@angular/router';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { passwordValidator } from '@core/validators/password.validator';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
 import { InputDirective } from '@shared/directives/btn/input.directive';
+import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
+import { Login } from '../../state/auth.actions';
+import { AuthState } from '../../state/auth.state';
 
 @Component({
   selector: 'app-login-form',

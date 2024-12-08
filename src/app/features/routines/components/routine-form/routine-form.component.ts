@@ -1,33 +1,26 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   input,
   InputSignal,
+  OnChanges,
   OnDestroy,
   OnInit,
-  OnChanges,
 } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject } from 'rxjs';
-import { Store } from '@ngxs/store';
 
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
-import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { TableComponent } from '@shared/components/table/table.component';
-import { Router } from '@angular/router';
-import { AddSubroutineDialogComponent } from '@features/routines/components/add-subrutine-dialog/add-subrutine-dialog.component';
-import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { EDay } from '@core/enums/day.enum';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import {
@@ -35,14 +28,24 @@ import {
   RoutinePayload,
 } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
+import { Router } from '@angular/router';
+import { EDay } from '@core/enums/day.enum';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { AddSubroutineDialogComponent } from '@features/routines/components/add-subrutine-dialog/add-subrutine-dialog.component';
 import {
   CreateRoutine,
   UpdateRoutine,
   UpdateSubRoutines,
 } from '@features/routines/state/routine.actions';
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
+import { TableComponent } from '@shared/components/table/table.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { Location } from '@angular/common';
 
-import e from 'express';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
+import { InputComponent } from '../../../../shared/components/input/input.component';
+import { TextAreaComponent } from '../../../../shared/components/text-area/text-area.component';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -62,6 +65,8 @@ import { DragAndDropSortingComponent } from '../../../../shared/components/drag-
     MatOption,
     MatLabel,
     DragAndDropSortingComponent,
+    InputComponent,
+    TextAreaComponent,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -98,6 +103,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     private router: Router,
     private dialog: MatDialog,
     private snackBarService: SnackBarService,
+    private location: Location,
   ) {}
 
   ngOnDestroy(): void {
@@ -183,18 +189,18 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         .dispatch(new UpdateRoutine(this.id(), payload))
         .subscribe(() => {
           this.snackBarService.showSuccess('Exito!', 'Rutina actualizada');
-          this.router.navigate(['/rutinas']);
+          this.location.back();
         });
     } else {
       this.store.dispatch(new CreateRoutine(payload)).subscribe(() => {
         this.snackBarService.showSuccess('Exito!', 'Rutina creada');
-        this.router.navigate(['/rutinas']);
+        this.location.back();
       });
     }
   }
 
   goBack() {
-    this.router.navigate(['/rutinas']);
+    this.location.back();
   }
 
   handleList(e: any[]) {
@@ -203,6 +209,18 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       subRoutines: e,
     };
     this.store.dispatch(new UpdateSubRoutines(newRoutine));
+  }
+
+  get nameControl(): FormControl {
+    return this.routineForm.get('name') as FormControl;
+  }
+
+  get daysControl(): FormControl {
+    return this.routineForm.get('days') as FormControl;
+  }
+
+  get descriptionControl(): FormControl {
+    return this.routineForm.get('description') as FormControl;
   }
 
   protected readonly EDay = EDay;

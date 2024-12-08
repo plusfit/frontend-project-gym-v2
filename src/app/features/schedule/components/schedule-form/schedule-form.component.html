@@ -1,18 +1,16 @@
 <div class="p-4 bg-white shadow-md rounded">
   <form [formGroup]="editForm" class="space-y-4">
     <div>
-      <label for="maxCount" class="block text-sm font-medium text-gray-700"
-        >Cantidad Máxima</label
-      >
       <div class="flex justify-between">
         <div class="w-1/2">
-          <input
-            appInput
-            id="maxCount"
+          <app-input
+            [control]="maxCountControl"
+            label="Cantidad Máxima"
             type="number"
-            formControlName="maxCount"
-            class="mt-1 block rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
+            errorKey="maxCount"
+            placeholder="Cantidad Máxima"
+            appearance="outline"
+          ></app-input>
         </div>
         <button
           appBtn
