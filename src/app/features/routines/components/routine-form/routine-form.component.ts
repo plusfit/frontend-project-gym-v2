@@ -172,6 +172,8 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
+    this.routineForm.value.days = Number(this.routineForm.value.days);
+
     const routine: Routine | null = this.store.selectSnapshot(
       RoutineState.selectedRoutine,
     );
