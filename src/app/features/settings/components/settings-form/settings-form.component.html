@@ -26,14 +26,15 @@
           }
         </mat-select>
       </mat-form-field>
-      <div class="flex w-56">
-        <input
-          appInput
-          type="number"
+      <div class="flex w-56 mb-2 mt-2">
+        <app-input
+          [control]="maxCountControl"
           label="Cantidad de clientes"
+          errorKey="maxCount"
+          type="number"
           placeholder="Ingrese la cantidad de clientes"
-          formControlName="maxCount"
-        />
+          appearance="outline"
+        ></app-input>
       </div>
       <div class="flex w-56">
         <mat-form-field appearance="outline" class="w-full">

@@ -9,6 +9,7 @@ import {
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -24,6 +25,7 @@ import { LoaderComponent } from '../../../../shared/components/loader/loader.com
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 import { TableComponent } from '@shared/components/table/table.component';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { AddExerciseDialogComponent } from '@features/sub-routines/components/add-exercise-dialog/add-exercise-dialog.component';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
@@ -37,6 +39,7 @@ import { EDay } from '@core/enums/day.enum';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -55,6 +58,7 @@ import { DragAndDropSortingComponent } from '../../../../shared/components/drag-
     MatOption,
     MatLabel,
     DragAndDropSortingComponent,
+    InputComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -72,6 +76,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     private fb: FormBuilder,
     private store: Store,
     private router: Router,
+    private location: Location,
     private dialog: MatDialog,
     private snackBarService: SnackBarService,
   ) {}
@@ -148,18 +153,18 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         .dispatch(new UpdateSubRoutine(this.id(), payload))
         .subscribe(() => {
           this.snackBarService.showSuccess('Exito!', 'Subrutina actualizada');
-          this.router.navigate(['/subrutinas']);
+          this.location.back();
         });
     } else {
       this.store.dispatch(new CreateSubRoutine(payload)).subscribe(() => {
         this.snackBarService.showSuccess('Exito!', 'Subrutina creada');
-        this.router.navigate(['/subrutinas']);
+        this.location.back();
       });
     }
   }
 
   goBack() {
-    this.router.navigate(['/sub-rutinas']);
+    this.location.back();
   }
 
   handleList(e: any[]) {
@@ -168,6 +173,10 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       subRoutines: e,
     };
     this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
+  }
+
+  get nameControl(): FormControl {
+    return this.subRoutineForm.get('name') as FormControl;
   }
 
   protected readonly EDay = EDay;
