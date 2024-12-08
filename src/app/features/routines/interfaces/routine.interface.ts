@@ -18,5 +18,10 @@ export interface RoutinePayload {
   category: string;
   days: number;
   isCustom: boolean;
-  subRoutines: SubRoutine[];
+  subRoutines: DaySubroutine[];
+}
+export interface DaySubroutine {
+  day: string;
+  subRoutine: string;
+  name: string;
 }

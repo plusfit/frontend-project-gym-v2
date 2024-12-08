@@ -36,7 +36,7 @@ export class UpdateRoutine {
   static readonly type = '[Routine] UpdateRoutine';
   constructor(
     public readonly id: string,
-    public readonly payload: Routine,
+    public readonly payload: RoutinePayload,
   ) {}
 }
 export class UpdateSubRoutines {

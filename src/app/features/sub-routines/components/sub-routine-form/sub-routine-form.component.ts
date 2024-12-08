@@ -138,9 +138,15 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       );
       return;
     }
+
+    const subRoutine: SubRoutine | null = this.store.selectSnapshot(
+      SubRoutinesState.getSelectedSubRoutine,
+    );
+    const _exercises = subRoutine?.exercises.map((e) => e._id);
+
     const payload = {
       ...this.subRoutineForm.value,
-      exercises: this.selectedExercises.map((e) => e._id),
+      exercises: _exercises,
     };
 
     if (this.isEdit()) {
@@ -165,7 +171,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   handleList(e: any[]) {
     const newSubRoutine = {
       ...this.subRoutineForm.value,
-      subRoutines: e,
+      exercises: e,
     };
     this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
   }

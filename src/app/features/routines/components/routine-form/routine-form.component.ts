@@ -30,7 +30,10 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import { EDay } from '@core/enums/day.enum';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { Routine } from '@features/routines/interfaces/routine.interface';
+import {
+  Routine,
+  RoutinePayload,
+} from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
 import {
   CreateRoutine,
@@ -70,12 +73,21 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   title = 'Agregar Rutina';
   btnTitle = 'Crear';
   displayedColumns: string[] = ['day', 'name', 'type', 'isCustom', 'acciones'];
-
   listToSort: any[] = [];
 
   categories = [
     { value: 'cardio', viewValue: 'Cardio' },
     { value: 'room', viewValue: 'Sala' },
+  ];
+
+  days = [
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado',
+    'Domingo',
   ];
 
   private destroy = new Subject<void>();
@@ -153,11 +165,19 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       );
       return;
     }
-    const payload = {
-      ...this.routineForm.value,
-      subRoutines: this.selectedSubroutines.map((r) => r._id),
-    };
 
+    const routine: Routine | null = this.store.selectSnapshot(
+      RoutineState.selectedRoutine,
+    );
+
+    const _subRoutines = routine?.subRoutines.map((r, i) => {
+      return { subRoutine: r._id, day: this.days[i], name: r.name };
+    });
+
+    const payload: RoutinePayload = {
+      ...this.routineForm.value,
+      subRoutines: _subRoutines,
+    };
     if (this.isEdit()) {
       this.store
         .dispatch(new UpdateRoutine(this.id(), payload))
