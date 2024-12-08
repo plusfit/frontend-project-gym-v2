@@ -39,7 +39,6 @@ import {
 } from '@features/routines/state/routine.actions';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { TableComponent } from '@shared/components/table/table.component';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { Location } from '@angular/common';
 
@@ -55,11 +54,9 @@ import { TextAreaComponent } from '../../../../shared/components/text-area/text-
     MatDialogModule,
     ReactiveFormsModule,
     BtnDirective,
-    InputDirective,
     CommonModule,
     LoaderComponent,
     FormsModule,
-    TableComponent,
     MatFormField,
     MatSelect,
     MatOption,
@@ -118,7 +115,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       description: ['', Validators.required],
       category: ['', Validators.required],
       isCustom: [false],
-      days: ['', Validators.required],
     });
   }
 
@@ -171,8 +167,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       );
       return;
     }
-
-    this.routineForm.value.days = Number(this.routineForm.value.days);
 
     const routine: Routine | null = this.store.selectSnapshot(
       RoutineState.selectedRoutine,

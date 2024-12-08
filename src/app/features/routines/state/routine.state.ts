@@ -127,7 +127,7 @@ export class RoutineState {
     ctx.patchState({ loading: true });
     return this.routineService.createRoutine(action.payload).pipe(
       tap(() => {
-        ctx.patchState({ loading: false });
+        ctx.patchState({ loading: false, selectedRoutine: null });
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
@@ -178,7 +178,7 @@ export class RoutineState {
     ctx.patchState({ loading: true });
     return this.routineService.updateRoutine(action.payload, action.id).pipe(
       tap(() => {
-        ctx.patchState({ loading: false });
+        ctx.patchState({ loading: false, selectedRoutine: null });
       }),
       catchError((error: HttpErrorResponse) => {
         ctx.patchState({ loading: false });

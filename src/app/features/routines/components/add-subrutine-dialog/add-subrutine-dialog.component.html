@@ -1,6 +1,6 @@
 <section class="min-h-72 min-w-72">
-  <div class="p-6">
-    <h2 class="text-lg font-semibold">Seleccionar Ejercicios</h2>
+  <div class="p-6 flex flex-col space-y-4">
+    <h2 class="text-lg font-semibold">Seleccionar Subrutinas</h2>
 
     <!-- Filter Bar -->
     <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
@@ -23,12 +23,12 @@
 
     <!-- Actions -->
     <div class="flex justify-end mt-4 space-x-4">
-      <button appBtn color="secondary" type="button" (click)="close()">
+      <button appBtn class="btn-secondary" type="button" (click)="close()">
         Cancelar
       </button>
       <button
         appBtn
-        color="primary"
+        class="btn-primary"
         type="button"
         (click)="addSelectedSubroutinesToRoutine()"
       >

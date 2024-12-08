@@ -48,11 +48,11 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
     MatDialogModule,
     ReactiveFormsModule,
     BtnDirective,
-    InputDirective,
+
     CommonModule,
     LoaderComponent,
     FormsModule,
-    TableComponent,
+
     MatFormField,
     MatSelect,
     MatOption,
@@ -67,7 +67,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   subRoutineForm!: FormGroup;
   selectedExercises: Exercise[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Agregar Sub-Rutina';
+  title = 'Subrutina';
   btnTitle = 'Crear';
 
   private destroy = new Subject<void>();

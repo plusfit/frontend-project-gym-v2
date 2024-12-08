@@ -5,7 +5,6 @@ export interface Routine {
   name: string;
   description: string;
   category: string;
-  days: number;
   isCustom: boolean;
   subRoutines: SubRoutine[];
   // updatedAt: { $date: string };
@@ -16,7 +15,6 @@ export interface RoutinePayload {
   name: string;
   description: string;
   category: string;
-  days: number;
   isCustom: boolean;
   subRoutines: DaySubroutine[];
 }

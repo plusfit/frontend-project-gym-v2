@@ -2,7 +2,6 @@
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {
-    <mat-dialog-content>
       <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="save()">
         <div class="flex flex-col justify-around">
           <div class="flex gap-4">
@@ -28,7 +27,7 @@
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/2">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Categoria</mat-label>
                 <mat-select formControlName="category">
@@ -39,7 +38,7 @@
               </mat-form-field>
             </div>
 
-            <div class="w-full md:w-1/3 flex items-cente">
+            <div class="w-full md:w-1/2 flex items-cente">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Es Personalizada ? </mat-label>
                 <mat-select formControlName="isCustom">
@@ -48,38 +47,33 @@
                 </mat-select>
               </mat-form-field>
             </div>
-
-            <div class="w-full md:w-1/3">
-              <app-input
-                [control]="daysControl"
-                label="Dias"
-                type="number"
-                errorKey="days"
-                placeholder="Cantidad de días"
-                appearance="outline"
-              ></app-input>
-            </div>
           </div>
         </div>
-
-        <button
-          appBtn
-          color="primary"
-          type="button"
-          (click)="openAddSubRoutinesDialog()"
-          class="mt-4"
-        >
-          Agregar Subrutinas
-        </button>
+        <div class="flex justify-between mt-8">
+          <div class="flex flex-col gap-4">
+            <span class="text-2xl font-bold">Subrutinas</span>
+            <app-drag-and-drop-sorting
+              [additionalInfo]="'day'"
+              [list]="selectedSubroutines"
+              (listEmitter)="handleList($event)"
+            ></app-drag-and-drop-sorting>
+          </div>
+          <div>
+            <button
+              appBtn
+              color="primary"
+              type="button"
+              (click)="openAddSubRoutinesDialog()"
+              class="h-10 mt-2"
+            >
+              Agregar Subrutinas
+            </button>
+          </div>
+        </div>
       </form>
-    </mat-dialog-content>
+
   }
-  <div class="w-full items-center flex justify-center">
-    <app-drag-and-drop-sorting
-      [list]="selectedSubroutines"
-      (listEmitter)="handleList($event)"
-    ></app-drag-and-drop-sorting>
-  </div>
+
   <div class="flex justify-end space-x-2 mt-4">
     <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
     <button

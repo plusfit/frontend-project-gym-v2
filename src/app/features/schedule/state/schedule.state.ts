@@ -179,9 +179,12 @@ export class ScheduleState {
     return this.scheduleService.deleteHour(action._id).pipe(
       tap(() => {
         const state = ctx.getState();
-        const schedule = state.schedule?.data?.filter(
-          (hour: any) => hour._id !== action._id,
-        );
+        const schedule = state.schedule?.map((day: any) => {
+          return {
+            ...day,
+            hours: day.hours.filter((hour: any) => hour._id !== action._id),
+          };
+        });
         ctx.patchState({ schedule });
       }),
     );

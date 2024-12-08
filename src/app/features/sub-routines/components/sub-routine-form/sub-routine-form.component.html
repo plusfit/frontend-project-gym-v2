@@ -1,12 +1,12 @@
-<div class="p-6 w-3/4 mx-auto">
-  <span class="text-4xl font-semibold text-gray-800 mb-8">{{ title }}</span>
+<div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
+  <span class="text-center text-6xl font-semibold text-gray-800 mb-8">{{ title }} 📝</span>
 
   <!-- Loading Indicator -->
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {
+    <div class="bg-white rounded-lg shadow-md p-8">
     <!-- Form Content -->
-    <mat-dialog-content>
       <form [formGroup]="subRoutineForm" class="space-y-4">
         <!-- SubRoutine Fields -->
         <div class="flex py-8 gap-4">
@@ -63,22 +63,22 @@
           ></app-table> -->
         </div>
       </form>
-    </mat-dialog-content>
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-2 mt-8">
+      <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
+      <button
+        appBtn
+        color="primary"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        (click)="save()"
+        type="button"
+        [disabled]="subRoutineForm.invalid || (loading$ | async)"
+      >
+        {{ btnTitle }}
+      </button>
+    </div>
+    </div>
   }
 
-  <!-- Action Buttons -->
-  <div class="flex justify-end space-x-2 mt-8">
-    <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
-    <button
-      appBtn
-      color="primary"
-      [loader]="(loading$ | async)!"
-      [animate]="true"
-      (click)="save()"
-      type="button"
-      [disabled]="subRoutineForm.invalid || (loading$ | async)"
-    >
-      {{ btnTitle }}
-    </button>
-  </div>
 </div>

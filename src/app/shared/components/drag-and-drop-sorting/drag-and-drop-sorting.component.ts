@@ -1,10 +1,6 @@
 import { Component, Input, output } from '@angular/core';
-import {
-  CdkDragDrop,
-  CdkDropList,
-  CdkDrag,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+
 @Component({
   selector: 'app-drag-and-drop-sorting',
   standalone: true,
@@ -13,7 +9,7 @@ import {
   styleUrl: './drag-and-drop-sorting.component.css',
 })
 export class DragAndDropSortingComponent {
-  //list: InputSignal<any[]> = input<any[]>([]);
+  @Input() additionalInfo: string = '';
   @Input() list: any[] = [];
   listEmitter = output<any[]>();
 

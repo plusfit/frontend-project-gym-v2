@@ -24,7 +24,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { environment } from '../../../../../environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 import {
   DeleteRoutine,
   GetRoutinesByName,
@@ -34,7 +34,6 @@ import {
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { RoutineState } from '@features/routines/state/routine.state';
 import { RoutineTableComponent } from '@features/routines/components/routine-table/routine-table.component';
-import { RoutineFormComponent } from '@features/routines/components/routine-form/routine-form.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -58,15 +57,14 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     private router: Router,
   ) {}
   private destroy = new Subject<void>();
-  limitPerPage = environment.routineTableLimit ?? 8;
-  routineTableLimitOptions = environment.routineTableLimitOptions;
+
+  pageSize = environment.config.pageSize;
   currentPage = 1;
   displayedColumns: string[] = [
     'name',
     'description',
     'category',
     'isCustom',
-    'days',
     'acciones',
   ];
   dataSource = new MatTableDataSource<Routine>();
@@ -172,9 +170,8 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   handlePageEvent(e: PageEvent) {
     this.currentPage = e.pageIndex + 1;
-    this.limitPerPage = e.pageSize;
 
-    this.store.dispatch(new SetLimitPerPage(this.limitPerPage));
+    this.store.dispatch(new SetLimitPerPage(this.pageSize));
 
     if (this.isSearching) {
       this.store.dispatch(

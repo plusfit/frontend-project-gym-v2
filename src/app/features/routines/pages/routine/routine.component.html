@@ -50,7 +50,7 @@
     (deleteEmitter)="deleteRoutine($event)"
   >
     <mat-paginator
-      [pageSizeOptions]="routineTableLimitOptions"
+      [pageSize]="pageSize"
       (page)="handlePageEvent($event)"
       [length]="totalRoutines$ | async"
       showFirstLastButtons
