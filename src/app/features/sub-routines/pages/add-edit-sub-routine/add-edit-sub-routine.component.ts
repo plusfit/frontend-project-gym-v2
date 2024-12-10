@@ -24,7 +24,7 @@ export class AddEditSubRoutineComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id') ?? '';
 
-    if (this.id) {
+    if (this.id && this.id !== 'crear') {
       this.store.dispatch(new GetSubRoutine(this.id));
       this.actions
         .pipe(ofActionSuccessful(GetSubRoutine), takeUntil(this.destroy))
