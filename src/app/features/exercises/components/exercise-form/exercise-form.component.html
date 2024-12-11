@@ -18,14 +18,13 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <textarea
-              appInput
-              id="description"
+            <app-text-area
+              [control]="descriptionControl"
               label="Descripción"
-              formControlName="description"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="description"
               placeholder="Descripción del ejercicio"
-            ></textarea>
+              appearance="outline"
+            ></app-text-area>
           </div>
         </div>
 
@@ -53,29 +52,17 @@
               placeholder="Duración en minutos"
               appearance="outline"
             ></app-input>
-            <input
-              appInput
-              label="Minutos"
-              type="number"
-              id="minutes"
-              formControlName="minutes"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Duración en minutos"
-              min="1"
-            />
           </div>
 
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="restControl"
               label="Descanso"
               type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="rest"
               placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
         </div>
 
@@ -84,41 +71,35 @@
           class="flex gap-4"
         >
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="seriesControl"
               label="Series"
               type="number"
-              id="series"
-              formControlName="series"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="series"
               placeholder="Cantidad de series"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="repsControl"
               label="Repeticiones"
               type="number"
-              id="reps"
-              formControlName="reps"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="reps"
               placeholder="Cantidad de repeticiones"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
 
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="restControl"
               label="Descanso"
               type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="rest"
               placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
         </div>
       </form>

@@ -29,6 +29,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { MatSelectModule } from '@angular/material/select';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { TextAreaComponent } from '../../../../shared/components/text-area/text-area.component';
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -45,6 +46,7 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
     FormsModule,
     MatSelectModule,
     InputComponent,
+    TextAreaComponent,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
@@ -203,5 +205,17 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
   get minutesControl(): FormControl {
     return this.exerciseForm.get('minutes') as FormControl;
+  }
+
+  get repsControl(): FormControl {
+    return this.exerciseForm.get('reps') as FormControl;
+  }
+
+  get restControl(): FormControl {
+    return this.exerciseForm.get('rest') as FormControl;
+  }
+
+  get seriesControl(): FormControl {
+    return this.exerciseForm.get('series') as FormControl;
   }
 }

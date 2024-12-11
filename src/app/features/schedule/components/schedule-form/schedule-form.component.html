@@ -1,17 +1,17 @@
 <div class="p-4 bg-white shadow-md rounded">
   <form [formGroup]="editForm" class="space-y-4">
-    <div>
-      <div class="flex justify-between">
-        <div class="w-1/2">
-          <app-input
-            [control]="maxCountControl"
-            label="Cantidad Máxima"
-            type="number"
-            errorKey="maxCount"
-            placeholder="Cantidad Máxima"
-            appearance="outline"
-          ></app-input>
-        </div>
+    <div class="flex justify-between items-center">
+      <div class="flex items-center">
+        <app-input
+          [control]="maxCountControl"
+          label="Cantidad Máxima"
+          type="number"
+          errorKey="maxCount"
+          placeholder="Cantidad Máxima"
+          appearance="outline"
+        ></app-input>
+      </div>
+      <div class="">
         <button
           appBtn
           color="primary"
@@ -20,6 +20,7 @@
           [loader]="(loading$ | async)!"
           [animate]="true"
           [disabled]="editForm.invalid || (loading$ | async)"
+          class="h-10"
         >
           Editar Cantidad
         </button>
