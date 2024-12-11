@@ -160,7 +160,14 @@ export class TableComponent implements OnInit {
   }
 
   isSelected(element: any): boolean {
-    return this.selection.some((item) => item._id === element._id);
+    let compare = '_id';
+
+    if (this.selection && this.selection[0]) {
+      if (this.selection[0].subRoutine) {
+        compare = 'subRoutine';
+      }
+    }
+    return this.selection.some((item) => item[compare] === element._id);
   }
 
   ngOnInit() {
