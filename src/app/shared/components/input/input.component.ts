@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -49,12 +49,22 @@ export class InputComponent implements OnInit {
   @Input() appearance: 'fill' | 'outline' = 'outline'; // Apariencia del campo
   @Input() errorKey!: string; // Clave específica para mensajes de error
 
+  @Output() valueChange = new EventEmitter<any>();
+
   matcher = new MyErrorStateMatcher();
 
   ngOnInit() {
     if (!this.control) {
       throw new Error('El atributo "control" es obligatorio.');
     }
+  }
+
+  onInputChange(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.control.setValue(
+      this.type === 'number' ? Number(inputValue) : inputValue,
+    );
+    this.valueChange.emit(this.control.value);
   }
 
   protected errorMessages: FieldValidationErrorMessages = {
