@@ -173,7 +173,6 @@ export class ScheduleState {
         }),
       );
   }
-
   @Action(DeleteHour)
   deleteHour(ctx: StateContext<ScheduleStateModel>, action: DeleteHour) {
     return this.scheduleService.deleteHour(action._id).pipe(

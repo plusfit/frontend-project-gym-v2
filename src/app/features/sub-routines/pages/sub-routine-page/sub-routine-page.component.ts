@@ -26,7 +26,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = ['name', 'isCustom', 'day', 'acciones']; // TODO: Change colums
+  displayedColumns: string[] = ['_id', 'name', 'isCustom', 'acciones']; // TODO: Change colums
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
 

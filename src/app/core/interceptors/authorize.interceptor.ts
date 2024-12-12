@@ -14,9 +14,24 @@ import { Store } from '@ngxs/store';
 import { NgZone } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 
-/**
- * Interceptor to handle Authorization using HttpInterceptorFn.
- */
+const handleUnauthorizedError = (
+  err: HttpErrorResponse,
+  isTokenExpired: boolean,
+  store: Store,
+  utilsService: UtilsService,
+  zone: NgZone,
+  router: Router,
+): void => {
+  if (err.status === 401) {
+    if (!isTokenExpired) {
+      store.dispatch(new Logout());
+    } else {
+      utilsService.cleanStorage();
+    }
+    zone.run(() => router.navigate(['auth/login']));
+  }
+};
+
 export const authorizeInterceptor: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
   next: HttpHandlerFn,
@@ -26,21 +41,24 @@ export const authorizeInterceptor: HttpInterceptorFn = (
   const store = inject(Store);
   const utilsService = inject(UtilsService);
 
-  const errCodes = [401];
   const accessToken = store.selectSnapshot(AuthState.accessToken);
-  const isTokenExpired = utilsService.isTokenExpired(accessToken!);
+  if (!accessToken) {
+    return next(request);
+  }
+
+  const isTokenExpired = utilsService.isTokenExpired(accessToken);
 
   return next(request).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err instanceof HttpErrorResponse) {
-        if (errCodes.includes(err.status)) {
-          if (!isTokenExpired) {
-            store.dispatch(new Logout());
-          } else {
-            utilsService.cleanStorage();
-          }
-          zone.run(() => router.navigate(['auth/login']));
-        }
+        handleUnauthorizedError(
+          err,
+          isTokenExpired,
+          store,
+          utilsService,
+          zone,
+          router,
+        );
       }
       return throwError(() => err);
     }),

@@ -1,5 +1,5 @@
 <div class="p-6">
-  <h2 class="text-2xl font-semibold text-gray-800 mb-6">{{ title }}</h2>
+  <h2 class="mb-6 text-2xl font-semibold text-gray-800">{{ title }}</h2>
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {
@@ -18,14 +18,13 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <textarea
-              appInput
-              id="description"
+            <app-text-area
+              [control]="descriptionControl"
               label="Descripción"
-              formControlName="description"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="description"
               placeholder="Descripción del ejercicio"
-            ></textarea>
+              appearance="outline"
+            ></app-text-area>
           </div>
         </div>
 
@@ -53,29 +52,17 @@
               placeholder="Duración en minutos"
               appearance="outline"
             ></app-input>
-            <input
-              appInput
-              label="Minutos"
-              type="number"
-              id="minutes"
-              formControlName="minutes"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
-              placeholder="Duración en minutos"
-              min="1"
-            />
           </div>
 
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="restControl"
               label="Descanso"
               type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="rest"
               placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
         </div>
 
@@ -84,47 +71,41 @@
           class="flex gap-4"
         >
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="seriesControl"
               label="Series"
               type="number"
-              id="series"
-              formControlName="series"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="series"
               placeholder="Cantidad de series"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="repsControl"
               label="Repeticiones"
               type="number"
-              id="reps"
-              formControlName="reps"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="reps"
               placeholder="Cantidad de repeticiones"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
 
           <div class="w-full md:w-1/2">
-            <input
-              appInput
+            <app-input
+              [control]="restControl"
               label="Descanso"
               type="number"
-              id="rest"
-              formControlName="rest"
-              class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:border-primary-500 focus:ring-primary-500"
+              errorKey="rest"
               placeholder="Tiempo de descanso en segundos"
-              min="1"
-            />
+              appearance="outline"
+            ></app-input>
           </div>
         </div>
       </form>
     </mat-dialog-content>
   }
-  <div class="flex justify-end space-x-2 mt-4">
+  <div class="mt-4 flex justify-end space-x-2">
     <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
     <button
       appBtn
