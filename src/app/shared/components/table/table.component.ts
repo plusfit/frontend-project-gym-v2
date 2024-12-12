@@ -115,17 +115,7 @@ export class TableComponent implements OnInit {
   }
 
   toggleSelection(element: any): void {
-    let compare = '_id';
-
-    if (this.selection && this.selection[0]) {
-      if (this.selection[0].subRoutine) {
-        compare = 'subRoutine';
-      }
-    }
-
-    const index = this.selection.findIndex(
-      (item) => item[compare] === element._id,
-    );
+    const index = this.selection.findIndex((item) => item._id === element._id);
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
@@ -154,14 +144,7 @@ export class TableComponent implements OnInit {
   }
 
   isSelected(element: any): boolean {
-    let compare = '_id';
-
-    if (this.selection && this.selection[0]) {
-      if (this.selection[0].subRoutine) {
-        compare = 'subRoutine';
-      }
-    }
-    return this.selection.some((item) => item[compare] === element._id);
+    return this.selection.some((item) => item._id === element._id);
   }
 
   ngOnInit() {

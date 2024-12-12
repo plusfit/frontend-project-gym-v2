@@ -18,7 +18,6 @@ import {
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject } from 'rxjs';
 
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -172,13 +171,11 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       RoutineState.selectedRoutine,
     );
 
-    const _subRoutines = routine?.subRoutines.map((r, i) => {
-      return { subRoutine: r._id, day: this.days[i], name: r.name };
-    });
+    const subRoutinesIds = routine?.subRoutines.map((sub) => sub._id);
 
     const payload: RoutinePayload = {
       ...this.routineForm.value,
-      subRoutines: _subRoutines,
+      subRoutines: subRoutinesIds,
     };
     if (this.isEdit()) {
       this.store
