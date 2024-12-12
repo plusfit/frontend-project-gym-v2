@@ -85,15 +85,6 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.searchTerm$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(), // Solo continúa si el valor ha cambiado
-      )
-      .subscribe((searchValue) => {
-        this.performSearch(searchValue); // Llama a la funcion que hace la busqueda
-      });
-
     this.store.dispatch(
       new GetRoutinesByPage({
         page: this.currentPage,
@@ -115,12 +106,9 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
   }
 
-  searchRoutines(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchValue = inputElement.value.trim();
-    this.searchTerm$.next(this.searchValue);
-  }
-  performSearch(searchValue: string): void {
+  searchRoutines(searchQuery: { searchQ: string }): void {
+    const searchValue = searchQuery.searchQ;
+
     this.isSearching = !!searchValue;
     this.store.dispatch(
       new GetRoutinesByName(
