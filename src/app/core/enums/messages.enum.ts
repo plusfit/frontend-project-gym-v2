@@ -1,11 +1,11 @@
 export enum SnackBarHeaders {
-  Error = 'Something went wrong',
-  Success = 'Everything went great!',
+  Error = 'Algo salió mal',
+  Success = '¡Todo salió genial!',
 }
 
 export enum ErrorMessages {
-  ConnectionError = 'Please check your network connection',
-  ServiceUnavailable = 'Service Unavailable. Please contact support',
-  UnsupportedBrowser = 'Browser is not supported. Please update',
-  PermissionDenied = 'You do not have permission to access the requested resource',
+  ConnectionError = 'Por favor, verifica tu conexión de red',
+  ServiceUnavailable = 'Servicio no disponible. Por favor, contacta al soporte',
+  UnsupportedBrowser = 'El navegador no es compatible. Por favor, actualiza',
+  PermissionDenied = 'No tienes permiso para acceder al recurso solicitado',
 }

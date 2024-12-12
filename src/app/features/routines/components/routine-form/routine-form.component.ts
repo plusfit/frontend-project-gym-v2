@@ -44,6 +44,8 @@ import { Location } from '@angular/common';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TextAreaComponent } from '../../../../shared/components/text-area/text-area.component';
+import {MatDivider} from "@angular/material/divider";
+import {TitleComponent} from "@shared/components/title/title.component";
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -63,6 +65,8 @@ import { TextAreaComponent } from '../../../../shared/components/text-area/text-
     DragAndDropSortingComponent,
     InputComponent,
     TextAreaComponent,
+    MatDivider,
+    TitleComponent,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {

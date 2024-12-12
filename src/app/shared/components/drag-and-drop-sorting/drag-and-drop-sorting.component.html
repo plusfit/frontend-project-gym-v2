@@ -1,9 +1,32 @@
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
   @for (l of list; let i = $index; track l) {
     @if(additionalInfo) {
-      <div class="example-box" cdkDrag>{{ i + 1 }} - {{ l.name }} - {{l[additionalInfo]}} </div>
+      <div class="example-box" cdkDrag>
+        <div class="flex">
+          <div class="flex items-center pr-1">
+            <i class="ph-dots-three-vertical font-bold text-3xl text-primary-400"></i>
+          </div>
+          <span class="font-bold  py-4 pr-4 border-r text-gray-600">{{ i + 1 }} </span>
+          <div class="flex flex-col ml-2 p-1 gap-1">
+            <span class="font-semibold text-primary-400">{{ l[additionalInfo]}}</span>
+            <span class="font-light text-sm text-primary-500 text-wrap">{{ l.description }}</span>
+            <span> {{l.name}}</span>
+          </div>
+        </div>
+      </div>
     } @else {
-      <div class="example-box" cdkDrag>{{ i + 1 }} - {{ l.name }}</div>
+      <div class="example-box min-h-16" cdkDrag>
+        <div class="flex">
+          <div class="flex items-center pr-1">
+            <i class="ph-dots-three-vertical font-bold text-3xl text-primary-400"></i>
+          </div>
+          <span class="font-bold  py-4 pr-4 border-r text-gray-600">{{ i + 1 }} </span>
+          <div class="flex flex-col ml-2 p-1 gap-1">
+            <span class="font-semibold text-primary-400">{{ l.name }}</span>
+            <span class="font-light text-sm text-primary-500 text-wrap">{{ l.description }}</span>
+          </div>
+        </div>
+      </div>
     }
 
 

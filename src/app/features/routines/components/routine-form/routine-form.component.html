@@ -2,8 +2,9 @@
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {
-      <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="save()">
-        <div class="flex flex-col justify-around">
+      <form [formGroup]="routineForm" class="space-y-8" (ngSubmit)="save()">
+        <app-title [title]="'Información general'"></app-title>
+        <div class="flex flex-col justify-around mt-4">
           <div class="flex gap-4">
             <div class="w-full md:w-1/2">
               <app-input
@@ -49,25 +50,26 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-between mt-8">
-          <div class="flex flex-col gap-4">
-            <span class="text-2xl font-bold">Subrutinas</span>
-            <app-drag-and-drop-sorting
-              [additionalInfo]="'day'"
-              [list]="selectedSubroutines"
-              (listEmitter)="handleList($event)"
-            ></app-drag-and-drop-sorting>
-          </div>
-          <div>
+        <div class="flex flex-col gap-4 mt-4">
+          <div class="flex justify-between">
+            <app-title [title]="'Subrutinas'" [divider]="false"></app-title>
             <button
               appBtn
               color="primary"
               type="button"
               (click)="openAddSubRoutinesDialog()"
-              class="h-10 mt-2"
+              class="h-12"
             >
-              Agregar Subrutinas
+              Agregar Subrutina
             </button>
+          </div>
+          <mat-divider></mat-divider>
+          <div>
+            <app-drag-and-drop-sorting
+              [additionalInfo]="'day'"
+              [list]="selectedSubroutines"
+              (listEmitter)="handleList($event)"
+            ></app-drag-and-drop-sorting>
           </div>
         </div>
       </form>
