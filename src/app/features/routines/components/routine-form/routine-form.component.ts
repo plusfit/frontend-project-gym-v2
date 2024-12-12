@@ -113,7 +113,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       name: ['', Validators.required],
       description: ['', Validators.required],
       category: ['', Validators.required],
-      isCustom: [false],
+      isCustom: [{ value: false, disabled: true }],
     });
   }
 
@@ -174,7 +174,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     const subRoutinesIds = routine?.subRoutines.map((sub) => sub._id);
 
     const payload: RoutinePayload = {
-      ...this.routineForm.value,
+      ...this.routineForm.getRawValue(),
       subRoutines: subRoutinesIds,
     };
     if (this.isEdit()) {
