@@ -1,6 +1,6 @@
 <app-table
   [displayedColumns]="displayedColumns"
-  [data]="routines$ | async"
+  [data]="transformedRoutines$ | async"
   [loading]="loading$ | async"
   (edit)="handleEdit($event)"
   (delete)="handleDelete($event)"

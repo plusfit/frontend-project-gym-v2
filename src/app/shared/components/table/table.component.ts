@@ -1,23 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnChanges,
-  OnInit,
-} from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { EColorBadge } from '../../enums/badge-color.enum';
 import { CdkTableModule } from '@angular/cdk/table';
-import {
-  AsyncPipe,
-  DatePipe,
-  JsonPipe,
-  NgClass,
-  NgFor,
-  NgIf,
-  TitleCasePipe,
-} from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
   MatMenu,
   MatMenuContent,
@@ -131,7 +115,17 @@ export class TableComponent implements OnInit {
   }
 
   toggleSelection(element: any): void {
-    const index = this.selection.findIndex((item) => item._id === element._id);
+    let compare = '_id';
+
+    if (this.selection && this.selection[0]) {
+      if (this.selection[0].subRoutine) {
+        compare = 'subRoutine';
+      }
+    }
+
+    const index = this.selection.findIndex(
+      (item) => item[compare] === element._id,
+    );
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
