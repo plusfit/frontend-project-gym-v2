@@ -35,6 +35,7 @@ import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confir
 import { RoutineState } from '@features/routines/state/routine.state';
 import { RoutineTableComponent } from '@features/routines/components/routine-table/routine-table.component';
 import { Router } from '@angular/router';
+import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 
 @Component({
   selector: 'app-routine',
@@ -44,6 +45,7 @@ import { Router } from '@angular/router';
     MatPaginatorModule,
     CommonModule,
     BtnDirective,
+    FiltersBarComponent,
   ],
   templateUrl: './routine.component.html',
   styleUrl: './routine.component.css',

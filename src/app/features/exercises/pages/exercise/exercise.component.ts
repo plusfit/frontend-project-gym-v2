@@ -35,6 +35,7 @@ import { environment } from '../../../../../environments/environment';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 
 @Component({
   selector: 'app-exercise',
@@ -44,6 +45,7 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
     MatPaginatorModule,
     CommonModule,
     BtnDirective,
+    FiltersBarComponent,
   ],
   templateUrl: './exercise.component.html',
   styleUrl: './exercise.component.css',
