@@ -53,7 +53,7 @@ export class getClientsAssignable {
   static readonly type = '[Schedule] Get Clients Assignable';
 }
 
-export class getClientsArray {
+export class postClientsArray {
   static readonly type = '[Schedule] Get Clients Array';
   constructor(public readonly ids: string[]) {}
 }

@@ -8,29 +8,34 @@
     <app-loader></app-loader>
   } @else {
     <div>
-<!--       TODO: Make this dinamic with NgClass-->
-      <div class="grid grid-cols-6 gap-4 p-4 h-full overflow-y-auto">
+      <div class="flex flex-col">
         @if (schedule) {
           @for (day of schedule; track $index) {
-            <div
-              class="bg-gray-100 rounded-lg p-4 shadow-md flex flex-col overflow-hidden max-h-[calc(100vh-10rem)]"
-            >
-              <h3 class="text-lg font-semibold mb-2">{{ day.day }}</h3>
-              <div class="overflow-y-auto flex-grow">
-                @for (hour of day.hours; track $index) {
-                  <app-card-schedule
-                    [hour]="hour"
-                    [day]="day"
-                    (edit)="editarHorario($event)"
-                    (delete)="eliminarHorario($event)"
-                  ></app-card-schedule>
-                }
-              </div>
-            </div>
+            <mat-accordion>
+              <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <span class="text-xl font-bold">
+                      {{ day.day }}
+                    </span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="flex flex-wrap gap-4">
+                  @for (hour of day.hours; track $index) {
+                    <app-card-schedule
+                      [hour]="hour"
+                      [day]="day"
+                      class="flex-1 min-w-[250px] max-w-[300px]"
+                      (edit)="editarHorario($event)"
+                      (delete)="eliminarHorario($event)"
+                    ></app-card-schedule>
+                  }
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
           }
         }
       </div>
     </div>
-
   }
 </section>

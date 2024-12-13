@@ -4,6 +4,7 @@ import {
   Component,
   Input,
   output,
+  signal,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackBarService } from '@core/services/snackbar.service';
@@ -18,11 +19,17 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { AsyncPipe } from '@angular/common';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-calendar-schedule',
   standalone: true,
-  imports: [CardScheduleComponent, AsyncPipe, LoaderComponent],
+  imports: [
+    CardScheduleComponent,
+    AsyncPipe,
+    LoaderComponent,
+    MatExpansionModule,
+  ],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
@@ -32,6 +39,7 @@ export class CalendarScheduleComponent implements AfterViewInit {
     alias: 'scheduleUpdated',
   });
   loading$ = this.store.select(ScheduleState.scheduleLoading);
+  readonly panelOpenState = signal(false);
 
   constructor(
     private store: Store,

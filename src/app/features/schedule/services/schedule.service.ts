@@ -25,8 +25,10 @@ export class ScheduleService {
     return this.http.get<any>(`${environment.api}/plans/assignableClients`);
   }
 
-  getClientsArray(clientsIds: string[]) {
-    return this.http.get<any>(`${environment.api}/clients/list/${clientsIds}`);
+  postClientsArray(clientsIds: string[]) {
+    return this.http.post<any>(`${environment.api}/clients/list`, {
+      clientsIds,
+    });
   }
 
   updateSchedule(id: string, data: ISchedule) {

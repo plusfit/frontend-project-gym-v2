@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -15,16 +16,15 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import {
   DeleteClient,
   EditHour,
-  getClientsArray,
+  postClientsArray,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { AddClientListComponent } from '../add-client-list/add-client-list.component';
-import { AsyncPipe } from '@angular/common';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 
 @Component({
   selector: 'app-schedule-form',
@@ -77,7 +77,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
       (client: any) => client,
     );
     if (!clientsForSend.length) return;
-    this.store.dispatch(new getClientsArray(clientsForSend));
+    this.store.dispatch(new postClientsArray(clientsForSend));
   }
 
   // Métodos para gestionar clientes

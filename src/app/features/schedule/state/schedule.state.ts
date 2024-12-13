@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { ScheduleStateModel } from './schedule.model';
-import { ScheduleService } from '../services/schedule.service';
 import { switchMap, tap } from 'rxjs';
+import { ScheduleService } from '../services/schedule.service';
 import {
   AssignClient,
   ClearClients,
   DeleteClient,
   DeleteHour,
   EditHour,
-  getClientsArray,
   getClientsAssignable,
   GetClientsById,
   getMaxCount,
   GetSchedule,
+  postClientsArray,
 } from './schedule.actions';
+import { ScheduleStateModel } from './schedule.model';
 
 @State<ScheduleStateModel>({
   name: 'schedule',
@@ -121,12 +121,12 @@ export class ScheduleState {
     );
   }
 
-  @Action(getClientsArray)
-  getClientsArray(
+  @Action(postClientsArray)
+  postClientsArray(
     ctx: StateContext<ScheduleStateModel>,
-    action: getClientsArray,
+    action: postClientsArray,
   ) {
-    return this.scheduleService.getClientsArray(action.ids).pipe(
+    return this.scheduleService.postClientsArray(action.ids).pipe(
       tap((clients: any) => {
         const state = ctx.getState();
         const currentClients = Array.isArray(state.clients)
