@@ -135,7 +135,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       width: '500px',
       data: {
         title: 'Eliminar ejercicio',
-        contentMessage: '¿Estás seguro de que deseas eliminar este ejercicio?',
+        contentMessage: '¿Estás seguro de que deseas eliminar el ejercicio?',
       },
     });
 

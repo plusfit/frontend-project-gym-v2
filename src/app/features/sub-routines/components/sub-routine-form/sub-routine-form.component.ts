@@ -40,8 +40,6 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import {MatDivider} from "@angular/material/divider";
-import {TitleComponent} from "@shared/components/title/title.component";
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -61,8 +59,6 @@ import {TitleComponent} from "@shared/components/title/title.component";
     MatLabel,
     DragAndDropSortingComponent,
     InputComponent,
-    MatDivider,
-    TitleComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -71,7 +67,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   subRoutineForm!: FormGroup;
   selectedExercises: Exercise[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Subrutina';
+  title = 'Crear Subrutina';
   btnTitle = 'Crear';
 
   private destroy = new Subject<void>();
@@ -100,7 +96,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(): void {
     if (this.isEdit()) {
-      this.title = 'Editar Sub-Rutina';
+      this.title = 'Editar Subrutina';
       this.btnTitle = 'Guardar';
 
       const subRoutine: SubRoutine | null = this.store.selectSnapshot(
