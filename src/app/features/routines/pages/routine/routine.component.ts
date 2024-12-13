@@ -127,8 +127,8 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
-        title: 'Eliminar ejercicio',
-        contentMessage: '¿Estás seguro de que deseas eliminar este ejercicio?',
+        title: 'Eliminar rutina',
+        contentMessage: '¿Estás seguro de que deseas eliminar la rutina?',
       },
     });
 
