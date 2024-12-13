@@ -6,9 +6,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.mdc-notched-outline__notch {
-  border-right: none !important;
-}
+
 
 html {
   overflow-y: scroll;
@@ -17,12 +15,13 @@ html {
 html,
 body {
   height: 100%;
-  font-family: "Rubik";
+  font-family: "Rubik", serif;
 }
 
 body {
   margin: 0;
 }
+
 
 .mdc-notched-outline__notch {
   border-right: none !important;
