@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Logout } from '@features/auth/state/auth.actions';
 import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
-import { take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 
 /**
  * A component that displays the user area and allows the user to log out.
@@ -13,7 +13,8 @@ import { take } from 'rxjs';
   styleUrls: ['./user-area.component.css'],
   standalone: true,
 })
-export class UserAreaComponent {
+export class UserAreaComponent implements OnDestroy {
+  private destroy = new Subject<void>();
   /**
    * The user data observable.
    */
@@ -35,8 +36,15 @@ export class UserAreaComponent {
    */
   logOut(): void {
     this.store.dispatch(new Logout());
-    this.actions.pipe(ofActionSuccessful(Logout), take(1)).subscribe(() => {
-      this.router.navigate(['auth/login']);
-    });
+    this.actions
+      .pipe(ofActionSuccessful(Logout), takeUntil(this.destroy))
+      .subscribe(() => {
+        this.router.navigate(['auth/login']);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }
