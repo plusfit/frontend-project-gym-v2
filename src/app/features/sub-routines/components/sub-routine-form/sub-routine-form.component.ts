@@ -40,8 +40,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import {MatDivider} from "@angular/material/divider";
-import {TitleComponent} from "@shared/components/title/title.component";
+import { MatDivider } from '@angular/material/divider';
+import { TitleComponent } from '@shared/components/title/title.component';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -50,11 +50,9 @@ import {TitleComponent} from "@shared/components/title/title.component";
     MatDialogModule,
     ReactiveFormsModule,
     BtnDirective,
-
     CommonModule,
     LoaderComponent,
     FormsModule,
-
     MatFormField,
     MatSelect,
     MatOption,
