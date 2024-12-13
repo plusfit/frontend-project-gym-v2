@@ -71,7 +71,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   routineForm!: FormGroup;
   selectedSubroutines: any[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Agregar Rutina';
+  title = 'Crear Rutina';
   btnTitle = 'Crear';
   displayedColumns: string[] = ['day', 'name', 'type', 'isCustom', 'acciones'];
   listToSort: any[] = [];

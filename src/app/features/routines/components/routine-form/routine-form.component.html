@@ -1,7 +1,12 @@
-<div class="w-3/2 bg-white rounded-lg shadow-md p-8">
-  @if (loading$ | async) {
-    <app-loader></app-loader>
-  } @else {
+<div class="p-6 w-3/2 mx-auto flex flex-col space-y-6">
+  <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
+    >{{ title }} 📝</span
+  >
+
+  <div class="bg-white rounded-lg shadow-md p-8">
+    @if (loading$ | async) {
+      <app-loader></app-loader>
+    } @else {
       <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="save()">
         <div class="flex flex-col justify-around">
           <div class="flex gap-4">
@@ -71,20 +76,20 @@
           </div>
         </div>
       </form>
+    }
 
-  }
-
-  <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
-    <button
-      appBtn
-      color="primary"
-      [loader]="(loading$ | async)!"
-      [animate]="true"
-      (click)="save()"
-      [disabled]="routineForm.invalid || (loading$ | async)"
-    >
-      {{ btnTitle }}
-    </button>
+    <div class="flex justify-end space-x-2 mt-4">
+      <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
+      <button
+        appBtn
+        color="primary"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        (click)="save()"
+        [disabled]="routineForm.invalid || (loading$ | async)"
+      >
+        {{ btnTitle }}
+      </button>
+    </div>
   </div>
 </div>

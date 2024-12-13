@@ -67,7 +67,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   subRoutineForm!: FormGroup;
   selectedExercises: Exercise[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Subrutina';
+  title = 'Crear Subrutina';
   btnTitle = 'Crear';
 
   private destroy = new Subject<void>();
@@ -96,7 +96,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(): void {
     if (this.isEdit()) {
-      this.title = 'Editar Sub-Rutina';
+      this.title = 'Editar Subrutina';
       this.btnTitle = 'Guardar';
 
       const subRoutine: SubRoutine | null = this.store.selectSnapshot(
