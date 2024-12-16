@@ -40,6 +40,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { MatDivider } from '@angular/material/divider';
+import { TitleComponent } from '@shared/components/title/title.component';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -48,17 +50,14 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
     MatDialogModule,
     ReactiveFormsModule,
     BtnDirective,
-
     CommonModule,
     LoaderComponent,
     FormsModule,
-
     MatFormField,
-    MatSelect,
-    MatOption,
-    MatLabel,
     DragAndDropSortingComponent,
     InputComponent,
+    MatDivider,
+    TitleComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -90,8 +89,16 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
     this.subRoutineForm = this.fb.group({
       name: ['', Validators.required],
-      isCustom: [false],
+      description: ['', Validators.required],
     });
+  }
+
+  get nameControl(): FormControl {
+    return this.subRoutineForm.get('name') as FormControl;
+  }
+
+  get descriptionControl(): FormControl {
+    return this.subRoutineForm.get('description') as FormControl;
   }
 
   ngOnChanges(): void {
@@ -179,10 +186,6 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       exercises: e,
     };
     this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
-  }
-
-  get nameControl(): FormControl {
-    return this.subRoutineForm.get('name') as FormControl;
   }
 
   protected readonly EDay = EDay;

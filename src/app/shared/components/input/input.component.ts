@@ -81,5 +81,8 @@ export class InputComponent implements OnInit {
     maxCount: {
       required: 'El campo cantidad es obligatorio',
     },
+    description: {
+      required: 'La descripción es obligatoria',
+    },
   };
 }

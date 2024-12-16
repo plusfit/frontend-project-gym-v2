@@ -22,13 +22,14 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Es Personalizada ? </mat-label>
-              <mat-select formControlName="isCustom">
-                <mat-option [value]="true"> Si </mat-option>
-                <mat-option [value]="false"> No </mat-option>
-              </mat-select>
-            </mat-form-field>
+             <app-input
+               [control]="descriptionControl"
+                label="Descripción"
+                type="text"
+                errorKey="description"
+                placeholder="Descripción de la Sub-Rutina"
+                appearance="outline"
+             ></app-input>
           </div>
         </div>
 
