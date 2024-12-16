@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GetRoutineById } from '@features/routines/state/routine.actions';
 
 @Component({
-  selector: 'app-example',
+  selector: 'app-add-edit-routine-page',
   standalone: true,
   imports: [RoutineFormComponent],
   templateUrl: './add-edit-routine.page.component.html',
