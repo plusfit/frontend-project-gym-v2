@@ -1,5 +1,5 @@
 <div
-  class="w-full overflow-hidden ring-1 ring-neutral-400 shadow-200 rounded-sm"
+  class="w-full overflow-hidden ring-1 ring-neutral-400 shadow-200 rounded-sm app.amberlatam.com"
   [ngClass]="{ 'ring-1 ring-neutral-400': headerCssClass !== 'header-primary' }"
 >
   <table
@@ -33,19 +33,32 @@
         {{ column | translation | camelToTitle }}
       </th>
       <td cdk-cell *cdkCellDef="let element">
-        <ng-container *ngIf="column === 'type'">
+        @if(column === 'type') {
           <app-badge
             [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
             [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
           ></app-badge>
-        </ng-container>
-
-        <ng-container
-          *ngIf="column !== 'isActive' && column !== 'type' && column !== 'createdAt' && column !== 'updatedAt'"
-        >
-          {{ element[column] }}
-        </ng-container>
-
+        }
+        @if(column === 'category') {
+          <app-badge
+            [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+          ></app-badge>
+        }
+        @if(column === 'name') {
+          <span class="font-semibold">{{element[column]}}</span>
+        }
+        @if(column === 'isCustom') {
+          <app-badge
+            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING"
+            [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
+          ></app-badge>
+        }
+        @if(column !== 'isActive' && column !== 'type' && column !== 'createdAt' && column !== 'updatedAt' && column !== 'name'
+          && column !== 'isCustom' && column !== 'category')
+        {
+          <span class="text-xs text-gray-900">{{ element[column] }}</span>
+        }
         <ng-container *ngIf="column === 'createdAt' || column === 'updatedAt'">
           {{ element[column] | date:"d MMM y, h:mm a" }}
         </ng-container>

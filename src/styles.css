@@ -98,7 +98,7 @@ body {
     @apply absolute text-neutral-1000 right-0 top-[2rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
   }
   .input-icon {
-    @apply absolute text-neutral-1000 right-0 top-[0.85rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
+    @apply absolute text-neutral-1000 right-0 top-[0.30rem] flex items-center pr-3 text-lg cursor-pointer focus-visible:outline-none;
   }
 }
 

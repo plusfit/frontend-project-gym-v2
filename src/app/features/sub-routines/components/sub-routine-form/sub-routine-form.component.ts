@@ -53,7 +53,6 @@ import { TitleComponent } from '@shared/components/title/title.component';
     CommonModule,
     LoaderComponent,
     FormsModule,
-    MatFormField,
     DragAndDropSortingComponent,
     InputComponent,
     MatDivider,
@@ -123,7 +122,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
   openAddExerciseDialog(): void {
     const dialogRef = this.dialog.open(AddExerciseDialogComponent, {
-      width: '600px',
+      width: '40rem',
     });
     dialogRef.afterClosed().subscribe((newExercises: Exercise[]) => {
       if (newExercises) {

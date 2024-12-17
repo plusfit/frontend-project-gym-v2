@@ -6,11 +6,15 @@
           <div class="flex items-center pr-1">
             <i class="ph-dots-three-vertical font-bold text-3xl text-primary-400"></i>
           </div>
-          <span class="font-bold  py-4 pr-4 border-r text-gray-600">{{ i + 1 }} </span>
+          <span class="font-bold py-4 pr-4 border-r text-gray-600">{{ i + 1 }}</span>
           <div class="flex flex-col ml-2 p-1 gap-1">
-            <span class="font-semibold text-primary-400">{{ l[additionalInfo]}}</span>
-            <span class="font-light text-sm text-primary-500 text-wrap">{{ l.description }}</span>
-            <span> {{l.name}}</span>
+            <span>{{ l.name }}</span>
+            <span class="font-semibold text-primary-400">{{ l[additionalInfo] }}</span>
+            <!-- Truncar texto largo con tooltip -->
+            <span
+              class="font-light text-sm text-primary-500 w-72 text-nowrap truncate"
+              [title]="l.description">{{ l.description }}</span>
+
           </div>
         </div>
       </div>
@@ -20,16 +24,17 @@
           <div class="flex items-center pr-1">
             <i class="ph-dots-three-vertical font-bold text-3xl text-primary-400"></i>
           </div>
-          <span class="font-bold  py-4 pr-4 border-r text-gray-600">{{ i + 1 }} </span>
+          <span class="font-bold py-4 pr-4 border-r text-gray-600">{{ i + 1 }}</span>
           <div class="flex flex-col ml-2 p-1 gap-1">
             <span class="font-semibold text-primary-400">{{ l.name }}</span>
-            <span class="font-light text-sm text-primary-500 text-wrap">{{ l.description }}</span>
+            <!-- Truncar texto largo con tooltip -->
+            <span
+              class="font-light text-sm text-primary-500 text-wrap truncate description"
+              [title]="l.description">{{ l.description }}</span>
           </div>
         </div>
       </div>
     }
-
-
   }
   @if (list.length === 0) {
     <div class="example-box" cdkDrag>No hay elementos para ordenar 😢</div>

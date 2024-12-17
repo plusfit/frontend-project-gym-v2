@@ -33,7 +33,7 @@ export class AddExerciseDialogComponent implements OnInit {
   loading$!: Observable<boolean>;
   selectedExercises: Exercise[] = [];
   subRoutineExercises: Exercise[] = [];
-  pageSize = environment.config.pageSize;
+  pageSize = 6;
 
   constructor(
     private store: Store,
