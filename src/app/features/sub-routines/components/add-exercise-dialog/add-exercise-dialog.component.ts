@@ -13,8 +13,8 @@ import {
 } from '@features/exercises/state/exercise.actions';
 import { AsyncPipe } from '@angular/common';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
+import { TitleComponent } from '@shared/components/title/title.component';
 import { environment } from '../../../../../environments/environment';
-import {TitleComponent} from "@shared/components/title/title.component";
 
 @Component({
   selector: 'app-add-exercise-dialog',
@@ -35,7 +35,7 @@ export class AddExerciseDialogComponent implements OnInit {
   loading$!: Observable<boolean>;
   selectedExercises: Exercise[] = [];
   subRoutineExercises: Exercise[] = [];
-  pageSize = 6;
+  pageSize = environment.config.pageSize;
 
   constructor(
     private store: Store,
