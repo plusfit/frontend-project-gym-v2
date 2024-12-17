@@ -17,13 +17,12 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
+
 import { Observable, Subject } from 'rxjs';
 import { Store } from '@ngxs/store';
 
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { TableComponent } from '@shared/components/table/table.component';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AddExerciseDialogComponent } from '@features/sub-routines/components/add-exercise-dialog/add-exercise-dialog.component';
@@ -35,9 +34,6 @@ import {
   UpdateSubRoutine,
 } from '@features/sub-routines/state/sub-routine.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
-import { EDay } from '@core/enums/day.enum';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { MatDivider } from '@angular/material/divider';
@@ -114,12 +110,6 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  removeExercise(id: string): void {
-    this.selectedExercises = this.selectedExercises.filter(
-      (exercise) => exercise._id !== id,
-    );
-  }
-
   openAddExerciseDialog(): void {
     const dialogRef = this.dialog.open(AddExerciseDialogComponent, {
       width: '40rem',
@@ -186,6 +176,4 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     };
     this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
   }
-
-  protected readonly EDay = EDay;
 }

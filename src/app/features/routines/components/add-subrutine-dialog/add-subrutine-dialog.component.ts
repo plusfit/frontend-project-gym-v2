@@ -12,6 +12,7 @@ import { GetSubRoutines } from '@features/sub-routines/state/sub-routine.actions
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import {TitleComponent} from "@shared/components/title/title.component";
 
 @Component({
   selector: 'app-add-subrutine-dialog',
@@ -23,6 +24,7 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
     MatPaginator,
     AsyncPipe,
     BtnDirective,
+    TitleComponent,
   ],
   templateUrl: './add-subrutine-dialog.component.html',
 })

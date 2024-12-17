@@ -1,7 +1,7 @@
 <section class="min-h-72 min-w-72">
   <div class="p-6 flex flex-col space-y-4">
-    <span class="text-lg font-semibold">Seleccionar Subrutinas</span>
-
+    <!--Title-->
+    <app-title [title]="'Seleccionar Subrutinas'"></app-title>
     <!-- Filter Bar -->
     <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
     <!-- Exercises Table || subRoutines -->
@@ -13,13 +13,14 @@
       [total]="totalSubrutines$ | async"
       [selected]="subRoutines"
       (selectionChange)="toggleRoutine($event)"
-    ></app-table>
+    >
+      <mat-paginator
+        [length]="(totalSubrutines$ | async) || 0"
+        [pageSize]="pageSize"
+        (page)="paginate($event)"
+      ></mat-paginator>
+    </app-table>
 
-    <mat-paginator
-      [length]="(totalSubrutines$ | async) || 0"
-      [pageSize]="pageSize"
-      (page)="paginate($event)"
-    ></mat-paginator>
 
     <!-- Actions -->
     <div class="flex justify-end mt-4 space-x-4">
