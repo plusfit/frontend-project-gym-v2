@@ -12,7 +12,13 @@ import {
   UserPreferences,
 } from '../interfaces/auth';
 import { AuthService } from '../services/auth.service';
-import { GetUserPreferences, Login, Logout, Register } from './auth.actions';
+import {
+  ForgotPassword,
+  GetUserPreferences,
+  Login,
+  Logout,
+  Register,
+} from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
 import { SnackBarService } from '@core/services/snackbar.service';
@@ -155,6 +161,27 @@ export class AuthState {
         ctx.patchState({ loading: false });
         //TODO: convertir los mensajes
         this.snackbar.showError('Registro Erroneo', err.message);
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  @Action(ForgotPassword, { cancelUncompleted: true })
+  forgotPassword(
+    ctx: StateContext<AuthStateModel>,
+    action: ForgotPassword,
+  ): Observable<AuthResponse> {
+    ctx.patchState({ loading: true });
+    debugger;
+    const { email } = action.payload;
+    return this.authService.forgotPassword(email).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        //TODO: convertir los mensajes
+        this.snackbar.showError('Falló en recuperar contraseña', err.message);
         return throwError(() => err);
       }),
     );

@@ -10,12 +10,11 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 import { SnackBarService } from '@core/services/snackbar.service';
-import { passwordValidator } from '@core/validators/password.validator';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
-import { Login } from '../../state/auth.actions';
+import { ForgotPassword } from '../../state/auth.actions';
 import { AuthState } from '../../state/auth.state';
 
 @Component({
@@ -29,8 +28,8 @@ import { AuthState } from '../../state/auth.state';
     ConditionalTextPipe,
     InputDirective,
   ],
-  templateUrl: './login-form.component.html',
-  styleUrl: './login-form.component.css',
+  templateUrl: './forgot-password-form.component.html',
+  styleUrl: './forgot-password-form.component.css',
 })
 export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
@@ -51,8 +50,7 @@ export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Create the login form with email and password fields
     this.loginForm = this.fb.group({
-      identifier: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required, passwordValidator()]],
+      email: [null, [Validators.required, Validators.email]],
     });
   }
 
@@ -65,25 +63,21 @@ export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
    * Authenticate the user and redirect to dashboard
    * @returns void
    */
-  login(): void {
+  recoveryPassword(): void {
     if (this.loginForm.valid) {
-      this.store.dispatch(new Login(this.loginForm.value));
+      this.store.dispatch(new ForgotPassword(this.loginForm.value));
       this.actions
-        .pipe(ofActionSuccessful(Login), takeUntil(this.destroy))
+        .pipe(ofActionSuccessful(ForgotPassword), takeUntil(this.destroy))
         .subscribe(() => {
-          this.router.navigate(['/']);
+          //this.router.navigate(['/']);
           //TODO
           //this.store.dispatch(GetUserPreferences);
-          this.snackbar.showSuccess('Login exitoso', 'OK');
+          this.snackbar.showSuccess('Email enviado', 'OK');
         });
     }
   }
 
-  loginWithGoogle(): void {}
-  goToForgotPassword(): void {
-    this.router.navigate(['auth/forgot-password']);
-  }
-  goToRegister(): void {
-    this.router.navigate(['auth/register']);
+  goBack() {
+    this.router.navigate(['auth/login']);
   }
 }
