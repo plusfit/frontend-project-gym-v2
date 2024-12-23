@@ -15,3 +15,13 @@ export interface IScheduleResponse {
   data: ISchedule[];
   success: boolean;
 }
+
+export interface PageScheduleClient {
+  limit: number;
+  page: number;
+  filtersInformation: FilterClientsSchedule;
+}
+
+export interface FilterClientsSchedule {
+  email: string;
+}

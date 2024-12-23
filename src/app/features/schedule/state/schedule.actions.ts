@@ -37,7 +37,7 @@ export class AssignClient {
   static readonly type = '[Schedule] Assign Client';
   constructor(
     public readonly _id: string,
-    public readonly client: string,
+    public readonly clients: string[],
   ) {}
 }
 
@@ -51,6 +51,13 @@ export class DeleteClient {
 
 export class getClientsAssignable {
   static readonly type = '[Schedule] Get Clients Assignable';
+  constructor(
+    public readonly payload: {
+      page: number;
+      pageSize: number;
+      searchQ?: string;
+    },
+  ) {}
 }
 
 export class postClientsArray {

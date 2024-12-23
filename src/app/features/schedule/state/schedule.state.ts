@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { switchMap, tap } from 'rxjs';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ScheduleService } from '../services/schedule.service';
 import {
   AssignClient,
@@ -15,6 +15,7 @@ import {
   postClientsArray,
 } from './schedule.actions';
 import { ScheduleStateModel } from './schedule.model';
+import { environment } from '../../../../environments/environment.prod';
 
 @State<ScheduleStateModel>({
   name: 'schedule',
@@ -24,6 +25,7 @@ import { ScheduleStateModel } from './schedule.model';
     maxCount: 0,
     clientsAssignable: [],
     loading: false,
+    limit: environment.routineTableLimit,
   },
 })
 @Injectable({ providedIn: 'root' })
@@ -47,7 +49,7 @@ export class ScheduleState {
 
   @Selector()
   static clientsAssignable(state: ScheduleStateModel): any {
-    return state?.clientsAssignable.data || [];
+    return state?.clientsAssignable || [];
   }
 
   @Selector()
@@ -193,10 +195,10 @@ export class ScheduleState {
   assignClient(ctx: StateContext<ScheduleStateModel>, action: AssignClient) {
     ctx.patchState({ loading: true });
     return this.scheduleService
-      .assignClientToHour(action._id, action.client)
+      .assignClientToHour(action._id, action.clients)
       .pipe(
         switchMap(() =>
-          this.scheduleService.getClientsByid(action.client).pipe(
+          this.scheduleService.postClientsArray(action.clients).pipe(
             // Recuperar detalles del cliente
             tap((clientDetails) => {
               const state = ctx.getState();
@@ -235,10 +237,42 @@ export class ScheduleState {
   }
 
   @Action(getClientsAssignable)
-  getClientsAssignable(ctx: StateContext<ScheduleStateModel>) {
-    return this.scheduleService.getClientsAssignable().pipe(
-      tap((clients: any) => {
-        ctx.patchState({ clientsAssignable: clients });
+  getClientsAssignable(
+    ctx: StateContext<ScheduleStateModel>,
+    action: getClientsAssignable,
+  ): Observable<any> {
+    ctx.patchState({ loading: true });
+    const { page, pageSize, searchQ } = action.payload;
+    let getAssignableClientsObservable: Observable<any>;
+
+    if (searchQ === null || searchQ === undefined) {
+      getAssignableClientsObservable =
+        this.scheduleService.getClientsAssignable(page, pageSize, '');
+    } else {
+      getAssignableClientsObservable =
+        this.scheduleService.getClientsAssignable(page, pageSize, searchQ);
+    }
+
+    return getAssignableClientsObservable.pipe(
+      tap((response: any) => {
+        const clientsAssignable = response.data.map((client: any) => ({
+          ...client,
+        }));
+        const total = response.data.length;
+        const pageCount = Math.ceil(total / pageSize);
+
+        ctx.patchState({
+          clientsAssignable,
+          total,
+          loading: false,
+          currentPage: page,
+          pageSize,
+          pageCount,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
       }),
     );
   }
