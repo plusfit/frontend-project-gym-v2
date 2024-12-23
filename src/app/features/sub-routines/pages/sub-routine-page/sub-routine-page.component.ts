@@ -14,6 +14,8 @@ import {
 import { TableComponent } from '@shared/components/table/table.component';
 import { AsyncPipe } from '@angular/common';
 import { SnackBarService } from '@core/services/snackbar.service';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sub-routine-page',
@@ -26,7 +28,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = ['_id', 'name', 'isCustom', 'acciones']; // TODO: Change colums
+  displayedColumns: string[] = ['name', 'description', 'acciones'];
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
 
@@ -39,6 +41,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     private actions: Actions,
     private snackbar: SnackBarService,
     private router: Router,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -80,12 +83,28 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.router.navigate([`/subrutinas/${id}`]);
   }
   deleteSubRoutine(event: any): void {
-    this.store.dispatch(new DeleteSubRoutine(event));
-    this.actions
-      .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
-      .subscribe(() => {
-        this.snackbar.showSuccess('Exito', 'Subrutina eliminada correctamente');
-      });
+    console.log(event);
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'Eliminar Subrutina',
+        contentMessage: '¿Estás seguro de que deseas eliminar la Subrutina?',
+      },
+    });
+
+    dialogRef.componentInstance.confirm.subscribe((value) => {
+      if (!value) return;
+      this.store.dispatch(new DeleteSubRoutine(event));
+      this.actions
+        .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess(
+            'Exito',
+            'Subrutina eliminada correctamente',
+          );
+        });
+    });
   }
 
   ngOnDestroy(): void {

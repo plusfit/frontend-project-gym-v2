@@ -4,6 +4,7 @@ import {
   output,
   ChangeDetectorRef,
   AfterViewInit,
+  OnInit,
 } from '@angular/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
@@ -12,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TableComponent } from '../../../../shared/components/table/table.component';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-routine-table',
@@ -29,7 +30,7 @@ import { Observable } from 'rxjs';
     TableComponent,
   ],
 })
-export class RoutineTableComponent implements AfterViewInit {
+export class RoutineTableComponent implements AfterViewInit, OnInit {
   @Input() displayedColumns: string[] = [];
   @Input() routines$!: Observable<any[]>;
   @Input() loading$!: Observable<boolean>;
@@ -37,7 +38,24 @@ export class RoutineTableComponent implements AfterViewInit {
   editEmitter = output<string>();
   deleteEmitter = output<string>();
 
+  transformedRoutines$!: Observable<any[]>;
+
   constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.transformedRoutines$ = this.routines$.pipe(
+      map((routines) =>
+        routines.map((routine) => ({
+          ...routine,
+          days: this.calculateDays(routine),
+        })),
+      ),
+    );
+  }
+
+  calculateDays(routine: any): number {
+    return routine.subRoutines.length;
+  }
 
   ngAfterViewInit() {
     this.cdr.detectChanges();

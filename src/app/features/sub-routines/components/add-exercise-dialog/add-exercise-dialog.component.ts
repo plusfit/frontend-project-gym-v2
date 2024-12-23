@@ -13,6 +13,7 @@ import {
 } from '@features/exercises/state/exercise.actions';
 import { AsyncPipe } from '@angular/common';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
+import { TitleComponent } from '@shared/components/title/title.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -24,6 +25,7 @@ import { environment } from '../../../../../environments/environment';
     TableComponent,
     MatPaginator,
     AsyncPipe,
+    TitleComponent,
   ],
   templateUrl: './add-exercise-dialog.component.html',
 })

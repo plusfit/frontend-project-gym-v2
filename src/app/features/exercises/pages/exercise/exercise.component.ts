@@ -35,6 +35,7 @@ import { environment } from '../../../../../environments/environment';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 
 @Component({
   selector: 'app-exercise',
@@ -44,6 +45,7 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
     MatPaginatorModule,
     CommonModule,
     BtnDirective,
+    FiltersBarComponent,
   ],
   templateUrl: './exercise.component.html',
   styleUrl: './exercise.component.css',
@@ -83,15 +85,6 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.searchTerm$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(), // Solo continúa si el valor ha cambiado
-      )
-      .subscribe((searchValue) => {
-        this.performSearch(searchValue); // Llama a la funcion que hace la busqueda
-      });
-
     this.store.dispatch(
       new GetExercisesByPage({
         page: this.currentPage,
@@ -113,12 +106,9 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
   }
 
-  searchExercises(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchValue = inputElement.value.trim();
-    this.searchTerm$.next(this.searchValue);
-  }
-  performSearch(searchValue: string): void {
+  searchExercises(searchQuery: { searchQ: string }): void {
+    const searchValue = searchQuery.searchQ;
+
     this.isSearching = !!searchValue;
     this.store.dispatch(
       new GetExercisesByName(
@@ -145,7 +135,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       width: '500px',
       data: {
         title: 'Eliminar ejercicio',
-        contentMessage: '¿Estás seguro de que deseas eliminar este ejercicio?',
+        contentMessage: '¿Estás seguro de que deseas eliminar el ejercicio?',
       },
     });
 

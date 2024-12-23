@@ -17,13 +17,12 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
+
 import { Observable, Subject } from 'rxjs';
 import { Store } from '@ngxs/store';
 
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { TableComponent } from '@shared/components/table/table.component';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AddExerciseDialogComponent } from '@features/sub-routines/components/add-exercise-dialog/add-exercise-dialog.component';
@@ -35,11 +34,10 @@ import {
   UpdateSubRoutine,
 } from '@features/sub-routines/state/sub-routine.actions';
 import { SnackBarService } from '@core/services/snackbar.service';
-import { EDay } from '@core/enums/day.enum';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatOption, MatSelect } from '@angular/material/select';
 import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { MatDivider } from '@angular/material/divider';
+import { TitleComponent } from '@shared/components/title/title.component';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -48,17 +46,13 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
     MatDialogModule,
     ReactiveFormsModule,
     BtnDirective,
-
     CommonModule,
     LoaderComponent,
     FormsModule,
-
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatLabel,
     DragAndDropSortingComponent,
     InputComponent,
+    MatDivider,
+    TitleComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -67,7 +61,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   subRoutineForm!: FormGroup;
   selectedExercises: Exercise[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Subrutina';
+  title = 'Crear Subrutina';
   btnTitle = 'Crear';
 
   private destroy = new Subject<void>();
@@ -90,13 +84,21 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
     this.subRoutineForm = this.fb.group({
       name: ['', Validators.required],
-      isCustom: [false],
+      description: ['', Validators.required],
     });
+  }
+
+  get nameControl(): FormControl {
+    return this.subRoutineForm.get('name') as FormControl;
+  }
+
+  get descriptionControl(): FormControl {
+    return this.subRoutineForm.get('description') as FormControl;
   }
 
   ngOnChanges(): void {
     if (this.isEdit()) {
-      this.title = 'Editar Sub-Rutina';
+      this.title = 'Editar Subrutina';
       this.btnTitle = 'Guardar';
 
       const subRoutine: SubRoutine | null = this.store.selectSnapshot(
@@ -108,15 +110,9 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  removeExercise(id: string): void {
-    this.selectedExercises = this.selectedExercises.filter(
-      (exercise) => exercise._id !== id,
-    );
-  }
-
   openAddExerciseDialog(): void {
     const dialogRef = this.dialog.open(AddExerciseDialogComponent, {
-      width: '600px',
+      width: '40rem',
     });
     dialogRef.afterClosed().subscribe((newExercises: Exercise[]) => {
       if (newExercises) {
@@ -180,10 +176,4 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     };
     this.store.dispatch(new UpdateSelectedSubRoutine(newSubRoutine));
   }
-
-  get nameControl(): FormControl {
-    return this.subRoutineForm.get('name') as FormControl;
-  }
-
-  protected readonly EDay = EDay;
 }

@@ -1,23 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnChanges,
-  OnInit,
-} from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { EColorBadge } from '../../enums/badge-color.enum';
 import { CdkTableModule } from '@angular/cdk/table';
-import {
-  AsyncPipe,
-  DatePipe,
-  JsonPipe,
-  NgClass,
-  NgFor,
-  NgIf,
-  TitleCasePipe,
-} from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
   MatMenu,
   MatMenuContent,
@@ -29,6 +13,7 @@ import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { TranslationPipe } from '@shared/pipes/translation.pipe';
 import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
+import {MatCheckbox} from "@angular/material/checkbox";
 
 /**
  * The TableComponent displays a table of data.
@@ -52,6 +37,7 @@ import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
     TranslationPipe,
     CamelToTitlePipe,
     DatePipe,
+    MatCheckbox,
   ],
 })
 export class TableComponent implements OnInit {

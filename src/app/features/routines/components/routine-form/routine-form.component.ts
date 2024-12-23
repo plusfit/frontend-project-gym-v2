@@ -18,7 +18,6 @@ import {
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject } from 'rxjs';
 
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -28,8 +27,6 @@ import {
   RoutinePayload,
 } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
-import { Router } from '@angular/router';
-import { EDay } from '@core/enums/day.enum';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { AddSubroutineDialogComponent } from '@features/routines/components/add-subrutine-dialog/add-subrutine-dialog.component';
 import {
@@ -39,12 +36,14 @@ import {
 } from '@features/routines/state/routine.actions';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { Location } from '@angular/common';
 
-import { DragAndDropSortingComponent } from '../../../../shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { TextAreaComponent } from '../../../../shared/components/text-area/text-area.component';
+import { DragAndDropSortingComponent } from '@shared/components/drag-and-drop-sorting/drag-and-drop-sorting.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
+import { MatDivider } from '@angular/material/divider';
+import { TitleComponent } from '@shared/components/title/title.component';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -64,6 +63,8 @@ import { TextAreaComponent } from '../../../../shared/components/text-area/text-
     DragAndDropSortingComponent,
     InputComponent,
     TextAreaComponent,
+    MatDivider,
+    TitleComponent,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -72,10 +73,9 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   routineForm!: FormGroup;
   selectedSubroutines: any[] = [];
   loading$!: Observable<boolean | null>;
-  title = 'Agregar Rutina';
+  title = 'Crear Rutina';
   btnTitle = 'Crear';
   displayedColumns: string[] = ['day', 'name', 'type', 'isCustom', 'acciones'];
-  listToSort: any[] = [];
 
   categories = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -97,7 +97,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private router: Router,
     private dialog: MatDialog,
     private snackBarService: SnackBarService,
     private location: Location,
@@ -114,7 +113,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       name: ['', Validators.required],
       description: ['', Validators.required],
       category: ['', Validators.required],
-      isCustom: [false],
+      isCustom: [{ value: false, disabled: true }],
     });
   }
 
@@ -132,15 +131,9 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  removeExercise(id: string): void {
-    this.selectedSubroutines = this.selectedSubroutines.filter(
-      (subroutine) => subroutine._id !== id,
-    );
-  }
-
   openAddSubRoutinesDialog(): void {
     const dialogRef = this.dialog.open(AddSubroutineDialogComponent, {
-      width: '600px',
+      width: '40rem',
     });
     dialogRef.afterClosed().subscribe((newSubRoutines: SubRoutine[]) => {
       if (newSubRoutines) {
@@ -172,13 +165,11 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       RoutineState.selectedRoutine,
     );
 
-    const _subRoutines = routine?.subRoutines.map((r, i) => {
-      return { subRoutine: r._id, day: this.days[i], name: r.name };
-    });
+    const subRoutinesIds = routine?.subRoutines.map((sub) => sub._id);
 
     const payload: RoutinePayload = {
-      ...this.routineForm.value,
-      subRoutines: _subRoutines,
+      ...this.routineForm.getRawValue(),
+      subRoutines: subRoutinesIds,
     };
     if (this.isEdit()) {
       this.store
@@ -211,13 +202,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     return this.routineForm.get('name') as FormControl;
   }
 
-  get daysControl(): FormControl {
-    return this.routineForm.get('days') as FormControl;
-  }
-
   get descriptionControl(): FormControl {
     return this.routineForm.get('description') as FormControl;
   }
-
-  protected readonly EDay = EDay;
 }

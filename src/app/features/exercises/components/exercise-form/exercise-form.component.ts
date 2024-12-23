@@ -24,12 +24,13 @@ import {
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { MatSelectModule } from '@angular/material/select';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { TextAreaComponent } from '../../../../shared/components/text-area/text-area.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
+import {TitleComponent} from "@shared/components/title/title.component";
+
 @Component({
   selector: 'app-exercise-form',
   styleUrls: ['./exercise-form.component.css'],
@@ -40,13 +41,13 @@ import { TextAreaComponent } from '../../../../shared/components/text-area/text-
     ReactiveFormsModule,
     NgIf,
     BtnDirective,
-    InputDirective,
     CommonModule,
     LoaderComponent,
     FormsModule,
     MatSelectModule,
     InputComponent,
     TextAreaComponent,
+    TitleComponent,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {

@@ -11,7 +11,8 @@ import { RoutineState } from '@features/routines/state/routine.state';
 import { GetSubRoutines } from '@features/sub-routines/state/sub-routine.actions';
 import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
-import { Routine } from '@features/routines/interfaces/routine.interface';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import {TitleComponent} from "@shared/components/title/title.component";
 
 @Component({
   selector: 'app-add-subrutine-dialog',
@@ -22,6 +23,8 @@ import { Routine } from '@features/routines/interfaces/routine.interface';
     TableComponent,
     MatPaginator,
     AsyncPipe,
+    BtnDirective,
+    TitleComponent,
   ],
   templateUrl: './add-subrutine-dialog.component.html',
 })
@@ -32,7 +35,6 @@ export class AddSubroutineDialogComponent implements OnInit {
   selectedSubroutines: SubRoutine[] = [];
   subRoutines: SubRoutine[] = [];
   pageSize = environment.config.pageSize;
-  selectedRoutine!: Routine | null;
 
   constructor(
     private store: Store,
@@ -42,9 +44,7 @@ export class AddSubroutineDialogComponent implements OnInit {
   ngOnInit(): void {
     this.subRoutines$ = this.store.select(SubRoutinesState.getSubRoutines);
     this.totalSubrutines$ = this.store.select(SubRoutinesState.getTotal);
-
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
-
     this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
 
     this.loadSubrutines(1);

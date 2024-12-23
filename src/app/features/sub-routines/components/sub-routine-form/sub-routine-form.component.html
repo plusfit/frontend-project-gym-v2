@@ -1,6 +1,5 @@
 <div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
   <span class="text-center text-6xl font-semibold text-gray-800 mb-8">{{ title }} 📝</span>
-
   <!-- Loading Indicator -->
   @if (loading$ | async) {
     <app-loader></app-loader>
@@ -8,6 +7,7 @@
     <div class="bg-white rounded-lg shadow-md p-8">
     <!-- Form Content -->
       <form [formGroup]="subRoutineForm" class="space-y-4">
+        <app-title [title]="'Información general'"></app-title>
         <!-- SubRoutine Fields -->
         <div class="flex py-8 gap-4">
           <div class="w-full md:w-1/2">
@@ -22,22 +22,21 @@
           </div>
 
           <div class="w-full md:w-1/2">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Es Personalizada ? </mat-label>
-              <mat-select formControlName="isCustom">
-                <mat-option [value]="true"> Si </mat-option>
-                <mat-option [value]="false"> No </mat-option>
-              </mat-select>
-            </mat-form-field>
+             <app-input
+               [control]="descriptionControl"
+                label="Descripción"
+                type="text"
+                errorKey="description"
+                placeholder="Descripción de la Sub-Rutina"
+                appearance="outline"
+             ></app-input>
           </div>
         </div>
 
         <!-- Current Exercises Section -->
         <div>
-          <div class="flex justify-between mb-8">
-            <span class="text-2xl font-semibold text-gray-800"
-              >Ejercicios actuales</span
-            >
+          <div class="flex justify-between mb-4 align-bottom">
+            <app-title [title]="'Ejercicios'" [divider]="false"></app-title>
             <button
               appBtn
               color="primary"
@@ -48,11 +47,15 @@
               Agregar Ejercicio
             </button>
           </div>
+          <mat-divider></mat-divider>
+          <div class="mt-8">
+            <app-drag-and-drop-sorting
+              [list]="selectedExercises"
+              (listEmitter)="handleList($event)"
+            ></app-drag-and-drop-sorting>
+          </div>
 
-          <app-drag-and-drop-sorting
-            [list]="selectedExercises"
-            (listEmitter)="handleList($event)"
-          ></app-drag-and-drop-sorting>
+
 
           <!-- <app-table
             [data]="selectedExercises"

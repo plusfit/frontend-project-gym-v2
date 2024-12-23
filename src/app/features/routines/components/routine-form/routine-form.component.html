@@ -1,9 +1,16 @@
-<div class="w-3/2 bg-white rounded-lg shadow-md p-8">
-  @if (loading$ | async) {
-    <app-loader></app-loader>
-  } @else {
-      <form [formGroup]="routineForm" class="space-y-4" (ngSubmit)="save()">
-        <div class="flex flex-col justify-around">
+<div
+  class=" flex flex-col space-y-6"
+>
+  <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
+    >{{ title }} 📝</span
+  >
+  <div class="bg-white rounded-lg shadow-md p-8">
+    @if (loading$ | async) {
+      <app-loader></app-loader>
+    } @else {
+      <form [formGroup]="routineForm" class="space-y-8" (ngSubmit)="save()">
+        <app-title [title]="'Información general'"></app-title>
+        <div class="flex flex-col justify-around mt-4">
           <div class="flex gap-4">
             <div class="w-full md:w-1/2">
               <app-input
@@ -49,42 +56,43 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-between mt-8">
-          <div class="flex flex-col gap-4">
-            <span class="text-2xl font-bold">Subrutinas</span>
+        <div class="flex flex-col gap-4 mt-4">
+          <div class="flex justify-between">
+            <app-title [title]="'Subrutinas'" [divider]="false"></app-title>
+            <button
+              appBtn
+              color="primary"
+              type="button"
+              (click)="openAddSubRoutinesDialog()"
+              class="h-12"
+            >
+              Agregar Subrutina
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="h-50 overflow-y-auto">
             <app-drag-and-drop-sorting
               [additionalInfo]="'day'"
               [list]="selectedSubroutines"
               (listEmitter)="handleList($event)"
             ></app-drag-and-drop-sorting>
           </div>
-          <div>
-            <button
-              appBtn
-              color="primary"
-              type="button"
-              (click)="openAddSubRoutinesDialog()"
-              class="h-10 mt-2"
-            >
-              Agregar Subrutinas
-            </button>
-          </div>
         </div>
       </form>
+    }
 
-  }
-
-  <div class="flex justify-end space-x-2 mt-4">
-    <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
-    <button
-      appBtn
-      color="primary"
-      [loader]="(loading$ | async)!"
-      [animate]="true"
-      (click)="save()"
-      [disabled]="routineForm.invalid || (loading$ | async)"
-    >
-      {{ btnTitle }}
-    </button>
+    <div class="flex justify-end space-x-2 mt-4">
+      <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
+      <button
+        appBtn
+        color="primary"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        (click)="save()"
+        [disabled]="routineForm.invalid || (loading$ | async)"
+      >
+        {{ btnTitle }}
+      </button>
+    </div>
   </div>
 </div>
