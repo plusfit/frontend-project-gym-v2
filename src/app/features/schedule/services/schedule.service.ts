@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UtilsService } from '@core/services/utils.service';
 import { environment } from '../../../../environments/environment';
 import { ISchedule, IScheduleResponse } from '../interfaces/schedule.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +22,26 @@ export class ScheduleService {
     return this.http.get<any>(`${environment.api}/clients/${id}`);
   }
 
-  getClientsAssignable() {
-    return this.http.get<any>(`${environment.api}/plans/assignableClients`);
+  getClientsAssignable(
+    page: number,
+    limit: number,
+    email: string,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    if (email) {
+      params = params.set('email', email);
+    }
+    return this.http.get<any>(`${environment.api}/plans/assignableClients`, {
+      params,
+    });
   }
 
-  getClientsArray(clientsIds: string[]) {
-    return this.http.get<any>(`${environment.api}/clients/list/${clientsIds}`);
+  postClientsArray(clientsIds: string[]) {
+    return this.http.post<any>(`${environment.api}/clients/list`, {
+      clientsIds,
+    });
   }
 
   updateSchedule(id: string, data: ISchedule) {
@@ -35,11 +50,11 @@ export class ScheduleService {
       data,
     );
   }
-  assignClientToHour(id: string, client: string) {
+  assignClientToHour(id: string, clients: string[]) {
     return this.http.patch<IScheduleResponse>(
-      `${environment.api}/schedules/assignClient/${id}/${client}`,
+      `${environment.api}/schedules/assignClient/${id}`,
       {
-        client,
+        clients,
       },
     );
   }

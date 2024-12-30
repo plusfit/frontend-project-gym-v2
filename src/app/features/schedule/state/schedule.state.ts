@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ScheduleStateModel } from './schedule.model';
 import { ScheduleService } from '../services/schedule.service';
-import { switchMap, tap } from 'rxjs';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 import {
   AssignClient,
   ClearClients,
   DeleteClient,
   DeleteHour,
   EditHour,
-  getClientsArray,
+  postClientsArray,
   getClientsAssignable,
   GetClientsById,
   getMaxCount,
@@ -23,6 +23,7 @@ import {
     clients: [],
     maxCount: 0,
     clientsAssignable: [],
+    loadingAssignable: false,
     loading: false,
   },
 })
@@ -36,6 +37,11 @@ export class ScheduleState {
   }
 
   @Selector()
+  static loadingAssignable(state: ScheduleStateModel): boolean {
+    return state?.loadingAssignable || false;
+  }
+
+  @Selector()
   static schedule(state: ScheduleStateModel): any {
     return state?.schedule;
   }
@@ -46,8 +52,13 @@ export class ScheduleState {
   }
 
   @Selector()
+  static getTotal(state: ScheduleStateModel): number {
+    return state.clientsAssignable.length ?? 0;
+  }
+
+  @Selector()
   static clientsAssignable(state: ScheduleStateModel): any {
-    return state?.clientsAssignable.data || [];
+    return state?.clientsAssignable || [];
   }
 
   @Selector()
@@ -60,40 +71,56 @@ export class ScheduleState {
     ctx.patchState({ loading: true });
     return this.scheduleService.getSchedule().pipe(
       tap((schedule: any) => {
-        const sortSchedule = schedule.data.reduce((acc: any, hour: any) => {
+        // Agrupamos los horarios por día y ordenamos los resultados
+        const sortSchedule = schedule.data.reduce((acc: any[], hour: any) => {
+          // Buscamos si ya existe una entrada para el día actual
           let dayEntry = acc.find((d: any) => d.day === hour.day);
+
           if (!dayEntry) {
+            // Si no existe, la creamos
             dayEntry = { day: hour.day, hours: [] };
             acc.push(dayEntry);
           }
+
+          // Procesar el array de clientes para convertirlo en un único array de IDs
+          const flattenedClients = Array.isArray(hour.clients?.[0]?.clients)
+            ? hour.clients.flatMap((clientGroup: any) => clientGroup.clients)
+            : hour.clients;
+
+          // Añadimos el horario actual al día correspondiente
           dayEntry.hours.push({
             _id: hour._id,
             startTime: hour.startTime,
             endTime: hour.endTime,
-            clients: hour.clients,
+            clients: flattenedClients,
             maxCount: hour.maxCount,
           });
-          dayEntry.hours.sort((a: any, b: any) => {
-            return parseInt(a.startTime, 10) - parseInt(b.startTime, 10);
-          });
-          acc = acc.sort((a: any, b: any) => {
-            const days = [
-              'Lunes',
-              'Martes',
-              'Miercoles',
-              'Jueves',
-              'Viernes',
-              'Sabado',
-            ];
-            const dayA = days.indexOf(a.day);
-            const dayB = days.indexOf(b.day);
-            return dayA - dayB;
-          });
+
+          // Ordenamos las horas dentro del día por la hora de inicio
+          dayEntry.hours.sort(
+            (a: any, b: any) =>
+              parseInt(a.startTime, 10) - parseInt(b.startTime, 10),
+          );
+
           return acc;
         }, []);
-        ctx.patchState({ schedule: sortSchedule });
-        ctx.patchState({ loading: false });
-      }), // Provide an argument for the tap operator
+
+        // Ordenamos los días de la semana en el orden deseado
+        const daysOrder = [
+          'Lunes',
+          'Martes',
+          'Miercoles',
+          'Jueves',
+          'Viernes',
+          'Sabado',
+        ];
+        sortSchedule.sort((a: any, b: any) => {
+          const dayA = daysOrder.indexOf(a.day);
+          const dayB = daysOrder.indexOf(b.day);
+          return dayA - dayB;
+        });
+        ctx.patchState({ schedule: sortSchedule, loading: false });
+      }),
     );
   }
 
@@ -121,12 +148,12 @@ export class ScheduleState {
     );
   }
 
-  @Action(getClientsArray)
+  @Action(postClientsArray)
   getClientsArray(
     ctx: StateContext<ScheduleStateModel>,
-    action: getClientsArray,
+    action: postClientsArray,
   ) {
-    return this.scheduleService.getClientsArray(action.ids).pipe(
+    return this.scheduleService.postClientsArray(action.ids).pipe(
       tap((clients: any) => {
         const state = ctx.getState();
         const currentClients = Array.isArray(state.clients)
@@ -193,10 +220,10 @@ export class ScheduleState {
   assignClient(ctx: StateContext<ScheduleStateModel>, action: AssignClient) {
     ctx.patchState({ loading: true });
     return this.scheduleService
-      .assignClientToHour(action._id, action.client)
+      .assignClientToHour(action._id, action.clients)
       .pipe(
         switchMap(() =>
-          this.scheduleService.getClientsByid(action.client).pipe(
+          this.scheduleService.postClientsArray(action.clients).pipe(
             // Recuperar detalles del cliente
             tap((clientDetails) => {
               const state = ctx.getState();
@@ -210,9 +237,14 @@ export class ScheduleState {
                       if (hour.clients.length >= hour.maxCount) {
                         return hour;
                       }
+                      const newClients = [...hour.clients];
+                      clientDetails.data.forEach((client: any) => {
+                        newClients.push(client._id);
+                      });
+
                       return {
                         ...hour,
-                        clients: [...hour.clients, clientDetails.data._id],
+                        clients: newClients,
                       };
                     }
                     return hour;
@@ -221,7 +253,7 @@ export class ScheduleState {
               });
 
               // Actualiza la lista de clientes en el estado
-              const updatedClients = [...state.clients, clientDetails.data];
+              const updatedClients = [...state.clients, ...clientDetails.data];
 
               ctx.patchState({
                 clients: updatedClients,
@@ -235,10 +267,42 @@ export class ScheduleState {
   }
 
   @Action(getClientsAssignable)
-  getClientsAssignable(ctx: StateContext<ScheduleStateModel>) {
-    return this.scheduleService.getClientsAssignable().pipe(
-      tap((clients: any) => {
-        ctx.patchState({ clientsAssignable: clients });
+  getClientsAssignable(
+    ctx: StateContext<ScheduleStateModel>,
+    action: getClientsAssignable,
+  ): Observable<any> {
+    ctx.patchState({ loadingAssignable: true });
+    const { page, pageSize, searchQ } = action.payload;
+    let getAssignableClientsObservable: Observable<any>;
+
+    if (searchQ === null || searchQ === undefined) {
+      getAssignableClientsObservable =
+        this.scheduleService.getClientsAssignable(page, pageSize, '');
+    } else {
+      getAssignableClientsObservable =
+        this.scheduleService.getClientsAssignable(page, pageSize, searchQ);
+    }
+
+    return getAssignableClientsObservable.pipe(
+      tap((response: any) => {
+        const clientsAssignable = response.data.map((client: any) => ({
+          ...client,
+        }));
+        const total = response.data.length;
+        const pageCount = Math.ceil(total / pageSize);
+
+        ctx.patchState({
+          clientsAssignable,
+          total,
+          loadingAssignable: false,
+          currentPage: page,
+          pageSize,
+          pageCount,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loadingAssignable: false });
+        return throwError(() => error);
       }),
     );
   }
@@ -292,7 +356,6 @@ export class ScheduleState {
     );
 
     if (!dayToEdit) {
-      console.log('No se encontró el día con el horario especificado.');
       return;
     }
 
@@ -302,7 +365,6 @@ export class ScheduleState {
     );
 
     if (!hourToEdit) {
-      console.log('No se encontró el horario especificado.');
       return;
     }
 
