@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -7,19 +8,18 @@ import {
   signal,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
   ClearClients,
   DeleteHour,
 } from '@features/schedule/state/schedule.actions';
+import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
-import { ScheduleState } from '@features/schedule/state/schedule.state';
-import { AsyncPipe } from '@angular/common';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-calendar-schedule',
@@ -40,6 +40,8 @@ export class CalendarScheduleComponent implements AfterViewInit {
   });
   loading$ = this.store.select(ScheduleState.scheduleLoading);
   readonly panelOpenState = signal(false);
+  // Mapeo de estado para controlar qué paneles están abiertos
+  readonly panelStates = signal<Record<string, boolean>>({});
 
   constructor(
     private store: Store,
@@ -50,7 +52,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   editarHorario(event: Event) {
@@ -84,14 +88,14 @@ export class CalendarScheduleComponent implements AfterViewInit {
       this.store.dispatch(new DeleteHour(_id));
       this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
         this.snackbar.showSuccess('Horario eliminado', 'Cerrar');
-        // Filtra y emite el nuevo horario al componente padre
-        const updatedSchedule = this.schedule().map((day: any) => {
-          return {
-            ...day,
-            hours: day.hours.filter((hour: any) => hour._id !== _id),
-          };
-        });
-        this.scheduleUpdated.emit(updatedSchedule);
+        // // Filtra y emite el nuevo horario al componente padre
+        // const updatedSchedule = this.schedule().map((day: any) => {
+        //   return {
+        //     ...day,
+        //     hours: day.hours.filter((hour: any) => hour._id !== _id),
+        //   };
+        // });
+        // this.scheduleUpdated.emit(updatedSchedule);
       });
     });
   }

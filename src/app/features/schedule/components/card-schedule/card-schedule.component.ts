@@ -20,13 +20,13 @@ export class CardScheduleComponent {
     startTime: '00',
     endTime: '00',
     maxCount: 0,
-    clients: [],
+    clients: [{ clients: '' }],
   };
 
   constructor() {}
 
   editarHorario(hour: IHour, day: any) {
-    this.edit.emit({ hour, day });
+    this.edit.emit({ hour, name: day.day });
   }
 
   eliminarHorario(hour: IHour) {
@@ -34,7 +34,7 @@ export class CardScheduleComponent {
   }
 
   getBackgroundClass(hour: any): string {
-    const clientsCount = hour?.clients?.length || 0;
+    const clientsCount = hour.clients?.length || 0;
     const maxCount = hour?.maxCount || 0;
 
     if (clientsCount === maxCount) {
@@ -47,7 +47,7 @@ export class CardScheduleComponent {
   }
 
   getTextClass(hour: any): string {
-    const clientsCount = hour?.clients?.length || 0;
+    const clientsCount = hour.clients?.length || 0;
     const maxCount = hour?.maxCount || 0;
 
     if (clientsCount === maxCount) {

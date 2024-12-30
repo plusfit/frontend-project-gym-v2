@@ -2,7 +2,11 @@ export interface IHour {
   startTime: string;
   endTime: string;
   maxCount: number;
-  clients: string[];
+  clients: [
+    {
+      clients: string;
+    },
+  ];
 }
 
 export interface ISchedule {

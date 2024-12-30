@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
+import { ScheduleStateModel } from './schedule.model';
 import { ScheduleService } from '../services/schedule.service';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 import {
   AssignClient,
   ClearClients,
   DeleteClient,
   DeleteHour,
   EditHour,
+  postClientsArray,
   getClientsAssignable,
   GetClientsById,
   getMaxCount,
   GetSchedule,
-  postClientsArray,
 } from './schedule.actions';
-import { ScheduleStateModel } from './schedule.model';
-import { environment } from '../../../../environments/environment.prod';
 
 @State<ScheduleStateModel>({
   name: 'schedule',
@@ -24,8 +23,8 @@ import { environment } from '../../../../environments/environment.prod';
     clients: [],
     maxCount: 0,
     clientsAssignable: [],
+    loadingAssignable: false,
     loading: false,
-    limit: environment.routineTableLimit,
   },
 })
 @Injectable({ providedIn: 'root' })
@@ -38,6 +37,11 @@ export class ScheduleState {
   }
 
   @Selector()
+  static loadingAssignable(state: ScheduleStateModel): boolean {
+    return state?.loadingAssignable || false;
+  }
+
+  @Selector()
   static schedule(state: ScheduleStateModel): any {
     return state?.schedule;
   }
@@ -45,6 +49,11 @@ export class ScheduleState {
   @Selector()
   static clients(state: ScheduleStateModel): any {
     return state?.clients;
+  }
+
+  @Selector()
+  static getTotal(state: ScheduleStateModel): number {
+    return state.clientsAssignable.length ?? 0;
   }
 
   @Selector()
@@ -62,40 +71,56 @@ export class ScheduleState {
     ctx.patchState({ loading: true });
     return this.scheduleService.getSchedule().pipe(
       tap((schedule: any) => {
-        const sortSchedule = schedule.data.reduce((acc: any, hour: any) => {
+        // Agrupamos los horarios por día y ordenamos los resultados
+        const sortSchedule = schedule.data.reduce((acc: any[], hour: any) => {
+          // Buscamos si ya existe una entrada para el día actual
           let dayEntry = acc.find((d: any) => d.day === hour.day);
+
           if (!dayEntry) {
+            // Si no existe, la creamos
             dayEntry = { day: hour.day, hours: [] };
             acc.push(dayEntry);
           }
+
+          // Procesar el array de clientes para convertirlo en un único array de IDs
+          const flattenedClients = Array.isArray(hour.clients?.[0]?.clients)
+            ? hour.clients.flatMap((clientGroup: any) => clientGroup.clients)
+            : hour.clients;
+
+          // Añadimos el horario actual al día correspondiente
           dayEntry.hours.push({
             _id: hour._id,
             startTime: hour.startTime,
             endTime: hour.endTime,
-            clients: hour.clients,
+            clients: flattenedClients,
             maxCount: hour.maxCount,
           });
-          dayEntry.hours.sort((a: any, b: any) => {
-            return parseInt(a.startTime, 10) - parseInt(b.startTime, 10);
-          });
-          acc = acc.sort((a: any, b: any) => {
-            const days = [
-              'Lunes',
-              'Martes',
-              'Miercoles',
-              'Jueves',
-              'Viernes',
-              'Sabado',
-            ];
-            const dayA = days.indexOf(a.day);
-            const dayB = days.indexOf(b.day);
-            return dayA - dayB;
-          });
+
+          // Ordenamos las horas dentro del día por la hora de inicio
+          dayEntry.hours.sort(
+            (a: any, b: any) =>
+              parseInt(a.startTime, 10) - parseInt(b.startTime, 10),
+          );
+
           return acc;
         }, []);
-        ctx.patchState({ schedule: sortSchedule });
-        ctx.patchState({ loading: false });
-      }), // Provide an argument for the tap operator
+
+        // Ordenamos los días de la semana en el orden deseado
+        const daysOrder = [
+          'Lunes',
+          'Martes',
+          'Miercoles',
+          'Jueves',
+          'Viernes',
+          'Sabado',
+        ];
+        sortSchedule.sort((a: any, b: any) => {
+          const dayA = daysOrder.indexOf(a.day);
+          const dayB = daysOrder.indexOf(b.day);
+          return dayA - dayB;
+        });
+        ctx.patchState({ schedule: sortSchedule, loading: false });
+      }),
     );
   }
 
@@ -124,7 +149,7 @@ export class ScheduleState {
   }
 
   @Action(postClientsArray)
-  postClientsArray(
+  getClientsArray(
     ctx: StateContext<ScheduleStateModel>,
     action: postClientsArray,
   ) {
@@ -212,9 +237,14 @@ export class ScheduleState {
                       if (hour.clients.length >= hour.maxCount) {
                         return hour;
                       }
+                      const newClients = [...hour.clients];
+                      clientDetails.data.forEach((client: any) => {
+                        newClients.push(client._id);
+                      });
+
                       return {
                         ...hour,
-                        clients: [...hour.clients, clientDetails.data._id],
+                        clients: newClients,
                       };
                     }
                     return hour;
@@ -223,7 +253,7 @@ export class ScheduleState {
               });
 
               // Actualiza la lista de clientes en el estado
-              const updatedClients = [...state.clients, clientDetails.data];
+              const updatedClients = [...state.clients, ...clientDetails.data];
 
               ctx.patchState({
                 clients: updatedClients,
@@ -241,7 +271,7 @@ export class ScheduleState {
     ctx: StateContext<ScheduleStateModel>,
     action: getClientsAssignable,
   ): Observable<any> {
-    ctx.patchState({ loading: true });
+    ctx.patchState({ loadingAssignable: true });
     const { page, pageSize, searchQ } = action.payload;
     let getAssignableClientsObservable: Observable<any>;
 
@@ -264,14 +294,14 @@ export class ScheduleState {
         ctx.patchState({
           clientsAssignable,
           total,
-          loading: false,
+          loadingAssignable: false,
           currentPage: page,
           pageSize,
           pageCount,
         });
       }),
       catchError((error) => {
-        ctx.patchState({ error, loading: false });
+        ctx.patchState({ error, loadingAssignable: false });
         return throwError(() => error);
       }),
     );
@@ -326,7 +356,6 @@ export class ScheduleState {
     );
 
     if (!dayToEdit) {
-      console.log('No se encontró el día con el horario especificado.');
       return;
     }
 
@@ -336,7 +365,6 @@ export class ScheduleState {
     );
 
     if (!hourToEdit) {
-      console.log('No se encontró el horario especificado.');
       return;
     }
 

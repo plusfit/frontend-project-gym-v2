@@ -2,16 +2,21 @@
   [formGroup]="form"
   class="m-auto mb-5 justify-center flex flex-col items-center gap-4"
 >
-  <h3>Asignar Clientes</h3>
+  <app-title [title]="title"></app-title>
   <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
   <app-table
     [data]="clientsAssignable$ | async"
     [displayedColumns]="['_id', 'email']"
     [isSelect]="true"
-    [loading]="loading$ | async"
+    [loading]="loadingAssignable$ | async"
     [total]="totalClients$ | async"
     (selectionChange)="toggleClient($event)"
   ></app-table>
+  <mat-paginator
+    [length]="(totalClients$ | async) || 0"
+    [pageSize]="pageSize"
+    (page)="paginate($event)"
+  ></mat-paginator>
   <mat-selection-list
     #shoesList
     [formControl]="clientsControl"
@@ -23,9 +28,16 @@
       <mat-list-option [value]="client._id">{{ client.email }}</mat-list-option>
     }
   </mat-selection-list>
-  <div class="flex justify-center">
-    <button appBtn mat-raised-button color="primary" (click)="addClient()">
+  <div class="flex justify-between w-full">
+    <button
+      appBtn
+      mat-raised-button
+      color="primary"
+      (click)="addClient()"
+      [disabled]="selectedClients.length === 0"
+    >
       Agregar cliente
     </button>
+    <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
   </div>
 </form>
