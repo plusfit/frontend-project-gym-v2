@@ -35,6 +35,7 @@ export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
 
   showPassword = false;
+  showMessageConfirmation = false;
   private destroy = new Subject<void>();
 
   loading$: Observable<boolean> = this.store.select(AuthState.authLoading);
@@ -72,7 +73,11 @@ export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
           //this.router.navigate(['/']);
           //TODO
           //this.store.dispatch(GetUserPreferences);
-          this.snackbar.showSuccess('Email enviado', 'OK');
+          this.snackbar.showSuccess(
+            'Email enviado',
+            'Email enviado correctamente',
+          );
+          this.showMessageConfirmation = true;
         });
     }
   }
