@@ -1,6 +1,7 @@
 export class ScheduleStateModel {
   loading?: boolean;
   loadingAssignable?: boolean;
+  loadingHour?: boolean;
   schedule?: any | null;
   clients?: any | null;
   clientsAssignable?: any | null;

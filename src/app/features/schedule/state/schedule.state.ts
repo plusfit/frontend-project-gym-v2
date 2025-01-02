@@ -24,6 +24,7 @@ import {
     maxCount: 0,
     clientsAssignable: [],
     loadingAssignable: false,
+    loadingHour: false,
     loading: false,
   },
 })
@@ -42,6 +43,11 @@ export class ScheduleState {
   }
 
   @Selector()
+  static loadingHour(state: ScheduleStateModel): boolean {
+    return state?.loadingHour || false;
+  }
+
+  @Selector()
   static schedule(state: ScheduleStateModel): any {
     return state?.schedule;
   }
@@ -49,6 +55,11 @@ export class ScheduleState {
   @Selector()
   static clients(state: ScheduleStateModel): any {
     return state?.clients;
+  }
+
+  @Selector()
+  static getTotalClients(state: ScheduleStateModel): number {
+    return state.clients.length ?? 0;
   }
 
   @Selector()
@@ -64,6 +75,25 @@ export class ScheduleState {
   @Selector()
   static maxCount(state: ScheduleStateModel): number | undefined {
     return state?.maxCount;
+  }
+
+  obtenerElementosRepetidos(array: string[]): string[] {
+    const conteo: Record<string, number> = {};
+    const repetidos: string[] = [];
+
+    // Contar las ocurrencias de cada elemento
+    for (const elemento of array) {
+      conteo[elemento] = (conteo[elemento] || 0) + 1;
+    }
+
+    // Filtrar los elementos que tienen más de una ocurrencia
+    for (const [elemento, cantidad] of Object.entries(conteo)) {
+      if (cantidad > 1) {
+        repetidos.push(elemento);
+      }
+    }
+
+    return repetidos;
   }
 
   @Action(GetSchedule)
@@ -82,17 +112,12 @@ export class ScheduleState {
             acc.push(dayEntry);
           }
 
-          // Procesar el array de clientes para convertirlo en un único array de IDs
-          const flattenedClients = Array.isArray(hour.clients?.[0]?.clients)
-            ? hour.clients.flatMap((clientGroup: any) => clientGroup.clients)
-            : hour.clients;
-
           // Añadimos el horario actual al día correspondiente
           dayEntry.hours.push({
             _id: hour._id,
             startTime: hour.startTime,
             endTime: hour.endTime,
-            clients: flattenedClients,
+            clients: hour.clients,
             maxCount: hour.maxCount,
           });
 
@@ -175,7 +200,7 @@ export class ScheduleState {
 
   @Action(EditHour)
   editHour(ctx: StateContext<ScheduleStateModel>, action: EditHour) {
-    ctx.patchState({ loading: true });
+    ctx.patchState({ loadingHour: true });
     return this.scheduleService
       .updateSchedule(action._id, action.schedule)
       .pipe(
@@ -196,7 +221,7 @@ export class ScheduleState {
             };
           });
           ctx.patchState({ schedule });
-          ctx.patchState({ loading: false });
+          ctx.patchState({ loadingHour: false });
         }),
       );
   }
@@ -218,7 +243,7 @@ export class ScheduleState {
 
   @Action(AssignClient)
   assignClient(ctx: StateContext<ScheduleStateModel>, action: AssignClient) {
-    ctx.patchState({ loading: true });
+    ctx.patchState({ loadingAssignable: true });
     return this.scheduleService
       .assignClientToHour(action._id, action.clients)
       .pipe(
@@ -258,7 +283,7 @@ export class ScheduleState {
               ctx.patchState({
                 clients: updatedClients,
                 schedule,
-                loading: false,
+                loadingAssignable: false,
               });
             }),
           ),

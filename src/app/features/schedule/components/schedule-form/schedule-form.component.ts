@@ -42,6 +42,9 @@ import { TitleComponent } from '../../../../shared/components/title/title.compon
 export class ScheduleFormComponent implements OnInit, OnDestroy {
   editForm!: FormGroup;
   clients$: Observable<any[]> = this.store.select(ScheduleState.clients);
+  clientsTotal$: Observable<number> = this.store.select(
+    ScheduleState.getTotalClients,
+  );
   loading$: Observable<boolean> = this.store.select(
     ScheduleState.scheduleLoading,
   );

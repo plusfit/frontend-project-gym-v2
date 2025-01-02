@@ -1,6 +1,6 @@
 <form
   [formGroup]="form"
-  class="m-auto mb-5 justify-center flex flex-col items-center gap-4"
+  class="m-5 mb-5 justify-center flex flex-col items-center gap-4"
 >
   <app-title [title]="title"></app-title>
   <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
@@ -11,12 +11,14 @@
     [loading]="loadingAssignable$ | async"
     [total]="totalClients$ | async"
     (selectionChange)="toggleClient($event)"
-  ></app-table>
-  <mat-paginator
-    [length]="(totalClients$ | async) || 0"
-    [pageSize]="pageSize"
-    (page)="paginate($event)"
-  ></mat-paginator>
+  >
+    <mat-paginator
+      [length]="(totalClients$ | async) || 0"
+      [pageSize]="pageSize"
+      (page)="paginate($event)"
+    ></mat-paginator>
+  </app-table>
+
   <mat-selection-list
     #shoesList
     [formControl]="clientsControl"

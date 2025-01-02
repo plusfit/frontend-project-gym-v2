@@ -74,11 +74,16 @@ export class CalendarScheduleComponent implements AfterViewInit {
       });
   }
 
-  eliminarHorario(event: { _id: string }) {
+  eliminarHorario(event: { _id: string; startTime: string }) {
+    console.log('event', event);
+    const time =
+      parseFloat(event.startTime) > 12
+        ? `${parseFloat(event.startTime)} PM`
+        : `${parseFloat(event.startTime)} AM`;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
-        title: 'Eliminar horario',
+        title: `Eliminar horario ${time}`,
         contentMessage: '¿Estás seguro de que deseas eliminar este horario?',
       },
     });
@@ -88,14 +93,6 @@ export class CalendarScheduleComponent implements AfterViewInit {
       this.store.dispatch(new DeleteHour(_id));
       this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
         this.snackbar.showSuccess('Horario eliminado', 'Cerrar');
-        // // Filtra y emite el nuevo horario al componente padre
-        // const updatedSchedule = this.schedule().map((day: any) => {
-        //   return {
-        //     ...day,
-        //     hours: day.hours.filter((hour: any) => hour._id !== _id),
-        //   };
-        // });
-        // this.scheduleUpdated.emit(updatedSchedule);
       });
     });
   }
