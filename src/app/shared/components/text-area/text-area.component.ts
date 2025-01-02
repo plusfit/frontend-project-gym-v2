@@ -28,6 +28,7 @@ export class TextAreaComponent implements OnInit {
   @Input() placeholder: string = ''; // Placeholder opcional
   @Input() appearance: 'fill' | 'outline' = 'outline'; // Apariencia del campo
   @Input() errorKey!: string; // Clave específica para mensajes de error
+  @Input() maxHeight: number = 200; // Valor predeterminado
 
   matcher = new MyErrorStateMatcher();
 
