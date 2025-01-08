@@ -14,6 +14,7 @@ import { PageNotFoundComponent } from '@shared/components/page-not-found/page-no
 import { WelcomeComponent } from '@core/components/welcome/welcome.component';
 import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
 import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
+import { PlansPageComponent } from '@features/plans/pages/plans-page/plans-page.component';
 
 export const routes: Routes = [
   {
@@ -60,6 +61,10 @@ export const routes: Routes = [
       {
         path: 'horarios',
         component: SchedulePageComponent,
+      },
+      {
+        path: 'planes',
+        component: PlansPageComponent,
       },
     ],
   },
