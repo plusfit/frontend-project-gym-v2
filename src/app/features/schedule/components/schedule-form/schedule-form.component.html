@@ -1,6 +1,6 @@
 <div class="p-4 bg-white shadow-md rounded">
   <app-title [title]="title" [divider]="false"></app-title>
-  <form [formGroup]="editForm" class="space-y-4">
+  <form [formGroup]="editForm" class="space-y-2">
     <div class="flex justify-between items-center">
       <div class="flex items-center">
         <app-input
@@ -12,37 +12,31 @@
           appearance="outline"
         ></app-input>
       </div>
-      <div class="">
-        <button
-          appBtn
-          color="primary"
-          type="button"
-          (click)="editCount()"
-          [loader]="(loading$ | async)!"
-          [animate]="true"
-          [disabled]="editForm.invalid || (loading$ | async)"
-          class="h-10"
-        >
-          Editar Cantidad
-        </button>
-      </div>
     </div>
 
     <div>
-      <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
+      <div class="flex items-center justify-between">
+        <h2 class="block text-sm font-medium text-gray-700 pt-5">Clientes</h2>
+        <button appBtn type="button" color="primary" (click)="addClient()">
+          Seleccionar Cliente
+        </button>
+      </div>
+      <mat-divider></mat-divider>
       <div class="space-y-2">
         @if ((clientsTotal$ | async) === 0) {
           <p>No hay clientes seleccionados</p>
         }
         @if (clients$ | async) {
           @for (client of clients$ | async; track $index) {
-            <div class="flex items-center space-x-2">
-              <span class="truncate w-2/4">
+            <div
+              class="bg-white shadow-md rounded-md p-2 flex items-center justify-between"
+            >
+              <span class="truncate w-2/4 text-gray-800">
                 {{ client.email }}
               </span>
               <button
                 type="button"
-                class="text-red-500 hover:text-red-700 w-20 text-center"
+                class="text-red-500 hover:text-red-700 px-4 py-2 text-sm font-medium rounded-md border border-red-500"
                 (click)="removeClient(client._id)"
               >
                 Eliminar
@@ -51,12 +45,22 @@
           }
         }
       </div>
-      <button appBtn type="button" color="primary" (click)="addClient()">
-        Seleccionar Cliente
-      </button>
     </div>
-    <div class="flex justify-center">
+    <div class="flex justify-between">
       <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
+
+      <button
+        appBtn
+        color="primary"
+        type="button"
+        (click)="editCount()"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        [disabled]="editForm.invalid || (loading$ | async)"
+        class="h-10"
+      >
+        Guardar
+      </button>
     </div>
   </form>
 </div>

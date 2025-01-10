@@ -25,6 +25,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { TitleComponent } from '../../../../shared/components/title/title.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-schedule-form',
@@ -35,6 +36,7 @@ import { TitleComponent } from '../../../../shared/components/title/title.compon
     AsyncPipe,
     InputComponent,
     TitleComponent,
+    MatDividerModule,
   ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',

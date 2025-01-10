@@ -38,12 +38,12 @@ export class CardScheduleComponent {
     const maxCount = hour?.maxCount || 0;
 
     if (clientsCount === maxCount) {
-      return 'bg-red-500';
+      return 'bg-red-300';
     }
     if (clientsCount >= maxCount / 2) {
-      return 'bg-yellow-200';
+      return 'bg-yellow-100';
     }
-    return 'bg-green-300';
+    return 'bg-green-200';
   }
 
   getTextClass(hour: any): string {
@@ -56,6 +56,6 @@ export class CardScheduleComponent {
     if (clientsCount >= maxCount / 2) {
       return 'text-black';
     }
-    return 'text-white';
+    return 'text-black';
   }
 }
