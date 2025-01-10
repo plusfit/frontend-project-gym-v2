@@ -25,6 +25,7 @@ const handleUnauthorizedError = (
   router: Router,
 ): void => {
   if (err.status === 401 || err.status === 0) {
+    //TODO: status 0 cuando es un 401, ver porque
     if (isAccessTokenExpired && !isRefreshTokenExpired) {
       store.dispatch(
         new GetNewToken({
