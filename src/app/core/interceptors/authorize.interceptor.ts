@@ -24,6 +24,8 @@ const handleUnauthorizedError = (
   zone: NgZone,
   router: Router,
 ): void => {
+  console.log(err);
+
   if (err.status === 401 || err.status === 0) {
     //TODO: status 0 cuando es un 401, ver porque
     if (isAccessTokenExpired && !isRefreshTokenExpired) {
@@ -33,9 +35,9 @@ const handleUnauthorizedError = (
         }),
       );
 
-      actions.pipe(ofActionSuccessful(GetNewToken)).subscribe(() => {
-        window.location.reload(); //hago el reload para que el usuario no tenga que hacerlo y pase "mas desapercibido"
-      });
+      //actions.pipe(ofActionSuccessful(GetNewToken)).subscribe(() => {
+      // window.location.reload(); //hago el reload para que el usuario no tenga que hacerlo y pase "mas desapercibido"
+      //});
     } else if (!isAccessTokenExpired && !isRefreshTokenExpired) {
       store.dispatch(new Logout());
       zone.run(() => router.navigate(['auth/login']));
