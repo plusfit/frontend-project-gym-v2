@@ -1,6 +1,4 @@
-<div
-  class=" flex flex-col space-y-6"
->
+<div class="flex flex-col space-y-6">
   <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
     >{{ title }} 📝</span
   >
@@ -29,6 +27,7 @@
                 label="Descripción"
                 errorKey="description"
                 placeholder="Descripción del ejercicio"
+                [maxHeight]="100"
                 appearance="outline"
               ></app-text-area>
             </div>

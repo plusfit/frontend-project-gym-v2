@@ -16,6 +16,7 @@ import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routin
 import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 import { PlansPageComponent } from '@features/plans/pages/plans-page/plans-page.component';
 import { AddEditPlanComponent } from '@features/plans/pages/add-edit-plan/add-edit-plan.component';
+import { ForgotPasswordPageComponent } from '@features/auth/pages/forgot-password-page/forgot-password-page.component';
 
 export const routes: Routes = [
   {
@@ -89,6 +90,10 @@ export const routes: Routes = [
       {
         path: 'register',
         component: RegisterPageComponent,
+      },
+      {
+        path: 'forgot-password',
+        component: ForgotPasswordPageComponent,
       },
     ],
   },

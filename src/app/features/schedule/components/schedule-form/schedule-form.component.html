@@ -1,4 +1,5 @@
 <div class="p-4 bg-white shadow-md rounded">
+  <app-title [title]="title" [divider]="false"></app-title>
   <form [formGroup]="editForm" class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="flex items-center">
@@ -30,23 +31,24 @@
     <div>
       <h2 class="block text-sm font-medium text-gray-700">Clientes</h2>
       <div class="space-y-2">
+        @if ((clientsTotal$ | async) === 0) {
+          <p>No hay clientes seleccionados</p>
+        }
         @if (clients$ | async) {
           @for (client of clients$ | async; track $index) {
             <div class="flex items-center space-x-2">
-              <span>
+              <span class="truncate w-2/4">
                 {{ client.email }}
               </span>
               <button
                 type="button"
-                class="text-red-500 hover:text-red-700"
+                class="text-red-500 hover:text-red-700 w-20 text-center"
                 (click)="removeClient(client._id)"
               >
                 Eliminar
               </button>
             </div>
           }
-        } @else {
-          <p>No hay clientes seleccionados</p>
         }
       </div>
       <button appBtn type="button" color="primary" (click)="addClient()">

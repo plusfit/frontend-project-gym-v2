@@ -29,7 +29,7 @@ import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { MatSelectModule } from '@angular/material/select';
 import { InputComponent } from '@shared/components/input/input.component';
 import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
-import {TitleComponent} from "@shared/components/title/title.component";
+import { TitleComponent } from '@shared/components/title/title.component';
 
 @Component({
   selector: 'app-exercise-form',

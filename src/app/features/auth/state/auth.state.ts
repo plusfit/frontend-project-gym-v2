@@ -12,7 +12,14 @@ import {
   UserPreferences,
 } from '../interfaces/auth';
 import { AuthService } from '../services/auth.service';
-import { GetUserPreferences, Login, Logout, Register } from './auth.actions';
+import {
+  ForgotPassword,
+  GetNewToken,
+  GetUserPreferences,
+  Login,
+  Logout,
+  Register,
+} from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
 import { SnackBarService } from '@core/services/snackbar.service';
@@ -35,6 +42,11 @@ export class AuthState {
   @Selector()
   static accessToken(state: AuthStateModel): string | undefined {
     return state.auth?.accessToken;
+  }
+
+  @Selector()
+  static refreshToken(state: AuthStateModel): string | undefined {
+    return state.auth?.refreshToken;
   }
 
   @Selector()
@@ -155,6 +167,53 @@ export class AuthState {
         ctx.patchState({ loading: false });
         //TODO: convertir los mensajes
         this.snackbar.showError('Registro Erroneo', err.message);
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  @Action(ForgotPassword, { cancelUncompleted: true })
+  forgotPassword(
+    ctx: StateContext<AuthStateModel>,
+    action: ForgotPassword,
+  ): Observable<AuthResponse> {
+    ctx.patchState({ loading: true });
+    const { email } = action.payload;
+    return this.authService.forgotPassword(email).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        //TODO: convertir los mensajes
+        this.snackbar.showError('Falló en recuperar contraseña', err.message);
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  @Action(GetNewToken, { cancelUncompleted: true })
+  getNewToken(
+    ctx: StateContext<AuthStateModel>,
+    action: GetNewToken,
+  ): Observable<AuthResponse> {
+    const refreshToken = action.payload;
+    return this.authService.getNewToken(refreshToken).pipe(
+      tap((authResponse: any) => {
+        const { accessToken, refreshToken } = authResponse.data;
+        ctx.patchState({
+          auth: {
+            accessToken,
+            refreshToken,
+          },
+        });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.snackbar.showError(
+          'Sesion Expirada',
+          'Por favor inicie sesion nuevamente',
+        );
+        //ctx.dispatch(new Logout());
         return throwError(() => err);
       }),
     );

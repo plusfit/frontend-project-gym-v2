@@ -1,28 +1,35 @@
+import { AsyncPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
   Input,
   output,
+  signal,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
   ClearClients,
   DeleteHour,
 } from '@features/schedule/state/schedule.actions';
+import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
-import { ScheduleState } from '@features/schedule/state/schedule.state';
-import { AsyncPipe } from '@angular/common';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-calendar-schedule',
   standalone: true,
-  imports: [CardScheduleComponent, AsyncPipe, LoaderComponent],
+  imports: [
+    CardScheduleComponent,
+    AsyncPipe,
+    LoaderComponent,
+    MatExpansionModule,
+  ],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
@@ -32,6 +39,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
     alias: 'scheduleUpdated',
   });
   loading$ = this.store.select(ScheduleState.scheduleLoading);
+  readonly panelOpenState = signal(false);
+  // Mapeo de estado para controlar qué paneles están abiertos
+  readonly panelStates = signal<Record<string, boolean>>({});
 
   constructor(
     private store: Store,
@@ -42,7 +52,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   editarHorario(event: Event) {
@@ -62,11 +74,16 @@ export class CalendarScheduleComponent implements AfterViewInit {
       });
   }
 
-  eliminarHorario(event: { _id: string }) {
+  eliminarHorario(event: { _id: string; startTime: string }) {
+    console.log('event', event);
+    const time =
+      parseFloat(event.startTime) > 12
+        ? `${parseFloat(event.startTime)} PM`
+        : `${parseFloat(event.startTime)} AM`;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
-        title: 'Eliminar horario',
+        title: `Eliminar horario ${time}`,
         contentMessage: '¿Estás seguro de que deseas eliminar este horario?',
       },
     });
@@ -76,14 +93,6 @@ export class CalendarScheduleComponent implements AfterViewInit {
       this.store.dispatch(new DeleteHour(_id));
       this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
         this.snackbar.showSuccess('Horario eliminado', 'Cerrar');
-        // Filtra y emite el nuevo horario al componente padre
-        const updatedSchedule = this.schedule().map((day: any) => {
-          return {
-            ...day,
-            hours: day.hours.filter((hour: any) => hour._id !== _id),
-          };
-        });
-        this.scheduleUpdated.emit(updatedSchedule);
       });
     });
   }

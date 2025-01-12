@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -15,16 +16,15 @@ import { SnackBarService } from '@core/services/snackbar.service';
 import {
   DeleteClient,
   EditHour,
-  getClientsArray,
+  postClientsArray,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { InputDirective } from '@shared/directives/btn/input.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { AddClientListComponent } from '../add-client-list/add-client-list.component';
-import { AsyncPipe } from '@angular/common';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { AddClientListComponent } from '../add-client-list/add-client-list.component';
+import { TitleComponent } from '../../../../shared/components/title/title.component';
 
 @Component({
   selector: 'app-schedule-form',
@@ -32,9 +32,9 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
   imports: [
     ReactiveFormsModule,
     BtnDirective,
-    InputDirective,
     AsyncPipe,
     InputComponent,
+    TitleComponent,
   ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
@@ -42,9 +42,13 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 export class ScheduleFormComponent implements OnInit, OnDestroy {
   editForm!: FormGroup;
   clients$: Observable<any[]> = this.store.select(ScheduleState.clients);
+  clientsTotal$: Observable<number> = this.store.select(
+    ScheduleState.getTotalClients,
+  );
   loading$: Observable<boolean> = this.store.select(
     ScheduleState.scheduleLoading,
   );
+  title = '';
 
   private destroy = new Subject<void>();
 
@@ -65,6 +69,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     });
 
     this.initClients();
+    this.title = this.data.title;
   }
 
   get maxCountControl(): FormControl {
@@ -73,11 +78,9 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
 
   // Inicializa los clientes existentes en el FormArray
   initClients() {
-    const clientsForSend = this.data.day.hour.clients.map(
-      (client: any) => client,
-    );
-    if (!clientsForSend.length) return;
-    this.store.dispatch(new getClientsArray(clientsForSend));
+    const clientsForSend = this.data.day.hour?.clients;
+    if (!clientsForSend?.length) return;
+    this.store.dispatch(new postClientsArray(clientsForSend));
   }
 
   // Métodos para gestionar clientes
@@ -86,7 +89,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     this.dialog.open(AddClientListComponent, {
       width: '500px',
       data: {
-        title: 'Agregar cliente',
+        title: `Agregar cliente al horario ${this.data.day.hour.startTime} - ${this.data.day.hour.endTime}`,
         id: clonedData,
       },
     });
@@ -119,7 +122,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
       endTime: this.data.day.hour.endTime,
       maxCount: this.editForm.value.maxCount,
       clients: this.data.day.hour.clients,
-      day: this.data.day.day.day,
+      day: this.data.day.name,
     };
 
     this.store.dispatch(new EditHour(this.data.day.hour._id, data));
