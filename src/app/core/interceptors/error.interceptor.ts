@@ -36,6 +36,9 @@ export function errorInterceptor(
         message = err.error.message ? err.error.message : err.statusText;
       }
 
+      if (message === 'Failed to fetch') {
+        message = 'Por favor recargue la página';
+      }
       snackBar.showError(SnackBarHeaders.Error, message);
       return throwError(() => err);
     }),
