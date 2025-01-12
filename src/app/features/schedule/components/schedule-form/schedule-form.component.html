@@ -1,6 +1,6 @@
 <div class="p-4 bg-white shadow-md rounded">
   <app-title [title]="title" [divider]="false"></app-title>
-  <form [formGroup]="editForm" class="space-y-2">
+  <form [formGroup]="editForm" class="space-y-6">
     <div class="flex justify-between items-center">
       <div class="flex items-center">
         <app-input
@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="flex justify-between">
-      <button appBtn color="destructive" (click)="cancel()">Cancelar</button>
+      <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
 
       <button
         appBtn

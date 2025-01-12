@@ -144,6 +144,7 @@ export class ScheduleState {
           const dayB = daysOrder.indexOf(b.day);
           return dayA - dayB;
         });
+
         ctx.patchState({ schedule: sortSchedule, loading: false });
       }),
     );

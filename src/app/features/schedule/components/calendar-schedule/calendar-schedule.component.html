@@ -12,7 +12,7 @@
         @if (schedule) {
           @for (day of schedule; track $index) {
             <mat-accordion>
-              <mat-expansion-panel hideToggle>
+              <mat-expansion-panel hideToggle [expanded]="expandDay(day.day)">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <span class="text-xl font-bold">

@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -29,6 +29,7 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
     AsyncPipe,
     LoaderComponent,
     MatExpansionModule,
+    JsonPipe,
   ],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
@@ -95,5 +96,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
         this.snackbar.showSuccess('Exito!', 'Horario eliminado');
       });
     });
+  }
+
+  expandDay(day: string) {
+    // console.log(day);
   }
 }
