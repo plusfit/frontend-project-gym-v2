@@ -15,6 +15,7 @@ import { WelcomeComponent } from '@core/components/welcome/welcome.component';
 import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
 import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 import { PlansPageComponent } from '@features/plans/pages/plans-page/plans-page.component';
+import { AddEditPlanComponent } from '@features/plans/pages/add-edit-plan/add-edit-plan.component';
 
 export const routes: Routes = [
   {
@@ -65,6 +66,14 @@ export const routes: Routes = [
       {
         path: 'planes',
         component: PlansPageComponent,
+      },
+      {
+        path: 'planes/:id',
+        component: AddEditPlanComponent,
+      },
+      {
+        path: 'planes/crear',
+        component: AddEditPlanComponent,
       },
     ],
   },

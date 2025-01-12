@@ -29,6 +29,7 @@ import { SettingsState } from '@features/settings/state/settings.state';
 import { RoutineState } from '@features/routines/state/routine.state';
 import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
+import { PlansState } from '@features/plans/state/plan.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -64,6 +65,7 @@ export const appConfig: ApplicationConfig = {
           SubRoutinesState,
           RoutineState,
           ScheduleState,
+          PlansState,
         ],
         {
           developmentMode: true,
