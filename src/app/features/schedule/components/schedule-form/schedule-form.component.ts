@@ -104,7 +104,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     this.actions
       .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
       .subscribe(() => {
-        this.snackbar.showSuccess('Exito!', 'Cliente eliminado');
+        this.snackbar.showSuccess('Éxito!', 'Cliente eliminado');
       });
   }
 
@@ -129,7 +129,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(new EditHour(this.data.day.hour._id, data));
     this.actions.pipe(ofActionSuccessful(EditHour)).subscribe(() => {
-      this.snackbar.showSuccess('Exito!', 'Horario actualizado');
+      this.snackbar.showSuccess('Éxito!', 'Horario actualizado');
     });
   }
 

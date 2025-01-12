@@ -93,7 +93,7 @@ export class CalendarScheduleComponent implements AfterViewInit {
       const _id = event._id;
       this.store.dispatch(new DeleteHour(_id));
       this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
-        this.snackbar.showSuccess('Exito!', 'Horario eliminado');
+        this.snackbar.showSuccess('Éxito!', 'Horario eliminado');
       });
     });
   }

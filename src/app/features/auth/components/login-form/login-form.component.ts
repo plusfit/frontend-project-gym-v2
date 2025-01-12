@@ -74,7 +74,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
           //TODO
           //this.store.dispatch(GetUserPreferences);
-          this.snackbar.showSuccess('Exito', 'Bienvenido');
+          this.snackbar.showSuccess('Éxito!', 'Bienvenido');
         });
     }
   }

@@ -152,7 +152,7 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     if (validClient) {
       this.store.dispatch(new AssignClient(this.data.id, idsClients));
       this.actions.pipe(ofActionSuccessful(AssignClient)).subscribe(() => {
-        this.snackbar.showSuccess('Exito!', 'Cliente asignado');
+        this.snackbar.showSuccess('Éxito!', 'Cliente asignado');
       });
       const clientsAssignable = this.store.selectSnapshot(
         ScheduleState.clientsAssignable,

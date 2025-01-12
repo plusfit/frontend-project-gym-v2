@@ -78,7 +78,7 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
         .pipe(ofActionSuccessful(Register), takeUntil(this.destroy))
         .subscribe(() => {
           this.router.navigate(['/']);
-          this.snackbar.showSuccess('Exito', 'Bienvenido');
+          this.snackbar.showSuccess('Éxito!', 'Bienvenido');
         });
     }
   }
