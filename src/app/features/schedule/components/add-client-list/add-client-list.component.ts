@@ -145,14 +145,14 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     });
 
     if (maxCount && clients.length >= maxCount) {
-      this.snackbar.showError('No se pueden asignar más clientes', 'Aceptar');
+      this.snackbar.showError('Error!', 'No se pueden asignar más clientes');
       validClient = false;
     }
 
     if (validClient) {
       this.store.dispatch(new AssignClient(this.data.id, idsClients));
       this.actions.pipe(ofActionSuccessful(AssignClient)).subscribe(() => {
-        this.snackbar.showSuccess('Cliente asignado correctamente', 'Aceptar');
+        this.snackbar.showSuccess('Exito!', 'Cliente asignado');
       });
       const clientsAssignable = this.store.selectSnapshot(
         ScheduleState.clientsAssignable,

@@ -104,7 +104,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     this.actions
       .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
       .subscribe(() => {
-        this.snackbar.showSuccess('Cliente eliminado', 'Aceptar');
+        this.snackbar.showSuccess('Exito!', 'Cliente eliminado');
       });
   }
 
@@ -113,8 +113,8 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
 
     if (this.editForm.value.maxCount < this.data.day.hour.clients.length) {
       this.snackbar.showError(
+        'Error!',
         'El número de clientes no puede ser menor a los clientes ya agendados',
-        'Eliiminar clientes',
       );
       return;
     }
@@ -129,7 +129,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(new EditHour(this.data.day.hour._id, data));
     this.actions.pipe(ofActionSuccessful(EditHour)).subscribe(() => {
-      this.snackbar.showSuccess('Horario actualizado', 'Aceptar');
+      this.snackbar.showSuccess('Exito!', 'Horario actualizado');
     });
   }
 
