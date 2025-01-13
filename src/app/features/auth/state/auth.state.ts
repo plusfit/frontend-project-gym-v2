@@ -14,6 +14,7 @@ import {
 import { AuthService } from '../services/auth.service';
 import {
   ForgotPassword,
+  GetNewToken,
   GetUserPreferences,
   Login,
   Logout,
@@ -41,6 +42,11 @@ export class AuthState {
   @Selector()
   static accessToken(state: AuthStateModel): string | undefined {
     return state.auth?.accessToken;
+  }
+
+  @Selector()
+  static refreshToken(state: AuthStateModel): string | undefined {
+    return state.auth?.refreshToken;
   }
 
   @Selector()
@@ -181,6 +187,33 @@ export class AuthState {
         ctx.patchState({ loading: false });
         //TODO: convertir los mensajes
         this.snackbar.showError('Falló en recuperar contraseña', err.message);
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  @Action(GetNewToken, { cancelUncompleted: true })
+  getNewToken(
+    ctx: StateContext<AuthStateModel>,
+    action: GetNewToken,
+  ): Observable<AuthResponse> {
+    const refreshToken = action.payload;
+    return this.authService.getNewToken(refreshToken).pipe(
+      tap((authResponse: any) => {
+        const { accessToken, refreshToken } = authResponse.data;
+        ctx.patchState({
+          auth: {
+            accessToken,
+            refreshToken,
+          },
+        });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.snackbar.showError(
+          'Sesion Expirada',
+          'Por favor inicie sesion nuevamente',
+        );
+        //ctx.dispatch(new Logout());
         return throwError(() => err);
       }),
     );

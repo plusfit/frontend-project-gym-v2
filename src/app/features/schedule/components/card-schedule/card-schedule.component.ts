@@ -1,12 +1,13 @@
 import { NgClass } from '@angular/common';
 import { Component, input, output } from '@angular/core';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { IHour } from '@features/schedule/interfaces/schedule.interface';
 import { HourPipe } from '@features/schedule/pipes/hour.pipe';
 
 @Component({
   selector: 'app-card-schedule',
   standalone: true,
-  imports: [HourPipe, NgClass],
+  imports: [HourPipe, NgClass, MatMenu, MatMenuItem, MatMenuTrigger],
   templateUrl: './card-schedule.component.html',
   styleUrl: './card-schedule.component.css',
 })
@@ -38,12 +39,12 @@ export class CardScheduleComponent {
     const maxCount = hour?.maxCount || 0;
 
     if (clientsCount === maxCount) {
-      return 'bg-red-500';
+      return 'bg-red-100 border-2 border-red-300';
     }
     if (clientsCount >= maxCount / 2) {
-      return 'bg-yellow-200';
+      return 'bg-yellow-100 border-2 border-yellow-300';
     }
-    return 'bg-green-300';
+    return 'bg-green-100 border-2 border-green-300';
   }
 
   getTextClass(hour: any): string {
@@ -56,6 +57,6 @@ export class CardScheduleComponent {
     if (clientsCount >= maxCount / 2) {
       return 'text-black';
     }
-    return 'text-white';
+    return 'text-black';
   }
 }

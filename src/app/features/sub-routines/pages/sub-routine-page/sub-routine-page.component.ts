@@ -100,7 +100,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
         .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
         .subscribe(() => {
           this.snackbar.showSuccess(
-            'Exito',
+            'Éxito!',
             'Subrutina eliminada correctamente',
           );
         });

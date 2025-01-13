@@ -73,10 +73,7 @@ export class ForgotPasswordFormComponent implements OnInit, OnDestroy {
           //this.router.navigate(['/']);
           //TODO
           //this.store.dispatch(GetUserPreferences);
-          this.snackbar.showSuccess(
-            'Email enviado',
-            'Email enviado correctamente',
-          );
+          this.snackbar.showSuccess('Éxito!', 'Email enviado');
           this.showMessageConfirmation = true;
         });
     }

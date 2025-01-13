@@ -14,7 +14,7 @@ export class HourPipe implements PipeTransform {
       return '';
     }
 
-    if (value && parseInt(value) <= 12) {
+    if (value && parseInt(value) < 12) {
       return `${value} AM`;
     }
     return `${value} PM`;

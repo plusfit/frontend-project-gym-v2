@@ -176,7 +176,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             page: 1,
           }),
         );
-        this.snackbar.showSuccess('Ejercicio actualizado correctamente', 'OK');
+        this.snackbar.showSuccess('Éxito!', 'Ejercicio actualizado');
         this.dialogRef.close();
       });
   }
@@ -191,7 +191,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
             page: 1,
           }),
         );
-        this.snackbar.showSuccess('Ejercicio creado correctamente', 'OK');
+        this.snackbar.showSuccess('Éxito!', 'Ejercicio creado');
         this.dialogRef.close();
       });
   }

@@ -15,6 +15,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from '@angular/fire/auth';
+import { RefreshTokenPayload } from '@core/interfaces/refresh-token.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +60,12 @@ export class AuthService {
 
   forgotPassword(email: string): any {
     return from(sendPasswordResetEmail(this._auth, email));
+  }
+
+  getNewToken(refreshToken: RefreshTokenPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${environment.api}/auth/refreshToken`,
+      refreshToken,
+    );
   }
 }

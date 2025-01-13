@@ -145,7 +145,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('Ejercicio borrado correctamente', 'OK');
+          this.snackbar.showSuccess('Éxito!', 'Ejercicio borrado');
           this.currentPage = 1;
           this.store
             .dispatch(new GetExercisesByPage({ page: this.currentPage }))

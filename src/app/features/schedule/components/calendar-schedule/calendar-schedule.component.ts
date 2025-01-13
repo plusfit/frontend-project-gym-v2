@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -29,12 +29,23 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
     AsyncPipe,
     LoaderComponent,
     MatExpansionModule,
+    JsonPipe,
   ],
   templateUrl: './calendar-schedule.component.html',
   styleUrl: './calendar-schedule.component.css',
 })
 export class CalendarScheduleComponent implements AfterViewInit {
   @Input() schedule: any;
+  currentDay: string;
+  days = [
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+  ];
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
   });
@@ -49,7 +60,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
     private snackbar: SnackBarService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.currentDay = this.getCurrentDay();
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -75,7 +88,6 @@ export class CalendarScheduleComponent implements AfterViewInit {
   }
 
   eliminarHorario(event: { _id: string; startTime: string }) {
-    console.log('event', event);
     const time =
       parseFloat(event.startTime) > 12
         ? `${parseFloat(event.startTime)} PM`
@@ -92,8 +104,15 @@ export class CalendarScheduleComponent implements AfterViewInit {
       const _id = event._id;
       this.store.dispatch(new DeleteHour(_id));
       this.actions.pipe(ofActionSuccessful(DeleteHour)).subscribe(() => {
-        this.snackbar.showSuccess('Horario eliminado', 'Cerrar');
+        this.snackbar.showSuccess('Éxito!', 'Horario eliminado');
       });
     });
+  }
+
+  getCurrentDay(): string {
+    const date = new Date();
+    const day = date.getDay();
+
+    return this.days[day];
   }
 }
