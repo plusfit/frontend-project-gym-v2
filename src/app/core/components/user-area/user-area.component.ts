@@ -36,11 +36,12 @@ export class UserAreaComponent implements OnDestroy {
    */
   logOut(): void {
     this.store.dispatch(new Logout());
-    this.actions
-      .pipe(ofActionSuccessful(Logout), takeUntil(this.destroy))
-      .subscribe(() => {
-        this.router.navigate(['auth/login']);
-      });
+    // this.actions
+    //   .pipe(ofActionSuccessful(Logout), takeUntil(this.destroy))
+    //   .subscribe(() => {
+    //     console.log('logout successful');
+    //   });
+    this.router.navigate(['auth/login']); //no hace falta el subscribe, ya que no es un observable lo que devuelve
   }
 
   ngOnDestroy(): void {
