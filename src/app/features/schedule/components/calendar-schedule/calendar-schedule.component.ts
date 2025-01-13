@@ -88,7 +88,6 @@ export class CalendarScheduleComponent implements AfterViewInit {
   }
 
   eliminarHorario(event: { _id: string; startTime: string }) {
-    console.log('event', event);
     const time =
       parseFloat(event.startTime) > 12
         ? `${parseFloat(event.startTime)} PM`

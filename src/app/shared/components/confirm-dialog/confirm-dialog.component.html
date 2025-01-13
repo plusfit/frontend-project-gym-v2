@@ -6,16 +6,11 @@
     data.contentMessage
   }}</mat-dialog-content>
   <div class="flex justify-end space-x-4">
-    <button
-      appBtn
-      mat-dialog-close
-      class="btn secondary"
-      (click)="handleCancel()"
-    >
+    <button appBtn mat-dialog-close color="secondary" (click)="handleCancel()">
       Cancelar
     </button>
     <button appBtn mat-dialog-close class="" (click)="handleConfirm()">
-      Ok
+      Aceptar
     </button>
   </div>
 </div>

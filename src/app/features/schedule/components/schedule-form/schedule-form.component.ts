@@ -26,6 +26,7 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { TitleComponent } from '../../../../shared/components/title/title.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-schedule-form',
@@ -91,21 +92,32 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     this.dialog.open(AddClientListComponent, {
       width: '500px',
       data: {
-        title: `Agregar cliente al horario ${this.data.day.hour.startTime} - ${this.data.day.hour.endTime}`,
+        title: `Agregar cliente al horario ${this.data.day.hour.startTime} ${this.getAMorPM(this.data.day.hour.startTime)}`,
         id: clonedData,
       },
     });
   }
 
-  removeClient(id: string) {
-    this.store.dispatch(new DeleteClient(this.data.day.hour._id, id));
+  removeClient(id: string, email: string) {
+    //TODO: cambiar email to name cuando se agregue el campo
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: {
+        title: `Eliminar cliente ${email}`,
+        contentMessage: '¿Estás seguro de que deseas eliminar al cliente?',
+      },
+    });
+    dialogRef.componentInstance.confirm.subscribe((value) => {
+      if (!value) return;
 
-    // Escucha cuando se complete la acción
-    this.actions
-      .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
-      .subscribe(() => {
-        this.snackbar.showSuccess('Éxito!', 'Cliente eliminado');
-      });
+      this.store.dispatch(new DeleteClient(this.data.day.hour._id, id));
+
+      this.actions
+        .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess('Éxito!', 'Cliente eliminado');
+        });
+    });
   }
 
   editCount() {
@@ -140,5 +152,10 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  getAMorPM(time: string) {
+    const hour = parseInt(time.split(':')[0]);
+    return hour < 12 ? 'AM' : 'PM';
   }
 }
