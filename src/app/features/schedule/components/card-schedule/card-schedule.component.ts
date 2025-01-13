@@ -1,25 +1,13 @@
 import { NgClass } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import {
-  MatMenu,
-  MatMenuContent,
-  MatMenuItem,
-  MatMenuTrigger,
-} from '@angular/material/menu';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { IHour } from '@features/schedule/interfaces/schedule.interface';
 import { HourPipe } from '@features/schedule/pipes/hour.pipe';
 
 @Component({
   selector: 'app-card-schedule',
   standalone: true,
-  imports: [
-    HourPipe,
-    NgClass,
-    MatMenu,
-    MatMenuContent,
-    MatMenuItem,
-    MatMenuTrigger,
-  ],
+  imports: [HourPipe, NgClass, MatMenu, MatMenuItem, MatMenuTrigger],
   templateUrl: './card-schedule.component.html',
   styleUrl: './card-schedule.component.css',
 })
