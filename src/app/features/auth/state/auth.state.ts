@@ -172,7 +172,6 @@ export class AuthState {
     action: ForgotPassword,
   ): Observable<AuthResponse> {
     ctx.patchState({ loading: true });
-    debugger;
     const { email } = action.payload;
     return this.authService.forgotPassword(email).pipe(
       tap(() => {

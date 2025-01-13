@@ -15,6 +15,8 @@ import { WelcomeComponent } from '@core/components/welcome/welcome.component';
 import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
 import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
 import { ForgotPasswordPageComponent } from '@features/auth/pages/forgot-password-page/forgot-password-page.component';
+import { ClientPageComponent } from '@features/client/pages/client-page/client-page.component';
+import { AddClientPageComponent } from '@features/client/pages/add-client-page/add-client-page.component';
 
 export const routes: Routes = [
   {
@@ -61,6 +63,14 @@ export const routes: Routes = [
       {
         path: 'horarios',
         component: SchedulePageComponent,
+      },
+      {
+        path: 'clientes',
+        component: ClientPageComponent,
+      },
+      {
+        path: 'clientes/crear',
+        component: AddClientPageComponent,
       },
     ],
   },
