@@ -36,6 +36,16 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
 })
 export class CalendarScheduleComponent implements AfterViewInit {
   @Input() schedule: any;
+  currentDay: string;
+  days = [
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+  ];
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
   });
@@ -50,7 +60,9 @@ export class CalendarScheduleComponent implements AfterViewInit {
     private snackbar: SnackBarService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.currentDay = this.getCurrentDay();
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -98,7 +110,10 @@ export class CalendarScheduleComponent implements AfterViewInit {
     });
   }
 
-  expandDay(day: string) {
-    // console.log(day);
+  getCurrentDay(): string {
+    const date = new Date();
+    const day = date.getDay();
+
+    return this.days[day];
   }
 }

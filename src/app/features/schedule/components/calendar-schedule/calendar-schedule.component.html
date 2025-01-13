@@ -11,8 +11,11 @@
       <div class="flex flex-col">
         @if (schedule) {
           @for (day of schedule; track $index) {
-            <mat-accordion>
-              <mat-expansion-panel hideToggle [expanded]="expandDay(day.day)">
+            <mat-accordion class="mt-1">
+              <mat-expansion-panel
+                [expanded]="day.day === currentDay"
+                hideToggle
+              >
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <span class="text-xl font-bold">
