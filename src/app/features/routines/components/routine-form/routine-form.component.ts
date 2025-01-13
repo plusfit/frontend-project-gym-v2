@@ -175,12 +175,12 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       this.store
         .dispatch(new UpdateRoutine(this.id(), payload))
         .subscribe(() => {
-          this.snackBarService.showSuccess('Exito!', 'Rutina actualizada');
+          this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
           this.location.back();
         });
     } else {
       this.store.dispatch(new CreateRoutine(payload)).subscribe(() => {
-        this.snackBarService.showSuccess('Exito!', 'Rutina creada');
+        this.snackBarService.showSuccess('Éxito!', 'Rutina creada');
         this.location.back();
       });
     }

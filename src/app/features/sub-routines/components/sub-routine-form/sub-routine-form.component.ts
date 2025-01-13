@@ -156,12 +156,12 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       this.store
         .dispatch(new UpdateSubRoutine(this.id(), payload))
         .subscribe(() => {
-          this.snackBarService.showSuccess('Exito!', 'Subrutina actualizada');
+          this.snackBarService.showSuccess('Éxito!', 'Subrutina actualizada');
           this.location.back();
         });
     } else {
       this.store.dispatch(new CreateSubRoutine(payload)).subscribe(() => {
-        this.snackBarService.showSuccess('Exito!', 'Subrutina creada');
+        this.snackBarService.showSuccess('Éxito!', 'Subrutina creada');
         this.location.back();
       });
     }

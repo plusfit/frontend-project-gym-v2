@@ -138,7 +138,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(DeleteRoutine), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('Ejercicio borrado correctamente', 'OK');
+          this.snackbar.showSuccess('', 'Ejercicio borrado');
           this.currentPage = 1;
           this.store
             .dispatch(new GetRoutinesByPage({ page: this.currentPage }))

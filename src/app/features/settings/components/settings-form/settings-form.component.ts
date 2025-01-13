@@ -119,7 +119,7 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
     if (this.settingsForm.valid && !this.settings) {
       this.store.dispatch(new CrateSettings(this.settingsForm.value));
       this.actions.pipe(ofActionSuccessful(CrateSettings)).subscribe(() => {
-        this.snackbar.showSuccess('Settings created', 'OK');
+        this.snackbar.showSuccess('Éxito!', 'Configuración guardada');
       });
     } else if (this.settingsForm.valid) {
       const _id = this.settings._id;
@@ -136,7 +136,7 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
       };
       this.store.dispatch(new UpdateSettings(_id, dataSend));
       this.actions.pipe(ofActionSuccessful(UpdateSettings)).subscribe(() => {
-        this.snackbar.showSuccess('Settings updated', 'OK');
+        this.snackbar.showSuccess('Éxito!', 'Configuración actualizada');
       });
     }
   }
