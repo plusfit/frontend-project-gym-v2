@@ -3,7 +3,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import {
   FormBuilder,
@@ -15,6 +15,10 @@ import {
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { Register } from '@features/auth/state/auth.actions';
+import { passwordValidator } from '@core/validators/password.validator';
 
 @Component({
   selector: 'app-client-form',
@@ -56,13 +60,16 @@ export class ClientFormComponent implements OnDestroy, OnInit {
   constructor(
     private fb: FormBuilder,
     private location: Location,
+    private router: Router,
+    private store: Store,
+    private actions: Actions,
   ) {}
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
       name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      identifier: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, passwordValidator()]],
       phone: ['', [Validators.required]],
       dateBirthday: ['', [Validators.required]],
       address: ['', [Validators.required]],
@@ -78,6 +85,22 @@ export class ClientFormComponent implements OnDestroy, OnInit {
   }
 
   registerClient() {
+    if (this.clientForm.valid) {
+      const dataRegister = {
+        identifier: this.clientForm.get('identifier')?.value,
+        password: this.clientForm.get('password')?.value,
+      };
+      this.store.dispatch(new Register(dataRegister));
+      this.actions
+        .pipe(ofActionSuccessful(Register), takeUntil(this._destroyed))
+        .subscribe((res) => {
+          console.log(res);
+          const _id = this.store.selectSnapshot((state) => state.auth.auth);
+          console.log('id', _id);
+
+          console.log('Registro exitoso');
+        });
+    }
     console.log(this.clientForm.value);
   }
 
@@ -88,8 +111,8 @@ export class ClientFormComponent implements OnDestroy, OnInit {
   get nameControl(): FormControl {
     return this.clientForm.get('name') as FormControl;
   }
-  get emailControl(): FormControl {
-    return this.clientForm.get('email') as FormControl;
+  get identifierControl(): FormControl {
+    return this.clientForm.get('identifier') as FormControl;
   }
 
   get passwordControl(): FormControl {

@@ -94,8 +94,6 @@ export class ClientPageComponent implements OnInit, OnDestroy {
           this.snackbar.showSuccess('Exito', 'Cliente eliminado correctamente');
         });
     });
-
-    this.store.dispatch(new DeleteClient(event));
   }
 
   ngOnDestroy(): void {

@@ -5,13 +5,13 @@
 >
   <div class="gap-4">
     <div class="flex gap-4">
-      <!-- Input Email -->
+      <!-- Input Nombre -->
       <app-input
-        [control]="emailControl"
-        label="Email"
+        [control]="nameControl"
+        label="Nombre Completo"
         type="text"
-        errorKey="email"
-        placeholder="Email"
+        errorKey="name"
+        placeholder="Nombre Completo"
         appearance="outline"
         class="w-full"
       ></app-input>
@@ -29,13 +29,13 @@
     </div>
 
     <div class="flex gap-4">
-      <!-- Input Nombre -->
+      <!-- Input Email -->
       <app-input
-        [control]="nameControl"
-        label="Nombre"
+        [control]="identifierControl"
+        label="Email"
         type="text"
-        errorKey="name"
-        placeholder="Nombre Completo"
+        errorKey="email"
+        placeholder="Email"
         appearance="outline"
         class="w-full"
       ></app-input>
