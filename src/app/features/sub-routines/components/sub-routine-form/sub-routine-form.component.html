@@ -21,15 +21,15 @@
             ></app-input>
           </div>
 
-          <div class="w-full md:w-1/2">
-             <app-input
-               [control]="descriptionControl"
-                label="Descripción"
-                type="text"
-                errorKey="description"
-                placeholder="Descripción de la Sub-Rutina"
-                appearance="outline"
-             ></app-input>
+          <div class="w-full md:w-1/2 h-40">
+            <app-text-area
+              [control]="descriptionControl"
+              label="Descripción"
+              errorKey="description"
+              placeholder="Descripción del ejercicio"
+              [maxHeight]="100"
+              appearance="outline"
+            ></app-text-area>
           </div>
         </div>
 
