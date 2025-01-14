@@ -19,6 +19,14 @@ export interface ClientApiResponse {
   data: ClientData;
 }
 
+export interface RegisterResponse {
+  success: boolean;
+  data: {
+    _id: string;
+    identifier: string;
+  };
+}
+
 interface ClientData {
   data: Client[];
   total: number;

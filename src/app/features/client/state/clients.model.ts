@@ -7,6 +7,7 @@ import {
 export class ClientsStateModel {
   loading?: boolean;
   clients?: Client[] = [];
+  idRegisterClient?: string;
   page?: PageClient | null;
   filters?: FiltersClient | null;
   totalClients?: number;

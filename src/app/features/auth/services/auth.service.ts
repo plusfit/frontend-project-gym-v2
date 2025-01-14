@@ -16,6 +16,7 @@ import {
   sendPasswordResetEmail,
 } from '@angular/fire/auth';
 import { RefreshTokenPayload } from '@core/interfaces/refresh-token.interface';
+import { RegisterResponse } from '@features/client/interface/clients.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -52,10 +53,13 @@ export class AuthService {
   _getUserPreferences(): any {
     return sessionStorage.getItem('auth');
   }
-  register(email: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.api}/auth/register`, {
-      email,
-    });
+  register(email: string): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(
+      `${environment.api}/auth/register`,
+      {
+        email,
+      },
+    );
   }
 
   forgotPassword(email: string): any {

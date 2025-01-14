@@ -1,16 +1,24 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { ClientsStateModel } from './clients.model';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DeleteClient, GetClients } from './clients.actions';
-import { catchError, Observable, tap, throwError } from 'rxjs';
-import { Client, ClientApiResponse } from '../interface/clients.interface';
+import { FirebaseRegisterResponse } from '@features/auth/interfaces/auth';
+import { AuthService } from '@features/auth/services/auth.service';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { catchError, exhaustMap, Observable, tap, throwError } from 'rxjs';
+import {
+  Client,
+  ClientApiResponse,
+  RegisterResponse,
+} from '../interface/clients.interface';
 import { ClientService } from '../services/client.service';
+import { DeleteClient, GetClients, RegisterClient } from './clients.actions';
+import { ClientsStateModel } from './clients.model';
 
 @State<ClientsStateModel>({
   name: 'clients',
   defaults: {
     clients: [],
     selectedClient: null,
+    idRegisterClient: null || '',
     total: 0,
     loading: false,
     error: null,
@@ -38,7 +46,10 @@ export class ClientsState {
     return state.loading ?? false;
   }
 
-  constructor(private clientService: ClientService) {}
+  constructor(
+    private clientService: ClientService,
+    private authService: AuthService,
+  ) {}
 
   @Action(GetClients, { cancelUncompleted: true })
   getClients(
@@ -84,6 +95,34 @@ export class ClientsState {
       catchError((error) => {
         ctx.patchState({ error, loading: false });
         return throwError(error);
+      }),
+    );
+  }
+
+  @Action(RegisterClient, { cancelUncompleted: true })
+  register(
+    ctx: StateContext<ClientsStateModel>,
+    action: RegisterClient,
+  ): Observable<RegisterResponse> {
+    ctx.patchState({ loading: true });
+    const { identifier, password } = action.payload;
+    return this.authService.registerFirebase(identifier, password).pipe(
+      exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
+        return this.authService.register(firebaseResponse.user.email).pipe(
+          tap((res: RegisterResponse) => {
+            ctx.patchState({ idRegisterClient: res.data._id });
+            console.log('auth', res);
+          }),
+        );
+      }),
+      tap(() => {
+        ctx.patchState({ loading: false });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        //TODO: convertir los mensajes
+        // this.snackbar.showError('Registro Erroneo', err.message);
+        return throwError(() => err);
       }),
     );
   }

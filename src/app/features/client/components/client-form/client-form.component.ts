@@ -1,10 +1,5 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Subject, takeUntil } from 'rxjs';
-import { InputComponent } from '../../../../shared/components/input/input.component';
 import {
   FormBuilder,
   FormControl,
@@ -12,13 +7,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Location } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Register } from '@features/auth/state/auth.actions';
 import { passwordValidator } from '@core/validators/password.validator';
+import { RegisterClient } from '@features/client/state/clients.actions';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { Subject, takeUntil } from 'rxjs';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-client-form',
@@ -90,14 +90,11 @@ export class ClientFormComponent implements OnDestroy, OnInit {
         identifier: this.clientForm.get('identifier')?.value,
         password: this.clientForm.get('password')?.value,
       };
-      this.store.dispatch(new Register(dataRegister));
+      this.store.dispatch(new RegisterClient(dataRegister));
       this.actions
-        .pipe(ofActionSuccessful(Register), takeUntil(this._destroyed))
+        .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
         .subscribe((res) => {
           console.log(res);
-          const _id = this.store.selectSnapshot((state) => state.auth.auth);
-          console.log('id', _id);
-
           console.log('Registro exitoso');
         });
     }
