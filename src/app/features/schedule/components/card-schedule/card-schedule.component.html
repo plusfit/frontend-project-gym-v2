@@ -1,12 +1,12 @@
 <div
-  class="p-4 rounded shadow mb-2 max-h-[90rem]"
+  class="p-2 rounded shadow mb-2 max-h-[90rem]"
   [ngClass]="getBackgroundClass(hour())"
 >
   <div class="flex justify-between items-center">
     <p [ngClass]="getTextClass(hour())" class="font-semibold text-lg">
       {{ hour()?.startTime ?? "" | hourPipe }}
     </p>
-    <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+    <button mat-icon-button [matMenuTriggerFor]="actionsMenu" class="p-0 mb-3">
       <i class="ph-dots-three-vertical text-xl text-black-600"></i>
     </button>
   </div>
