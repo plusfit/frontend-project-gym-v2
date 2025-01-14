@@ -1,0 +1,65 @@
+<div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
+  <span class="text-center text-6xl font-semibold text-gray-800 mb-8">{{ title }} 📝</span>
+  @if (loading$ | async) {
+    <app-loader></app-loader>
+  } @else {
+    <div class="bg-white rounded-lg shadow-md p-8">
+      <form [formGroup]="planForm" class="space-y-4">
+        <app-title [title]="'Información general'"></app-title>
+        <div class="flex py-8 gap-4">
+          <div class="w-full md:w-1/2">
+            <app-input
+              [control]="nameControl"
+              label="Nombre"
+              type="text"
+              errorKey="name"
+              placeholder="Nombre del Plan"
+              appearance="outline"
+            ></app-input>
+          </div>
+          <div class="w-full md:w-1/2">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Tipo</mat-label>
+              <mat-select [formControl]="typeControl">
+                <mat-option value="cardio">Cardio</mat-option>
+                <mat-option value="sala">Sala</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="flex py-8 gap-4">
+          <div class="w-full md:w-1/2">
+            <app-input
+              [control]="daysControl"
+              label="Días"
+              type="number"
+              errorKey="days"
+              placeholder="Número de días (1-7)"
+              appearance="outline"
+            ></app-input>
+          </div>
+          <div class="w-full md:w-1/2">
+            <app-routine-autocomplete
+              [control]="defaultRoutineControl"
+              (routineSelected)="onSelectedRoutine($event)"
+            ></app-routine-autocomplete>
+          </div>
+        </div>
+      </form>
+      <div class="flex justify-end space-x-2 mt-8">
+        <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
+        <button
+          appBtn
+          color="primary"
+          [loader]="(loading$ | async)!"
+          [animate]="true"
+          (click)="save()"
+          type="button"
+          [disabled]="planForm.invalid || (loading$ | async)"
+        >
+          {{ btnTitle }}
+        </button>
+      </div>
+    </div>
+  }
+</div>
