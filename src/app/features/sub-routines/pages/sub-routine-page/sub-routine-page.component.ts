@@ -89,8 +89,6 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.router.navigate([`/subrutinas/${id}`]);
   }
   deleteSubRoutine(event: any): void {
-    console.log(event);
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {

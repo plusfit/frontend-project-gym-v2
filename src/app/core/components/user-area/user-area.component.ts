@@ -39,7 +39,6 @@ export class UserAreaComponent implements OnDestroy {
     // this.actions
     //   .pipe(ofActionSuccessful(Logout), takeUntil(this.destroy))
     //   .subscribe(() => {
-    //     console.log('logout successful');
     //   });
     this.router.navigate(['auth/login']); //no hace falta el subscribe, ya que no es un observable lo que devuelve
   }
