@@ -14,7 +14,7 @@ import {
   GetPlans,
   SetSelectedPlan,
   UpdateSelectedPlan,
-  UpdatePlan,
+  UpdatePlan, GetClientsByPlanId,
 } from '@features/plans/state/plan.actions';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { PlansService } from '@features/plans/services/plan.service';
@@ -23,6 +23,7 @@ import { PlansService } from '@features/plans/services/plan.service';
   name: 'plans',
   defaults: {
     plans: [],
+    planClients: [],
     selectedPlan: null,
     total: 0,
     loading: false,
@@ -39,6 +40,11 @@ export class PlansState {
   @Selector()
   static getPlans(state: PlanStateModel): Plan[] {
     return state.plans ?? [];
+  }
+
+  @Selector()
+  static getPlanClients(state: PlanStateModel): any[] {
+    return state.planClients ?? [];
   }
 
   @Selector()
@@ -200,6 +206,23 @@ export class PlansState {
           .plans?.filter((plan: Plan) => plan._id !== id);
 
         ctx.patchState({ plans, loading: false });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(GetClientsByPlanId, { cancelUncompleted: true })
+  getClientsByPlanId(
+    ctx: StateContext<PlanStateModel>,
+    { planId }: GetClientsByPlanId,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+    return this.plansService.getClientsByPlanId(planId).pipe(
+      tap((response: any) => {
+        ctx.patchState({ loading: false, planClients: response.data });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });

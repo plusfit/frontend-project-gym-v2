@@ -1,4 +1,5 @@
 import { Plan } from '@features/plans/interfaces/plan.interface';
+import {GetClientsById} from "@features/schedule/state/schedule.actions";
 
 export class GetPlans {
   static readonly type = '[Plan] Get Plans';
@@ -37,6 +38,11 @@ export class UpdatePlan {
 export class DeletePlan {
   static readonly type = '[Plan] Delete Plan';
   constructor(public readonly id: string) {}
+}
+
+export class GetClientsByPlanId {
+  static readonly type = '[Plan] Get Clients By Plan Id';
+  constructor(public readonly planId: string) {}
 }
 
 export class CreatePlan {
