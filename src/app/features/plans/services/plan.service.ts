@@ -56,6 +56,11 @@ export class PlansService {
     return this.http.delete<void>(url);
   }
 
+  getClientsByPlanId(planId: string): Observable<any> {
+    const url = `${environment.api}/plans/clients/${planId}`;
+    return this.http.get<any>(url);
+  }
+
   findPlansByUserId(userId: string): Observable<Plan[]> {
     const url = `${environment.api}/plans/user/${userId}`;
     return this.http.get<Plan[]>(url);
