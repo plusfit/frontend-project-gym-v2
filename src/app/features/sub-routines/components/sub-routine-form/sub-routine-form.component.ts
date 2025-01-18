@@ -38,6 +38,7 @@ import { DragAndDropSortingComponent } from '../../../../shared/components/drag-
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { MatDivider } from '@angular/material/divider';
 import { TitleComponent } from '@shared/components/title/title.component';
+import {TextAreaComponent} from "@shared/components/text-area/text-area.component";
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -53,6 +54,7 @@ import { TitleComponent } from '@shared/components/title/title.component';
     InputComponent,
     MatDivider,
     TitleComponent,
+    TextAreaComponent,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
