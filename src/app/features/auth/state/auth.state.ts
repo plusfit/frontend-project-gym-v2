@@ -7,7 +7,6 @@ import { Observable, catchError, tap, throwError, exhaustMap } from 'rxjs';
 import {
   AuthResponse,
   FirebaseAuthResponse,
-  FirebaseRegisterResponse,
   Profile,
   UserPreferences,
 } from '../interfaces/auth';
@@ -18,7 +17,6 @@ import {
   GetUserPreferences,
   Login,
   Logout,
-  Register,
 } from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
@@ -145,32 +143,32 @@ export class AuthState {
     this.utilsService.cleanStorage();
   }
 
-  @Action(Register, { cancelUncompleted: true })
-  register(
-    ctx: StateContext<AuthStateModel>,
-    action: Register,
-  ): Observable<AuthResponse> {
-    ctx.patchState({ loading: true });
-    const { identifier, password } = action.payload;
-    return this.authService.registerFirebase(identifier, password).pipe(
-      exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-        return this.authService.register(firebaseResponse.user.email).pipe(
-          tap((auth: AuthResponse) => {
-            ctx.patchState({ auth });
-          }),
-        );
-      }),
-      tap(() => {
-        ctx.patchState({ loading: false });
-      }),
-      catchError((err: HttpErrorResponse) => {
-        ctx.patchState({ loading: false });
-        //TODO: convertir los mensajes
-        this.snackbar.showError('Registro Erroneo', err.message);
-        return throwError(() => err);
-      }),
-    );
-  }
+  // @Action(Register, { cancelUncompleted: true })
+  // register(
+  //   ctx: StateContext<AuthStateModel>,
+  //   action: Register,
+  // ): Observable<AuthResponse> {
+  //   ctx.patchState({ loading: true });
+  //   const { identifier, password } = action.payload;
+  //   return this.authService.registerFirebase(identifier, password).pipe(
+  //     exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
+  //       return this.authService.register(firebaseResponse.user.email).pipe(
+  //         tap((auth: AuthResponse) => {
+  //           ctx.patchState({ auth });
+  //         }),
+  //       );
+  //     }),
+  //     tap(() => {
+  //       ctx.patchState({ loading: false });
+  //     }),
+  //     catchError((err: HttpErrorResponse) => {
+  //       ctx.patchState({ loading: false });
+  //       //TODO: convertir los mensajes
+  //       this.snackbar.showError('Registro Erroneo', err.message);
+  //       return throwError(() => err);
+  //     }),
+  //   );
+  // }
 
   @Action(ForgotPassword, { cancelUncompleted: true })
   forgotPassword(

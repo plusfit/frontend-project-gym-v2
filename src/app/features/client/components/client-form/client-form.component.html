@@ -1,0 +1,218 @@
+<form
+  [formGroup]="clientForm"
+  (ngSubmit)="registerClient()"
+  class="p-6 bg-gray-100 rounded-lg shadow-2xl w-[60rem] mx-auto"
+>
+  <div class="gap-4">
+    <div class="flex gap-4">
+      <!-- Input Nombre -->
+      <app-input
+        [control]="nameControl"
+        label="Nombre Completo"
+        type="text"
+        errorKey="name"
+        placeholder="Nombre Completo"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+
+      <!-- Input Contrasena -->
+      <app-input
+        [control]="passwordControl"
+        label="Contraseña"
+        type="text"
+        errorKey="password"
+        placeholder="Contraseña"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+    </div>
+
+    <div class="flex gap-4">
+      <!-- Input Email -->
+      <app-input
+        [control]="identifierControl"
+        label="Email"
+        type="text"
+        errorKey="email"
+        placeholder="Email"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+
+      <!-- Input Direccion -->
+      <app-input
+        [control]="addressControl"
+        label="Dirección"
+        type="text"
+        errorKey="address"
+        placeholder="Dirección"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+    </div>
+
+    <div class="flex gap-4">
+      <!-- Input Telefono -->
+      <app-input
+        [control]="phoneControl"
+        label="Telefono"
+        type="number"
+        errorKey="phone"
+        placeholder="Telefono"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+
+      <!-- Input Sociedad Médica -->
+      <app-input
+        [control]="medicalSocietyControl"
+        label="Sociedad Médica"
+        type="text"
+        errorKey="medicalSociety"
+        placeholder="Sociedad Médica"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+    </div>
+  </div>
+
+  <div class="flex gap-4">
+    <!-- Fecha de Nacimiento -->
+    <div class="mt-4 w-1/2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Fecha de Nacimiento</mat-label>
+        <input
+          matInput
+          formControlName="dateBirthday"
+          [matDatepicker]="picker"
+          class="w-full"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Select Sexo -->
+    <div class="mt-4 w-1/2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Sexo</mat-label>
+        <mat-select formControlName="sex">
+          @for (sex of sexs; track sexs) {
+            <mat-option [value]="sex.value">{{ sex.viewValue }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex gap-4">
+    <!-- Select Presión Sanguínea -->
+    <div class="mt-4 w-1/2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Presión Sanguínea</mat-label>
+        <mat-select formControlName="bloodPressure">
+          @for (blood of bloodPressures; track bloodPressures) {
+            <mat-option [value]="blood.value">{{ blood.viewValue }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Select Frecuencia de Ejercicio -->
+    <div class="mt-4 w-1/2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Frecuencia de Ejercicio Físico</mat-label>
+        <mat-select formControlName="frequencyOfPhysicalExercise">
+          @for (
+            frecuencyExercise of frequencyOfPhysicalExercise;
+            track frequencyOfPhysicalExercise
+          ) {
+            <mat-option [value]="frecuencyExercise.value">{{
+              frecuencyExercise.viewValue
+            }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Antecedentes Respiratorios -->
+  <div class="mt-4">
+    <mat-radio-group
+      formControlName="respiratoryHistory"
+      aria-label="Antecedentes Respiratorios"
+      class="flex flex-col gap-2"
+    >
+      <mat-label class="font-semibold">Antecedentes Respiratorios</mat-label>
+      <div class="flex gap-4 max-w-40">
+        <mat-radio-button value="true">Sí</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <!-- Antecedentes Cardiacos -->
+  <div class="mt-4">
+    <mat-radio-group
+      formControlName="cardiacHistory"
+      aria-label="Antecedentes Cardiacos"
+      class="flex flex-col gap-2"
+    >
+      <mat-label class="font-semibold">Antecedentes Cardiacos</mat-label>
+      <div class="flex gap-4 max-w-40">
+        <mat-radio-button value="true">Sí</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <!-- Antecedentes Quirurgicos -->
+  <div class="mt-4">
+    <mat-radio-group
+      formControlName="surgicalHistory"
+      aria-label="Antecedentes Quirurgicos"
+      class="flex flex-col gap-2"
+    >
+      <mat-label class="font-semibold">Antecedentes Quirurgicos</mat-label>
+      <div class="flex gap-4 max-w-40">
+        <mat-radio-button value="true">Sí</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <!-- Antecedentes Lesiones Patologicas -->
+  <div class="mt-4">
+    <mat-radio-group
+      formControlName="historyofPathologicalLesions"
+      aria-label="Antecedentes Lesiones Patologicas"
+      class="flex flex-col gap-2"
+    >
+      <mat-label class="font-semibold"
+        >Antecedentes Lesiones Patologicas</mat-label
+      >
+      <div class="flex gap-4 max-w-40">
+        <mat-radio-button value="true">Sí</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <!-- Botón de envío -->
+  <div class="flex justify-around mt-4">
+    <button appBtn class="btn-secondary" (click)="cancel()">Cancelar</button>
+    <button
+      appBtn
+      [disabled]="clientForm.invalid"
+      type="submit"
+      class="btn-primary"
+    >
+      Enviar
+    </button>
+  </div>
+</form>
