@@ -41,7 +41,15 @@ export class ClientService {
   }
 
   createClient(client: Client): Observable<any> {
-    return this.http.post<any>(`${environment.api}/clients`, client);
+    return this.http.post<any>(`${environment.api}/clients/create`, {
+      userInfo: client,
+    });
+  }
+
+  updateClient(id: string, client: Client): Observable<any> {
+    return this.http.put<any>(`${environment.api}/clients/${id}`, {
+      userInfo: client,
+    });
   }
 
   deleteClient(id: string): Observable<any> {

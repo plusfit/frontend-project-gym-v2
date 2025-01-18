@@ -10,7 +10,13 @@ import {
   RegisterResponse,
 } from '../interface/clients.interface';
 import { ClientService } from '../services/client.service';
-import { DeleteClient, GetClients, RegisterClient } from './clients.actions';
+import {
+  CreateClient,
+  DeleteClient,
+  GetClients,
+  RegisterClient,
+  UpdateClient,
+} from './clients.actions';
 import { ClientsStateModel } from './clients.model';
 
 @State<ClientsStateModel>({
@@ -18,7 +24,7 @@ import { ClientsStateModel } from './clients.model';
   defaults: {
     clients: [],
     selectedClient: null,
-    idRegisterClient: null || '',
+    registerClient: null || undefined,
     total: 0,
     loading: false,
     error: null,
@@ -44,6 +50,11 @@ export class ClientsState {
   @Selector()
   static isLoading(state: ClientsStateModel) {
     return state.loading ?? false;
+  }
+
+  @Selector()
+  static getRegisterClient(state: ClientsStateModel) {
+    return state.registerClient ?? {};
   }
 
   constructor(
@@ -110,8 +121,13 @@ export class ClientsState {
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
         return this.authService.register(firebaseResponse.user.email).pipe(
           tap((res: RegisterResponse) => {
-            ctx.patchState({ idRegisterClient: res.data._id });
-            console.log('auth', res);
+            ctx.patchState({
+              registerClient: {
+                _id: res.data._id,
+                identifier: res.data.identifier,
+                role: res.data.role,
+              },
+            });
           }),
         );
       }),
@@ -123,6 +139,81 @@ export class ClientsState {
         //TODO: convertir los mensajes
         // this.snackbar.showError('Registro Erroneo', err.message);
         return throwError(() => err);
+      }),
+    );
+  }
+
+  @Action(CreateClient, { cancelUncompleted: true })
+  createClient(
+    ctx: StateContext<ClientsStateModel>,
+    { payload }: CreateClient,
+  ): Observable<ClientApiResponse> {
+    ctx.patchState({ loading: true, error: null });
+    return this.clientService.createClient(payload).pipe(
+      tap((response: ClientApiResponse) => {
+        const clients = ctx.getState().clients || [];
+        const mappedClient: Client = {
+          _id: response.data._id,
+          name: response.data.name,
+          phone: response.data.phone,
+          address: response.data.address,
+          dateBirthday: response.data.dateBirthday,
+          medicalSociety: response.data.medicalSociety,
+          sex: response.data.sex,
+          cardiacHistory: response.data.cardiacHistory,
+          cardiacHistoryInput: response.data.cardiacHistoryInput,
+          bloodPressure: response.data.bloodPressure,
+          frequencyOfPhysicalExercise:
+            response.data.frequencyOfPhysicalExercise,
+          respiratoryHistory: response.data.respiratoryHistory,
+          respiratoryHistoryInput: response.data.respiratoryHistoryInput,
+        };
+        ctx.patchState({
+          clients: [...clients, mappedClient],
+          loading: false,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(error);
+      }),
+    );
+  }
+
+  @Action(UpdateClient, { cancelUncompleted: true })
+  updateClient(
+    ctx: StateContext<ClientsStateModel>,
+    action: UpdateClient,
+  ): Observable<ClientApiResponse> {
+    const { id, payload } = action;
+    ctx.patchState({ loading: true, error: null });
+    return this.clientService.updateClient(id, payload).pipe(
+      tap((response: ClientApiResponse) => {
+        const clients = ctx.getState().clients || [];
+        const mappedClient: Client = {
+          _id: response.data._id,
+          name: response.data.name,
+          phone: response.data.phone,
+          address: response.data.address,
+          dateBirthday: response.data.dateBirthday,
+          medicalSociety: response.data.medicalSociety,
+          sex: response.data.sex,
+          cardiacHistory: response.data.cardiacHistory,
+          cardiacHistoryInput: response.data.cardiacHistoryInput,
+          bloodPressure: response.data.bloodPressure,
+          frequencyOfPhysicalExercise:
+            response.data.frequencyOfPhysicalExercise,
+          respiratoryHistory: response.data.respiratoryHistory,
+          respiratoryHistoryInput: response.data.respiratoryHistoryInput,
+        };
+        const updatedClients = clients.map((client) =>
+          client._id === payload._id ? mappedClient : client,
+        );
+        ctx.patchState({ clients: updatedClients, loading: false });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(error);
       }),
     );
   }

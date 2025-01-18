@@ -16,7 +16,7 @@ export class Client {
 
 export interface ClientApiResponse {
   success: boolean;
-  data: ClientData;
+  data: Client;
 }
 
 export interface RegisterResponse {
@@ -24,12 +24,19 @@ export interface RegisterResponse {
   data: {
     _id: string;
     identifier: string;
+    role: string;
   };
 }
 
-interface ClientData {
-  data: Client[];
-  total: number;
-  page: number;
-  limit: number;
+export class RegisterClient {
+  _id!: string;
+  identifier!: string;
+  role!: string;
 }
+
+// interface ClientData {
+//   data: Client[];
+//   total: number;
+//   page: number;
+//   limit: number;
+// }

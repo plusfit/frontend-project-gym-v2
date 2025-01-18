@@ -15,7 +15,11 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { passwordValidator } from '@core/validators/password.validator';
-import { RegisterClient } from '@features/client/state/clients.actions';
+import {
+  RegisterClient,
+  UpdateClient,
+} from '@features/client/state/clients.actions';
+import { ClientsState } from '@features/client/state/clients.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
@@ -76,11 +80,11 @@ export class ClientFormComponent implements OnDestroy, OnInit {
       medicalSociety: ['', [Validators.required]],
       sex: ['', [Validators.required]],
       cardiacHistory: ['', [Validators.required]],
-      cardiacHistoryInput: [''],
+      surgicalHistory: ['', [Validators.required]],
+      historyofPathologicalLesions: ['', [Validators.required]],
       bloodPressure: ['', [Validators.required]],
       frequencyOfPhysicalExercise: ['', [Validators.required]],
       respiratoryHistory: ['', [Validators.required]],
-      respiratoryHistoryInput: [''],
     });
   }
 
@@ -91,11 +95,38 @@ export class ClientFormComponent implements OnDestroy, OnInit {
         password: this.clientForm.get('password')?.value,
       };
       this.store.dispatch(new RegisterClient(dataRegister));
+      const userInfo = {
+        name: this.clientForm.get('name')?.value,
+        phone: this.clientForm.get('phone')?.value,
+        email: this.clientForm.get('identifier')?.value,
+        address: this.clientForm.get('address')?.value,
+        dateBirthday: this.clientForm.get('dateBirthday')?.value,
+        medicalSociety: this.clientForm.get('medicalSociety')?.value,
+        sex: this.clientForm.get('sex')?.value,
+        cardiacHistory: this.clientForm.get('cardiacHistory')?.value,
+        surgicalHistory: this.clientForm.get('surgicalHistory')?.value,
+        historyofPathologicalLesions: this.clientForm.get(
+          'historyofPathologicalLesions',
+        )?.value,
+        bloodPressure: this.clientForm.get('bloodPressure')?.value,
+        frequencyOfPhysicalExercise: this.clientForm.get(
+          'frequencyOfPhysicalExercise',
+        )?.value,
+        respiratoryHistory: this.clientForm.get('respiratoryHistory')?.value,
+      };
       this.actions
         .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
-        .subscribe((res) => {
-          console.log(res);
-          console.log('Registro exitoso');
+        .subscribe(() => {
+          const registerClient = this.store.selectSnapshot(
+            ClientsState.getRegisterClient,
+          );
+          console.log(registerClient._id);
+          this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
+          this.actions
+            .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
+            .subscribe((res) => {
+              console.log('response', res);
+            });
         });
     }
     console.log(this.clientForm.value);

@@ -6,12 +6,24 @@ export class GetClients {
   constructor(public readonly payload: PageClient) {}
 }
 
-export class DeleteClient {
-  static readonly type = '[Client] DeleteClient';
-  constructor(public readonly id: string) {}
-}
-
 export class RegisterClient {
   static readonly type = '[Client] RegisterClient';
   constructor(public readonly payload: AuthCredentials) {}
+}
+
+export class CreateClient {
+  static readonly type = '[Client] createClient';
+  constructor(public readonly payload: any) {}
+}
+
+export class UpdateClient {
+  static readonly type = '[Client] UpdateClient';
+  constructor(
+    public readonly id: string,
+    public readonly payload: any,
+  ) {}
+}
+export class DeleteClient {
+  static readonly type = '[Client] DeleteClient';
+  constructor(public readonly id: string) {}
 }
