@@ -4,7 +4,6 @@ export interface Routine {
   _id: { $oid: string };
   name: string;
   description: string;
-  category: string;
   isCustom: boolean;
   subRoutines: SubRoutine[];
   //TODO: agregar campos de fecha
@@ -15,7 +14,6 @@ export interface Routine {
 export interface RoutinePayload {
   name: string;
   description: string;
-  category: string;
   isCustom: boolean;
   subRoutines: string[];
 }

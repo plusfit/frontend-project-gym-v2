@@ -38,7 +38,9 @@ import { DragAndDropSortingComponent } from '../../../../shared/components/drag-
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { MatDivider } from '@angular/material/divider';
 import { TitleComponent } from '@shared/components/title/title.component';
-import {TextAreaComponent} from "@shared/components/text-area/text-area.component";
+import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatOption, MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-sub-routine-form',
   templateUrl: './sub-routine-form.component.html',
@@ -55,6 +57,10 @@ import {TextAreaComponent} from "@shared/components/text-area/text-area.componen
     MatDivider,
     TitleComponent,
     TextAreaComponent,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatLabel,
   ],
 })
 export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -65,6 +71,12 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   loading$!: Observable<boolean | null>;
   title = 'Crear Subrutina';
   btnTitle = 'Crear';
+
+  categories = [
+    { value: 'cardio', viewValue: 'Cardio' },
+    { value: 'room', viewValue: 'Sala' },
+    { value: 'mix', viewValue: 'Mixto' },
+  ];
 
   private destroy = new Subject<void>();
 
@@ -86,6 +98,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
     this.subRoutineForm = this.fb.group({
       name: ['', Validators.required],
+      category: ['', Validators.required],
       description: ['', Validators.required],
     });
   }
