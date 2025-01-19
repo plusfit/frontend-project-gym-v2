@@ -13,7 +13,7 @@ import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { TranslationPipe } from '@shared/pipes/translation.pipe';
 import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
-import {MatCheckbox} from "@angular/material/checkbox";
+import { MatCheckbox } from '@angular/material/checkbox';
 
 /**
  * The TableComponent displays a table of data.
@@ -151,5 +151,31 @@ export class TableComponent implements OnInit {
 
   ngOnInit() {
     this.selection = [...this.selected];
+  }
+
+  getColorBadge(category: string): EColorBadge {
+    switch (category) {
+      case 'room':
+        return EColorBadge.SUCCESS;
+      case 'cardio':
+        return EColorBadge.ERROR;
+      case 'mix':
+        return EColorBadge.INFO;
+      default:
+        return EColorBadge.INFO;
+    }
+  }
+
+  getTextBadge(category: string): string {
+    switch (category) {
+      case 'room':
+        return 'Sala';
+      case 'cardio':
+        return 'Cardio';
+      case 'mix':
+        return 'Mixto';
+      default:
+        return 'Desconocido';
+    }
   }
 }
