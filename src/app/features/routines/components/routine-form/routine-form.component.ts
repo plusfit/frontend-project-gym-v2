@@ -44,6 +44,7 @@ import { InputComponent } from '@shared/components/input/input.component';
 import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
 import { MatDivider } from '@angular/material/divider';
 import { TitleComponent } from '@shared/components/title/title.component';
+import { EDays } from '@shared/enums/days-enum';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -82,15 +83,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     { value: 'room', viewValue: 'Sala' },
   ];
 
-  days = [
-    'Lunes',
-    'Martes',
-    'Miercoles',
-    'Jueves',
-    'Viernes',
-    'Sabado',
-    'Domingo',
-  ];
+  days = Object.values(EDays);
 
   private destroy = new Subject<void>();
 
