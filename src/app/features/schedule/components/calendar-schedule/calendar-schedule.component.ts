@@ -37,14 +37,15 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
 export class CalendarScheduleComponent implements AfterViewInit {
   @Input() schedule: any;
   currentDay: string;
+  //TODO: BUSCAR TODOS LOS DAYS Y CAMBIARLOS A ENUMS (SETTINGS, STATES, ETC)
   days = [
     'Domingo',
     'Lunes',
     'Martes',
-    'Miércoles',
+    'Miercoles',
     'Jueves',
     'Viernes',
-    'Sábado',
+    'Sabado',
   ];
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
