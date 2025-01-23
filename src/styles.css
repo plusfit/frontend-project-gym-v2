@@ -75,7 +75,7 @@ body {
   }
 
   .btn-primary {
-    @apply text-white bg-primary-300 hover:bg-primary-500 disabled:bg-primary-400 focus-visible:outline-none focus:outline-teal-50 focus:shadow-button-100 transition-all duration-300;
+    @apply text-white bg-primary-300 hover:bg-primary-500 disabled:bg-primary-100 focus-visible:outline-none focus:outline-teal-50 focus:shadow-button-100 transition-all duration-300;
   }
 
   .btn-secondary {
