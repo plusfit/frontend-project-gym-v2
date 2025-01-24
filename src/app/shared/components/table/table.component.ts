@@ -158,4 +158,30 @@ export class TableComponent implements OnInit {
   ngOnInit() {
     this.selection = [...this.selected];
   }
+
+  getColorBadge(category: string): EColorBadge {
+    switch (category) {
+      case 'room':
+        return EColorBadge.SUCCESS;
+      case 'cardio':
+        return EColorBadge.ERROR;
+      case 'mix':
+        return EColorBadge.INFO;
+      default:
+        return EColorBadge.INFO;
+    }
+  }
+
+  getTextBadge(category: string): string {
+    switch (category) {
+      case 'room':
+        return 'Sala';
+      case 'cardio':
+        return 'Cardio';
+      case 'mix':
+        return 'Mixto';
+      default:
+        return 'Desconocido';
+    }
+  }
 }

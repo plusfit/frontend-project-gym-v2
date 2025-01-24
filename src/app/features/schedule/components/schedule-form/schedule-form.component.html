@@ -1,17 +1,23 @@
 <div class="p-4 bg-white shadow-md rounded">
   <app-title [title]="title" [divider]="false"></app-title>
   <form [formGroup]="editForm" class="space-y-6">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center">
-        <app-input
-          [control]="maxCountControl"
-          label="Cantidad Máxima"
-          type="number"
-          errorKey="maxCount"
-          placeholder="Cantidad Máxima"
-          appearance="outline"
-        ></app-input>
-      </div>
+    <div class="flex items-center space-x-2">
+      <app-input
+        [control]="maxCountControl"
+        label="Cantidad Máxima"
+        type="number"
+        errorKey="maxCount"
+        placeholder="Cantidad Máxima"
+        appearance="outline"
+      ></app-input>
+      <i
+        class="ph-floppy-disk text-3xl mb-5 cursor-pointer"
+        title="Guardar cantidad máxima"
+        color="primary"
+        tabindex="0"
+        (click)="editCount()"
+        (keydown.enter)="editCount()"
+      ></i>
     </div>
 
     <div>
@@ -54,18 +60,16 @@
     <div class="flex justify-between">
       <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
 
-      <button
+      <!-- <button
         appBtn
         color="primary"
         type="button"
-        (click)="editCount()"
-        [loader]="(loading$ | async)!"
+        (click)="cancel()"
         [animate]="true"
-        [disabled]="editForm.invalid || (loading$ | async)"
         class="h-10"
       >
-        Guardar
-      </button>
+        Cerrar
+      </button> -->
     </div>
   </form>
 </div>

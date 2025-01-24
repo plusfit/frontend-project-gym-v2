@@ -37,7 +37,7 @@
         <td cdk-cell *cdkCellDef="let element">
           @if(column.includes('.')) {
           <span>{{ resolveNestedProperty(element, column) }}</span>
-          } @if(column === 'type') {
+          } @if(column === 'type') { @if(column === 'type') {
           <app-badge
             [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
             [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
@@ -46,6 +46,8 @@
           <app-badge
             [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
             [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+            [colorBadge]="getColorBadge(element[column])"
+            [textBadge]="getTextBadge(element[column])"
           ></app-badge>
           } @if(column === 'name') {
           <span class="font-semibold">{{element[column]}}</span>

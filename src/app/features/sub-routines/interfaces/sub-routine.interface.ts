@@ -7,6 +7,7 @@ export interface SubRoutine {
   isCustom: boolean;
   exercises: Exercise[];
   day: EDay;
+  category: string;
 }
 
 export interface SubRoutineApiResponse {

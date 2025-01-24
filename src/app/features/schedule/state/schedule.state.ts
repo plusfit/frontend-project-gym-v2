@@ -130,20 +130,15 @@ export class ScheduleState {
           return acc;
         }, []);
 
-        // Ordenamos los días de la semana en el orden deseado
-        const daysOrder = [
-          'Lunes',
-          'Martes',
-          'Miercoles',
-          'Jueves',
-          'Viernes',
-          'Sabado',
-        ];
-        sortSchedule.sort((a: any, b: any) => {
-          const dayA = daysOrder.indexOf(a.day);
-          const dayB = daysOrder.indexOf(b.day);
-          return dayA - dayB;
-        });
+        //no es necesario ordenar los dias
+
+        // sortSchedule.sort((a: any, b: any) => {
+        //   const dayA = daysOrder.indexOf(a.day);
+        //   const dayB = daysOrder.indexOf(b.day);
+        //   return dayA - dayB;
+        // });
+
+        console.log(sortSchedule);
 
         ctx.patchState({ schedule: sortSchedule, loading: false });
       }),

@@ -1,15 +1,17 @@
 <div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
-  <span class="text-center text-6xl font-semibold text-gray-800 mb-8">{{ title }} 📝</span>
+  <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
+    >{{ title }} 📝</span
+  >
   <!-- Loading Indicator -->
   @if (loading$ | async) {
     <app-loader></app-loader>
   } @else {
     <div class="bg-white rounded-lg shadow-md p-8">
-    <!-- Form Content -->
+      <!-- Form Content -->
       <form [formGroup]="subRoutineForm" class="space-y-4">
         <app-title [title]="'Información general'"></app-title>
         <!-- SubRoutine Fields -->
-        <div class="flex py-8 gap-4">
+        <div class="flex pt-8 gap-4">
           <div class="w-full md:w-1/2">
             <app-input
               [control]="nameControl"
@@ -32,7 +34,16 @@
             ></app-text-area>
           </div>
         </div>
-
+        <div class="w-full md:w-1/2">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let c of categories" [value]="c.value">
+                {{ c.viewValue | titlecase }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <!-- Current Exercises Section -->
         <div>
           <div class="flex justify-between mb-4 align-bottom">
@@ -55,8 +66,6 @@
             ></app-drag-and-drop-sorting>
           </div>
 
-
-
           <!-- <app-table
             [data]="selectedExercises"
             [total]="selectedExercises.length"
@@ -66,22 +75,21 @@
           ></app-table> -->
         </div>
       </form>
-    <!-- Action Buttons -->
-    <div class="flex justify-end space-x-2 mt-8">
-      <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
-      <button
-        appBtn
-        color="primary"
-        [loader]="(loading$ | async)!"
-        [animate]="true"
-        (click)="save()"
-        type="button"
-        [disabled]="subRoutineForm.invalid || (loading$ | async)"
-      >
-        {{ btnTitle }}
-      </button>
-    </div>
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-2 mt-8">
+        <button appBtn class="btn-secondary" (click)="goBack()">Volver</button>
+        <button
+          appBtn
+          color="primary"
+          [loader]="(loading$ | async)!"
+          [animate]="true"
+          (click)="save()"
+          type="button"
+          [disabled]="subRoutineForm.invalid || (loading$ | async)"
+        >
+          {{ btnTitle }}
+        </button>
+      </div>
     </div>
   }
-
 </div>

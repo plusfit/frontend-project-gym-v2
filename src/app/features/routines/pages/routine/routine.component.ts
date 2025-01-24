@@ -65,7 +65,6 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = [
     'name',
     'description',
-    'category',
     'isCustom',
     'days',
     'acciones',

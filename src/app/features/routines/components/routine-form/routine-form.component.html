@@ -33,17 +33,6 @@
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="w-full md:w-1/2">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Categoria</mat-label>
-                <mat-select formControlName="category">
-                  <mat-option *ngFor="let c of categories" [value]="c.value">
-                    {{ c.viewValue | titlecase }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
             <div class="w-full md:w-1/2 flex items-cente">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Es Personalizada ? </mat-label>
