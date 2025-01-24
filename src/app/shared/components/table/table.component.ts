@@ -13,7 +13,7 @@ import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { TranslationPipe } from '@shared/pipes/translation.pipe';
 import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
-import {MatCheckbox} from "@angular/material/checkbox";
+import { MatCheckbox } from '@angular/material/checkbox';
 
 /**
  * The TableComponent displays a table of data.
@@ -114,6 +114,12 @@ export class TableComponent implements OnInit {
    */
   emitDelete(id: string): void {
     this.delete.emit(id);
+  }
+
+  resolveNestedProperty(object: any, path: string): any {
+    return (
+      path.split('.').reduce((o, key) => (o ? o[key] : null), object) || 'N/A'
+    );
   }
 
   toggleSelection(element: any): void {

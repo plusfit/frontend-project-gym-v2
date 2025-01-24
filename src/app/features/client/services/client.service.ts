@@ -15,6 +15,10 @@ export class ClientService {
     return this.http.get<any>(`${environment.api}${url}`);
   }
 
+  getClientById(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.api}/clients/${id}`);
+  }
+
   getClientsByName(
     page: number,
     limit: number,
@@ -33,8 +37,6 @@ export class ClientService {
       params = params.set('email', email);
     }
 
-    console.log(params.toString());
-
     return this.http.get<any>(`${environment.api}/clients`, {
       params,
     });
@@ -47,7 +49,7 @@ export class ClientService {
   }
 
   updateClient(id: string, client: Client): Observable<any> {
-    return this.http.put<any>(`${environment.api}/clients/${id}`, {
+    return this.http.patch<any>(`${environment.api}/clients/${id}`, {
       userInfo: client,
     });
   }

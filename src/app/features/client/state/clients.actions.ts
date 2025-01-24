@@ -6,6 +6,11 @@ export class GetClients {
   constructor(public readonly payload: PageClient) {}
 }
 
+export class GetClientById {
+  static readonly type = '[Client] GetClientById';
+  constructor(public readonly id: string) {}
+}
+
 export class RegisterClient {
   static readonly type = '[Client] RegisterClient';
   constructor(public readonly payload: AuthCredentials) {}

@@ -141,67 +141,77 @@
     </div>
   </div>
 
-  <!-- Antecedentes Respiratorios -->
-  <div class="mt-4">
-    <mat-radio-group
-      formControlName="respiratoryHistory"
-      aria-label="Antecedentes Respiratorios"
-      class="flex flex-col gap-2"
-    >
-      <mat-label class="font-semibold">Antecedentes Respiratorios</mat-label>
-      <div class="flex gap-4 max-w-40">
-        <mat-radio-button value="true">Sí</mat-radio-button>
-        <mat-radio-button value="false">No</mat-radio-button>
-      </div>
-    </mat-radio-group>
-  </div>
-
-  <!-- Antecedentes Cardiacos -->
-  <div class="mt-4">
-    <mat-radio-group
-      formControlName="cardiacHistory"
-      aria-label="Antecedentes Cardiacos"
-      class="flex flex-col gap-2"
-    >
-      <mat-label class="font-semibold">Antecedentes Cardiacos</mat-label>
-      <div class="flex gap-4 max-w-40">
-        <mat-radio-button value="true">Sí</mat-radio-button>
-        <mat-radio-button value="false">No</mat-radio-button>
-      </div>
-    </mat-radio-group>
-  </div>
-
-  <!-- Antecedentes Quirurgicos -->
-  <div class="mt-4">
-    <mat-radio-group
-      formControlName="surgicalHistory"
-      aria-label="Antecedentes Quirurgicos"
-      class="flex flex-col gap-2"
-    >
-      <mat-label class="font-semibold">Antecedentes Quirurgicos</mat-label>
-      <div class="flex gap-4 max-w-40">
-        <mat-radio-button value="true">Sí</mat-radio-button>
-        <mat-radio-button value="false">No</mat-radio-button>
-      </div>
-    </mat-radio-group>
-  </div>
-
-  <!-- Antecedentes Lesiones Patologicas -->
-  <div class="mt-4">
-    <mat-radio-group
-      formControlName="historyofPathologicalLesions"
-      aria-label="Antecedentes Lesiones Patologicas"
-      class="flex flex-col gap-2"
-    >
-      <mat-label class="font-semibold"
-        >Antecedentes Lesiones Patologicas</mat-label
+  <div class="flex gap-4 mb-6">
+    <!-- Antecedentes Respiratorios -->
+    <div class="mt-4">
+      <mat-radio-group
+        formControlName="respiratoryHistory"
+        aria-label="Antecedentes Respiratorios"
+        class="flex flex-col gap-2"
       >
-      <div class="flex gap-4 max-w-40">
-        <mat-radio-button value="true">Sí</mat-radio-button>
-        <mat-radio-button value="false">No</mat-radio-button>
-      </div>
-    </mat-radio-group>
+        <mat-label class="font-semibold">Antecedentes Respiratorios</mat-label>
+        <div class="flex gap-4 max-w-40">
+          <mat-radio-button value="true">Sí</mat-radio-button>
+          <mat-radio-button value="false">No</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
+
+    <!-- Antecedentes Cardiacos -->
+    <div class="mt-4">
+      <mat-radio-group
+        formControlName="cardiacHistory"
+        aria-label="Antecedentes Cardiacos"
+        class="flex flex-col gap-2"
+      >
+        <mat-label class="font-semibold">Antecedentes Cardiacos</mat-label>
+        <div class="flex gap-4 max-w-40">
+          <mat-radio-button value="true">Sí</mat-radio-button>
+          <mat-radio-button value="false">No</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
+    <!-- Antecedentes Quirurgicos -->
+    <div class="mt-4">
+      <mat-radio-group
+        formControlName="surgicalHistory"
+        aria-label="Antecedentes Quirurgicos"
+        class="flex flex-col gap-2"
+      >
+        <mat-label class="font-semibold">Antecedentes Quirurgicos</mat-label>
+        <div class="flex gap-4 max-w-40">
+          <mat-radio-button value="true">Sí</mat-radio-button>
+          <mat-radio-button value="false">No</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
+
+    <!-- Antecedentes Lesiones Patologicas -->
+    <div class="mt-4">
+      <mat-radio-group
+        formControlName="historyofPathologicalLesions"
+        aria-label="Antecedentes Lesiones Patologicas"
+        class="flex flex-col gap-2"
+      >
+        <mat-label class="font-semibold"
+          >Antecedentes Lesiones Patologicas</mat-label
+        >
+        <div class="flex gap-4 max-w-40">
+          <mat-radio-button value="true">Sí</mat-radio-button>
+          <mat-radio-button value="false">No</mat-radio-button>
+        </div>
+      </mat-radio-group>
+    </div>
   </div>
+
+  <app-autocomplete
+    [control]="planControl"
+    placeholder="Buscar Plan"
+    [action]="action"
+    [selector]="selector"
+    propertyToDisplay="name"
+    (itemSelected)="onPlanSelected($event)"
+  ></app-autocomplete>
 
   <!-- Botón de envío -->
   <div class="flex justify-around mt-4">
@@ -209,6 +219,8 @@
     <button
       appBtn
       [disabled]="clientForm.invalid"
+      [animate]="true"
+      [loader]="(loading$ || loadingClient$ | async)!"
       type="submit"
       class="btn-primary"
     >

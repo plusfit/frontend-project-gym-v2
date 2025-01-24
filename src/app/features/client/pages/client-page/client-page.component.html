@@ -15,6 +15,7 @@
     [data]="clients | async"
     [total]="total | async"
     [loading]="loading | async"
+    (edit)="editClient($event)"
     (delete)="deleteClient($event)"
   >
     <mat-paginator
