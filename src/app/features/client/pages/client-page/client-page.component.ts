@@ -31,7 +31,12 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
-  displayedColumns: string[] = ['_id', 'email', 'acciones'];
+  displayedColumns: string[] = [
+    'userInfo.name',
+    'userInfo.address',
+    'email',
+    'acciones',
+  ];
 
   private destroy = new Subject<void>();
 
@@ -74,9 +79,11 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/clientes/crear']);
   }
 
-  deleteClient(event: any): void {
-    console.log(event);
+  editClient(id: string): void {
+    this.router.navigate([`/clientes/${id}`]);
+  }
 
+  deleteClient(event: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {

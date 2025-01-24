@@ -35,7 +35,9 @@
           {{ column | translation | camelToTitle }}
         </th>
         <td cdk-cell *cdkCellDef="let element">
-          @if(column === 'type') {
+          @if(column.includes('.')) {
+          <span>{{ resolveNestedProperty(element, column) }}</span>
+          } @if(column === 'type') {
           <app-badge
             [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
             [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"

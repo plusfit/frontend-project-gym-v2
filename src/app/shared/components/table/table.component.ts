@@ -116,6 +116,12 @@ export class TableComponent implements OnInit {
     this.delete.emit(id);
   }
 
+  resolveNestedProperty(object: any, path: string): any {
+    return (
+      path.split('.').reduce((o, key) => (o ? o[key] : null), object) || 'N/A'
+    );
+  }
+
   toggleSelection(element: any): void {
     const index = this.selection.findIndex((item) => item._id === element._id);
     if (index > -1) {

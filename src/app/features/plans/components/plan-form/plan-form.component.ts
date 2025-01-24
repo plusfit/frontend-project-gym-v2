@@ -27,8 +27,10 @@ import { MatDivider } from '@angular/material/divider';
 import { TitleComponent } from '@shared/components/title/title.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { Routine } from '@features/routines/interfaces/routine.interface';
-import { RoutineAutocompleteComponent } from '@features/plans/components/routine-autocomplete/routine-autocomplete.component';
 import { MatSelectModule } from '@angular/material/select';
+import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
+import { GetRoutinesByName } from '@features/routines/state/routine.actions';
+import { RoutineState } from '@features/routines/state/routine.state';
 
 @Component({
   selector: 'app-plan-form',
@@ -42,14 +44,15 @@ import { MatSelectModule } from '@angular/material/select';
     MatDivider,
     TitleComponent,
     LoaderComponent,
-    RoutineAutocompleteComponent,
     MatSelectModule,
+    AutocompleteComponent,
   ],
 })
 export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
   isEdit: InputSignal<boolean> = input<boolean>(false);
   id: InputSignal<string> = input<string>('');
   routines: InputSignal<Routine[]> = input<Routine[]>([]);
+  selector = RoutineState.routines;
   selectedRoutine: Routine | null = null;
   planForm!: FormGroup;
   plan: Plan | null = null;
@@ -114,6 +117,14 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
     }
+  }
+
+  action(searchTerm: string): GetRoutinesByName {
+    return new GetRoutinesByName({ page: 1 }, { name: searchTerm });
+  }
+
+  onRoutineSelected(routine: any): void {
+    this.selectedRoutine = routine;
   }
 
   save(): void {

@@ -1,5 +1,12 @@
-import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe, Location } from '@angular/common';
+import {
+  Component,
+  input,
+  InputSignal,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -14,15 +21,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { SnackBarService } from '@core/services/snackbar.service';
 import { passwordValidator } from '@core/validators/password.validator';
 import {
   RegisterClient,
   UpdateClient,
 } from '@features/client/state/clients.actions';
 import { ClientsState } from '@features/client/state/clients.state';
+import { AssignPlanToUser, GetPlans } from '@features/plans/state/plan.actions';
+import { PlansState } from '@features/plans/state/plan.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
+import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { Client } from '@features/client/interface/clients.interface';
 
 @Component({
   selector: 'app-client-form',
@@ -36,12 +49,24 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
     ReactiveFormsModule,
     MatSelectModule,
     MatRadioModule,
+    AutocompleteComponent,
+    AsyncPipe,
+    BtnDirective,
   ],
   templateUrl: './client-form.component.html',
   styleUrl: './client-form.component.css',
 })
-export class ClientFormComponent implements OnDestroy, OnInit {
+export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
+  isEdit: InputSignal<boolean> = input<boolean>(false);
+  id: InputSignal<string> = input<string>('');
   clientForm!: FormGroup;
+  selector = PlansState.getPlans;
+  selectedPlanId: string | null = null;
+  dataClient: InputSignal<any> = input<any>({});
+  clientData: Client | null = null;
+
+  loading$ = this.store.select(PlansState.isLoading);
+  loadingClient$ = this.store.select(ClientsState.isLoading);
 
   sexs: any[] = [
     { value: 'Masculino', viewValue: 'Masculino' },
@@ -67,6 +92,7 @@ export class ClientFormComponent implements OnDestroy, OnInit {
     private router: Router,
     private store: Store,
     private actions: Actions,
+    private snackbar: SnackBarService,
   ) {}
 
   ngOnInit(): void {
@@ -85,11 +111,27 @@ export class ClientFormComponent implements OnDestroy, OnInit {
       bloodPressure: ['', [Validators.required]],
       frequencyOfPhysicalExercise: ['', [Validators.required]],
       respiratoryHistory: ['', [Validators.required]],
+      plan: ['', [Validators.required]],
     });
+  }
+
+  ngOnChanges(): void {
+    if (this.isEdit()) {
+      this.clientData = this.store.selectSnapshot(
+        (state) => state.clients.selectedClient,
+      );
+      if (this.clientData) {
+        this.clientForm.patchValue({
+          ...this.clientData,
+        });
+      }
+    }
   }
 
   registerClient() {
     if (this.clientForm.valid) {
+      console.log('clientForm', this.clientForm.value);
+
       const dataRegister = {
         identifier: this.clientForm.get('identifier')?.value,
         password: this.clientForm.get('password')?.value,
@@ -97,8 +139,9 @@ export class ClientFormComponent implements OnDestroy, OnInit {
       this.store.dispatch(new RegisterClient(dataRegister));
       const userInfo = {
         name: this.clientForm.get('name')?.value,
+        password: this.clientForm.get('password')?.value,
         phone: this.clientForm.get('phone')?.value,
-        email: this.clientForm.get('identifier')?.value,
+        identifier: this.clientForm.get('identifier')?.value,
         address: this.clientForm.get('address')?.value,
         dateBirthday: this.clientForm.get('dateBirthday')?.value,
         medicalSociety: this.clientForm.get('medicalSociety')?.value,
@@ -120,16 +163,38 @@ export class ClientFormComponent implements OnDestroy, OnInit {
           const registerClient = this.store.selectSnapshot(
             ClientsState.getRegisterClient,
           );
-          console.log(registerClient._id);
           this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
           this.actions
             .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
-            .subscribe((res) => {
-              console.log('response', res);
+            .subscribe(() => {
+              if (this.selectedPlanId) {
+                this.store.dispatch(
+                  new AssignPlanToUser(this.selectedPlanId, registerClient._id),
+                );
+                this.actions
+                  .pipe(
+                    ofActionSuccessful(AssignPlanToUser),
+                    takeUntil(this._destroyed),
+                  )
+                  .subscribe(() => {
+                    this.snackbar.showSuccess(
+                      'Exito',
+                      'Cliente registrado con correctamente',
+                    );
+                    this.clientForm.reset();
+                  });
+              }
             });
         });
     }
-    console.log(this.clientForm.value);
+  }
+
+  action(searchTerm: string): GetPlans {
+    return new GetPlans({ page: 1, pageSize: 10, searchQ: searchTerm });
+  }
+
+  onPlanSelected(plan: any): void {
+    this.selectedPlanId = plan._id;
   }
 
   cancel() {
@@ -172,6 +237,10 @@ export class ClientFormComponent implements OnDestroy, OnInit {
 
   get phoneControl(): FormControl {
     return this.clientForm.get('phone') as FormControl;
+  }
+
+  get planControl(): FormControl {
+    return this.clientForm.get('plan') as FormControl;
   }
 
   ngOnDestroy() {

@@ -13,6 +13,7 @@ import { ClientService } from '../services/client.service';
 import {
   CreateClient,
   DeleteClient,
+  GetClientById,
   GetClients,
   RegisterClient,
   UpdateClient,
@@ -23,7 +24,7 @@ import { ClientsStateModel } from './clients.model';
   name: 'clients',
   defaults: {
     clients: [],
-    selectedClient: null,
+    selectedClient: undefined,
     registerClient: null || undefined,
     total: 0,
     loading: false,
@@ -102,6 +103,42 @@ export class ClientsState {
           pageCount,
           loading: false,
         });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(error);
+      }),
+    );
+  }
+
+  @Action(GetClientById, { cancelUncompleted: true })
+  getClientById(
+    ctx: StateContext<ClientsStateModel>,
+    action: GetClientById,
+  ): Observable<ClientApiResponse> {
+    ctx.patchState({ loading: true, error: null });
+    return this.clientService.getClientById(action.id).pipe(
+      tap((response: any) => {
+        const selectedClient = {
+          _id: response.data._id,
+          name: response.data.userInfo.name,
+          identifier: response.data.userInfo.identifier,
+          password: response.data.userInfo.password,
+          phone: response.data.userInfo.phone,
+          address: response.data.userInfo.address,
+          dateBirthday: response.data.userInfo.dateBirthday,
+          medicalSociety: response.data.userInfo.medicalSociety,
+          sex: response.data.userInfo.sex,
+          cardiacHistory: response.data.userInfo.cardiacHistory,
+          cardiacHistoryInput: response.data.userInfo.cardiacHistoryInput,
+          bloodPressure: response.data.userInfo.bloodPressure,
+          frequencyOfPhysicalExercise:
+            response.data.userInfo.frequencyOfPhysicalExercise,
+          respiratoryHistory: response.data.userInfo.respiratoryHistory,
+          respiratoryHistoryInput:
+            response.data.userInfo.respiratoryHistoryInput,
+        };
+        ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
