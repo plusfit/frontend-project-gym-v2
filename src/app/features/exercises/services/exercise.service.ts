@@ -38,7 +38,7 @@ export class ExerciseService {
     return this.http.post<any>(`${environment.api}/exercises`, payload);
   }
   deleteExercise(id: string): Observable<any> {
-    return this.http.delete<any>(`${environment.api}/exercises/${id}`);
+    return this.http.delete<any>(`${environment.api}/routines/exercise/${id}`);
   }
   getExerciseById(id: string): Observable<any> {
     return this.http.get<any>(`${environment.api}/exercises/${id}`);
