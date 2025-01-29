@@ -29,6 +29,7 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
 import { Observable, Subject } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { EDays } from '@shared/enums/days-enum';
 
 @Component({
   selector: 'app-settings-form',
@@ -57,15 +58,7 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
   days = new FormControl('');
   hoursList: number[] = [];
 
-  daysList: string[] = [
-    'Lunes',
-    'Martes',
-    'Miercoles',
-    'Jueves',
-    'Viernes',
-    'Sabado',
-  ];
-
+  daysList = Object.values(EDays);
   constructor(
     private fb: FormBuilder,
     // private router: Router,

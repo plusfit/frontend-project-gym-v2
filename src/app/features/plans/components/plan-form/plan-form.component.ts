@@ -29,9 +29,10 @@ import { InputComponent } from '@shared/components/input/input.component';
 import { TitleComponent } from '@shared/components/title/title.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { Routine } from '@features/routines/interfaces/routine.interface';
-import { RoutineAutocompleteComponent } from '@features/plans/components/routine-autocomplete/routine-autocomplete.component';
 import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
+import { GetRoutinesByName } from '@features/routines/state/routine.actions';
+import { RoutineState } from '@features/routines/state/routine.state';
 
 @Component({
   selector: 'app-plan-form',
@@ -44,15 +45,15 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     InputComponent,
     TitleComponent,
     LoaderComponent,
-    RoutineAutocompleteComponent,
     MatSelectModule,
-    MatCheckboxModule,
+    AutocompleteComponent,
   ],
 })
 export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
   isEdit: InputSignal<boolean> = input<boolean>(false);
   id: InputSignal<string> = input<string>('');
   routines: InputSignal<Routine[]> = input<Routine[]>([]);
+  selector = RoutineState.routines;
   selectedRoutine: Routine | null = null;
   planForm!: FormGroup;
   plan: Plan | null = null;
@@ -98,6 +99,11 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
     private location: Location,
     private snackBarService: SnackBarService,
   ) {}
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
+  }
 
   ngOnInit(): void {
     this.loading$ = this.store.select((state) => state.plans.loading);
@@ -150,6 +156,14 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
     return this.planForm.get(controlName) as FormControl;
   }
 
+  action(searchTerm: string): GetRoutinesByName {
+    return new GetRoutinesByName({ page: 1 }, { name: searchTerm });
+  }
+
+  onRoutineSelected(routine: any): void {
+    this.selectedRoutine = routine;
+  }
+
   save(): void {
     if (this.planForm.invalid) {
       this.planForm.markAllAsTouched();
@@ -174,11 +188,6 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
 
   onSelectedRoutine(routine: Routine): void {
     this.selectedRoutine = routine;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy.next();
-    this.destroy.complete();
   }
 
   goBack() {

@@ -20,6 +20,7 @@ import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confir
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
+import { EDays } from '@shared/enums/days-enum';
 
 @Component({
   selector: 'app-calendar-schedule',
@@ -37,15 +38,9 @@ import { ScheduleFormComponent } from '../schedule-form/schedule-form.component'
 export class CalendarScheduleComponent implements AfterViewInit {
   @Input() schedule: any;
   currentDay: string;
-  days = [
-    'Domingo',
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-  ];
+
+  days = Object.values(EDays);
+
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
   });

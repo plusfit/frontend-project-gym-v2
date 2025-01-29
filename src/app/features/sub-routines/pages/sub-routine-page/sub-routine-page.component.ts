@@ -32,6 +32,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'name',
     'description',
+    'category',
     'createdAt',
     'updatedAt',
     'acciones',

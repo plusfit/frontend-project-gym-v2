@@ -10,9 +10,14 @@ export class TranslationPipe implements PipeTransform {
   constructor() {}
 
   transform(value: string): string {
+    if (value.includes('.')) {
+      value = value.split('.')[1];
+    }
     switch (value) {
       case 'name':
         return 'Nombre';
+      case 'address':
+        return 'Dirección';
       case 'lastName':
         return 'Apellido';
       case 'isActive':

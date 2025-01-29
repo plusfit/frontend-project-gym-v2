@@ -14,7 +14,9 @@ import {
   GetPlans,
   SetSelectedPlan,
   UpdateSelectedPlan,
-  UpdatePlan, GetClientsByPlanId,
+  UpdatePlan,
+  GetClientsByPlanId,
+  AssignPlanToUser,
 } from '@features/plans/state/plan.actions';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { PlansService } from '@features/plans/services/plan.service';
@@ -223,6 +225,23 @@ export class PlansState {
     return this.plansService.getClientsByPlanId(planId).pipe(
       tap((response: any) => {
         ctx.patchState({ loading: false, planClients: response.data });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(AssignPlanToUser, { cancelUncompleted: true })
+  assignPlanToUser(
+    ctx: StateContext<PlanStateModel>,
+    { planId, userId }: AssignPlanToUser,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+    return this.plansService.assignPlanToUser(planId, userId).pipe(
+      tap(() => {
+        ctx.patchState({ loading: false });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });

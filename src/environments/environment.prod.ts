@@ -6,4 +6,6 @@ export const environment = {
   exerciseTableLimitOptions: [8, 5],
   routineTableLimit: 8,
   routineTableLimitOptions: [8, 5],
+  clientsTableLimit: 8,
+  clientsTableLimitOptions: [8, 5],
 };

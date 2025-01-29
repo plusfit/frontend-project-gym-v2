@@ -1,4 +1,3 @@
-import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import {
   FiltersRoutine,
   PageRoutine,
