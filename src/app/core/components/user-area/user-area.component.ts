@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Logout } from '@features/auth/state/auth.actions';
-import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Actions, Store } from '@ngxs/store';
+import { Subject } from 'rxjs';
 
 /**
  * A component that displays the user area and allows the user to log out.
