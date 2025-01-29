@@ -61,8 +61,8 @@
         </div>
 
         <div class="w-full">
-          <app-routine-autocomplete [control]="defaultRoutineControl" (routineSelected)="onSelectedRoutine($event)">
-          </app-routine-autocomplete>
+          <app-autocomplete [control]="defaultRoutineControl" [selector]="selector" [action]="action" placeholder="Buscar Rutina" propertyToDisplay="name" (itemSelected)="onSelectedRoutine($event)">
+          </app-autocomplete>
         </div>
       </form>
 

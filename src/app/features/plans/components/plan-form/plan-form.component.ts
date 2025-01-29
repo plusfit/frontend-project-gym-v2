@@ -30,9 +30,10 @@ import { TitleComponent } from '@shared/components/title/title.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { Routine } from '@features/routines/interfaces/routine.interface';
 import { MatSelectModule } from '@angular/material/select';
-import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
 import { GetRoutinesByName } from '@features/routines/state/routine.actions';
 import { RoutineState } from '@features/routines/state/routine.state';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { AutocompleteComponent } from '@shared/components/autocomplete/autocomplete.component';
 
 @Component({
   selector: 'app-plan-form',
@@ -47,6 +48,7 @@ import { RoutineState } from '@features/routines/state/routine.state';
     LoaderComponent,
     MatSelectModule,
     AutocompleteComponent,
+    MatCheckbox,
   ],
 })
 export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -159,11 +161,6 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
   action(searchTerm: string): GetRoutinesByName {
     return new GetRoutinesByName({ page: 1 }, { name: searchTerm });
   }
-
-  onRoutineSelected(routine: any): void {
-    this.selectedRoutine = routine;
-  }
-
   save(): void {
     if (this.planForm.invalid) {
       this.planForm.markAllAsTouched();
