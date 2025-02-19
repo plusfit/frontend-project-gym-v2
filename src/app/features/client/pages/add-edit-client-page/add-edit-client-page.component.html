@@ -1,3 +1,16 @@
-<div>
-  <app-client-form [isEdit]="isEdit" [id]="id"></app-client-form>
-</div>
+<mat-tab-group mat-align-tabs="center">
+  <mat-tab label="Informacion Cliente"
+    ><div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
+      <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
+        >{{ title }} 📝</span
+      >
+      <app-client-form [isEdit]="isEdit" [id]="id"></app-client-form></div
+  ></mat-tab>
+  <mat-tab label="Rutina Cliente">
+    <div class="p-6 w-3/4 mx-auto flex flex-col space-y-6">
+      @if ((plan$ | async)?.defaultRoutine) {
+        <app-routine-form [isEdit]="isEdit"></app-routine-form>
+      }
+    </div>
+  </mat-tab>
+</mat-tab-group>

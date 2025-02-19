@@ -138,8 +138,6 @@ export class ScheduleState {
         //   return dayA - dayB;
         // });
 
-        console.log(sortSchedule);
-
         ctx.patchState({ schedule: sortSchedule, loading: false });
       }),
     );

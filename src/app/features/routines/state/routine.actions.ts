@@ -36,6 +36,7 @@ export class UpdateRoutine {
   constructor(
     public readonly id: string,
     public readonly payload: RoutinePayload,
+    public readonly idClient?: string,
   ) {}
 }
 export class UpdateSubRoutines {
@@ -45,4 +46,8 @@ export class UpdateSubRoutines {
 export class SetSelectedRoutine {
   static readonly type = '[Routine] SetSelectedRoutine';
   constructor(public readonly routine: Routine) {}
+}
+
+export class ClearSubRoutines {
+  static readonly type = '[Routine] ClearSubRoutines';
 }

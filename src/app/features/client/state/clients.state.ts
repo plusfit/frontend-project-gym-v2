@@ -3,7 +3,17 @@ import { Injectable } from '@angular/core';
 import { FirebaseRegisterResponse } from '@features/auth/interfaces/auth';
 import { AuthService } from '@features/auth/services/auth.service';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { catchError, exhaustMap, Observable, tap, throwError } from 'rxjs';
+import {
+  catchError,
+  exhaustMap,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import {
   Client,
   ClientApiResponse,
@@ -15,16 +25,23 @@ import {
   DeleteClient,
   GetClientById,
   GetClients,
+  PlanClient,
   RegisterClient,
+  RoutineClient,
   UpdateClient,
 } from './clients.actions';
 import { ClientsStateModel } from './clients.model';
+import { RoutineService } from '@features/routines/services/routine.service';
+import { ExerciseService } from '@features/exercises/services/exercise.service';
+import { PlansService } from '@features/plans/services/plan.service';
 
 @State<ClientsStateModel>({
   name: 'clients',
   defaults: {
     clients: [],
     selectedClient: undefined,
+    selectedClientRoutine: undefined,
+    selectedClientPlan: undefined,
     registerClient: null || undefined,
     total: 0,
     loading: false,
@@ -58,9 +75,27 @@ export class ClientsState {
     return state.registerClient ?? {};
   }
 
+  @Selector()
+  static getSelectedRoutine(state: ClientsStateModel) {
+    return state.selectedClientRoutine ?? {};
+  }
+
+  @Selector()
+  static getSelectedClient(state: ClientsStateModel) {
+    return state.selectedClient ?? {};
+  }
+
+  @Selector()
+  static getSelectedClientPlan(state: ClientsStateModel) {
+    return state.selectedClientPlan ?? {};
+  }
+
   constructor(
     private clientService: ClientService,
     private authService: AuthService,
+    private routineService: RoutineService,
+    private exerciseService: ExerciseService,
+    private planService: PlansService,
   ) {}
 
   @Action(GetClients, { cancelUncompleted: true })
@@ -69,15 +104,28 @@ export class ClientsState {
     action: GetClients,
   ): Observable<ClientApiResponse> {
     ctx.patchState({ loading: true, error: null });
-    const { page, pageSize, searchQ } = action.payload;
+    const { page, pageSize, searchQ, withoutPlan } = action.payload;
 
     let getClientsObservable: Observable<ClientApiResponse[]>;
-    if (searchQ === null || searchQ === undefined) {
+    if (!withoutPlan && (searchQ === null || searchQ === undefined)) {
       getClientsObservable = this.clientService.getClientsByName(
         page,
         pageSize,
         '',
         '',
+        'User',
+        '',
+        false,
+      );
+    } else if (withoutPlan) {
+      getClientsObservable = this.clientService.getClientsByName(
+        page,
+        pageSize,
+        searchQ,
+        searchQ,
+        'User',
+        searchQ,
+        true,
       );
     } else {
       getClientsObservable = this.clientService.getClientsByName(
@@ -85,6 +133,9 @@ export class ClientsState {
         pageSize,
         searchQ,
         searchQ,
+        'User',
+        searchQ,
+        false,
       );
     }
 
@@ -127,6 +178,9 @@ export class ClientsState {
           phone: response.data.userInfo.phone,
           address: response.data.userInfo.address,
           dateBirthday: response.data.userInfo.dateBirthday,
+          surgicalHistory: response.data.userInfo.surgicalHistory,
+          historyofPathologicalLesions:
+            response.data.userInfo.historyofPathologicalLesions,
           medicalSociety: response.data.userInfo.medicalSociety,
           sex: response.data.userInfo.sex,
           cardiacHistory: response.data.userInfo.cardiacHistory,
@@ -137,6 +191,9 @@ export class ClientsState {
           respiratoryHistory: response.data.userInfo.respiratoryHistory,
           respiratoryHistoryInput:
             response.data.userInfo.respiratoryHistoryInput,
+          CI: response.data.userInfo.CI,
+          planId: response.data.planId,
+          routineId: response.data.routineId,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),
@@ -204,6 +261,8 @@ export class ClientsState {
             response.data.frequencyOfPhysicalExercise,
           respiratoryHistory: response.data.respiratoryHistory,
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
+          CI: response.data.CI,
+          planId: response.data.planId,
         };
         ctx.patchState({
           clients: [...clients, mappedClient],
@@ -242,6 +301,8 @@ export class ClientsState {
             response.data.frequencyOfPhysicalExercise,
           respiratoryHistory: response.data.respiratoryHistory,
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
+          CI: response.data.CI,
+          planId: response.data.planId,
         };
         const updatedClients = clients.map((client) =>
           client._id === payload._id ? mappedClient : client,
@@ -273,5 +334,88 @@ export class ClientsState {
         return throwError(error);
       }),
     );
+  }
+
+  @Action(RoutineClient, { cancelUncompleted: true })
+  routineClient(ctx: StateContext<ClientsStateModel>): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+    const state = ctx.getState();
+    const routineId = state.selectedClient?.routineId;
+
+    if (routineId) {
+      return this.routineService.getRoutineById(routineId).pipe(
+        switchMap((response: any) => {
+          const subroutines = response.data.subRoutines;
+
+          if (!subroutines || subroutines.length === 0) {
+            return of(response); // Si no hay subrutinas, devolvemos la respuesta tal cual.
+          }
+
+          // Creamos un array de observables para obtener los ejercicios
+          const subroutineRequests = subroutines.map((subroutine: any) => {
+            return forkJoin(
+              subroutine.exercises.map((exerciseId: string) =>
+                this.exerciseService
+                  .getExerciseById(exerciseId)
+                  .pipe(map((exercise) => exercise.data)),
+              ),
+            ).pipe(
+              map((exercises) => ({
+                ...subroutine,
+                exercises, // Ahora exercises es un array con la información de cada ejercicio
+              })),
+            );
+          });
+
+          return forkJoin(subroutineRequests).pipe(
+            map((updatedSubroutines) => ({
+              ...response,
+              data: {
+                ...response.data,
+                subRoutines: updatedSubroutines, // Actualizamos con la información completa
+              },
+            })),
+          );
+        }),
+        tap((updatedResponse) => {
+          ctx.patchState({
+            selectedClientRoutine: updatedResponse.data,
+            loading: false,
+          });
+        }),
+        catchError((error) => {
+          console.error('Error obteniendo la rutina:', error);
+          ctx.patchState({ error, loading: false });
+          return throwError(() => error);
+        }),
+      );
+    }
+
+    return of(null); // Retornar un observable vacío si no hay `routineId`
+  }
+
+  @Action(PlanClient, { cancelUncompleted: true })
+  planClient(ctx: StateContext<ClientsStateModel>): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+    const state = ctx.getState();
+    const planId = state.selectedClient?.planId;
+
+    if (planId) {
+      return this.planService.getPlan(planId).pipe(
+        tap((response: any) => {
+          ctx.patchState({
+            selectedClientPlan: response.data,
+            loading: false,
+          });
+        }),
+        catchError((error) => {
+          console.error('Error obteniendo el plan:', error);
+          ctx.patchState({ error, loading: false });
+          return throwError(() => error);
+        }),
+      );
+    }
+
+    return of(null); // Retornar un observable vacío si no hay `planId`
   }
 }

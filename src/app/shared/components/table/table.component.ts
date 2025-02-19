@@ -45,8 +45,10 @@ export class TableComponent implements OnInit {
   @Output() readonly selectionChange = new EventEmitter<any[]>();
   @Output() readonly edit = new EventEmitter<any>();
   @Output() readonly delete = new EventEmitter<any>();
+  @Output() readonly seeDetail = new EventEmitter<any>();
 
   @Input() showDelete = true;
+  @Input() showSeeDetail = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -100,6 +102,13 @@ export class TableComponent implements OnInit {
     return tableColums;
   }
 
+  /**
+   * Emit identifier to seeDetail seats of an organization
+   * @param id Organization identifier
+   */
+  emitSeeDetail(id: string): void {
+    this.seeDetail.emit(id);
+  }
   /**
    * Emit identifier to edit seats of an organization
    * @param id Organization identifier
@@ -156,7 +165,9 @@ export class TableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selection = [...this.selected];
+    this.selected
+      ? (this.selection = [...this.selected])
+      : (this.selection = []);
   }
 
   getColorBadge(category: string): EColorBadge {

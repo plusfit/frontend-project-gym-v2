@@ -12,6 +12,8 @@ export class Client {
   frequencyOfPhysicalExercise!: string;
   respiratoryHistory!: string;
   respiratoryHistoryInput!: string;
+  CI!: number;
+  planId!: string;
 }
 
 export interface ClientInfo {
@@ -56,10 +58,3 @@ export class RegisterClient {
   identifier!: string;
   role!: string;
 }
-
-// interface ClientData {
-//   data: Client[];
-//   total: number;
-//   page: number;
-//   limit: number;
-// }

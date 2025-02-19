@@ -1,0 +1,105 @@
+@if (clientRoutine$ | async) {
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+      Rutina del Cliente
+    </h2>
+
+    <div class="mb-4 p-4 bg-gray-100 rounded-lg">
+      <p class="text-lg font-semibold text-gray-700">
+        Nombre:
+        <span class="font-normal">{{ (clientRoutine$ | async).name }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Descripción:
+        <span class="font-normal">{{
+          (clientRoutine$ | async).description
+        }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Es Personalizada:
+        <span class="font-normal">{{
+          (clientRoutine$ | async).isCustom ? "Sí" : "No"
+        }}</span>
+      </p>
+    </div>
+
+    <h3 class="text-xl font-semibold mt-6 mb-4 text-gray-800">Subrutinas</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (subRoutine of (clientRoutine$ | async).subRoutines; track $index) {
+        <div
+          class="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col"
+        >
+          <!-- Sección superior (flex-1 para empujar hacia abajo la sección de ejercicios) -->
+          <div class="flex-1">
+            <h4 class="text-lg font-semibold text-gray-800">
+              Subrutina {{ $index + 1 }}
+            </h4>
+            <p class="text-sm text-gray-600">
+              Nombre: <span class="font-medium">{{ subRoutine.name }}</span>
+            </p>
+            <p class="text-sm text-gray-600">
+              Descripción:
+              <span class="font-medium">{{ subRoutine.description }}</span>
+            </p>
+            <p class="text-sm text-gray-600">
+              Es Personalizada:
+              <span class="font-medium">{{
+                subRoutine.isCustom ? "Sí" : "No"
+              }}</span>
+            </p>
+            <p class="text-sm text-gray-600">
+              Categoría:
+              <span class="font-medium">{{ subRoutine.category }}</span>
+            </p>
+          </div>
+
+          <!-- Sección de ejercicios con altura máxima controlada -->
+          <div class="mt-4">
+            <h5 class="text-md font-semibold text-gray-700">Ejercicios</h5>
+            <div
+              class="max-h-96 overflow-y-auto bg-gray-50 p-2 rounded-lg space-y-2"
+            >
+              @for (exercise of subRoutine.exercises; track $index) {
+                <p class="text-sm text-gray-800 font-semibold">
+                  Ejercicio {{ $index + 1 }}
+                </p>
+                <div class="bg-gray-100 p-3 rounded-lg shadow-sm flex">
+                  <div class="flex flex-col justify-between w-1/2">
+                    <p class="text-xs text-gray-600">
+                      Nombre:
+                      <span class="font-medium">{{ exercise.name }}</span>
+                    </p>
+                    <p class="text-xs text-gray-600">
+                      Descripción:
+                      <span class="font-medium">{{
+                        exercise.description
+                      }}</span>
+                    </p>
+                  </div>
+                  <div class="flex flex-col justify-between w-1/2">
+                    <p class="text-xs text-gray-600">
+                      Repeticiones:
+                      <span class="font-medium">{{
+                        exercise.repetitions
+                      }}</span>
+                    </p>
+                    <p class="text-xs text-gray-600">
+                      Descanso:
+                      <span class="font-medium">{{ exercise.rest }}</span>
+                    </p>
+                    <p class="text-xs text-gray-600">
+                      Tipo: <span class="font-medium">{{ exercise.type }}</span>
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <app-loader></app-loader>
+}

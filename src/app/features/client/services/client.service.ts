@@ -24,10 +24,25 @@ export class ClientService {
     limit: number,
     name?: string,
     email?: string,
+    role?: string,
+    CI?: string,
+    withoutPlan?: boolean,
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
+
+    if (withoutPlan) {
+      params = params.set('withoutPlan', withoutPlan);
+    }
+
+    if (CI) {
+      params = params.set('CI', CI);
+    }
+
+    if (role) {
+      params = params.set('role', role);
+    }
 
     if (name) {
       params = params.set('name', name);

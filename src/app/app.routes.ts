@@ -20,6 +20,7 @@ import { ForgotPasswordPageComponent } from '@features/auth/pages/forgot-passwor
 import { ClientPageComponent } from '@features/client/pages/client-page/client-page.component';
 import { AddClientPageComponent } from '@features/client/pages/add-client-page/add-client-page.component';
 import { AddEditClientPageComponent } from '@features/client/pages/add-edit-client-page/add-edit-client-page.component';
+import { DetailClientComponent } from '@features/client/pages/detail-client/detail-client.component';
 
 export const routes: Routes = [
   {
@@ -78,6 +79,10 @@ export const routes: Routes = [
       {
         path: 'clientes/:id',
         component: AddEditClientPageComponent,
+      },
+      {
+        path: 'clientes/detalle/:id',
+        component: DetailClientComponent,
       },
       {
         path: 'planes',

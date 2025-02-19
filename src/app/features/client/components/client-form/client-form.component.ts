@@ -28,10 +28,14 @@ import {
   UpdateClient,
 } from '@features/client/state/clients.actions';
 import { ClientsState } from '@features/client/state/clients.state';
-import { AssignPlanToUser, GetPlans } from '@features/plans/state/plan.actions';
+import {
+  AssignPlanToUser,
+  GetPlan,
+  GetPlans,
+} from '@features/plans/state/plan.actions';
 import { PlansState } from '@features/plans/state/plan.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
@@ -64,6 +68,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   selectedPlanId: string | null = null;
   dataClient: InputSignal<any> = input<any>({});
   clientData: Client | null = null;
+  initialPlan: any = null;
 
   loading$ = this.store.select(PlansState.isLoading);
   loadingClient$ = this.store.select(ClientsState.isLoading);
@@ -112,6 +117,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
       frequencyOfPhysicalExercise: ['', [Validators.required]],
       respiratoryHistory: ['', [Validators.required]],
       plan: ['', [Validators.required]],
+      CI: ['', [Validators.required]],
     });
   }
 
@@ -125,18 +131,24 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
           ...this.clientData,
         });
       }
+
+      this.store.dispatch(new GetPlan(this.clientData?.planId ?? ''));
+      this.actions
+        .pipe(
+          ofActionSuccessful(GetPlan), // Detecta cuando GetPlan se ejecuta correctamente
+          takeUntil(this._destroyed), // Asegura la limpieza cuando el componente se destruya
+          switchMap(
+            () => this.store.selectOnce(PlansState.getSelectedPlan), // Obtiene el estado actualizado una vez
+          ),
+        )
+        .subscribe((plan) => {
+          this.initialPlan = plan; // Verifica que tengas los datos correctos
+        });
     }
   }
 
   registerClient() {
     if (this.clientForm.valid) {
-      console.log('clientForm', this.clientForm.value);
-
-      const dataRegister = {
-        identifier: this.clientForm.get('identifier')?.value,
-        password: this.clientForm.get('password')?.value,
-      };
-      this.store.dispatch(new RegisterClient(dataRegister));
       const userInfo = {
         name: this.clientForm.get('name')?.value,
         password: this.clientForm.get('password')?.value,
@@ -155,37 +167,77 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
         frequencyOfPhysicalExercise: this.clientForm.get(
           'frequencyOfPhysicalExercise',
         )?.value,
+        CI: this.clientForm.get('CI')?.value,
         respiratoryHistory: this.clientForm.get('respiratoryHistory')?.value,
       };
-      this.actions
-        .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
-        .subscribe(() => {
-          const registerClient = this.store.selectSnapshot(
-            ClientsState.getRegisterClient,
-          );
-          this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
-          this.actions
-            .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
-            .subscribe(() => {
-              if (this.selectedPlanId) {
-                this.store.dispatch(
-                  new AssignPlanToUser(this.selectedPlanId, registerClient._id),
-                );
-                this.actions
-                  .pipe(
-                    ofActionSuccessful(AssignPlanToUser),
-                    takeUntil(this._destroyed),
-                  )
-                  .subscribe(() => {
-                    this.snackbar.showSuccess(
-                      'Exito',
-                      'Cliente registrado con correctamente',
-                    );
-                    this.clientForm.reset();
-                  });
-              }
-            });
-        });
+      if (this.isEdit()) {
+        this.store.dispatch(new UpdateClient(this.id(), userInfo));
+        this.actions
+          .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
+          .subscribe(() => {
+            if (this.initialPlan || this.selectedPlanId) {
+              this.store.dispatch(
+                new AssignPlanToUser(
+                  this.selectedPlanId ?? this.initialPlan._id,
+                  this.id(),
+                ),
+              );
+              this.actions
+                .pipe(
+                  ofActionSuccessful(AssignPlanToUser),
+                  takeUntil(this._destroyed),
+                )
+                .subscribe(() => {
+                  this.snackbar.showSuccess(
+                    'Exito',
+                    'Cliente actualizado con correctamente',
+                  );
+                  this.clientForm.reset();
+                });
+            }
+          });
+      } else {
+        const dataRegister = {
+          identifier: this.clientForm.get('identifier')?.value,
+          password: this.clientForm.get('password')?.value,
+        };
+        this.store.dispatch(new RegisterClient(dataRegister));
+        this.actions
+          .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
+          .subscribe(() => {
+            const registerClient = this.store.selectSnapshot(
+              ClientsState.getRegisterClient,
+            );
+            this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
+            this.actions
+              .pipe(
+                ofActionSuccessful(UpdateClient),
+                takeUntil(this._destroyed),
+              )
+              .subscribe(() => {
+                if (this.selectedPlanId) {
+                  this.store.dispatch(
+                    new AssignPlanToUser(
+                      this.selectedPlanId,
+                      registerClient._id,
+                    ),
+                  );
+                  this.actions
+                    .pipe(
+                      ofActionSuccessful(AssignPlanToUser),
+                      takeUntil(this._destroyed),
+                    )
+                    .subscribe(() => {
+                      this.snackbar.showSuccess(
+                        'Exito',
+                        'Cliente registrado con correctamente',
+                      );
+                      this.clientForm.reset();
+                    });
+                }
+              });
+          });
+      }
     }
   }
 
@@ -206,6 +258,10 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   }
   get identifierControl(): FormControl {
     return this.clientForm.get('identifier') as FormControl;
+  }
+
+  get CIControl(): FormControl {
+    return this.clientForm.get('CI') as FormControl;
   }
 
   get passwordControl(): FormControl {

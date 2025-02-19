@@ -16,11 +16,19 @@ import { ClientsState } from '@features/client/state/clients.state';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackBarService } from '@core/services/snackbar.service';
+import { FilterSelectComponent } from '../../../../shared/components/filter-select/filter-select.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-client-page',
   standalone: true,
-  imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe],
+  imports: [
+    FiltersBarComponent,
+    TableComponent,
+    MatPaginator,
+    AsyncPipe,
+    FilterSelectComponent,
+  ],
   templateUrl: './client-page.component.html',
   styleUrl: './client-page.component.css',
 })
@@ -28,12 +36,13 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   clients!: Observable<Client[] | null>;
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
+  filterControl = new FormControl('all');
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
   displayedColumns: string[] = [
     'userInfo.name',
-    'userInfo.address',
+    'userInfo.CI',
     'email',
     'acciones',
   ];
@@ -81,6 +90,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   editClient(id: string): void {
     this.router.navigate([`/clientes/${id}`]);
+  }
+
+  seeDetailClient(id: string): void {
+    this.router.navigate([`/clientes/detalle/${id}`]);
   }
 
   deleteClient(event: any): void {

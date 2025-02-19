@@ -141,6 +141,32 @@
     </div>
   </div>
 
+  <div class="flex gap-4">
+    <div class="mt-4 w-1/2">
+      <app-autocomplete
+        [control]="planControl"
+        placeholder="Buscar Plan"
+        [action]="action"
+        [selector]="selector"
+        propertyToDisplay="name"
+        (itemSelected)="onPlanSelected($event)"
+        [initialValue]="initialPlan"
+      ></app-autocomplete>
+    </div>
+
+    <div class="mt-4 w-1/2">
+      <app-input
+        [control]="CIControl"
+        label="Cedula de Identidad"
+        type="number"
+        errorKey="CI"
+        placeholder="Cedula de Identidad"
+        appearance="outline"
+        class="w-full"
+      ></app-input>
+    </div>
+  </div>
+
   <div class="flex gap-4 mb-6">
     <!-- Antecedentes Respiratorios -->
     <div class="mt-4">
@@ -204,15 +230,6 @@
     </div>
   </div>
 
-  <app-autocomplete
-    [control]="planControl"
-    placeholder="Buscar Plan"
-    [action]="action"
-    [selector]="selector"
-    propertyToDisplay="name"
-    (itemSelected)="onPlanSelected($event)"
-  ></app-autocomplete>
-
   <!-- Botón de envío -->
   <div class="flex justify-around mt-4">
     <button appBtn class="btn-secondary" (click)="cancel()">Cancelar</button>
@@ -220,7 +237,7 @@
       appBtn
       [disabled]="clientForm.invalid"
       [animate]="true"
-      [loader]="(loading$ || loadingClient$ | async)!"
+      [loader]="(loadingClient$ | async)!"
       type="submit"
       class="btn-primary"
     >

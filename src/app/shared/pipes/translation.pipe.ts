@@ -16,6 +16,8 @@ export class TranslationPipe implements PipeTransform {
     switch (value) {
       case 'name':
         return 'Nombre';
+      case 'CI':
+        return 'Cedula de Identidad';
       case 'address':
         return 'Dirección';
       case 'lastName':

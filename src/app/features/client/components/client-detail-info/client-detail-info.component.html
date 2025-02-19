@@ -1,0 +1,99 @@
+@if (clientInfo$ | async) {
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+      Información del Cliente
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Nombre</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).name
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Email</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).identifier
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Cédula de Identidad</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).CI
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Celular</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).phone
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Dirección</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).address
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Sexo</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).sex
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Día de Nacimiento</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).dateBirthday | date: "dd/MM/yyyy"
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm"
+          >Frecuencia de Ejercicio Físico</span
+        >
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).frequencyOfPhysicalExercise
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Sociedad Médica</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).medicalSociety ? "Sí" : "No"
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Presión Sanguínea</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).bloodPressure
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm"
+          >Antecedentes Lesiones Patológicas</span
+        >
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).historyofPathologicalLesions ? "Sí" : "No"
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Antecedentes Cardíacos</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).cardiacHistory ? "Sí" : "No"
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Antecedentes Quirúrgicos</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).surgicalHistory ? "Sí" : "No"
+        }}</span>
+      </div>
+      <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+        <span class="text-gray-500 text-sm">Antecedentes Respiratorios</span>
+        <span class="text-lg font-medium text-gray-800">{{
+          (clientInfo$ | async).respiratoryHistory ? "Sí" : "No"
+        }}</span>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-loader></app-loader>
+}

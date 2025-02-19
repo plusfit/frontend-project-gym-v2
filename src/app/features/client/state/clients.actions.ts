@@ -32,3 +32,11 @@ export class DeleteClient {
   static readonly type = '[Client] DeleteClient';
   constructor(public readonly id: string) {}
 }
+
+export class RoutineClient {
+  static readonly type = '[Client] RoutineClient';
+}
+
+export class PlanClient {
+  static readonly type = '[Client] PlanClient';
+}

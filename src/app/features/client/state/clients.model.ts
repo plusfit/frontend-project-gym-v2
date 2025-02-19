@@ -12,6 +12,8 @@ export class ClientsStateModel {
   filters?: FiltersClient | null;
   totalClients?: number;
   selectedClient?: any;
+  selectedClientRoutine?: any;
+  selectedClientPlan?: any;
   total?: number;
   error?: any;
   currentPage?: number;

@@ -1,0 +1,8 @@
+::ng-deep .mat-tab-label {
+    flex: 1 1 auto;
+    /* Hace que cada tab ocupe el mismo ancho */
+    text-align: center;
+    /* Centra el texto */
+    max-width: none;
+    /* Quita la restricción de ancho */
+}
