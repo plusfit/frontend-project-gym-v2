@@ -16,7 +16,8 @@ import { TableComponent } from '@shared/components/table/table.component';
 import { AsyncPipe } from '@angular/common';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FilterValues } from '@shared/interfaces/filters.interface';
 
 @Component({
   selector: 'app-plan-page',
@@ -36,8 +37,8 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     'updatedAt',
     'acciones',
   ];
-  pageSize = environment.config.pageSize;
-  filterValues: any | null = null;
+  pageSize: number = environment.config.pageSize;
+  filterValues: FilterValues | null = null;
 
   private destroy = new Subject<void>();
 
@@ -82,15 +83,15 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetPlans({ ...this.filterValues }));
   }
 
-  createPlan() {
+  createPlan(): void {
     this.router.navigate(['/planes/crear']);
   }
 
-  editPlan(id: any): void {
+  editPlan(id: string): void {
     this.router.navigate([`/planes/${id}`]);
   }
-  // TODO: Improve this, creating a new dialog component to show the clients list
-  deletePlan(event: any): void {
+
+  deletePlan(event: string): void {
     this.store.dispatch(new GetClientsByPlanId(event));
     this.actions
       .pipe(ofActionSuccessful(GetClientsByPlanId), take(1))
@@ -103,24 +104,27 @@ export class PlansPageComponent implements OnInit, OnDestroy {
             this.openDialog(event);
           }
         },
-        (error) => {
+        (error: any) => {
           this.snackbar.showError('Error', error.error.message);
         },
       );
   }
 
-  openDialog(id: any, clientsList?: any[]): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
-      data: {
-        title: 'Eliminar Plan',
-        contentMessage: clientsList
-          ? this.parseClientListToString(clientsList)
-          : '¿Estás seguro de que deseas eliminar el Plan?',
+  openDialog(id: string, clientsList?: { email: string }[]): void {
+    const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
+      ConfirmDialogComponent,
+      {
+        width: '500px',
+        data: {
+          title: 'Eliminar Plan',
+          contentMessage: clientsList
+            ? this.parseClientListToString(clientsList)
+            : '¿Estás seguro de que deseas eliminar el Plan?',
+        },
       },
-    });
+    );
 
-    dialogRef.componentInstance.confirm.subscribe((value) => {
+    dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
       this.store.dispatch(new DeletePlan(id));
       this.actions
@@ -131,10 +135,10 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  parseClientListToString(clientsList: any): string {
+  parseClientListToString(clientsList: { email: string }[]): string {
     return (
       'El plan tiene asignado los siguientes clientes: ' +
-      clientsList.map((client: any) => client.email).join(', ')
+      clientsList.map((client: { email: string }) => client.email).join(', ')
     );
   }
 

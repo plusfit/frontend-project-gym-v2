@@ -16,6 +16,7 @@ import { AsyncPipe } from '@angular/common';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import {FilterValues} from "@shared/interfaces/filters.interface";
 
 @Component({
   selector: 'app-sub-routine-page',
@@ -37,7 +38,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     'acciones',
   ];
   pageSize = environment.config.pageSize;
-  filterValues: any | null = null;
+  filterValues: FilterValues | null = null;
 
   private destroy = new Subject<void>();
 
@@ -86,10 +87,10 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/subrutinas/crear']);
   }
 
-  editSubRoutine(id: any): void {
+  editSubRoutine(id: string): void {
     this.router.navigate([`/subrutinas/${id}`]);
   }
-  deleteSubRoutine(event: any): void {
+  deleteSubRoutine(event: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {

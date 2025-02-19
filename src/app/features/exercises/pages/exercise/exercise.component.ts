@@ -6,13 +6,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import {
@@ -29,7 +23,7 @@ import {
   SetLimitPerPage,
 } from '@features/exercises/state/exercise.actions';
 import { CommonModule } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
 import { environment } from '../../../../../environments/environment';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
@@ -48,19 +42,15 @@ import { FiltersBarComponent } from '../../../../shared/components/filter-bar/fi
     FiltersBarComponent,
   ],
   templateUrl: './exercise.component.html',
-  styleUrl: './exercise.component.css',
+  styleUrls: ['./exercise.component.css'],
 })
 export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
-  constructor(
-    private store: Store,
-    private dialog: MatDialog,
-    private actions: Actions,
-    private snackbar: SnackBarService,
-  ) {}
-  private destroy = new Subject<void>();
-  limitPerPage = environment.config.pageSize ?? 8;
-  pageSize = environment.config.pageSize;
-  currentPage = 1;
+  private destroy: Subject<void> = new Subject<void>();
+
+  limitPerPage: number = environment.config.pageSize ?? 8;
+  pageSize: number = environment.config.pageSize ?? 8;
+  currentPage: number = 1;
+
   displayedColumns: string[] = [
     'name',
     'description',
@@ -69,30 +59,42 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     'updatedAt',
     'acciones',
   ];
-  dataSource = new MatTableDataSource<Exercise>();
+
+  dataSource: MatTableDataSource<Exercise> = new MatTableDataSource<Exercise>();
   totalExercises$: Observable<number> = this.store.select(
     ExerciseState.totalExercises,
   );
-  searchTerm$ = new Subject<string>();
   loading$: Observable<boolean> = this.store.select(
     ExerciseState.exerciseLoading,
   );
-  exercises$: Observable<any[]> = this.store.select(ExerciseState.exercises);
+  exercises$: Observable<Exercise[]> = this.store.select(
+    ExerciseState.exercises,
+  );
 
   searchValue: string = '';
   isSearching: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  ngOnInit() {
+  constructor(
+    private store: Store,
+    private dialog: MatDialog,
+    private actions: Actions,
+    private snackbar: SnackBarService,
+  ) {}
+
+  ngOnInit(): void {
     this.store.dispatch(
       new GetExercisesByPage({
         page: this.currentPage,
       }),
     );
+
     this.actions.pipe(ofActionSuccessful(GetExercisesByPage)).subscribe(() => {
       this.totalExercises$.subscribe((total) => {
-        this.paginator.length = total;
+        if (this.paginator) {
+          this.paginator.length = total;
+        }
       });
     });
   }
@@ -102,14 +104,17 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     this.destroy.complete();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   searchExercises(searchQuery: { searchQ: string }): void {
-    const searchValue = searchQuery.searchQ;
-
+    const searchValue: string = searchQuery.searchQ;
     this.isSearching = !!searchValue;
+    this.searchValue = searchValue;
+
     this.store.dispatch(
       new GetExercisesByName(
         {
@@ -122,26 +127,29 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     );
   }
 
-  editExercise(e: string) {
-    //TODO: Ver el error en consola al abrir el modal
+  editExercise(exerciseId: string): void {
     this.dialog.open(ExerciseFormComponent, {
       width: '800px',
-      data: { isEdit: true, exerciseId: e },
+      data: { isEdit: true, exerciseId },
     });
   }
 
-  deleteExercise(e: string) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
-      data: {
-        title: 'Eliminar ejercicio',
-        contentMessage: '¿Estás seguro de que deseas eliminar el ejercicio?',
+  deleteExercise(exerciseId: string): void {
+    const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
+      ConfirmDialogComponent,
+      {
+        width: '500px',
+        data: {
+          title: 'Eliminar ejercicio',
+          contentMessage: '¿Estás seguro de que deseas eliminar el ejercicio?',
+        },
       },
-    });
+    );
 
-    dialogRef.componentInstance.confirm.subscribe((value) => {
+    dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeleteExercise(e));
+      this.store.dispatch(new DeleteExercise(exerciseId));
+
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))
         .subscribe(() => {
@@ -151,24 +159,26 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
             .dispatch(new GetExercisesByPage({ page: this.currentPage }))
             .subscribe(() => {
               this.totalExercises$.subscribe((total) => {
-                this.paginator.length = total;
-                this.paginator.firstPage();
+                if (this.paginator) {
+                  this.paginator.length = total;
+                  this.paginator.firstPage();
+                }
               });
             });
         });
     });
   }
 
-  addExerciseModal() {
+  addExerciseModal(): void {
     this.dialog.open(ExerciseFormComponent, {
       width: '800px',
       data: { isEdit: false },
     });
   }
 
-  handlePageEvent(e: PageEvent) {
-    this.currentPage = e.pageIndex + 1;
-    this.limitPerPage = e.pageSize;
+  handlePageEvent(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.limitPerPage = event.pageSize;
 
     this.store.dispatch(new SetLimitPerPage(this.limitPerPage));
 
