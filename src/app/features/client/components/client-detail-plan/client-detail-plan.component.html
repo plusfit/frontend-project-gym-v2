@@ -1,1 +1,56 @@
-<p>client-detail-plan works!</p>
+@if (clientPlan$ | async) {
+  <div
+    class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 max-w-lg mx-auto"
+  >
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Plan del Cliente</h2>
+
+    <div class="space-y-3">
+      <p class="text-lg font-semibold text-gray-700">
+        Nombre:
+        <span class="font-normal">{{ (clientPlan$ | async).name }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Edad Mínima:
+        <span class="font-normal">{{ (clientPlan$ | async).minAge }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Edad Máxima:
+        <span class="font-normal">{{ (clientPlan$ | async).maxAge }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Días:
+        <span class="font-normal">{{ (clientPlan$ | async).days }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Tipo:
+        <span class="font-normal">{{ (clientPlan$ | async).type }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Categoría:
+        <span class="font-normal">{{
+          (clientPlan$ | async).category | translation
+        }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Objetivo:
+        <span class="font-normal">{{
+          (clientPlan$ | async).goal | translation
+        }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Nivel de Experiencia:
+        <span class="font-normal">{{
+          (clientPlan$ | async).experienceLevel | translation
+        }}</span>
+      </p>
+      <p class="text-lg font-semibold text-gray-700">
+        Incluye Entrenador:
+        <span class="font-normal">{{
+          (clientPlan$ | async).includesCoach ? "Sí" : "No"
+        }}</span>
+      </p>
+    </div>
+  </div>
+} @else {
+  <app-loader></app-loader>
+}

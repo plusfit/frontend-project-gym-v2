@@ -73,3 +73,8 @@ export class getMaxCount {
   static readonly type = '[Schedule] Get Max Count';
   constructor(public readonly _id: string) {}
 }
+
+export class SelectedClient {
+  static readonly type = '[Schedule] Selected Client';
+  constructor(public readonly client: any) {}
+}

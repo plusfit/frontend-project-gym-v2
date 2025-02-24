@@ -1,23 +1,22 @@
 import { Pipe, PipeTransform } from '@angular/core';
-//import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
   name: 'translation',
   standalone: true,
 })
 export class TranslationPipe implements PipeTransform {
-  //constructor(private translateService: TranslateService) {}
   constructor() {}
 
   transform(value: string): string {
     if (value.includes('.')) {
       value = value.split('.')[1];
     }
+
     switch (value) {
       case 'name':
         return 'Nombre';
       case 'CI':
-        return 'Cedula de Identidad';
+        return 'Cédula de Identidad';
       case 'address':
         return 'Dirección';
       case 'lastName':
@@ -35,7 +34,7 @@ export class TranslationPipe implements PipeTransform {
       case 'updatedAt':
         return 'Actualizado';
       case 'category':
-        return 'Categoria';
+        return 'Categoría';
       case 'isCustom':
         return 'Personalizada';
       case 'days':
@@ -44,6 +43,39 @@ export class TranslationPipe implements PipeTransform {
         return 'Día';
       case 'checkbox':
         return 'Seleccionar';
+
+      // Categorías del Plan
+      case 'weightLoss':
+        return 'Pérdida de peso';
+      case 'muscleGain':
+        return 'Ganar músculo';
+      case 'endurance':
+        return 'Resistencia';
+      case 'generalWellness':
+        return 'Bienestar general';
+      case 'flexibility':
+        return 'Flexibilidad';
+      case 'strengthTraining':
+        return 'Entrenamiento de fuerza';
+
+      // Objetivos del Plan
+      case 'loseWeight':
+        return 'Perder peso';
+      case 'buildMuscle':
+        return 'Ganar músculo';
+      case 'improveCardio':
+        return 'Mejorar cardio';
+      case 'increaseFlexibility':
+        return 'Aumentar flexibilidad';
+      case 'generalFitness':
+        return 'Estado físico general';
+      case 'beginner':
+        return 'Principiante';
+      case 'intermediate':
+        return 'Intermedio';
+      case 'advanced':
+        return 'Avanzado';
+
       default:
         return value;
     }

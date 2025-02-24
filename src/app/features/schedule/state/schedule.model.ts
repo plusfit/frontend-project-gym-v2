@@ -5,6 +5,7 @@ export class ScheduleStateModel {
   schedule?: any | null;
   clients?: any | null;
   clientsAssignable?: any | null;
+  selectedClient?: any | null;
   maxCount?: number;
   limit?: number;
   total?: number;
