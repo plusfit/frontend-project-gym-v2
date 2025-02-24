@@ -1,3 +1,4 @@
+import process from 'process';
 export const environment = {
   /**
    * A boolean indicating whether the application is in production mode or not.
@@ -15,7 +16,7 @@ export const environment = {
   /**
    * The URL of the API for the application.
    */
-  api: 'http://localhost:3000',
+  api: process?.env['NG_APP_API_URL'] || 'http://localhost:3000',
   /**
    * The configuration settings for the application.
    */
