@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   env: 'Production',
-  api: 'https://backend-project-gym-production.up.railway.app',
+  api: 'https://backend-project-gym-production-ce99.up.railway.app',
   exerciseTableLimit: 5,
   exerciseTableLimitOptions: [8, 5],
   routineTableLimit: 8,
