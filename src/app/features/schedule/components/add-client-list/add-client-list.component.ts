@@ -67,12 +67,14 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
   selectedClients: any[] = [];
   clients!: any[];
   title = '';
+  clientSelected: any[] = [];
+
   constructor(
     private store: Store,
     private actions: Actions,
     public dialogRef: MatDialogRef<AddClientListComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { id: any; title: string },
+    public data: { id: any; clients: any; title: string },
     private snackbar: SnackBarService,
     private cdr: ChangeDetectorRef,
   ) {
@@ -99,6 +101,14 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     this.store.dispatch(
       new getClientsAssignable({ page: 1, pageSize: this.pageSize }),
     );
+    const selectedClient = this.store.selectSnapshot(
+      ScheduleState.selectedClient,
+    );
+    const clients = this.store.selectSnapshot(ScheduleState.clients);
+    this.clientSelected = selectedClient
+      ? [...selectedClient, ...clients]
+      : [...clients];
+    console.log('this.clientSelected', this.clientSelected);
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
@@ -127,9 +137,11 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
   }
 
   addClient() {
-    const clientsSelected = this.selectedClients;
-    const idsClients = clientsSelected.map((c: any) => c._id);
     const clients = this.store.selectSnapshot(ScheduleState.clients);
+    const clientsSelected = this.selectedClients.filter(
+      (client) => !clients.some((cs: any) => cs._id === client._id),
+    );
+    const idsClients = clientsSelected.map((c: any) => c._id);
     const maxCount = this.store.selectSnapshot(ScheduleState.maxCount);
     let validClient = true;
     clients.forEach((c: any) => {
@@ -158,10 +170,10 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
         ScheduleState.clientsAssignable,
       );
 
-      const clientSelected = clientsAssignable.filter((c: any) =>
+      this.clientSelected = clientsAssignable.filter((c: any) =>
         idsClients.includes(c._id),
       );
-      this.dialogRef.close(clientSelected);
+      this.dialogRef.close(this.clientSelected);
     }
   }
 }

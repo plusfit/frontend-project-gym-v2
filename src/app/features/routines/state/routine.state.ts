@@ -2,12 +2,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Observable, catchError, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
-import { RoutineStateModel } from './routine.model';
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+import { environment } from '../../../../environments/environment.prod';
 import { Routine } from '../interfaces/routine.interface';
 import { RoutineService } from '../services/routine.service';
 import {
+  ClearSubRoutines,
   CreateRoutine,
   DeleteRoutine,
   GetRoutineById,
@@ -17,8 +19,7 @@ import {
   UpdateRoutine,
   UpdateSubRoutines,
 } from './routine.actions';
-import { environment } from '../../../../environments/environment.prod';
-import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+import { RoutineStateModel } from './routine.model';
 
 @State<RoutineStateModel>({
   name: 'routine',
@@ -176,15 +177,17 @@ export class RoutineState {
     action: UpdateRoutine,
   ): Observable<Routine> {
     ctx.patchState({ loading: true });
-    return this.routineService.updateRoutine(action.payload, action.id).pipe(
-      tap(() => {
-        ctx.patchState({ loading: false, selectedRoutine: null });
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ctx.patchState({ loading: false });
-        return throwError(error);
-      }),
-    );
+    return this.routineService
+      .updateRoutine(action.payload, action.id, action.idClient ?? '')
+      .pipe(
+        tap(() => {
+          ctx.patchState({ loading: false, selectedRoutine: null });
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ctx.patchState({ loading: false });
+          return throwError(error);
+        }),
+      );
   }
   @Action(SetLimitPerPage, { cancelUncompleted: true })
   setLimitPerPage(
@@ -201,5 +204,10 @@ export class RoutineState {
     ctx.patchState({
       selectedRoutine: action.newRoutine,
     });
+  }
+
+  @Action(ClearSubRoutines)
+  clearSubRoutines(ctx: StateContext<RoutineStateModel>) {
+    ctx.patchState({ selectedRoutine: null });
   }
 }

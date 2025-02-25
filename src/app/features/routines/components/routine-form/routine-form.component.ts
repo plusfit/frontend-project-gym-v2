@@ -25,6 +25,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import {
   Routine,
   RoutinePayload,
+  RoutineType,
 } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
 import { SnackBarService } from '@core/services/snackbar.service';
@@ -45,6 +46,10 @@ import { TextAreaComponent } from '@shared/components/text-area/text-area.compon
 import { MatDivider } from '@angular/material/divider';
 import { TitleComponent } from '@shared/components/title/title.component';
 import { EDays } from '@shared/enums/days-enum';
+import { ActivatedRoute } from '@angular/router';
+import { RoutineClient } from '@features/client/state/clients.actions';
+import { ClientsState } from '@features/client/state/clients.state';
+import { MatCheckbox } from '@angular/material/checkbox';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -66,6 +71,7 @@ import { EDays } from '@shared/enums/days-enum';
     TextAreaComponent,
     MatDivider,
     TitleComponent,
+    MatCheckbox,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -77,10 +83,19 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   title = 'Crear Rutina';
   btnTitle = 'Crear';
   displayedColumns: string[] = ['day', 'name', 'type', 'isCustom', 'acciones'];
+  idClient: string = '';
+  routine: Routine | null = null;
+  pathClient: boolean = false;
 
   days = Object.values(EDays);
 
   private destroy = new Subject<void>();
+
+  types = [
+    { value: RoutineType.MEN, label: 'Hombre' },
+    { value: RoutineType.WOMEN, label: 'Mujer' },
+    { value: RoutineType.CARDIO, label: 'Cardio' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -88,6 +103,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     private dialog: MatDialog,
     private snackBarService: SnackBarService,
     private location: Location,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnDestroy(): void {
@@ -96,10 +112,38 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
+    this.route.url.subscribe((urlSegments) => {
+      this.pathClient = urlSegments[0].path === 'clientes';
+    });
+    if (this.pathClient) {
+      this.idClient = this.route.snapshot.paramMap.get('id') ?? '';
+    }
+
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
+    if (!this.id.length && this.idClient) {
+      this.store.dispatch(new RoutineClient()).subscribe(
+        () => {
+          this.routine = this.store.selectSnapshot(
+            ClientsState.getSelectedRoutine,
+          );
+          if (this.routine) {
+            this.routineForm.patchValue(this.routine);
+            this.selectedSubroutines = this.routine?.subRoutines || [];
+          }
+        },
+        (error) => {
+          console.error('Error al crear rutina', error);
+        },
+      );
+    }
+    if (this.routineForm) {
+      return;
+    }
     this.routineForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
+      type: ['', Validators.required],
+      isGeneral: [false],
       isCustom: [{ value: false, disabled: true }],
     });
   }
@@ -113,6 +157,16 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         RoutineState.selectedRoutine,
       );
       this.selectedSubroutines = routine?.subRoutines || [];
+
+      if (!this.routineForm) {
+        this.routineForm = this.fb.group({
+          name: ['', Validators.required],
+          description: ['', Validators.required],
+          type: ['', Validators.required],
+          isGeneral: [false],
+          isCustom: [{ value: false, disabled: true }],
+        });
+      }
 
       if (routine) this.routineForm.patchValue(routine);
     }
@@ -159,6 +213,21 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       subRoutines: subRoutinesIds,
     };
     if (this.isEdit()) {
+      if (this.idClient && this.routine?._id) {
+        this.store
+          .dispatch(
+            new UpdateRoutine(
+              this.routine._id.toString(),
+              payload,
+              this.idClient,
+            ),
+          )
+          .subscribe(() => {
+            this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
+            this.location.back();
+          });
+        return;
+      }
       this.store
         .dispatch(new UpdateRoutine(this.id(), payload))
         .subscribe(() => {

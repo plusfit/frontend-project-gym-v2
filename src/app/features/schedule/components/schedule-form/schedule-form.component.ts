@@ -17,6 +17,7 @@ import {
   DeleteClient,
   EditHour,
   postClientsArray,
+  SelectedClient,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
@@ -89,12 +90,18 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   // Métodos para gestionar clientes
   addClient() {
     const clonedData = JSON.parse(JSON.stringify(this.data.day.hour._id));
-    this.dialog.open(AddClientListComponent, {
-      width: '500px',
+    const dialogRef = this.dialog.open(AddClientListComponent, {
+      width: '700px',
       data: {
         title: `Agregar cliente al horario ${this.data.day.hour.startTime} ${this.getAMorPM(this.data.day.hour.startTime)}`,
         id: clonedData,
+        clients: this.data.day.hour.clients,
       },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.store.dispatch(new SelectedClient(result));
+      }
     });
   }
 

@@ -6,11 +6,12 @@
   <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
   <app-table
     [data]="clientsAssignable$ | async"
-    [displayedColumns]="['_id', 'email']"
+    [displayedColumns]="['name', 'CI', 'email']"
     [isSelect]="true"
     [loading]="loadingAssignable$ | async"
     [total]="totalClients$ | async"
     (selectionChange)="toggleClient($event)"
+    [selected]="clientSelected"
   >
     <mat-paginator
       [length]="(totalClients$ | async) || 0"

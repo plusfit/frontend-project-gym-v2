@@ -4,11 +4,18 @@
   >
     Clientes 📝
   </span>
-  <app-filter-bar (formValues)="onSearch($event)">
+  <div class="flex justify-between items-center">
+    <div class="flex space-x-4 items-center">
+      <app-filter-bar (formValues)="onSearch($event)"> </app-filter-bar>
+      <app-filter-select
+        [placeholder]="'Selecciona un filtro'"
+        [control]="filterControl"
+      ></app-filter-select>
+    </div>
     <button class="btn-primary button-link" (click)="createClient()">
       <i class="ph-plus text-white text-lg"></i> <span>Crear Cliente</span>
     </button>
-  </app-filter-bar>
+  </div>
 
   <app-table
     [displayedColumns]="displayedColumns"
@@ -17,6 +24,8 @@
     [loading]="loading | async"
     (edit)="editClient($event)"
     (delete)="deleteClient($event)"
+    (seeDetail)="seeDetailClient($event)"
+    [showSeeDetail]="true"
   >
     <mat-paginator
       appJumpPages

@@ -1,0 +1,86 @@
+@if (clientPlan$ | async) {
+  <div
+    class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 max-w-xl mx-auto space-y-6"
+  >
+    <h2 class="text-2xl font-bold text-gray-800 text-center">
+      📋 Plan del Cliente
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          🏷️ Nombre:
+          <span class="font-normal">{{ (clientPlan$ | async).name }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          ⏳ Edad Mínima:
+          <span class="font-normal">{{ (clientPlan$ | async).minAge }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          🎯 Edad Máxima:
+          <span class="font-normal">{{ (clientPlan$ | async).maxAge }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          📅 Días:
+          <span class="font-normal">{{ (clientPlan$ | async).days }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          ⚡ Tipo:
+          <span class="font-normal">{{ (clientPlan$ | async).type }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          🏋️ Categoría:
+          <span class="font-normal">{{
+            (clientPlan$ | async).category | translation
+          }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          🎯 Objetivo:
+          <span class="font-normal">{{
+            (clientPlan$ | async).goal | translation
+          }}</span>
+        </p>
+      </div>
+
+      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+        <p class="text-lg font-semibold text-gray-700 flex items-center gap-2">
+          📈 Nivel de Experiencia:
+          <span class="font-normal">{{
+            (clientPlan$ | async).experienceLevel | translation
+          }}</span>
+        </p>
+      </div>
+
+      <div
+        class="col-span-1 md:col-span-2 bg-gray-200 p-4 rounded-lg shadow-sm text-center"
+      >
+        <p class="text-lg font-semibold text-gray-700 flex items-center justify-center gap-2">
+          🏋️‍♂️ Incluye Entrenador:
+          <span class="font-bold text-green-600" > {{
+          (clientPlan$ | async).includesCoach ? "✅ Sí" : "❌ No"
+        }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-loader></app-loader>
+}

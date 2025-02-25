@@ -1,18 +1,21 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
-import { Store } from '@ngxs/store';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
+import { ClientsState } from '@features/client/state/clients.state';
+import { RoutineState } from '@features/routines/state/routine.state';
+import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
+import { GetSubRoutines } from '@features/sub-routines/state/sub-routine.actions';
+import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
+import { Store } from '@ngxs/store';
 import { FiltersBarComponent } from '@shared/components/filter-bar/filter-bar.component';
 import { TableComponent } from '@shared/components/table/table.component';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
-import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
-import { RoutineState } from '@features/routines/state/routine.state';
-import { GetSubRoutines } from '@features/sub-routines/state/sub-routine.actions';
-import { AsyncPipe } from '@angular/common';
-import { environment } from '../../../../../environments/environment';
+import { TitleComponent } from '@shared/components/title/title.component';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import {TitleComponent} from "@shared/components/title/title.component";
+import { Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
+import { ClearSubRoutines } from '@features/routines/state/routine.actions';
 
 @Component({
   selector: 'app-add-subrutine-dialog',
@@ -35,10 +38,12 @@ export class AddSubroutineDialogComponent implements OnInit {
   selectedSubroutines: SubRoutine[] = [];
   subRoutines: SubRoutine[] = [];
   pageSize = environment.config.pageSize;
+  pathClient: boolean = false;
 
   constructor(
     private store: Store,
     private dialogRef: MatDialogRef<AddSubroutineDialogComponent>,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +51,13 @@ export class AddSubroutineDialogComponent implements OnInit {
     this.totalSubrutines$ = this.store.select(SubRoutinesState.getTotal);
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
     this.subRoutines = this.store.selectSnapshot(RoutineState.subRoutines);
+
+    if (this.subRoutines.length === 0) {
+      const routines = this.store.selectSnapshot(
+        ClientsState.getSelectedRoutine,
+      );
+      this.subRoutines = routines.subRoutines;
+    }
 
     this.loadSubrutines(1);
   }
@@ -80,6 +92,7 @@ export class AddSubroutineDialogComponent implements OnInit {
   }
 
   close(): void {
+    this.store.dispatch(new ClearSubRoutines());
     this.dialogRef.close(null);
   }
 }

@@ -77,6 +77,19 @@
             </button>
             <mat-menu #actionsMenu="matMenu" class="w-fit">
               <ng-template matMenuContent>
+                @if(showSeeDetail){
+                <button
+                  (click)="emitSeeDetail(element._id)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i class="ph-eye text-button-lg"></i>
+                    <span>Ver Detalle</span>
+                  </div>
+                </button>
+                }
                 <button
                   (click)="emitEdit(element._id)"
                   type="button"
@@ -88,7 +101,6 @@
                     <span class="group-hover:text-ms-gray-900">Editar</span>
                   </div>
                 </button>
-
                 @if(showDelete){
                 <button
                   (click)="emitDelete(element._id)"

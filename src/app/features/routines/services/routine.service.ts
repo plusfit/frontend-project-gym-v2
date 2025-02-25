@@ -43,7 +43,14 @@ export class RoutineService {
   getRoutineById(id: string): Observable<any> {
     return this.http.get<any>(`${environment.api}/routines/${id}`);
   }
-  updateRoutine(payload: RoutinePayload, id: string): Observable<any> {
-    return this.http.put<any>(`${environment.api}/routines/${id}`, payload);
+  updateRoutine(
+    payload: RoutinePayload,
+    id: string,
+    idClient: string,
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${environment.api}/routines/${id}?idClient=${idClient}`,
+      payload,
+    );
   }
 }

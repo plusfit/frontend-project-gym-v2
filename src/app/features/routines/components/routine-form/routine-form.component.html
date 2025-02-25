@@ -33,15 +33,30 @@
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="w-full md:w-1/2 flex items-cente">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Es Personalizada ? </mat-label>
-                <mat-select formControlName="isCustom">
-                  <mat-option [value]="true"> Si </mat-option>
-                  <mat-option [value]="false"> No </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
+              <div class="w-full md:w-1/2 flex items-cente">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Es Personalizada ? </mat-label>
+                  <mat-select formControlName="isCustom">
+                    <mat-option [value]="true"> Si </mat-option>
+                    <mat-option [value]="false"> No </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="w-full md:w-1/2 flex items-center">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Tipo de rutina</mat-label>
+                  <mat-select formControlName="type">
+                   <mat-option *ngFor="let type of types" [value]="type.value">
+                {{ type.label }}
+              </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+          </div>
+            <div class="flex flex-col gap-4 text-xl">
+            <mat-checkbox formControlName="isGeneral">Es general?</mat-checkbox>
           </div>
         </div>
         <div class="flex flex-col gap-4 mt-4">

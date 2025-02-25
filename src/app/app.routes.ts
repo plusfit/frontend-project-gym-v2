@@ -20,6 +20,8 @@ import { ForgotPasswordPageComponent } from '@features/auth/pages/forgot-passwor
 import { ClientPageComponent } from '@features/client/pages/client-page/client-page.component';
 import { AddClientPageComponent } from '@features/client/pages/add-client-page/add-client-page.component';
 import { AddEditClientPageComponent } from '@features/client/pages/add-edit-client-page/add-edit-client-page.component';
+import { DetailClientComponent } from '@features/client/pages/detail-client/detail-client.component';
+import { ScreenPagesComponent } from '@features/screenRoutine/pages/screen-pages/screen-pages.component';
 
 export const routes: Routes = [
   {
@@ -80,6 +82,10 @@ export const routes: Routes = [
         component: AddEditClientPageComponent,
       },
       {
+        path: 'clientes/detalle/:id',
+        component: DetailClientComponent,
+      },
+      {
         path: 'planes',
         component: PlansPageComponent,
       },
@@ -92,6 +98,11 @@ export const routes: Routes = [
         component: AddEditPlanComponent,
       },
     ],
+  },
+  {
+    path: 'pantalla',
+    component: ScreenPagesComponent,
+    canActivate: [signInGuard], // 🔐 Protege la ruta con el guard
   },
   {
     path: 'auth',

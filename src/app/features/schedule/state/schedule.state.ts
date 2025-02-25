@@ -14,6 +14,7 @@ import {
   GetClientsById,
   getMaxCount,
   GetSchedule,
+  SelectedClient,
 } from './schedule.actions';
 
 @State<ScheduleStateModel>({
@@ -23,6 +24,7 @@ import {
     clients: [],
     maxCount: 0,
     clientsAssignable: [],
+    selectedClient: null,
     loadingAssignable: false,
     loadingHour: false,
     loading: false,
@@ -75,6 +77,11 @@ export class ScheduleState {
   @Selector()
   static maxCount(state: ScheduleStateModel): number | undefined {
     return state?.maxCount;
+  }
+
+  @Selector()
+  static selectedClient(state: ScheduleStateModel): any {
+    return state?.selectedClient;
   }
 
   obtenerElementosRepetidos(array: string[]): string[] {
@@ -137,8 +144,6 @@ export class ScheduleState {
         //   const dayB = daysOrder.indexOf(b.day);
         //   return dayA - dayB;
         // });
-
-        console.log(sortSchedule);
 
         ctx.patchState({ schedule: sortSchedule, loading: false });
       }),
@@ -392,5 +397,13 @@ export class ScheduleState {
     // Actualizar el maxCount en el estado
     const maxCount = hourToEdit.maxCount;
     ctx.patchState({ maxCount });
+  }
+
+  @Action(SelectedClient, { cancelUncompleted: true })
+  selectedClient(
+    ctx: StateContext<ScheduleStateModel>,
+    action: SelectedClient,
+  ) {
+    ctx.patchState({ selectedClient: action.client });
   }
 }
