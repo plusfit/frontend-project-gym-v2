@@ -25,6 +25,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import {
   Routine,
   RoutinePayload,
+  RoutineType,
 } from '@features/routines/interfaces/routine.interface';
 import { RoutineState } from '@features/routines/state/routine.state';
 import { SnackBarService } from '@core/services/snackbar.service';
@@ -48,6 +49,7 @@ import { EDays } from '@shared/enums/days-enum';
 import { ActivatedRoute } from '@angular/router';
 import { RoutineClient } from '@features/client/state/clients.actions';
 import { ClientsState } from '@features/client/state/clients.state';
+import { MatCheckbox } from '@angular/material/checkbox';
 @Component({
   selector: 'app-routine-form',
   templateUrl: './routine-form.component.html',
@@ -69,6 +71,7 @@ import { ClientsState } from '@features/client/state/clients.state';
     TextAreaComponent,
     MatDivider,
     TitleComponent,
+    MatCheckbox,
   ],
 })
 export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -87,6 +90,12 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   days = Object.values(EDays);
 
   private destroy = new Subject<void>();
+
+  types = [
+    { value: RoutineType.MEN, label: 'Hombre' },
+    { value: RoutineType.WOMEN, label: 'Mujer' },
+    { value: RoutineType.CARDIO, label: 'Cardio' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -134,7 +143,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       name: ['', Validators.required],
       description: ['', Validators.required],
       type: ['', Validators.required],
-      isGeneral: [{ value: false }],
+      isGeneral: [false],
       isCustom: [{ value: false, disabled: true }],
     });
   }
@@ -153,6 +162,8 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         this.routineForm = this.fb.group({
           name: ['', Validators.required],
           description: ['', Validators.required],
+          type: ['', Validators.required],
+          isGeneral: [false],
           isCustom: [{ value: false, disabled: true }],
         });
       }

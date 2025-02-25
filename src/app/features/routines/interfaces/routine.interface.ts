@@ -21,3 +21,9 @@ export interface RoutinePayload {
   type: string;
   subRoutines: string[];
 }
+
+export enum RoutineType {
+  MEN = 'men',
+  WOMEN = 'women',
+  CARDIO = 'cardio',
+}
