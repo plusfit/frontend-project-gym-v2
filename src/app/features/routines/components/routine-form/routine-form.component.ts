@@ -133,6 +133,8 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     this.routineForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
+      type: ['', Validators.required],
+      isGeneral: [{ value: false }],
       isCustom: [{ value: false, disabled: true }],
     });
   }

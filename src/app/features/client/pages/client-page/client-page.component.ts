@@ -70,6 +70,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const payload = {
       page: currentPage,
       pageSize: currentPageSize,
+      withoutPlan: this.filterControl.value === 'true' ? true : false,
     };
     this.store.dispatch(new GetClients(payload));
   }
@@ -79,6 +80,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: 1,
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
+      withoutPlan: this.filterControl.value === 'true' ? true : false,
     };
 
     this.store.dispatch(new GetClients({ ...this.filterValues }));

@@ -1,15 +1,12 @@
 <div class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
   <!-- Encabezado -->
-  <header
-    class="bg-gradient-to-br from-purple-500 to-indigo-600 text-white py-10 px-6 text-center"
-  >
+  <header class="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-10 px-6 text-center">
     <h1 class="text-4xl md:text-5xl font-extrabold tracking-wide">
-      ¡Hola, Juan! <br />
-      <span class="text-gray-200">Es hora de moverte</span>
+      Panel de Administración
+      <br />
+      <span class="text-gray-200">Gestión eficiente del gimnasio</span>
     </h1>
-    <p class="mt-4 text-lg">
-      Explora, reserva y sigue avanzando hacia tus metas.
-    </p>
+    <p class="mt-4 text-lg">Administra clientes, clases y entrenadores fácilmente.</p>
   </header>
 
   <!-- Contenido Principal -->
@@ -18,66 +15,43 @@
     <section>
       <h2 class="text-2xl font-semibold text-center mb-8">Accesos Rápidos</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <button
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-        >
-          <div class="text-indigo-600 text-3xl mr-4">📅</div>
-          <span class="text-lg font-medium">Ver Horarios</span>
-        </button>
-        <button
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-        >
-          <div class="text-indigo-600 text-3xl mr-4">✅</div>
-          <span class="text-lg font-medium">Reservar Clases</span>
-        </button>
-        <button
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-        >
-          <div class="text-indigo-600 text-3xl mr-4">📊</div>
-          <span class="text-lg font-medium">Ver Estadísticas</span>
-        </button>
+        <a class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition" routerLink="clientes">
+          <div class="text-blue-600 text-3xl mr-4">📋</div>
+          <span class="text-lg font-medium">Gestión de Clientes</span>
+        </a>
+        <a class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition" routerLink="horarios">
+          <div class="text-blue-600 text-3xl mr-4">📆</div>
+          <span class="text-lg font-medium">Gestión de Horarios</span>
+        </a>
+        <a class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition" routerLink="planes">
+          <div class="text-blue-600 text-3xl mr-4">👨‍🏫</div>
+          <span class="text-lg font-medium">Gestión de Planes</span>
+        </a>
       </div>
     </section>
 
-    <!-- Sugerencias de Clases -->
+    <!-- Estadísticas Resumidas -->
     <section>
-      <h2 class="text-2xl font-semibold text-center mb-8">
-        Sugerencias de Hoy
-      </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition"
-        >
-          <h3 class="text-lg font-bold text-gray-700">Yoga</h3>
-          <p class="text-sm text-gray-500 mt-1">6:00 PM - Sala 2</p>
-          <button class="mt-4 text-indigo-600 font-semibold hover:underline">
-            Reservar Ahora →
-          </button>
+      <h2 class="text-2xl font-semibold text-center mb-8">Resumen de Actividad</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white shadow-md rounded-lg p-6 text-center">
+          <h3 class="text-lg font-bold text-gray-700">Clientes Activos</h3>
+          <p class="text-3xl font-semibold text-blue-600">{{total | async}}</p>
         </div>
-        <div
-          class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition"
-        >
-          <h3 class="text-lg font-bold text-gray-700">CrossFit</h3>
-          <p class="text-sm text-gray-500 mt-1">7:00 PM - Sala 1</p>
-          <button class="mt-4 text-indigo-600 font-semibold hover:underline">
-            Reservar Ahora →
-          </button>
+        <div class="bg-white shadow-md rounded-lg p-6 text-center">
+          <h3 class="text-lg font-bold text-gray-700">Clases Programadas</h3>
+          <p class="text-3xl font-semibold text-blue-600">45</p>
+        </div>
+        <div class="bg-white shadow-md rounded-lg p-6 text-center">
+          <h3 class="text-lg font-bold text-gray-700">Entrenadores Disponibles</h3>
+          <p class="text-3xl font-semibold text-blue-600">8</p>
         </div>
       </div>
-    </section>
-
-    <!-- Banner Inspiracional -->
-    <section
-      class="bg-gradient-to-br from-gray-800 to-gray-900 text-white py-12 px-6 rounded-lg text-center"
-    >
-      <blockquote class="text-2xl font-semibold italic">
-        "El único límite es el que tú mismo te pones."
-      </blockquote>
     </section>
   </main>
 
   <!-- Pie de Página -->
   <footer class="py-3 bg-gray-800 text-center text-white">
-    <p class="text-sm">&copy; 2024 GymApp. ¡Sigue avanzando!</p>
+    <p class="text-sm">&copy; 2024 GymAdmin. Gestión eficiente.</p>
   </footer>
 </div>

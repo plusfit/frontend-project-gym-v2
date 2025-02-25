@@ -5,6 +5,8 @@ export interface Routine {
   name: string;
   description: string;
   isCustom: boolean;
+  isGeneral: boolean;
+  type: string;
   subRoutines: SubRoutine[];
   //TODO: agregar campos de fecha
   // updatedAt: { $date: string };
@@ -15,5 +17,7 @@ export interface RoutinePayload {
   name: string;
   description: string;
   isCustom: boolean;
+  isGeneral: boolean;
+  type: string;
   subRoutines: string[];
 }
