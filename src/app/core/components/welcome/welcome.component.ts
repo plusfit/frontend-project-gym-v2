@@ -22,4 +22,8 @@ export class WelcomeComponent implements OnInit {
     this.store.dispatch(new GetClients({ page: 1, pageSize: 1 }));
     this.total = this.store.select(ClientsState.getTotal);
   }
+
+  getYear(): number {
+    return new Date().getFullYear();
+  }
 }

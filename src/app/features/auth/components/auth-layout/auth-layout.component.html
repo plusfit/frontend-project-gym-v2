@@ -3,9 +3,10 @@
   <div class="w-full">
     <router-outlet></router-outlet>
   </div>
-  <footer class="w-full flex justify-between items-center">
-    <span class="text-body-sm text-black"
-      >GilGo Software Solutions © {{ getYear() }}</span
-    >
+  <footer class="text-black text-center">
+    <p class="text-sm">
+      &copy; {{ getYear() }} | Powered by
+      <span class="font-semibold">G3ek Tech</span>
+    </p>
   </footer>
 </app-base-layout>
