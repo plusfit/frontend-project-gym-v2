@@ -8,7 +8,7 @@ export class TranslationPipe implements PipeTransform {
   constructor() {}
 
   transform(value: string): string {
-    if (value.includes('.')) {
+    if (value && value.includes('.')) {
       value = value.split('.')[1];
     }
 
