@@ -43,6 +43,10 @@ export class TranslationPipe implements PipeTransform {
         return 'Día';
       case 'checkbox':
         return 'Seleccionar';
+      case 'room':
+        return 'Sala';
+      case 'cardio':
+        return 'Cardio';
 
       // Categorías del Plan
       case 'weightLoss':
