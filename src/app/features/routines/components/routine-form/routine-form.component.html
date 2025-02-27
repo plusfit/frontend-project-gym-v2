@@ -1,15 +1,16 @@
-<div class="flex flex-col space-y-6">
-  <span class="text-center text-6xl font-semibold text-gray-800 mb-8"
-    >{{ title }} 📝</span
-  >
-  <div class="bg-white rounded-lg shadow-md p-8">
-    @if (loading$ | async) {
+<div class="flex flex-col space-y-6 px-4 md:px-8">
+  <span class="text-center text-5xl font-bold text-gray-900 mt-6 mb-4">
+    {{ title }} 📝
+  </span>
+  <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+    <ng-container *ngIf="loading$ | async; else formContent">
       <app-loader></app-loader>
-    } @else {
-      <form [formGroup]="routineForm" class="space-y-8" (ngSubmit)="save()">
+    </ng-container>
+    <ng-template #formContent>
+      <form [formGroup]="routineForm" class="space-y-6" (ngSubmit)="save()">
         <app-title [title]="'Información general'"></app-title>
-        <div class="flex flex-col justify-around mt-4">
-          <div class="flex gap-4">
+        <div class="mt-4">
+          <div class="flex flex-col md:flex-row gap-4">
             <div class="w-full md:w-1/2">
               <app-input
                 [control]="nameControl"
@@ -20,8 +21,7 @@
                 appearance="outline"
               ></app-input>
             </div>
-
-            <div class="w-full md:w-1/2 h-40">
+            <div class="w-full md:w-1/2">
               <app-text-area
                 [control]="descriptionControl"
                 label="Descripción"
@@ -32,42 +32,42 @@
               ></app-text-area>
             </div>
           </div>
-          <div class="flex gap-4">
-              <div class="w-full md:w-1/2 flex items-cente">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Es Personalizada ? </mat-label>
-                  <mat-select formControlName="isCustom">
-                    <mat-option [value]="true"> Si </mat-option>
-                    <mat-option [value]="false"> No </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div class="w-full md:w-1/2 flex items-center">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Tipo de rutina</mat-label>
-                  <mat-select formControlName="type">
-                   <mat-option *ngFor="let type of types" [value]="type.value">
-                {{ type.label }}
-              </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
+          <div class="flex flex-col md:flex-row gap-4 mt-4">
+            <div class="w-full md:w-1/2 flex items-center">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>¿Es Personalizada?</mat-label>
+                <mat-select formControlName="isCustom">
+                  <mat-option [value]="true">Sí</mat-option>
+                  <mat-option [value]="false">No</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="w-full md:w-1/2 flex items-center">
+              <mat-checkbox formControlName="isGeneral"
+                >¿Es general?</mat-checkbox
+              >
+            </div>
           </div>
-            <div class="flex flex-col gap-4 text-xl">
-            <mat-checkbox formControlName="isGeneral">Es general?</mat-checkbox>
+          <div *ngIf="isGeneralControl" class="mt-4">
+            <mat-form-field appearance="outline" class="w-full md:w-1/2">
+              <mat-label>Tipo de rutina</mat-label>
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let type of types" [value]="type.value">
+                  {{ type.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
-        <div class="flex flex-col gap-4 mt-4">
-          <div class="flex justify-between">
+        <div class="flex flex-col gap-4 mt-6">
+          <div class="flex justify-between items-center">
             <app-title [title]="'Subrutinas'" [divider]="false"></app-title>
             <button
               appBtn
               color="primary"
               type="button"
               (click)="openAddSubRoutinesDialog()"
-              class="h-12"
+              class="h-12 px-4"
             >
               Agregar Subrutina
             </button>
@@ -82,15 +82,15 @@
           </div>
         </div>
       </form>
-    }
-
-    <div class="flex justify-end space-x-2 mt-4">
+    </ng-template>
+    <div class="flex justify-end space-x-2 mt-6">
       <button appBtn color="secondary" (click)="goBack()">Cancelar</button>
       <button
         appBtn
         color="primary"
         [loader]="(loading$ | async)!"
         [animate]="true"
+        type="submit"
         (click)="save()"
         [disabled]="routineForm.invalid || (loading$ | async)"
       >

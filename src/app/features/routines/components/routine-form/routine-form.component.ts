@@ -139,13 +139,26 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
     if (this.routineForm) {
       return;
     }
+
     this.routineForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      type: ['', Validators.required],
+      type: [''],
       isGeneral: [false],
       isCustom: [{ value: false, disabled: true }],
     });
+
+    this.routineForm
+      .get('isGeneral')
+      ?.valueChanges.subscribe((isGeneral: boolean) => {
+        const typeControl = this.routineForm.get('type');
+        if (isGeneral) {
+          typeControl?.setValidators(Validators.required);
+        } else {
+          typeControl?.clearValidators();
+        }
+        typeControl?.updateValueAndValidity();
+      });
   }
 
   ngOnChanges(): void {
@@ -170,6 +183,10 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
       if (routine) this.routineForm.patchValue(routine);
     }
+  }
+
+  get isGeneralControl(): boolean {
+    return this.routineForm.get('isGeneral')?.value;
   }
 
   openAddSubRoutinesDialog(): void {
