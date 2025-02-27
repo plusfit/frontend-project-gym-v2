@@ -35,34 +35,51 @@
           {{ column | translation | camelToTitle }}
         </th>
         <td cdk-cell *cdkCellDef="let element">
-          @if(column.includes('.')) {
-          <span>{{ resolveNestedProperty(element, column) }}</span>
-          } @if(column === 'type') {
-          <app-badge
-            [colorBadge]="element[column] === 'room' ? EColorBadge.SUCCESS : EColorBadge.ERROR"
-            [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
-          ></app-badge>
-          } @if(column === 'category') {
-          <app-badge
-            [colorBadge]="getColorBadge(element[column])"
-            [textBadge]="getTextBadge(element[column])"
-          ></app-badge>
-          } @if(column === 'name') {
-          <span class="font-semibold">{{element[column]}}</span>
-          } @if(column === 'isCustom') {
-          <app-badge
-            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING"
-            [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
-          ></app-badge>
-          } @if(column !== 'isActive' && column !== 'type' && column !==
-          'createdAt' && column !== 'updatedAt' && column !== 'name' && column
-          !== 'isCustom' && column !== 'category') {
-          <span class="text-xs text-gray-900">{{ element[column] }}</span>
+          @if (column.includes(".")) {
+            <span>{{ resolveNestedProperty(element, column) }}</span>
+          }
+          @if (column === "type") {
+            <app-badge
+              [colorBadge]="
+                element[column] === 'room'
+                  ? EColorBadge.SUCCESS
+                  : EColorBadge.ERROR
+              "
+              [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+            ></app-badge>
+          }
+          @if (column === "category") {
+            <app-badge
+              [colorBadge]="getColorBadge(element[column])"
+              [textBadge]="getTextBadge(element[column])"
+            ></app-badge>
+          }
+          @if (column === "name") {
+            <span class="font-semibold">{{ element[column] }}</span>
+          }
+          @if (column === "isCustom") {
+            <app-badge
+              [colorBadge]="
+                element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING
+              "
+              [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
+            ></app-badge>
+          }
+          @if (
+            column !== "isActive" &&
+            column !== "type" &&
+            column !== "createdAt" &&
+            column !== "updatedAt" &&
+            column !== "name" &&
+            column !== "isCustom" &&
+            column !== "category"
+          ) {
+            <span class="text-xs text-gray-900">{{ element[column] }}</span>
           }
           <ng-container
             *ngIf="column === 'createdAt' || column === 'updatedAt'"
           >
-            {{ element[column] | date:"d MMM y, h:mm a" }}
+            {{ element[column] | date: "d MMM y, h:mm a" }}
           </ng-container>
 
           <ng-container *ngIf="column === 'acciones'">
@@ -77,18 +94,18 @@
             </button>
             <mat-menu #actionsMenu="matMenu" class="w-fit">
               <ng-template matMenuContent>
-                @if(showSeeDetail){
-                <button
-                  (click)="emitSeeDetail(element._id)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i class="ph-eye text-button-lg"></i>
-                    <span>Ver Detalle</span>
-                  </div>
-                </button>
+                @if (showSeeDetail) {
+                  <button
+                    (click)="emitSeeDetail(element._id)"
+                    type="button"
+                    class="group"
+                    mat-menu-item
+                  >
+                    <div class="flex flex-row items-center space-x-2">
+                      <i class="ph-eye text-button-lg"></i>
+                      <span>Ver Detalle</span>
+                    </div>
+                  </button>
                 }
                 <button
                   (click)="emitEdit(element._id)"
@@ -101,22 +118,22 @@
                     <span class="group-hover:text-ms-gray-900">Editar</span>
                   </div>
                 </button>
-                @if(showDelete){
-                <button
-                  (click)="emitDelete(element._id)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i
-                      class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
-                    ></i>
-                    <span class="text-error-100 group-hover:text-error-200"
-                      >Borrar</span
-                    >
-                  </div>
-                </button>
+                @if (showDelete) {
+                  <button
+                    (click)="emitDelete(element._id)"
+                    type="button"
+                    class="group"
+                    mat-menu-item
+                  >
+                    <div class="flex flex-row items-center space-x-2">
+                      <i
+                        class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
+                      ></i>
+                      <span class="text-error-100 group-hover:text-error-200"
+                        >Borrar</span
+                      >
+                    </div>
+                  </button>
                 }
               </ng-template>
             </mat-menu>

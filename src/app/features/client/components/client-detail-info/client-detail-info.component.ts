@@ -22,4 +22,6 @@ export class ClientDetailInfoComponent implements OnInit {
   ngOnInit(): void {
     this.clientInfo$ = this.store.select(ClientsState.getSelectedClient);
   }
+
+  protected readonly Object = Object;
 }

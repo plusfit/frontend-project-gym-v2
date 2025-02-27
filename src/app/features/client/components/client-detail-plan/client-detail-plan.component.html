@@ -1,89 +1,111 @@
-@if (clientPlan$ | async) {
-  <div
-    class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 max-w-5xl mx-auto space-y-6"
-  >
-    <span class="text-2xl font-bold text-gray-900 flex justify-center">
-      📋 Plan del Cliente
-    </span>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
-        <p class="text-lg font-semibold text-gray-700 gap-2">
-          🏷️ Nombre:
-          <span class="font-normal">{{ (clientPlan$ | async).name }}.</span>
-        </p>
-        <p class="text-lg font-semibold text-gray-700 gap-2">
-          📝 Objetivo:
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).goal | translation }}.</span
-          >
-        </p>
-      </div>
-
-      <div class="bg-gray-100 p-4 rounded-lg shadow-sm gap-2">
-        <p class="text-lg font-semibold text-gray-700">
-          ⏳ Edad minima:
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).minAge }} años.</span
-          >
-        </p>
-
-        <p class="text-lg font-semibold text-gray-700">
-          ⏳ Edad máxima:
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).maxAge }} años.</span
-          >
-        </p>
-      </div>
-
-      <div class="bg-gray-100 p-4 rounded-lg shadow-sm gap-2">
-        <p class="text-lg font-semibold text-gray-700">
-          ⚡ Tipo:
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).type | translation }}.</span
-          >
-        </p>
-        <p class="text-lg font-semibold text-gray-700">
-          🏋️ Categoría:
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).category | translation }}.
-          </span>
-        </p>
-      </div>
-
-      <div class="bg-gray-100 p-4 rounded-lg shadow-sm gap-2">
-        <p class="text-lg font-semibold text-gray-700">
-          📅 Días
-          <span class="font-normal"
-            >{{ (clientPlan$ | async).days }} días.
-          </span>
-        </p>
-
-        <p class="text-lg font-semibold text-gray-700">
-          📈 Experiencia:
-          <span class="font-normal">
-            {{ (clientPlan$ | async).experienceLevel | translation }}.</span
-          >
-        </p>
-      </div>
-
-      <div
-        class="col-span-1 md:col-span-2 bg-gray-200 p-4 rounded-lg shadow-sm text-center"
+@if (clientPlan$ | async; as clientPlan) {
+  @if (clientPlan && Object.keys(clientPlan).length > 0) {
+    <div class="bg-white p-4 max-w-7xl mx-auto space-y-6">
+      <span
+        class="text-2xl font-bold text-gray-900 flex justify-center items-center"
       >
-        <p
-          class="text-lg font-semibold text-gray-700 flex items-center justify-center gap-2"
+        <i class="ph-clipboard-light text-gray-900 text-xl mr-2"></i>
+        Plan del Cliente
+      </span>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-tag-light text-gray-900 text-xl mr-2"></i>
+            Nombre:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.name }}.</span
+            >
+          </p>
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-crosshair-light text-gray-900 text-xl mr-2"></i>
+            Objetivo:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.goal | translation }}.</span
+            >
+          </p>
+        </div>
+
+        <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-user-minus-light text-gray-900 text-xl mr-2"></i>
+            Edad mínima:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.minAge }} años.</span
+            >
+          </p>
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-user-plus-light text-gray-900 text-xl mr-2"></i>
+            Edad máxima:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.maxAge }} años.</span
+            >
+          </p>
+        </div>
+
+        <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-lightning-light text-gray-900 text-xl mr-2"></i>
+            Tipo:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.type | translation }}.</span
+            >
+          </p>
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-tag-light text-gray-900 text-xl mr-2"></i>
+            Categoría:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.category | translation }}.</span
+            >
+          </p>
+        </div>
+
+        <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-calendar-light text-gray-900 text-xl mr-2"></i>
+            Días:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.days }} días.</span
+            >
+          </p>
+          <p class="text-lg font-semibold text-gray-700 flex items-center">
+            <i class="ph-chart-line-light text-gray-900 text-xl mr-2"></i>
+            Experiencia:
+            <span class="text-gray-500 font-normal ml-2"
+              >{{ clientPlan.experienceLevel | translation }}.</span
+            >
+          </p>
+        </div>
+
+        <div
+          class="col-span-1 md:col-span-2 p-8 bg-gray-50 rounded-lg border border-gray-300 text-center"
         >
-          🏋️‍♂️ Entrenador:
-          <span
-            class="font-bold"
-            :class="(clientPlan$ | async).includesCoach ? 'text-green-600' : 'text-red-500'"
+          <p
+            class="text-lg font-semibold text-gray-700 flex items-center justify-center gap-2"
           >
-            {{ (clientPlan$ | async).includesCoach ? "✅ Sí" : "❌ No" }}
-          </span>
-        </p>
+            <i class="ph-user-light text-gray-900 text-xl mr-2"></i>
+            Entrenador:
+            <span
+              class="font-bold ml-2"
+              [ngClass]="
+                clientPlan.includesCoach ? 'text-green-600' : 'text-red-500'
+              "
+            >
+              {{ clientPlan.includesCoach ? "✅ Sí" : "❌ No" }}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+  } @else {
+    <div
+      class="bg-white p-6 max-w-5xl mx-auto flex justify-center items-center h-64 mt-10"
+    >
+      <p class="text-2xl font-bold text-gray-700">
+        No hay información disponible
+      </p>
+    </div>
+  }
 } @else {
   <app-loader></app-loader>
 }

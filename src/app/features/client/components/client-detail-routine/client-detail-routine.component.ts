@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ClientsState } from '@features/client/state/clients.state';
 import { Actions, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { AsyncPipe } from '@angular/common';
-import { TranslationPipe } from '../../../../shared/pipes/translation.pipe';
+import { TranslationPipe } from '@shared/pipes/translation.pipe';
 
 @Component({
   selector: 'app-client-detail-routine',
@@ -29,4 +29,6 @@ export class ClientDetailRoutineComponent implements OnInit {
   toggleDescription(index: number) {
     this.showFullDescription[index] = !this.showFullDescription[index];
   }
+
+  protected readonly Object = Object;
 }

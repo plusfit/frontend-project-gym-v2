@@ -1,142 +1,229 @@
-@if (clientRoutine$ | async) {
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <span class="text-3xl font-bold mb-4 text-black flex justify-center">
-      Rutina del Cliente
-    </span>
+@if (clientRoutine$ | async; as clientRoutine) {
+  @if (clientRoutine && Object.keys(clientRoutine).length > 0) {
+    <div class="bg-white p-8 max-w-7xl mx-auto">
+      <div class="py-2 border-b border-gray-200 mb-4">
+        <span class="text-3xl font-bold text-gray-900">
+          <i class="ph-dumbbell-bold text-gray-900 text-2xl mr-2"></i>
+          Rutina del Cliente
+        </span>
+      </div>
 
-    <div class="mb-4 p-4 bg-gray-100 rounded-lg">
-      <p class="text-lg font-semibold text-gray-700">
-        Nombre:
-        <span class="font-normal">{{ (clientRoutine$ | async).name }}</span>
-      </p>
-      <p class="text-lg font-semibold text-gray-700">
-        Descripción:
-        <span class="font-normal">{{
-          (clientRoutine$ | async).description
-        }}</span>
-      </p>
-      <p class="text-lg font-semibold text-gray-700">
-        Personalizada:
-        <span class="font-normal">{{
-          (clientRoutine$ | async).isCustom ? "Sí" : "No"
-        }}</span>
-      </p>
-    </div>
+      <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
+        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+          <i class="ph-user-bold text-gray-800 text-xl mr-2"></i>
+          Nombre:
+          <span class="font-normal text-gray-700 ml-2">{{
+            clientRoutine.name
+          }}</span>
+        </p>
+        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+          <i class="ph-note-pencil text-gray-800 text-xl mr-2"></i>
+          Descripción:
+          <span class="font-normal text-gray-700 ml-2">{{
+            clientRoutine.description
+          }}</span>
+        </p>
+        <p class="text-lg font-semibold text-gray-800 flex items-center">
+          <i class="ph-check-circle-bold text-gray-800 text-xl mr-2"></i>
+          Personalizada:
+          <span class="font-normal text-gray-700 ml-2">
+            {{ clientRoutine.isCustom ? "Sí" : "No" }}
+          </span>
+        </p>
+      </div>
 
-    <span class="text-3xl font-bold mb-4 text-black flex justify-center">
-      Subrutinas
-    </span>
+      <span
+        class="block text-3xl font-bold text-gray-900 mb-8 flex items-center justify-center"
+      >
+        <i class="ph-list-bold text-gray-900 text-2xl mr-2"></i>
+        Subrutinas
+      </span>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (subRoutine of (clientRoutine$ | async).subRoutines; track $index) {
-        <div
-          class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-200 flex flex-col"
-        >
-          <!-- Sección superior (flex-1 para empujar hacia abajo la sección de ejercicios) -->
-          <div class="flex-1">
-            <span
-              class="text-xl font-bold text-gray-800 flex justify-center mb-3"
-            >
-              Subrutina {{ $index + 1 }}
-            </span>
-            <p class="text-sm font-semibold text-gray-600">
-              Nombre: <span class="font-medium">{{ subRoutine.name }}</span>
-            </p>
-            <p class="text-sm font-semibold text-gray-700">
-              Descripción:
-              <span class="font-normal">
-                {{
-                  showFullDescription[$index]
-                    ? subRoutine.description
-                    : subRoutine.description.slice(0, 100) + "..."
-                }}
-              </span>
-              @if (subRoutine.description.length > 100) {
-                <button
-                  (click)="toggleDescription($index)"
-                  class="text-blue-500 hover:underline text-xs inline"
-                  style="white-space: pre-line"
-                >
-                  {{ showFullDescription[$index] ? "Ver menos" : "Ver más" }}
-                </button>
-              }
-            </p>
-
-            <p class="text-sm font-semibold text-gray-600">
-              Personalizada:
-              <span class="font-medium">{{
-                subRoutine.isCustom ? "Sí" : "No"
-              }}</span>
-            </p>
-            <p class="text-sm font-semibold text-gray-600">
-              Categoría:
-              <span class="font-medium">{{
-                subRoutine.category | translation
-              }}</span>
-            </p>
-          </div>
-
-          <!-- Sección de ejercicios con altura máxima controlada -->
-          <div class="">
-            <span
-              class="text-lg font-bold text-gray-800 flex justify-center mb-3"
-            >
-              Ejercicios
-            </span>
-            <div
-              class="max-h-96 overflow-y-auto bg-gray-50 p-2 rounded-lg space-y-2"
-            >
-              @for (exercise of subRoutine.exercises; track $index) {
-                <p class="text-sm text-gray-800 font-semibold">
-                  Ejercicio {{ $index + 1 }}
-                </p>
-                <div
-                  class="bg-gray-100 p-3 rounded-lg shadow-sm grid grid-cols-2 gap-4"
-                >
-                  <div class="flex flex-col h-full">
-                    <p class="text-sm font-semibold text-gray-600">
-                      Nombre:
-                      <span class="font-medium">{{ exercise.name }}</span>
-                    </p>
-                    <p class="text-sm font-semibold text-gray-600">
-                      Tipo:
-                      <span class="font-medium">{{
-                        exercise.type | translation
-                      }}</span>
-                    </p>
-                  </div>
-
-                  <div class="flex flex-col self-start">
-                    @if (exercise.type === "room") {
-                      <p class="text-sm font-semibold text-gray-600">
-                        Series:
-                        <span class="font-medium">{{ exercise.series }}</span>
-                      </p>
-                      <p class="text-sm font-semibold text-gray-600">
-                        Repeticiones:
-                        <span class="font-medium">{{ exercise.reps }}</span>
-                      </p>
-                    } @else if (exercise.type === "cardio") {
-                      <p class="text-sm font-semibold text-gray-600">
-                        Minutos:
-                        <span class="font-medium"
-                          >{{ exercise.minutes }} min.</span
-                        >
-                      </p>
-                    }
-                    <p class="text-sm font-semibold text-gray-600">
-                      Descanso:
-                      <span class="font-medium">{{ exercise.rest }} seg.</span>
-                    </p>
-                  </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        @for (
+          subRoutine of clientRoutine.subRoutines;
+          track subRoutine.id;
+          let i = $index
+        ) {
+          <div
+            class="bg-white shadow-sm rounded-lg p-8 border border-gray-200 flex flex-col"
+          >
+            <!-- Sección superior -->
+            <div class="flex-1 mb-6">
+              <span class="text-2xl font-bold text-gray-800 mb-4 flex py-4">
+                <div>
+                  <i class="ph-clipboard-bold text-gray-800 text-xl mr-2"></i>
+                  Subrutina {{ i + 1 }}
                 </div>
-              }
+              </span>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+                <p
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
+                >
+                  <i class="ph-user-circle-bold text-gray-700 text-lg mr-1"></i>
+                  Nombre:
+                  <span class="font-medium text-gray-800 ml-1">{{
+                    subRoutine.name
+                  }}</span>
+                </p>
+                <p
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
+                >
+                  <i class="ph-note-pencil text-gray-700 text-lg mr-1"></i>
+                  Descripción:
+                  <span class="font-normal text-gray-800 ml-1">
+                    {{
+                      showFullDescription[i]
+                        ? subRoutine.description
+                        : subRoutine.description.slice(0, 100) + "..."
+                    }}
+                  </span>
+                  @if (subRoutine.description.length > 100) {
+                    <button
+                      (click)="toggleDescription(i)"
+                      class="text-blue-600 hover:underline text-xs ml-2"
+                      style="white-space: pre-line"
+                    >
+                      {{ showFullDescription[i] ? "Ver menos" : "Ver más" }}
+                    </button>
+                  }
+                </p>
+                <p
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
+                >
+                  <i class="ph-heart-bold text-gray-700 text-lg mr-1"></i>
+                  Personalizada:
+                  <span class="font-medium text-gray-800 ml-1">
+                    {{ subRoutine.isCustom ? "Sí" : "No" }}
+                  </span>
+                </p>
+                <p
+                  class="text-sm font-semibold text-gray-700 flex items-center"
+                >
+                  <i class="ph-tag-bold text-gray-700 text-lg mr-1"></i>
+                  Categoría:
+                  <span class="font-medium text-gray-800 ml-1">
+                    {{ subRoutine.category | translation }}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Sección de ejercicios -->
+            <div>
+              <span class="block text-lg font-bold text-gray-800 mb-4">
+                <i class="ph-activity-bold text-gray-800 text-xl mr-2"></i>
+                Ejercicios
+              </span>
+              <div
+                class="max-h-80 overflow-y-auto bg-gray-50 p-4 rounded-lg space-y-4"
+              >
+                @for (
+                  exercise of subRoutine.exercises;
+                  track exercise;
+                  let j = $index
+                ) {
+                  <div>
+                    <p
+                      class="text-base text-gray-500 font-semibold flex items-center"
+                    >
+                      <i
+                        class="ph-person-simple-walk text-gray-800 text-lg mr-1"
+                      ></i>
+                      Ejercicio {{ j + 1 }}
+                    </p>
+                    <div
+                      class="bg-gray-100 rounded-md shadow-sm p-4 flex justify-between"
+                    >
+                      <div class="flex flex-col">
+                        <p
+                          class="text-sm font-semibold text-gray-700 flex items-center"
+                        >
+                          <i
+                            class="ph-user-circle-bold text-gray-700 text-lg mr-1"
+                          ></i>
+                          Nombre:
+                          <span class="font-medium text-gray-500 ml-1">{{
+                            exercise.name
+                          }}</span>
+                        </p>
+                        <p
+                          class="text-sm font-semibold text-gray-700 flex items-center"
+                        >
+                          <i
+                            class="ph-lightning text-gray-700 text-lg mr-1"
+                          ></i>
+                          Tipo:
+                          <span class="font-medium text-gray-500 ml-1">
+                            {{ exercise.type | translation }}
+                          </span>
+                        </p>
+                      </div>
+                      <div class="flex flex-col">
+                        @if (exercise.type === "room") {
+                          <p
+                            class="text-sm font-semibold text-gray-700 flex items-center"
+                          >
+                            <i
+                              class="ph-barbell-bold text-gray-700 text-lg mr-1"
+                            ></i>
+                            Series:
+                            <span class="font-medium text-gray-500 ml-1">{{
+                              exercise.series
+                            }}</span>
+                          </p>
+                          <p
+                            class="text-sm font-semibold text-gray-700 flex items-center"
+                          >
+                            <i
+                              class="ph-repeat-bold text-gray-700 text-lg mr-1"
+                            ></i>
+                            Repeticiones:
+                            <span class="font-medium text-gray-500 ml-1">{{
+                              exercise.reps
+                            }}</span>
+                          </p>
+                        } @else if (exercise.type === "cardio") {
+                          <p
+                            class="text-sm font-semibold text-gray-700 flex items-center"
+                          >
+                            <i
+                              class="ph-clock-bold text-gray-700 text-lg mr-1"
+                            ></i>
+                            Minutos:
+                            <span class="font-medium text-gray-500 ml-1"
+                              >{{ exercise.minutes }} min.</span
+                            >
+                          </p>
+                        }
+                        <p
+                          class="text-sm font-semibold text-gray-700 flex items-center"
+                        >
+                          <i class="ph-bed-bold text-gray-700 text-lg mr-1"></i>
+                          Descanso:
+                          <span class="font-medium text-gray-500 ml-1"
+                            >{{ exercise.rest }} seg.</span
+                          >
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
+  } @else {
+    <div
+      class="bg-white p-8 max-w-6xl mx-auto flex justify-center items-center h-64 my-8"
+    >
+      <p class="text-2xl font-bold text-gray-800">
+        No hay información disponible
+      </p>
+    </div>
+  }
 } @else {
   <app-loader></app-loader>
 }
