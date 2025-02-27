@@ -1,16 +1,12 @@
 @if (clientInfo$ | async; as clientInfo) {
   @if (clientInfo && Object.keys(clientInfo).length > 0) {
-    <div class="bg-white p-6 rounded-lg mt-4">
-      <span class="block text-3xl font-bold text-gray-800 border-b pb-2">
-        Información del Cliente
-      </span>
-
+    <div class="bg-white p-6 rounded-lg">
       <!-- Sección: Datos Personales -->
-      <div class="mt-4">
+      <div>
         <span class="block text-xl font-bold text-gray-800 border-b pb-2">
           Datos Personales
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm">Nombre</span>
             <span class="text-lg font-medium text-gray-800">{{
@@ -39,11 +35,11 @@
       </div>
 
       <!-- Sección: Información de Contacto -->
-      <div class="mt-4">
+      <div class="my-6">
         <span class="block text-xl font-bold text-gray-800 border-b pb-2">
           Información de Contacto
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm">Email</span>
             <span class="text-lg font-medium text-gray-800">{{
@@ -66,11 +62,11 @@
       </div>
 
       <!-- Sección: Información de Salud -->
-      <div class="mt-4">
+      <div class="my-6">
         <span class="block text-xl font-bold text-gray-800 border-b pb-2">
           Información de Salud
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm"
               >Frecuencia de Ejercicio Físico</span
@@ -95,11 +91,11 @@
       </div>
 
       <!-- Sección: Antecedentes -->
-      <div class="mt-4">
+      <div class="my-6">
         <span class="block text-xl font-bold text-gray-800 border-b pb-2">
           Antecedentes
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm"
               >Antecedentes Lesiones Patológicas</span
@@ -133,7 +129,7 @@
     </div>
   } @else {
     <div
-      class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-4 flex justify-center items-center h-64"
+      class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto my-6 flex justify-center items-center h-64"
     >
       <p class="text-lg font-bold text-gray-700">
         No hay información disponible
