@@ -6,7 +6,11 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import { environment } from '../../../../environments/environment.prod';
-import { Routine } from '../interfaces/routine.interface';
+import {
+  Routine,
+  RoutineApiResponse,
+  RoutinesApiResponse, RoutinesBySubRoutineApiResponse,
+} from '../interfaces/routine.interface';
 import { RoutineService } from '../services/routine.service';
 import {
   ClearSubRoutines,
@@ -15,6 +19,7 @@ import {
   GetRoutineById,
   GetRoutinesByName,
   GetRoutinesByPage,
+  GetRoutinesBySubRoutine,
   SetLimitPerPage,
   UpdateRoutine,
   UpdateSubRoutines,
@@ -25,6 +30,7 @@ import { RoutineStateModel } from './routine.model';
   name: 'routine',
   defaults: {
     routines: [],
+    affectedRoutines: [],
     totalRoutines: 0,
     page: null,
     limit: environment.routineTableLimit,
@@ -57,6 +63,11 @@ export class RoutineState {
   }
 
   @Selector()
+  static affectedRoutines(state: RoutineStateModel): Routine[] {
+    return state.affectedRoutines || [];
+  }
+
+  @Selector()
   static totalRoutines(state: RoutineStateModel): number {
     return state.totalRoutines || 0;
   }
@@ -72,7 +83,7 @@ export class RoutineState {
   getRoutines(
     ctx: StateContext<RoutineStateModel>,
     action: GetRoutinesByPage,
-  ): Observable<Routine[]> {
+  ): Observable<RoutinesApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService
       .getRoutinesByPage(action.payload.page, ctx.getState().limit)
@@ -96,7 +107,7 @@ export class RoutineState {
   getRoutinesByName(
     ctx: StateContext<RoutineStateModel>,
     action: GetRoutinesByName,
-  ): Observable<Routine[]> {
+  ): Observable<RoutinesApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService
       .getRoutinesByName(
@@ -141,7 +152,7 @@ export class RoutineState {
   deleteRoutine(
     ctx: StateContext<RoutineStateModel>,
     action: DeleteRoutine,
-  ): Observable<void> {
+  ): Observable<RoutineApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService.deleteRoutine(action.id).pipe(
       tap(() => {
@@ -158,7 +169,7 @@ export class RoutineState {
   getRoutineById(
     ctx: StateContext<RoutineStateModel>,
     action: GetRoutineById,
-  ): Observable<Routine> {
+  ): Observable<RoutineApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService.getRoutineById(action.id).pipe(
       tap((response) => {
@@ -189,6 +200,7 @@ export class RoutineState {
         }),
       );
   }
+
   @Action(SetLimitPerPage, { cancelUncompleted: true })
   setLimitPerPage(
     ctx: StateContext<RoutineStateModel>,
@@ -196,6 +208,7 @@ export class RoutineState {
   ): void {
     ctx.patchState({ limit: action.limit });
   }
+
   @Action(UpdateSubRoutines)
   updateSubroutines(
     ctx: StateContext<RoutineStateModel>,
@@ -209,5 +222,25 @@ export class RoutineState {
   @Action(ClearSubRoutines)
   clearSubRoutines(ctx: StateContext<RoutineStateModel>) {
     ctx.patchState({ selectedRoutine: null });
+  }
+
+  @Action(GetRoutinesBySubRoutine, { cancelUncompleted: true })
+  getRoutinesBySubRoutine(
+    ctx: StateContext<RoutineStateModel>,
+    action: GetRoutinesBySubRoutine,
+  ): Observable<RoutinesBySubRoutineApiResponse> {
+    ctx.patchState({ loading: true });
+    return this.routineService.getRoutinesBySubRoutine(action.id).pipe(
+      tap((response) => {
+        ctx.patchState({
+          affectedRoutines: response.data,
+          loading: false,
+        });
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ctx.patchState({ loading: false });
+        return throwError(error);
+      }),
+    );
   }
 }

@@ -22,6 +22,28 @@ export interface RoutinePayload {
   subRoutines: string[];
 }
 
+export interface RoutinesApiResponse {
+  success: boolean;
+  data: RoutineData;
+}
+
+export interface RoutinesBySubRoutineApiResponse {
+  success: boolean;
+  data: Routine[];
+}
+
+export interface RoutineApiResponse {
+  success: boolean;
+  data: Routine;
+}
+
+interface RoutineData {
+  data: Routine[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export enum RoutineType {
   MEN = 'men',
   WOMEN = 'women',

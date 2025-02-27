@@ -9,6 +9,7 @@ import { Routine } from '../interfaces/routine.interface';
 export class RoutineStateModel {
   loading?: boolean;
   routines?: Routine[] = [];
+  affectedRoutines?: Routine[] = [];
   page?: PageRoutine | null;
   limit: number = environment.routineTableLimit;
   filters?: FiltersRoutine | null;

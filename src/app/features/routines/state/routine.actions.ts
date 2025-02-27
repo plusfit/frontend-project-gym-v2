@@ -27,6 +27,10 @@ export class GetRoutineById {
   static readonly type = '[Routine] GetRoutineById';
   constructor(public readonly id: string) {}
 }
+export class GetRoutinesBySubRoutine {
+  static readonly type = '[Routine] GetRoutinesBySubRoutine';
+  constructor(public readonly id: string) {}
+}
 export class SetLimitPerPage {
   static readonly type = '[Routine] SetLimitPerPage';
   constructor(public readonly limit: number) {}
