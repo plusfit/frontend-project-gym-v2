@@ -1,97 +1,133 @@
 @if (clientInfo$ | async; as clientInfo) {
   @if (clientInfo && Object.keys(clientInfo).length > 0) {
     <div class="bg-white p-6 rounded-lg mt-4">
-      <p class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+      <span class="block text-3xl font-bold text-gray-800 border-b pb-2">
         Información del Cliente
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Nombre</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.name
-          }}</span>
+      </span>
+
+      <!-- Sección: Datos Personales -->
+      <div class="mt-4">
+        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+          Datos Personales
+        </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Nombre</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.name
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Cédula de Identidad</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.CI
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Sexo</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.sex
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Día de Nacimiento</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.dateBirthday | date: "dd/MM/yyyy"
+            }}</span>
+          </div>
         </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Email</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.identifier
-          }}</span>
+      </div>
+
+      <!-- Sección: Información de Contacto -->
+      <div class="mt-4">
+        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+          Información de Contacto
+        </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Email</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.identifier
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Celular</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.phone
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Dirección</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.address
+            }}</span>
+          </div>
         </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Cédula de Identidad</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.CI
-          }}</span>
+      </div>
+
+      <!-- Sección: Información de Salud -->
+      <div class="mt-4">
+        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+          Información de Salud
+        </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm"
+              >Frecuencia de Ejercicio Físico</span
+            >
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.frequencyOfPhysicalExercise
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Sociedad Médica</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.medicalSociety ? "Sí" : "No"
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Presión Arterial</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.bloodPressure
+            }}</span>
+          </div>
         </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Celular</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.phone
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Dirección</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.address
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Sexo</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.sex
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Día de Nacimiento</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.dateBirthday | date: "dd/MM/yyyy"
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm"
-            >Frecuencia de Ejercicio Físico</span
-          >
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.frequencyOfPhysicalExercise
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Sociedad Médica</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.medicalSociety ? "Sí" : "No"
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Presión Arterial</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.bloodPressure
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm"
-            >Antecedentes Lesiones Patológicas</span
-          >
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.historyofPathologicalLesions ? "Sí" : "No"
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Antecedentes Cardíacos</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.cardiacHistory ? "Sí" : "No"
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Antecedentes Quirúrgicos</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.surgicalHistory ? "Sí" : "No"
-          }}</span>
-        </div>
-        <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-          <span class="text-gray-500 text-sm">Antecedentes Respiratorios</span>
-          <span class="text-lg font-medium text-gray-800">{{
-            clientInfo.respiratoryHistory ? "Sí" : "No"
-          }}</span>
+      </div>
+
+      <!-- Sección: Antecedentes -->
+      <div class="mt-4">
+        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+          Antecedentes
+        </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm"
+              >Antecedentes Lesiones Patológicas</span
+            >
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.historyofPathologicalLesions ? "Sí" : "No"
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Antecedentes Cardíacos</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.cardiacHistory ? "Sí" : "No"
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm">Antecedentes Quirúrgicos</span>
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.surgicalHistory ? "Sí" : "No"
+            }}</span>
+          </div>
+          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
+            <span class="text-gray-500 text-sm"
+              >Antecedentes Respiratorios</span
+            >
+            <span class="text-lg font-medium text-gray-800">{{
+              clientInfo.respiratoryHistory ? "Sí" : "No"
+            }}</span>
+          </div>
         </div>
       </div>
     </div>

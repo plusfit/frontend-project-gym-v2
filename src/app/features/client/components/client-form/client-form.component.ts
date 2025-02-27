@@ -14,7 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -41,10 +41,43 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { Client } from '@features/client/interface/clients.interface';
 
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { NativeDateAdapter } from '@angular/material/core';
+
+export class MyDateAdapter extends NativeDateAdapter {
+  override format(date: Date, displayFormat: NonNullable<unknown>): string {
+    if (displayFormat === 'input') {
+      const day = this._to2digit(date.getDate());
+      const month = this._to2digit(date.getMonth() + 1);
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+    return date.toDateString();
+  }
+
+  private _to2digit(n: number): string {
+    return ('00' + n).slice(-2);
+  }
+}
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'input', // Usamos el formato "input" definido en el adaptador
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 @Component({
   selector: 'app-client-form',
   standalone: true,
-  providers: [provideNativeDateAdapter()],
+  providers: [
+    { provide: DateAdapter, useClass: MyDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
+  ],
   imports: [
     MatFormFieldModule,
     MatInputModule,
@@ -81,6 +114,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   bloodPressures: any[] = [
     { value: 'Alta', viewValue: 'Alta' },
+    { value: 'Normal', viewValue: 'Normal' },
     { value: 'Baja', viewValue: 'Baja' },
   ];
   frequencyOfPhysicalExercise: any[] = [
@@ -102,23 +136,51 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
-      name: ['', [Validators.required]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+        ],
+      ],
       identifier: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, passwordValidator()]],
-      phone: ['', [Validators.required]],
-      dateBirthday: ['', [Validators.required]],
-      address: ['', [Validators.required]],
+      password: [
+        '',
+        [Validators.required, passwordValidator(), Validators.minLength(6)],
+      ],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{7,15}$')]],
+      dateBirthday: ['', [Validators.required, this.pastDateValidator]],
+      address: ['', [Validators.required, Validators.minLength(5)]],
       medicalSociety: ['', [Validators.required]],
       sex: ['', [Validators.required]],
-      cardiacHistory: ['', [Validators.required]],
-      surgicalHistory: ['', [Validators.required]],
-      historyofPathologicalLesions: ['', [Validators.required]],
+      cardiacHistory: ['', [Validators.required, Validators.minLength(5)]],
+      surgicalHistory: ['', [Validators.required, Validators.minLength(5)]],
+      historyofPathologicalLesions: [
+        '',
+        [Validators.required, Validators.minLength(5)],
+      ],
       bloodPressure: ['', [Validators.required]],
       frequencyOfPhysicalExercise: ['', [Validators.required]],
-      respiratoryHistory: ['', [Validators.required]],
+      respiratoryHistory: ['', [Validators.required, Validators.minLength(5)]],
       plan: ['', [Validators.required]],
-      CI: ['', [Validators.required]],
+      CI: ['', [Validators.required, Validators.pattern('^[0-9]{8,15}$')]],
     });
+  }
+
+  private pastDateValidator(
+    control: FormControl,
+  ): { [key: string]: any } | null {
+    if (!control.value) {
+      return null;
+    }
+    const inputDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (inputDate >= today) {
+      return { futureDate: 'La fecha debe ser anterior a hoy' };
+    }
+    return null;
   }
 
   ngOnChanges(): void {
@@ -233,6 +295,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
                         'Cliente registrado con correctamente',
                       );
                       this.clientForm.reset();
+                      this.router.navigate(['/clientes']);
                     });
                 }
               });

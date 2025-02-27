@@ -34,6 +34,7 @@ import { ClientsStateModel } from './clients.model';
 import { RoutineService } from '@features/routines/services/routine.service';
 import { ExerciseService } from '@features/exercises/services/exercise.service';
 import { PlansService } from '@features/plans/services/plan.service';
+import { SnackBarService } from '@core/services/snackbar.service';
 
 @State<ClientsStateModel>({
   name: 'clients',
@@ -96,6 +97,7 @@ export class ClientsState {
     private routineService: RoutineService,
     private exerciseService: ExerciseService,
     private planService: PlansService,
+    private snackBarService: SnackBarService,
   ) {}
 
   @Action(GetClients, { cancelUncompleted: true })
@@ -228,10 +230,12 @@ export class ClientsState {
       tap(() => {
         ctx.patchState({ loading: false });
       }),
-      catchError((err: HttpErrorResponse) => {
+      catchError((err: any) => {
         ctx.patchState({ loading: false });
-        //TODO: convertir los mensajes
-        // this.snackbar.showError('Registro Erroneo', err.message);
+        this.snackBarService.showError(
+          'Error al crear Cliente',
+          this.getFriendlyErrorMessage(err),
+        );
         return throwError(() => err);
       }),
     );
@@ -417,5 +421,29 @@ export class ClientsState {
     }
 
     return of(null); // Retornar un observable vacío si no hay `planId`
+  }
+
+  private mapFirebaseError(errorCode: string): string {
+    switch (errorCode) {
+      case 'auth/email-already-in-use':
+        return 'El email ya existe';
+      case 'auth/operation-not-allowed':
+        return 'La operación no está permitida';
+      case 'auth/too-many-requests':
+        return 'Demasiados intentos. Inténtalo más tarde';
+      case 'auth/invalid-password':
+        return 'Contraseña inválida';
+      case 'auth/user-disabled':
+        return 'El usuario está deshabilitado';
+      default:
+        return 'Ha ocurrido un error. Por favor, inténtalo de nuevo';
+    }
+  }
+
+  private getFriendlyErrorMessage(err: any): string {
+    if (err.code) {
+      return this.mapFirebaseError(err.code);
+    }
+    return 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo';
   }
 }
