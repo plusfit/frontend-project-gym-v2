@@ -18,16 +18,22 @@
         class="w-full"
       ></app-input>
 
-      <app-input
-        [control]="passwordControl"
-        label="Contraseña"
-        type="password"
-        errorKey="password"
-        placeholder="Contraseña"
-        appearance="outline"
-        class="w-full"
-        [isPasswordField]="true"
-      ></app-input>
+      <div class="flex flex-col w-full">
+        <app-input
+          [control]="passwordControl"
+          label="Contraseña"
+          type="password"
+          errorKey="password"
+          placeholder="Contraseña"
+          appearance="outline"
+          class="w-full"
+          [isPasswordField]="true"
+        ></app-input>
+        <span class="text-xs mt-[-1rem] px-1">
+          La contraseña debe tener al menos 8 caracteres, una letra mayúscula,
+          una letra minúscula, un número y un caracter especial.
+        </span>
+      </div>
     </div>
   </div>
 
