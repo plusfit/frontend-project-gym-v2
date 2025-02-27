@@ -43,6 +43,7 @@ import { Client } from '@features/client/interface/clients.interface';
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
+import {InputDirective} from "@shared/directives/btn/input.directive";
 
 export class MyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: NonNullable<unknown>): string {
@@ -89,6 +90,7 @@ export const MY_DATE_FORMATS = {
     AutocompleteComponent,
     AsyncPipe,
     BtnDirective,
+    InputDirective,
   ],
   templateUrl: './client-form.component.html',
   styleUrl: './client-form.component.css',
@@ -124,6 +126,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   ];
 
   private _destroyed = new Subject<void>();
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,

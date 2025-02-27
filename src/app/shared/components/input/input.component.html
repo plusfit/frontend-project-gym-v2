@@ -2,14 +2,27 @@
   <mat-form-field class="example-full-width" [appearance]="appearance">
     <mat-label>{{ label }}</mat-label>
     <input
-      [type]="type"
       matInput
+      [type]="
+        isPasswordField ? (isPasswordVisible ? 'text' : 'password') : type
+      "
       [formControl]="control"
       [errorStateMatcher]="matcher"
       [placeholder]="placeholder"
       (input)="onInputChange($event)"
       class="shadow-none"
     />
+    <button
+      *ngIf="isPasswordField"
+      mat-icon-button
+      matSuffix
+      type="button"
+      class="mr-2"
+      (click)="togglePasswordVisibility()"
+    >
+      <i class="ph-eye text-xl" *ngIf="!isPasswordVisible"></i>
+      <i class="ph-eye-slash text-xl" *ngIf="isPasswordVisible"></i>
+    </button>
     <mat-error>
       @if (control.errors) {
         {{ control.errors | validationErrors: errorMessages?.[errorKey] }}

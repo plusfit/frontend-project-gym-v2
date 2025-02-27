@@ -13,6 +13,8 @@ import {
   FieldValidationErrorMessages,
   ValidationErrorsPipe,
 } from '@shared/pipes/validation-errors.pipe';
+import {NgIf} from "@angular/common";
+import {MatIconButton} from "@angular/material/button";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -37,6 +39,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     ReactiveFormsModule,
     ValidationErrorsPipe,
+    NgIf,
+    MatIconButton,
   ],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css'],
@@ -44,14 +48,20 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class InputComponent implements OnInit {
   @Input() control!: FormControl; // FormControl pasado desde el padre
   @Input() label: string = 'Input'; // Etiqueta predeterminada
-  @Input() type: string = 'text'; // Tipo de entrada
+  @Input() type: string = 'text'; // Tipo de entrada (solo se usa si no es password)
   @Input() placeholder: string = ''; // Placeholder opcional
   @Input() appearance: 'fill' | 'outline' = 'outline'; // Apariencia del campo
   @Input() errorKey!: string; // Clave específica para mensajes de error
 
+  // Nuevo flag para indicar que se trata de un campo de contraseña
+  @Input() isPasswordField: boolean = false;
+
   @Output() valueChange = new EventEmitter<any>();
 
   matcher = new MyErrorStateMatcher();
+
+  // Estado local para alternar visibilidad del password
+  isPasswordVisible: boolean = false;
 
   ngOnInit() {
     if (!this.control) {
@@ -65,6 +75,10 @@ export class InputComponent implements OnInit {
       this.type === 'number' ? Number(inputValue) : inputValue,
     );
     this.valueChange.emit(this.control.value);
+  }
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   protected errorMessages: FieldValidationErrorMessages = {
