@@ -259,6 +259,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
                     'Cliente actualizado con correctamente',
                   );
                   this.clientForm.reset();
+                  this.router.navigate(['/clientes']);
                 });
             }
           });
