@@ -1,7 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SnackBarService } from '@core/services/snackbar.service';
 import { FirebaseRegisterResponse } from '@features/auth/interfaces/auth';
 import { AuthService } from '@features/auth/services/auth.service';
+import { ExerciseService } from '@features/exercises/services/exercise.service';
+import { PlansService } from '@features/plans/services/plan.service';
+import { RoutineService } from '@features/routines/services/routine.service';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import {
   catchError,
@@ -31,10 +34,6 @@ import {
   UpdateClient,
 } from './clients.actions';
 import { ClientsStateModel } from './clients.model';
-import { RoutineService } from '@features/routines/services/routine.service';
-import { ExerciseService } from '@features/exercises/services/exercise.service';
-import { PlansService } from '@features/plans/services/plan.service';
-import { SnackBarService } from '@core/services/snackbar.service';
 
 @State<ClientsStateModel>({
   name: 'clients',
@@ -324,9 +323,13 @@ export class ClientsState {
   deleteClient(
     ctx: StateContext<ClientsStateModel>,
     { id }: DeleteClient,
-  ): Observable<ClientApiResponse> {
+  ): Observable<ClientApiResponse[]> {
     ctx.patchState({ loading: true, error: null });
-    return this.clientService.deleteClient(id).pipe(
+
+    return forkJoin([
+      this.clientService.deleteClient(id),
+      // this.clientService.deletClientFirebase(id),
+    ]).pipe(
       tap(() => {
         const clients = ctx
           .getState()
@@ -335,7 +338,7 @@ export class ClientsState {
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
-        return throwError(error);
+        return throwError(() => error);
       }),
     );
   }
