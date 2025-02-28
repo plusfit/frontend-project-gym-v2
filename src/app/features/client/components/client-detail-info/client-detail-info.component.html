@@ -78,7 +78,7 @@
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm">Sociedad Médica</span>
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.medicalSociety ? "Sí" : "No"
+              clientInfo.medicalSociety
             }}</span>
           </div>
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
@@ -101,19 +101,19 @@
               >Antecedentes Lesiones Patológicas</span
             >
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.historyofPathologicalLesions ? "Sí" : "No"
+              clientInfo.historyofPathologicalLesions === "true" ? "Sí" : "No"
             }}</span>
           </div>
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm">Antecedentes Cardíacos</span>
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.cardiacHistory ? "Sí" : "No"
+              clientInfo.cardiacHistory === "true" ? "Sí" : "No"
             }}</span>
           </div>
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
             <span class="text-gray-500 text-sm">Antecedentes Quirúrgicos</span>
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.surgicalHistory ? "Sí" : "No"
+              clientInfo.surgicalHistory === "true" ? "Sí" : "No"
             }}</span>
           </div>
           <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
@@ -121,7 +121,7 @@
               >Antecedentes Respiratorios</span
             >
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.respiratoryHistory ? "Sí" : "No"
+              clientInfo.respiratoryHistory === "true" ? "Sí" : "No"
             }}</span>
           </div>
         </div>
