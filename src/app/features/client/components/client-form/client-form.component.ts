@@ -43,7 +43,7 @@ import { Client } from '@features/client/interface/clients.interface';
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
-import {InputDirective} from "@shared/directives/btn/input.directive";
+import { InputDirective } from '@shared/directives/btn/input.directive';
 
 export class MyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: NonNullable<unknown>): string {
@@ -157,15 +157,12 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
       address: ['', [Validators.required, Validators.minLength(5)]],
       medicalSociety: ['', [Validators.required]],
       sex: ['', [Validators.required]],
-      cardiacHistory: ['', [Validators.required, Validators.minLength(5)]],
-      surgicalHistory: ['', [Validators.required, Validators.minLength(5)]],
-      historyofPathologicalLesions: [
-        '',
-        [Validators.required, Validators.minLength(5)],
-      ],
+      cardiacHistory: ['', [Validators.required]],
+      surgicalHistory: ['', [Validators.required]],
+      historyofPathologicalLesions: ['', [Validators.required]],
       bloodPressure: ['', [Validators.required]],
       frequencyOfPhysicalExercise: ['', [Validators.required]],
-      respiratoryHistory: ['', [Validators.required, Validators.minLength(5)]],
+      respiratoryHistory: ['', [Validators.required]],
       plan: ['', [Validators.required]],
       CI: ['', [Validators.required, Validators.pattern('^[0-9]{8,15}$')]],
     });
@@ -214,6 +211,10 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   registerClient() {
     if (this.clientForm.valid) {
+      if (!this.selectedPlanId) {
+        this.snackbar.showError('Error', 'El plan seleccinado no es valido');
+        return;
+      }
       const userInfo = {
         name: this.clientForm.get('name')?.value,
         password: this.clientForm.get('password')?.value,
@@ -262,6 +263,10 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
             }
           });
       } else {
+        if (!this.selectedPlanId) {
+          this.snackbar.showError('Error', 'El plan seleccinado no es valido');
+          return;
+        }
         const dataRegister = {
           identifier: this.clientForm.get('identifier')?.value,
           password: this.clientForm.get('password')?.value,
