@@ -31,6 +31,7 @@ import { RoutineState } from '@features/routines/state/routine.state';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { AddSubroutineDialogComponent } from '@features/routines/components/add-subrutine-dialog/add-subrutine-dialog.component';
 import {
+  ClearSubRoutines,
   CreateRoutine,
   UpdateRoutine,
   UpdateSubRoutines,
@@ -109,6 +110,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+    this.store.dispatch(new ClearSubRoutines());
   }
 
   ngOnInit(): void {

@@ -171,7 +171,6 @@ export class TableComponent implements OnInit {
   }
 
   getColorBadge(category: string): EColorBadge {
-    console.log('category', category);
     switch (category) {
       case 'room':
         return EColorBadge.SUCCESS;

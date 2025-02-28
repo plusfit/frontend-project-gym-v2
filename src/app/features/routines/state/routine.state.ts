@@ -9,7 +9,8 @@ import { environment } from '../../../../environments/environment.prod';
 import {
   Routine,
   RoutineApiResponse,
-  RoutinesApiResponse, RoutinesBySubRoutineApiResponse,
+  RoutinesApiResponse,
+  RoutinesBySubRoutineApiResponse,
 } from '../interfaces/routine.interface';
 import { RoutineService } from '../services/routine.service';
 import {
