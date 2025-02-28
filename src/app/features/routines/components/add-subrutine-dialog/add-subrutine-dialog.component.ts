@@ -92,7 +92,7 @@ export class AddSubroutineDialogComponent implements OnInit {
   }
 
   close(): void {
-    this.store.dispatch(new ClearSubRoutines());
+    //this.store.dispatch(new ClearSubRoutines());
     this.dialogRef.close(null);
   }
 }

@@ -72,4 +72,9 @@ export class ClientService {
   deleteClient(id: string): Observable<any> {
     return this.http.delete<any>(`${environment.api}/clients/${id}`);
   }
+
+  // deletClientFirebase(id: string): Observable<any> {
+  //   const docRef = doc(this.firestore, `Users`, id);
+  //   return from(deleteDoc(docRef));
+  // }
 }

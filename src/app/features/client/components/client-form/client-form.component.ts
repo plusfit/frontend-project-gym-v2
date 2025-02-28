@@ -43,7 +43,8 @@ import { Client } from '@features/client/interface/clients.interface';
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
-import {InputDirective} from "@shared/directives/btn/input.directive";
+import { InputDirective } from '@shared/directives/btn/input.directive';
+import { Plan } from '@features/plans/interfaces/plan.interface';
 
 export class MyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: NonNullable<unknown>): string {
@@ -100,10 +101,9 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   id: InputSignal<string> = input<string>('');
   clientForm!: FormGroup;
   selector = PlansState.getPlans;
-  selectedPlanId: string | null = null;
+  selectedPlan!: Plan;
   dataClient: InputSignal<any> = input<any>({});
   clientData: Client | null = null;
-  initialPlan: any = null;
 
   loading$ = this.store.select(PlansState.isLoading);
   loadingClient$ = this.store.select(ClientsState.isLoading);
@@ -157,15 +157,12 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
       address: ['', [Validators.required, Validators.minLength(5)]],
       medicalSociety: ['', [Validators.required]],
       sex: ['', [Validators.required]],
-      cardiacHistory: ['', [Validators.required, Validators.minLength(5)]],
-      surgicalHistory: ['', [Validators.required, Validators.minLength(5)]],
-      historyofPathologicalLesions: [
-        '',
-        [Validators.required, Validators.minLength(5)],
-      ],
+      cardiacHistory: ['', [Validators.required]],
+      surgicalHistory: ['', [Validators.required]],
+      historyofPathologicalLesions: ['', [Validators.required]],
       bloodPressure: ['', [Validators.required]],
       frequencyOfPhysicalExercise: ['', [Validators.required]],
-      respiratoryHistory: ['', [Validators.required, Validators.minLength(5)]],
+      respiratoryHistory: ['', [Validators.required]],
       plan: ['', [Validators.required]],
       CI: ['', [Validators.required, Validators.pattern('^[0-9]{8,15}$')]],
     });
@@ -207,7 +204,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
           ),
         )
         .subscribe((plan) => {
-          this.initialPlan = plan; // Verifica que tengas los datos correctos
+          if (plan) this.selectedPlan = plan; // Verifica que tengas los datos correctos
         });
     }
   }
@@ -236,16 +233,18 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
         respiratoryHistory: this.clientForm.get('respiratoryHistory')?.value,
       };
       if (this.isEdit()) {
+        if (!this.selectedPlan._id || !this.selectedPlan) {
+          this.snackbar.showError('Error', 'El plan seleccionado no es válido');
+          return;
+        }
+
         this.store.dispatch(new UpdateClient(this.id(), userInfo));
         this.actions
           .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
           .subscribe(() => {
-            if (this.initialPlan || this.selectedPlanId) {
+            if (this.selectedPlan) {
               this.store.dispatch(
-                new AssignPlanToUser(
-                  this.selectedPlanId ?? this.initialPlan._id,
-                  this.id(),
-                ),
+                new AssignPlanToUser(this.selectedPlan._id, this.id()),
               );
               this.actions
                 .pipe(
@@ -258,10 +257,15 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
                     'Cliente actualizado con correctamente',
                   );
                   this.clientForm.reset();
+                  this.router.navigate(['/clientes']);
                 });
             }
           });
       } else {
+        if (!this.selectedPlan) {
+          this.snackbar.showError('Error', 'El plan seleccionado no es válido');
+          return;
+        }
         const dataRegister = {
           identifier: this.clientForm.get('identifier')?.value,
           password: this.clientForm.get('password')?.value,
@@ -280,10 +284,10 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
                 takeUntil(this._destroyed),
               )
               .subscribe(() => {
-                if (this.selectedPlanId) {
+                if (this.selectedPlan) {
                   this.store.dispatch(
                     new AssignPlanToUser(
-                      this.selectedPlanId,
+                      this.selectedPlan._id,
                       registerClient._id,
                     ),
                   );
@@ -312,7 +316,7 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   }
 
   onPlanSelected(plan: any): void {
-    this.selectedPlanId = plan._id;
+    this.selectedPlan = plan;
   }
 
   cancel() {

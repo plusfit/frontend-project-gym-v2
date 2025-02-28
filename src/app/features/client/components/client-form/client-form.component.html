@@ -164,7 +164,7 @@
           [selector]="selector"
           propertyToDisplay="name"
           (itemSelected)="onPlanSelected($event)"
-          [initialValue]="initialPlan"
+          [initialValue]="selectedPlan"
         ></app-autocomplete>
       </div>
 
@@ -250,7 +250,7 @@
     <button appBtn class="btn-secondary" (click)="cancel()">Cancelar</button>
     <button
       appBtn
-      [disabled]="clientForm.invalid"
+      [disabled]="clientForm.invalid || (loadingClient$ | async)"
       [animate]="true"
       [loader]="(loadingClient$ | async)!"
       type="submit"
