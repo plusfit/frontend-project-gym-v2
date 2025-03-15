@@ -38,9 +38,6 @@ export class ScreenComponent implements OnInit, OnChanges {
       this.menRoutines = this.routines.filter((r) => r.type === 'men');
       this.womenRoutines = this.routines.filter((r) => r.type === 'women');
       this.cardioRoutines = this.routines.filter((r) => r.type === 'cardio');
-      console.log('menRoutines', this.menRoutines);
-      console.log('womenRoutines', this.womenRoutines);
-      console.log('cardioRoutines', this.cardioRoutines);
     }
   }
 }
