@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@100;200;300;400;500;600;700");
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
 @import url("https://unpkg.com/phosphor-icons@1.4.2/src/css/icons.css");
 
 @tailwind base;
@@ -10,13 +11,21 @@
   border-right: none !important;
 }
 
+@font-face {
+  font-family: 'ApexPro';
+  src: url('../src/assets/fonts/APEXPRO.OTF') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html {
   overflow-y: scroll;
 }
 
 html,
 body {
-  height: 100%;
+  overflow: hidden;
+  height: 100vh;
   font-family: "Rubik";
 }
 
@@ -28,7 +37,15 @@ body {
   border-right: none !important;
 }
 
+@theme {
+  --font-screen: "Black Ops One", sans-serif;
+}
+
 @layer components {
+  .font-black-ops {
+    font-family: "Black Ops One", sans-serif;
+  }
+
   input {
     @apply border-neutral-600 w-full border rounded-sm shadow-100 text-body-md p-3 text-neutral-800 placeholder:text-neutral-600 !outline-offset-0;
   }

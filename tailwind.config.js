@@ -5,7 +5,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Rubik'],
-        poppins: ['Rubik']
+        poppins: ['Rubik'],
+        apexPro: ['ApexPro'],
       },
       colors: {
         primary: {
@@ -197,7 +198,7 @@ module.exports = {
         input: '0px 2px 2px 0px rgba(112,144,176,0.1), 0px 0px 0px 2px rgba(216, 225, 240, 1)',
         'input-error': '0px 2px 2px 0px rgba(112,144,176,0.1), 0px 0px 0px 4px rgba(255, 229, 229, 0.1)'
       }
-    }
+    },
   },
   plugins: []
 };

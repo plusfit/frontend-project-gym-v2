@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-card-routine',
   standalone: true,
   imports: [],
   templateUrl: './card-routine.component.html',
-  styleUrl: './card-routine.component.css'
+  styleUrl: './card-routine.component.css',
 })
 export class CardRoutineComponent {
-
+  @Input() routine: any;
 }
