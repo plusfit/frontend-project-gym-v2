@@ -1,1 +1,72 @@
-<p>{{routines$ | async | json }}</p>
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<div class="p-2 h-screen flex flex-col justify-between overflow-hidden">
+  <div class="flex-1 overflow-hidden">
+    <div class="flex flex-col gap-4 h-full">
+      <!-- Rutinas de Hombre -->
+      <div class="rounded-lg shadow-md flex-1 overflow-hidden">
+        <p
+          class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-blue-600"
+        >
+          Fuerza Hombre
+        </p>
+        <div>
+          @for (routine of menRoutines; track $index) {
+            <app-card-routine [routine]="routine"></app-card-routine>
+          }
+        </div>
+      </div>
+
+      <!-- Rutinas de Mujer -->
+      <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
+        <p
+          class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-pink-600"
+        >
+          Fuerza Mujer
+        </p>
+        <div>
+          @for (routine of womenRoutines; track $index) {
+            <app-card-routine
+              [routine]="routine"
+              class="max-h-40"
+            ></app-card-routine>
+          }
+        </div>
+      </div>
+
+      <!-- Rutinas de Cardio -->
+      <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
+        <div class="flex justify-between items-center">
+          <div class="flex flex-wrap justify-center gap-2">
+            @for (logo of logos; track $index) {
+              <img
+                [src]="'../../../../../assets/logos/' + logo"
+                class="object-contain h-16"
+              />
+            }
+          </div>
+          <p
+            class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-green-600"
+          >
+            Cardio
+          </p>
+          <div class="flex flex-wrap justify-center gap-2">
+            @for (logo of logos; track $index) {
+              <img
+                [src]="'../../../../../assets/logos/' + logo"
+                class="object-contain h-16"
+              />
+            }
+          </div>
+        </div>
+        <div class="">
+          @for (routine of cardioRoutines; track $index) {
+            <app-card-routine
+              [routine]="routine"
+              class="max-h-40"
+            ></app-card-routine>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -36,6 +36,11 @@ export class ScreenRoutineState {
     return state.screenRoutines;
   }
 
+  // ✅ Función para eliminar duplicados de ejercicios por ID
+  private removeDuplicateExercises(exercises: any[]): any[] {
+    return Array.from(new Map(exercises.map((e) => [e._id, e])).values());
+  }
+
   @Action(GetScreenRoutinesByPage, { cancelUncompleted: true })
   getRoutines(
     ctx: StateContext<ScreenRoutineStateModel>,
@@ -105,8 +110,9 @@ export class ScreenRoutineState {
                       subRoutines: routine.subRoutines.map(
                         (subroutine: any) => ({
                           ...subroutine,
-                          exercises:
+                          exercises: this.removeDuplicateExercises(
                             exercisesBySubroutine[subroutine._id] || [],
+                          ), // ✅ Eliminamos duplicados antes de asignar
                         }),
                       ),
                     }),
@@ -133,7 +139,7 @@ export class ScreenRoutineState {
         }),
         catchError((error: HttpErrorResponse) => {
           ctx.patchState({ loading: false });
-          return throwError(() => error); // 💡 Angular usa esta sintaxis con RxJS >= 7
+          return throwError(() => error);
         }),
       );
   }
