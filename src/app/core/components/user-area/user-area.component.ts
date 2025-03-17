@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, input, InputSignal, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Logout } from '@features/auth/state/auth.actions';
 import { Actions, Store } from '@ngxs/store';
@@ -9,11 +10,14 @@ import { Subject } from 'rxjs';
  */
 @Component({
   selector: 'app-user-area',
+  imports: [NgClass],
   templateUrl: './user-area.component.html',
   styleUrls: ['./user-area.component.css'],
   standalone: true,
 })
 export class UserAreaComponent implements OnDestroy {
+  isMenuOpen: InputSignal<boolean> = input<boolean>(false);
+
   private destroy = new Subject<void>();
   /**
    * The user data observable.
