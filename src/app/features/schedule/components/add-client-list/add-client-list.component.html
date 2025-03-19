@@ -1,46 +1,50 @@
 <form
   [formGroup]="form"
-  class="m-5 mb-5 justify-center flex flex-col items-center gap-4"
+  class="m-5 mb-5 flex flex-col items-center gap-4 overflow-y-auto max-h-[80vh] max-w-[60wh] w-full"
 >
   <app-title [title]="title"></app-title>
-  <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
-  <app-table
-    [data]="clientsAssignable$ | async"
-    [displayedColumns]="['name', 'CI', 'email']"
-    [isSelect]="true"
-    [loading]="loadingAssignable$ | async"
-    [total]="totalClients$ | async"
-    (selectionChange)="toggleClient($event)"
-    [selected]="clientSelected"
-  >
-    <mat-paginator
-      [length]="(totalClients$ | async) || 0"
-      [pageSize]="pageSize"
-      (page)="paginate($event)"
-    ></mat-paginator>
-  </app-table>
-
-  <mat-selection-list
-    #shoesList
-    [formControl]="clientsControl"
-    name="shoes"
-    [multiple]="false"
-    class="overflow-y-auto h-50"
-  >
-    @for (client of filteredClients; track client) {
-      <mat-list-option [value]="client._id">{{ client.email }}</mat-list-option>
-    }
-  </mat-selection-list>
-  <div class="flex justify-between w-full">
-    <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
-    <button
-      appBtn
-      mat-raised-button
-      color="primary"
-      (click)="addClient()"
-      [disabled]="selectedClients.length === 0"
+  <div class="flex flex-col gap-3">
+    <app-filter-bar (formValues)="onSearch($event)"></app-filter-bar>
+    <app-table
+      [data]="clientsAssignable$ | async"
+      [displayedColumns]="['name', 'CI', 'email']"
+      [isSelect]="true"
+      [loading]="loadingAssignable$ | async"
+      [total]="totalClients$ | async"
+      (selectionChange)="toggleClient($event)"
+      [selected]="clientSelected"
     >
-      Agregar cliente
-    </button>
+      <mat-paginator
+        [length]="(totalClients$ | async) || 0"
+        [pageSize]="pageSize"
+        (page)="paginate($event)"
+      ></mat-paginator>
+    </app-table>
+
+    <mat-selection-list
+      #shoesList
+      [formControl]="clientsControl"
+      name="shoes"
+      [multiple]="false"
+      class="overflow-y-auto h-50"
+    >
+      @for (client of filteredClients; track client) {
+        <mat-list-option [value]="client._id">{{
+          client.email
+        }}</mat-list-option>
+      }
+    </mat-selection-list>
+    <div class="flex justify-between w-full">
+      <button appBtn color="secondary" (click)="cancel()">Cancelar</button>
+      <button
+        appBtn
+        mat-raised-button
+        color="primary"
+        (click)="addClient()"
+        [disabled]="selectedClients.length === 0"
+      >
+        Agregar cliente
+      </button>
+    </div>
   </div>
 </form>
