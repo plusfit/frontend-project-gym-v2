@@ -1,5 +1,6 @@
 <div class="flex flex-col space-y-6 h-full">
-  <div class="flex-shrink-0">
+  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'flex-shrink-0': !isMenuOpen() }">
+    <!-- Botón hamburguesa (solo visible en móviles/tablets) -->
     <a routerLink="/">
       <img
         title="logo"
@@ -9,7 +10,7 @@
       />
     </a>
   </div>
-  <div class="hidden md:block">
+  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'block': !isMenuOpen() }">
     <div class="flex flex-col space-y-2">
       <a
         routerLink="clientes"

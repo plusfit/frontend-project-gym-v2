@@ -4,14 +4,13 @@
   >
     Clientes 📝
   </span>
-  <div class="flex justify-between items-center">
-    <div class="flex space-x-4 items-center">
-      <app-filter-bar (formValues)="onSearch($event)"> </app-filter-bar>
+  <div class="md:flex-row lg:flex flex-row justify-between items-center">
+    <app-filter-bar (formValues)="onSearch($event)">
       <app-filter-select
         [placeholder]="'Selecciona un filtro'"
         [control]="filterControl"
       ></app-filter-select>
-    </div>
+    </app-filter-bar>
     <button class="btn-primary button-link" (click)="createClient()">
       <i class="ph-plus text-white text-lg"></i> <span>Crear Cliente</span>
     </button>
