@@ -1,0 +1,24 @@
+@keyframes slide-in-text {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+        /* Comienza desde la derecha */
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateX(0);
+        /* Se posiciona en su lugar */
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Aplicar animación a cada elemento */
+.slide-text {
+    opacity: 0;
+    animation: slide-in-text 1s ease-out forwards;
+}

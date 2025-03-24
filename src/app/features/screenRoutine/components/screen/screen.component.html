@@ -28,6 +28,7 @@
             <app-card-routine
               [routine]="routine"
               class="max-h-40"
+              [backgroundColor]="'#18a29b'"
             ></app-card-routine>
           }
         </div>
@@ -58,7 +59,7 @@
             }
           </div>
         </div>
-        <div class="">
+        <div>
           @for (routine of cardioRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
