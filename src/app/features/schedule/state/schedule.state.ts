@@ -15,6 +15,7 @@ import {
   getMaxCount,
   GetSchedule,
   SelectedClient,
+  ClearSelectedClient,
 } from './schedule.actions';
 
 @State<ScheduleStateModel>({
@@ -66,7 +67,7 @@ export class ScheduleState {
 
   @Selector()
   static getTotal(state: ScheduleStateModel): number {
-    return state.clientsAssignable.length ?? 0;
+    return state.total ?? 0;
   }
 
   @Selector()
@@ -303,18 +304,25 @@ export class ScheduleState {
 
     if (searchQ === null || searchQ === undefined) {
       getAssignableClientsObservable =
-        this.scheduleService.getClientsAssignable(page, pageSize, '');
+        this.scheduleService.getClientsAssignable(page, pageSize, '', '', '');
     } else {
       getAssignableClientsObservable =
-        this.scheduleService.getClientsAssignable(page, pageSize, searchQ);
+        this.scheduleService.getClientsAssignable(
+          page,
+          pageSize,
+          searchQ,
+          searchQ,
+          searchQ,
+        );
     }
 
     return getAssignableClientsObservable.pipe(
       tap((response: any) => {
-        const clientsAssignable = response.data.map((client: any) => ({
+        const { data, total } = response.data;
+        const clientsAssignable = data.map((client: any) => ({
           ...client,
         }));
-        const total = response.data.length;
+
         const pageCount = Math.ceil(total / pageSize);
 
         ctx.patchState({
@@ -405,5 +413,10 @@ export class ScheduleState {
     action: SelectedClient,
   ) {
     ctx.patchState({ selectedClient: action.client });
+  }
+
+  @Action(ClearSelectedClient)
+  clearSelectedClient(ctx: StateContext<ScheduleStateModel>) {
+    ctx.patchState({ selectedClient: null });
   }
 }

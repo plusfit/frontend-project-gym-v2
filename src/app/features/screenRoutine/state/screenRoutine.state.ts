@@ -131,7 +131,6 @@ export class ScreenRoutineState {
           );
         }),
         tap((updatedResponse: any) => {
-          console.log(updatedResponse.data);
           ctx.patchState({
             screenRoutines: updatedResponse.data.routines,
             loading: false,

@@ -29,7 +29,6 @@ export class ScreenPagesComponent implements OnInit {
           .select((state) => state.screenRoutine)
           .subscribe((routines) => {
             this.routines = routines.screenRoutines;
-            console.log('routines', this.routines);
           });
       });
   }
