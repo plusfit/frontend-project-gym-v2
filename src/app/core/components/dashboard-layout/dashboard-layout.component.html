@@ -1,9 +1,27 @@
 <div class="h-screen bg-neutral-200 flex">
   <nav class="bg-gradient-to-t from-primary-300 to-primary-600 z-10">
     <div class="h-full">
-      <div class="flex flex-col justify-between h-full px-4 py-6 w-64">
-        <app-navigation></app-navigation>
-        <app-user-area></app-user-area>
+      <div
+        class="flex flex-col justify-between h-full px-4 py-6 md:w-64"
+        [ngClass]="{ 'w-20': isMenuOpen, 'w-64': !isMenuOpen }"
+      >
+        <div>
+          <button
+            (click)="isMenuOpen = !isMenuOpen"
+            class="md:hidden p-3 text-white flex items-end justify-end transition-transform duration-300 w-full"
+          >
+            <i
+              class="text-4xl transition-transform duration-300"
+              [ngClass]="{
+                'ph-list rotate-0': isMenuOpen,
+                'ph-x rotate-180': !isMenuOpen,
+              }"
+            ></i>
+          </button>
+
+          <app-navigation [isMenuOpen]="isMenuOpen"></app-navigation>
+        </div>
+        <app-user-area [isMenuOpen]="isMenuOpen"></app-user-area>
       </div>
     </div>
   </nav>

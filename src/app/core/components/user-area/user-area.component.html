@@ -1,5 +1,6 @@
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
-<div class="border-t border-t-neutral-700 pt-6 cursor-pointer">
+<div class="border-t border-t-neutral-700 pt-6 cursor-pointer md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'inline-block': !isMenuOpen() }"
+>
   <div
     class="flex items-center justify-between bg-primary-500 text-white rounded-sm p-4 w-full space-x-4 hover:bg-primary-600 transition-colors"
     aria-label="Cerrar sesión"
