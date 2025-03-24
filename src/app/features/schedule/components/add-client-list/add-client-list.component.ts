@@ -108,7 +108,6 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     this.clientSelected = selectedClient
       ? [...selectedClient, ...clients]
       : [...clients];
-    console.log('this.clientSelected', this.clientSelected);
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {

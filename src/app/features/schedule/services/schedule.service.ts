@@ -25,13 +25,21 @@ export class ScheduleService {
   getClientsAssignable(
     page: number,
     limit: number,
+    name: string,
     email: string,
+    CI: string,
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
+    if (name) {
+      params = params.set('name', name);
+    }
     if (email) {
       params = params.set('email', email);
+    }
+    if (CI) {
+      params = params.set('CI', CI);
     }
     return this.http.get<any>(`${environment.api}/plans/assignableClients`, {
       params,

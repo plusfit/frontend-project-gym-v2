@@ -78,3 +78,7 @@ export class SelectedClient {
   static readonly type = '[Schedule] Selected Client';
   constructor(public readonly client: any) {}
 }
+
+export class ClearSelectedClient {
+  static readonly type = '[Schedule] Clear Selected Client';
+}
