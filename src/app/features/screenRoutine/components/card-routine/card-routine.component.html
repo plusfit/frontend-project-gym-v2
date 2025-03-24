@@ -15,7 +15,10 @@
         <!-- Lista en 2 columnas -->
         <ul class="grid grid-cols-2 gap-2 text-gray-700 px-4">
           @for (exercise of subRoutine.exercises; track $index) {
-            <li #exerciseText class="text-sm font-bold text-white text-center">
+            <li
+              #exerciseText
+              class="text-sm font-bold text-white text-center slide-fade-effect"
+            >
               {{ exercise.name }} - {{ exercise.series }} x {{ exercise.reps }}
             </li>
           }

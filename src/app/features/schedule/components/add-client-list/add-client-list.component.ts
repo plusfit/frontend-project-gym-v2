@@ -99,7 +99,11 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
 
     this.store.dispatch(new getMaxCount(this.data.id));
     this.store.dispatch(
-      new getClientsAssignable({ page: 1, pageSize: this.pageSize }),
+      new getClientsAssignable({
+        page: 1,
+        pageSize: this.pageSize,
+        hourId: this.data.id,
+      }),
     );
     const selectedClient = this.store.selectSnapshot(
       ScheduleState.selectedClient,

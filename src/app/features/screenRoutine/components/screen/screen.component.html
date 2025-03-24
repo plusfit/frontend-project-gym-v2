@@ -11,7 +11,11 @@
         </p>
         <div>
           @for (routine of menRoutines; track $index) {
-            <app-card-routine [routine]="routine"></app-card-routine>
+            <app-card-routine
+              [routine]="routine"
+              [animationDelay]="$index * 1000"
+              class="card-routine max-h-40"
+            ></app-card-routine>
           }
         </div>
       </div>
@@ -27,7 +31,8 @@
           @for (routine of womenRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
-              class="max-h-40"
+              [animationDelay]="10 * 1000"
+              class="card-routine max-h-40"
               [backgroundColor]="'#18a29b'"
             ></app-card-routine>
           }
@@ -63,7 +68,8 @@
           @for (routine of cardioRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
-              class="max-h-40"
+              [animationDelay]="15 * 1000"
+              class="card-routine max-h-40"
             ></app-card-routine>
           }
         </div>
