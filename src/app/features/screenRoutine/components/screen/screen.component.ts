@@ -33,8 +33,6 @@ export class ScreenComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.routines.length) {
-      console.log('routine', this.routines);
-
       this.menRoutines = this.routines.filter((r) => r.type === 'men');
       this.womenRoutines = this.routines.filter((r) => r.type === 'women');
       this.cardioRoutines = this.routines.filter((r) => r.type === 'cardio');
