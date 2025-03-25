@@ -120,13 +120,18 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
         page: 1,
         pageSize: this.pageSize,
         searchQ: filters.searchQ,
+        hourId: this.data.id,
       }),
     );
   }
 
   loadClients(page: number): void {
     this.store.dispatch(
-      new getClientsAssignable({ page: page, pageSize: this.pageSize }),
+      new getClientsAssignable({
+        page: page,
+        pageSize: this.pageSize,
+        hourId: this.data.id,
+      }),
     );
   }
 
