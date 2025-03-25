@@ -26,6 +26,11 @@ export class CardRoutineComponent implements AfterViewInit {
     this.startRepeatingAnimation();
   }
 
+  getAnimationDelay(index: number): string {
+    const delay = index * 100; // 100ms entre cada uno
+    return `${delay}ms`;
+  }
+
   startRepeatingAnimation() {
     // Llamar a la animación cada 1 minuto (60000 ms)
     setInterval(() => {
@@ -38,23 +43,13 @@ export class CardRoutineComponent implements AfterViewInit {
 
     // Reiniciar la animación: Primero, eliminar las clases de animación
     exerciseElements.forEach((textElement) => {
-      textElement.nativeElement.classList.remove(
-        'slide-fade-effect-left',
-        'slide-fade-effect-right',
-      );
+      textElement.nativeElement.classList.remove('slide-fade-effect');
     });
 
     // Aplicar la animación a todos los ejercicios al mismo tiempo
-    exerciseElements.forEach((textElement, index) => {
+    exerciseElements.forEach((textElement) => {
       setTimeout(() => {
-        // Alternar animación entre izquierda y derecha
-        if (index % 2 === 0) {
-          // Si el índice es par, el texto viene de la izquierda
-          textElement.nativeElement.classList.add('slide-fade-effect-left');
-        } else {
-          // Si el índice es impar, el texto viene de la derecha
-          textElement.nativeElement.classList.add('slide-fade-effect-right');
-        }
+        textElement.nativeElement.classList.add('slide-fade-effect');
       }, 0); // Todos los ejercicios comienzan al mismo tiempo (sin delay)
     });
   }
