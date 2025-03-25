@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <div class="p-6">
   @if (loading$ | async) {
     <app-loader></app-loader>
@@ -29,6 +31,85 @@
               appearance="outline"
             ></app-text-area>
           </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="example-full-width">
+          <mat-label>Seleccionar Categoria</mat-label>
+          <input
+            type="text"
+            placeholder="Seleccionar Categoria"
+            aria-label="Number"
+            matInput
+            [formControl]="caterieControl"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            @for (option of categories; track option) {
+              <mat-option [value]="option.value">{{
+                option.viewValue
+              }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div
+          class="mt-2 flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition relative"
+          tabindex="0"
+          role="button"
+          (click)="fileInput.click()"
+          (keydown.enter)="fileInput.click()"
+          (keyup.space)="fileInput.click()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+          [class.border-indigo-500]="dragging"
+        >
+          <input
+            #fileInput
+            type="file"
+            (change)="onFileSelected($event)"
+            accept="image/gif"
+            hidden
+          />
+
+          @if (!filePreview) {
+            <svg
+              class="w-12 h-12 text-gray-400 mb-3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7 16V8a4 4 0 118 0m-6 8h6m-6 0a2 2 0 110-4m6 4a2 2 0 110-4"
+              ></path>
+            </svg>
+            <p class="text-sm text-gray-600">
+              Arrastra y suelta aquí o
+              <span class="text-indigo-500 font-medium"
+                >haz clic para subir</span
+              >
+            </p>
+            <p class="text-xs text-gray-400 mt-1">Solo archivos GIF</p>
+          }
+
+          @if (filePreview) {
+            <img
+              [src]="filePreview"
+              class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+            />
+            <button
+              type="button"
+              class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
+              (click)="removeFile($event)"
+            >
+              ✕
+            </button>
+          }
         </div>
 
         <mat-form-field appearance="outline" class="w-full">
