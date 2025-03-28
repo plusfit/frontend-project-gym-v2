@@ -39,6 +39,7 @@ import { TextAreaComponent } from '@shared/components/text-area/text-area.compon
 import { TitleComponent } from '@shared/components/title/title.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-exercise-form',
@@ -59,6 +60,7 @@ import { MatInputModule } from '@angular/material/input';
     TitleComponent,
     MatAutocompleteModule,
     MatInputModule,
+    MatRadioModule,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
@@ -91,25 +93,27 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   ];
 
   categories = [
-    { value: 'chest', viewValue: 'Pecho' },
-    { value: 'back', viewValue: 'Espalda' },
-    { value: 'shoulders', viewValue: 'Hombros' },
-    { value: 'biceps', viewValue: 'Bíceps' },
-    { value: 'triceps', viewValue: 'Tríceps' },
-    { value: 'forearms', viewValue: 'Antebrazos' },
-    { value: 'quadriceps', viewValue: 'Cuádriceps' },
-    { value: 'hamstrings', viewValue: 'Isquiotibiales' },
-    { value: 'glutes', viewValue: 'Glúteos' },
-    { value: 'calves', viewValue: 'Pantorrillas' },
-    { value: 'core', viewValue: 'Core' },
-    { value: 'lower_back', viewValue: 'Zona Lumbar' },
+    { value: 'Pecho', viewValue: 'Pecho' },
+    { value: 'Espalda', viewValue: 'Espalda' },
+    { value: 'Hombros', viewValue: 'Hombros' },
+    { value: 'Bíceps', viewValue: 'Bíceps' },
+    { value: 'Tríceps', viewValue: 'Tríceps' },
+    { value: 'Antebrazos', viewValue: 'Antebrazos' },
+    { value: 'Cuádriceps', viewValue: 'Cuádriceps' },
+    { value: 'Isquiotibiales', viewValue: 'Isquiotibiales' },
+    { value: 'Glúteos', viewValue: 'Glúteos' },
+    { value: 'Pantorrillas', viewValue: 'Pantorrillas' },
+    { value: 'Core', viewValue: 'Core' },
+    { value: 'Zona Lumbar', viewValue: 'Zona Lumbar' },
+    { value: 'Pilométricos', viewValue: 'Pilométricos' },
+    { value: 'Trapecios', viewValue: 'Trapecios' },
 
     // Tipo de Movimiento
-    { value: 'push', viewValue: 'Empuje' },
-    { value: 'pull', viewValue: 'Tracción' },
-    { value: 'knee_dominant', viewValue: 'Dominante de Rodilla' },
-    { value: 'hip_dominant', viewValue: 'Dominante de Cadera' },
-    { value: 'stabilization', viewValue: 'Estabilización' },
+    { value: 'Empuje', viewValue: 'Empuje' },
+    { value: 'Tracción', viewValue: 'Tracción' },
+    { value: 'Dominante de Rodilla', viewValue: 'Dominante de Rodilla' },
+    { value: 'Dominante de Cadera', viewValue: 'Dominante de Cadera' },
+    { value: 'Estabilización', viewValue: 'Estabilización' },
   ];
 
   ngOnDestroy(): void {
@@ -121,6 +125,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     this.exerciseForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
+      cardioMetric: ['minutes'],
       gifUrl: [''],
       categorie: ['', Validators.required],
       type: ['', Validators.required],
@@ -147,6 +152,12 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
           if (exerciseEditing) this.setDataForEdit(exerciseEditing);
         });
     }
+
+    this.exerciseForm.get('cardioMetric')?.valueChanges.subscribe(() => {
+      if (this.exerciseForm.get('type')?.value === 'cardio') {
+        this.toggleExerciseFields('cardio');
+      }
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -227,42 +238,56 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     this.btnTitle = 'Guardar';
     this.exerciseForm.patchValue(exerciseEditing);
     this.toggleExerciseFields(exerciseEditing.type);
+    const selectedCategory = this.categories.find((category) =>
+      exerciseEditing.categorie.includes(category.value),
+    );
+    this.caterieControl.setValue(selectedCategory);
+    this.filePreview = exerciseEditing.gifUrl;
   }
 
   toggleExerciseFields(type: string): void {
+    const controls = this.exerciseForm.controls;
+
+    const setFieldState = (
+      field: string,
+      enabled: boolean,
+      validators: any[] = [],
+    ) => {
+      if (enabled) {
+        controls[field]?.enable();
+        controls[field]?.setValidators(validators);
+      } else {
+        controls[field]?.disable();
+        controls[field]?.clearValidators();
+        controls[field]?.setValue(null); // Resetea el valor si se deshabilita
+      }
+    };
+
+    // Configuración de campos según el tipo de ejercicio
     if (type === 'cardio') {
-      this.exerciseForm.get('minutes')?.enable();
-      this.exerciseForm
-        .get('minutes')
-        ?.setValidators([Validators.required, Validators.min(1)]);
+      const cardioMetric =
+        this.exerciseForm.get('cardioMetric')?.value || 'minutes';
 
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.exerciseForm.get('reps')?.disable();
-      this.exerciseForm.get('reps')?.clearValidators();
-
-      this.exerciseForm.get('series')?.disable();
-      this.exerciseForm.get('series')?.clearValidators();
+      // Activa solo el campo seleccionado
+      setFieldState('minutes', cardioMetric === 'minutes', [
+        Validators.required,
+        Validators.min(1),
+      ]);
+      setFieldState('reps', cardioMetric === 'reps', [
+        Validators.required,
+        Validators.min(1),
+      ]);
+      setFieldState('series', false);
     } else if (type === 'room') {
-      this.exerciseForm.get('reps')?.enable();
-      this.exerciseForm
-        .get('reps')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      this.exerciseForm.get('series')?.enable();
-      this.exerciseForm
-        .get('series')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.exerciseForm.get('minutes')?.disable();
-      this.exerciseForm.get('minutes')?.clearValidators();
+      setFieldState('reps', true, [Validators.required, Validators.min(1)]);
+      setFieldState('series', true, [Validators.required, Validators.min(1)]);
+      setFieldState('minutes', false);
     }
 
-    // Actualiza la validez de los campos condicionales
-    this.exerciseForm.get('minutes')?.updateValueAndValidity();
-    this.exerciseForm.get('rest')?.updateValueAndValidity();
-    this.exerciseForm.get('reps')?.updateValueAndValidity();
-    this.exerciseForm.get('series')?.updateValueAndValidity();
+    // Actualiza la validez de todos los campos afectados
+    ['minutes', 'rest', 'reps', 'series'].forEach((field) =>
+      controls[field]?.updateValueAndValidity(),
+    );
   }
 
   cancel(): void {

@@ -33,25 +33,6 @@
           </div>
         </div>
 
-        <mat-form-field appearance="outline" class="example-full-width">
-          <mat-label>Seleccionar Categoria</mat-label>
-          <input
-            type="text"
-            placeholder="Seleccionar Categoria"
-            aria-label="Number"
-            matInput
-            [formControl]="caterieControl"
-            [matAutocomplete]="auto"
-          />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            @for (option of categories; track option) {
-              <mat-option [value]="option.value">{{
-                option.viewValue
-              }}</mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
         <div
           class="mt-2 flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition relative"
           tabindex="0"
@@ -112,31 +93,69 @@
           }
         </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Seleccionar Tipo</mat-label>
-          <mat-select formControlName="type">
-            @for (option of types; track option) {
-              <mat-option [value]="option.value">{{
-                option.viewValue
-              }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <div class="flex gap-4">
+          <mat-form-field appearance="outline" class="w-1/2">
+            <mat-label>Seleccionar Tipo</mat-label>
+            <mat-select formControlName="type">
+              @for (option of types; track option) {
+                <mat-option [value]="option.value">{{
+                  option.viewValue
+                }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-1/2">
+            <mat-label>Seleccionar Categoría</mat-label>
+            <input
+              type="text"
+              placeholder="Seleccionar Categoría"
+              aria-label="Categoria"
+              matInput
+              [formControl]="caterieControl"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of categories; track option) {
+                <mat-option [value]="option.value">{{
+                  option.viewValue
+                }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
 
         <div
           *ngIf="exerciseForm.get('type')?.value === 'cardio'"
           class="flex gap-4"
         >
-          <div class="w-full md:w-1/2">
-            <app-input
-              [control]="minutesControl"
-              label="Minutos"
-              type="number"
-              errorKey="minutes"
-              placeholder="Duración en minutos"
-              appearance="outline"
-            ></app-input>
-          </div>
+          <mat-radio-group formControlName="cardioMetric" class="flex gap-4">
+            <mat-radio-button value="minutes">Minutos</mat-radio-button>
+            <mat-radio-button value="reps">Repeticiones</mat-radio-button>
+          </mat-radio-group>
+          @if (exerciseForm.get("cardioMetric")?.value === "minutes") {
+            <div class="w-full md:w-1/2">
+              <app-input
+                [control]="minutesControl"
+                label="Minutos"
+                type="number"
+                errorKey="minutes"
+                placeholder="Duración en minutos"
+                appearance="outline"
+              ></app-input>
+            </div>
+          } @else {
+            <div class="w-full md:w-1/2">
+              <app-input
+                [control]="repsControl"
+                label="Repeticiones"
+                type="number"
+                errorKey="reps"
+                placeholder="Cantidad de repeticiones"
+                appearance="outline"
+              ></app-input>
+            </div>
+          }
 
           <div class="w-full md:w-1/2">
             <app-input
@@ -171,17 +190,6 @@
               type="number"
               errorKey="reps"
               placeholder="Cantidad de repeticiones"
-              appearance="outline"
-            ></app-input>
-          </div>
-
-          <div class="w-full md:w-1/2">
-            <app-input
-              [control]="restControl"
-              label="Descanso"
-              type="number"
-              errorKey="rest"
-              placeholder="Tiempo de descanso en segundos"
               appearance="outline"
             ></app-input>
           </div>

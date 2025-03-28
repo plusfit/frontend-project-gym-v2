@@ -13,6 +13,7 @@ export class TranslationPipe implements PipeTransform {
     }
 
     switch (value) {
+      // Standard fields
       case 'name':
         return 'Nombre';
       case 'CI':
@@ -79,6 +80,10 @@ export class TranslationPipe implements PipeTransform {
         return 'Intermedio';
       case 'advanced':
         return 'Avanzado';
+
+      // Categorización de ejercicios
+      case 'categorie':
+        return 'Categoría';
 
       default:
         return value;

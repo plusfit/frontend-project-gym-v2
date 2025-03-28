@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -25,14 +25,25 @@ export class ExerciseService {
     limit: number,
     filters: FiltersExercise,
   ): Observable<any> {
-    let url = `/exercises?page=${page}&limit=${limit}`;
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
     if (filters.name) {
-      url += `&name=${filters.name}`;
+      params = params.set('name', filters.name);
     }
+
     if (filters.type) {
-      url += `&type=${filters.type}`;
+      params = params.set('type', filters.type);
     }
-    return this.http.get<any>(`${environment.api}${url}`);
+
+    if (filters.categorie) {
+      params = params.set('categorie', filters.categorie);
+    }
+
+    return this.http.get<any>(`${environment.api}/exercises`, {
+      params,
+    });
   }
   createExercise(payload: ExercisePayload): Observable<any> {
     return this.http.post<any>(`${environment.api}/exercises`, payload);

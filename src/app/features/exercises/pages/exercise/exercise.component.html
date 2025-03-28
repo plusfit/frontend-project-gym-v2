@@ -1,31 +1,31 @@
 <section class="flex flex-col space-y-6 w-4/5 mx-auto">
-    <span
-      class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 my-4"
-    >
-      Ejercicios 🏋️
-    </span>
+  <span
+    class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900 my-4"
+  >
+    Ejercicios 🏋️
+  </span>
 
-    <app-filter-bar (formValues)="searchExercises($event)">
-      <button appBtn color="primary" (click)="addExerciseModal()">
-        <i class="ph-plus text-white text-lg"></i>
-        <span> Crear ejercicio </span>
-      </button>
-    </app-filter-bar>
+  <app-filter-bar (formValues)="searchExercises($event)">
+    <button appBtn color="primary" (click)="addExerciseModal()">
+      <i class="ph-plus text-white text-lg"></i>
+      <span> Crear ejercicio </span>
+    </button>
+  </app-filter-bar>
 
-    <app-exercise-table
-      [displayedColumns]="displayedColumns"
-      [exercises$]="exercises$"
-      [loading$]="loading$"
-      (editEmitter)="editExercise($event)"
-      (deleteEmitter)="deleteExercise($event)"
+  <app-exercise-table
+    [displayedColumns]="displayedColumns"
+    [exercises$]="exercises$"
+    [loading$]="loading$"
+    (editEmitter)="editExercise($event)"
+    (deleteEmitter)="deleteExercise($event)"
+  >
+    <mat-paginator
+      (page)="handlePageEvent($event)"
+      [pageSize]="pageSize"
+      [length]="totalExercises$ | async"
+      showFirstLastButtons
+      class="bg-gray-200 px-4 py-2 border-t border-gray-300"
     >
-      <mat-paginator
-        (page)="handlePageEvent($event)"
-        [pageSize]="pageSize"
-        [length]="totalExercises$ | async"
-        showFirstLastButtons
-        class="bg-gray-200 px-4 py-2 border-t border-gray-300"
-      >
-      </mat-paginator>
-    </app-exercise-table>
+    </mat-paginator>
+  </app-exercise-table>
 </section>

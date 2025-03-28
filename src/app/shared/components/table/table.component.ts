@@ -195,4 +195,52 @@ export class TableComponent implements OnInit {
         return 'Desconocido';
     }
   }
+
+  getTextBadgeCategorie(categorie: string): string {
+    switch (categorie) {
+      case 'chest':
+        return 'Pecho';
+      case 'back':
+        return 'Espalda';
+      case 'shoulders':
+        return 'Hombros';
+      case 'biceps':
+        return 'Bíceps';
+      case 'triceps':
+        return 'Tríceps';
+      case 'forearms':
+        return 'Antebrazos';
+      case 'quadriceps':
+        return 'Cuádriceps';
+      case 'hamstrings':
+        return 'Isquiotibiales';
+      case 'glutes':
+        return 'Glúteos';
+      case 'calves':
+        return 'Pantorrillas';
+      case 'core':
+        return 'Core';
+      case 'lower_back':
+        return 'Zona Lumbar';
+      case 'Pylometrics':
+        return 'Pilométricos';
+      case 'Trapeze':
+        return 'Trapecios';
+
+      // Tipos de Movimiento
+      case 'push':
+        return 'Empuje';
+      case 'pull':
+        return 'Tracción';
+      case 'knee_dominant':
+        return 'Dominante de Rodilla';
+      case 'hip_dominant':
+        return 'Dominante de Cadera';
+      case 'stabilization':
+        return 'Estabilización';
+
+      default:
+        return 'Desconocido';
+    }
+  }
 }

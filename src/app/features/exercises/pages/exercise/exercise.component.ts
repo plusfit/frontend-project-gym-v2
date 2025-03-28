@@ -55,6 +55,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     'name',
     'description',
     'type',
+    'categorie',
     'createdAt',
     'updatedAt',
     'acciones',
@@ -122,6 +123,8 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
         },
         {
           name: searchValue,
+          type: searchValue,
+          categorie: searchValue,
         },
       ),
     );

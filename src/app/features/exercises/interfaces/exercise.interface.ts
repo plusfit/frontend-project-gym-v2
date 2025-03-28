@@ -2,6 +2,7 @@ export interface Exercise {
   _id: string;
   name: string;
   description: string;
+  categorie: string[];
   gifUrl: string;
   type: string;
   minutes?: number;
