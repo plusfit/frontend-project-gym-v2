@@ -165,9 +165,14 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validar que sea un archivo GIF
-      if (!file.type.includes('gif')) {
-        alert('Solo se permiten archivos GIF.');
+      // Validar que sea un archivo GIF, JPEG, JPG o PNG
+      if (
+        !file.type.includes('gif') &&
+        !file.type.includes('jpeg') &&
+        !file.type.includes('jpg') &&
+        !file.type.includes('png')
+      ) {
+        this.snackbar.showError('Error', 'Formato no permitido');
         return;
       }
 
@@ -217,7 +222,12 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   }
 
   processFile(file: File) {
-    if (file.type === 'image/gif') {
+    if (
+      file.type === 'image/gif' ||
+      file.type === 'image/jpeg' ||
+      file.type === 'image/jpg' ||
+      file.type === 'image/png'
+    ) {
       this.selectedFile = file;
 
       // Generar vista previa

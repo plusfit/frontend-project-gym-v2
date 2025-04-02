@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Observable, catchError, tap, throwError } from 'rxjs';
+import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { Observable, catchError, tap, throwError, withLatestFrom } from 'rxjs';
 
 import { ExerciseStateModel } from './exercise.model';
 import { Exercise } from '../interfaces/exercise.interface';
@@ -17,6 +17,8 @@ import {
   UpdateExercise,
 } from './exercise.actions';
 import { environment } from '../../../../environments/environment';
+import { sortBySelection } from '@shared/helper/helpers';
+import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 
 @State<ExerciseStateModel>({
   name: 'excercise',
@@ -57,7 +59,10 @@ export class ExerciseState {
     return state.exerciseEditing || null;
   }
 
-  constructor(private exerciseService: ExerciseService) {}
+  constructor(
+    private exerciseService: ExerciseService,
+    private store: Store,
+  ) {}
 
   @Action(GetExercisesByPage, { cancelUncompleted: true })
   getExercises(
@@ -65,20 +70,30 @@ export class ExerciseState {
     action: GetExercisesByPage,
   ): Observable<Exercise[]> {
     ctx.patchState({ loading: true });
+
     return this.exerciseService
       .getExercisesByPage(action.payload.page, ctx.getState().limit)
       .pipe(
-        tap((response) => {
+        withLatestFrom(
+          this.store.select(SubRoutinesState.getSelectedSubRoutineExercises),
+        ),
+        tap(([response, selectedExercises]) => {
           const exercises = response.data.data;
-          ctx.patchState({
+          const sortedExercises = sortBySelection(
             exercises,
+            selectedExercises,
+            (ex) => ex._id,
+          );
+
+          ctx.patchState({
+            exercises: sortedExercises,
             loading: false,
             totalExercises: response.data.total,
           });
         }),
         catchError((error: HttpErrorResponse) => {
           ctx.patchState({ loading: false });
-          return throwError(error);
+          return throwError(() => error);
         }),
       );
   }

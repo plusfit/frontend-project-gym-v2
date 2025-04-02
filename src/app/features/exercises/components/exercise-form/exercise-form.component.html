@@ -49,7 +49,6 @@
             #fileInput
             type="file"
             (change)="onFileSelected($event)"
-            accept="image/gif"
             hidden
           />
 
@@ -75,7 +74,9 @@
                 >haz clic para subir</span
               >
             </p>
-            <p class="text-xs text-gray-400 mt-1">Solo archivos GIF</p>
+            <p class="text-xs text-gray-400 mt-1">
+              Solo archivos GIF, JPG, JPEG, PNG
+            </p>
           }
 
           @if (filePreview) {
@@ -127,12 +128,15 @@
 
         <div
           *ngIf="exerciseForm.get('type')?.value === 'cardio'"
-          class="flex gap-4"
+          class="flex gap-4 items-center"
         >
-          <mat-radio-group formControlName="cardioMetric" class="flex gap-4">
-            <mat-radio-button value="minutes">Minutos</mat-radio-button>
-            <mat-radio-button value="reps">Repeticiones</mat-radio-button>
-          </mat-radio-group>
+          <mat-form-field appearance="outline" class="w-1/2">
+            <mat-label>Minutos o Repeticiones</mat-label>
+            <mat-select formControlName="cardioMetric">
+              <mat-option value="minutes">Minutos</mat-option>
+              <mat-option value="reps">Repeticiones</mat-option>
+            </mat-select>
+          </mat-form-field>
           @if (exerciseForm.get("cardioMetric")?.value === "minutes") {
             <div class="w-full md:w-1/2">
               <app-input

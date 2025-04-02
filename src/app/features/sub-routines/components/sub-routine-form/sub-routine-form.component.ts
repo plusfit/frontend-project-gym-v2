@@ -29,6 +29,7 @@ import { AddExerciseDialogComponent } from '@features/sub-routines/components/ad
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import {
+  cleanSubRoutineExercises,
   CreateSubRoutine,
   UpdateSelectedSubRoutine,
   UpdateSubRoutine,
@@ -90,6 +91,7 @@ export class SubRoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnDestroy(): void {
+    this.store.dispatch(new cleanSubRoutineExercises());
     this.destroy.next();
     this.destroy.complete();
   }
