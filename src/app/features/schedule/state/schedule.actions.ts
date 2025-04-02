@@ -56,6 +56,7 @@ export class getClientsAssignable {
       page: number;
       pageSize: number;
       searchQ?: string;
+      hourId?: string;
     },
   ) {}
 }

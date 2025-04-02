@@ -28,6 +28,7 @@ export class ScheduleService {
     name: string,
     email: string,
     CI: string,
+    hourId: string,
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -40,6 +41,10 @@ export class ScheduleService {
     }
     if (CI) {
       params = params.set('CI', CI);
+    }
+
+    if (hourId) {
+      params = params.set('hourId', hourId);
     }
     return this.http.get<any>(`${environment.api}/plans/assignableClients`, {
       params,

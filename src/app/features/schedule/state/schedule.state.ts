@@ -299,12 +299,19 @@ export class ScheduleState {
     action: getClientsAssignable,
   ): Observable<any> {
     ctx.patchState({ loadingAssignable: true });
-    const { page, pageSize, searchQ } = action.payload;
+    const { page, pageSize, searchQ, hourId } = action.payload;
     let getAssignableClientsObservable: Observable<any>;
 
     if (searchQ === null || searchQ === undefined) {
       getAssignableClientsObservable =
-        this.scheduleService.getClientsAssignable(page, pageSize, '', '', '');
+        this.scheduleService.getClientsAssignable(
+          page,
+          pageSize,
+          '',
+          '',
+          '',
+          hourId || '',
+        );
     } else {
       getAssignableClientsObservable =
         this.scheduleService.getClientsAssignable(
@@ -313,6 +320,7 @@ export class ScheduleState {
           searchQ,
           searchQ,
           searchQ,
+          hourId || '',
         );
     }
 
