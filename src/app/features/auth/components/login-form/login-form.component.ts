@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -31,6 +36,7 @@ import { AuthState } from '../../state/auth.state';
   ],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class LoginFormComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
