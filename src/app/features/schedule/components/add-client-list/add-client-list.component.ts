@@ -99,7 +99,11 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
 
     this.store.dispatch(new getMaxCount(this.data.id));
     this.store.dispatch(
-      new getClientsAssignable({ page: 1, pageSize: this.pageSize }),
+      new getClientsAssignable({
+        page: 1,
+        pageSize: this.pageSize,
+        hourId: this.data.id,
+      }),
     );
     const selectedClient = this.store.selectSnapshot(
       ScheduleState.selectedClient,
@@ -108,7 +112,6 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     this.clientSelected = selectedClient
       ? [...selectedClient, ...clients]
       : [...clients];
-    console.log('this.clientSelected', this.clientSelected);
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
@@ -117,13 +120,18 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
         page: 1,
         pageSize: this.pageSize,
         searchQ: filters.searchQ,
+        hourId: this.data.id,
       }),
     );
   }
 
   loadClients(page: number): void {
     this.store.dispatch(
-      new getClientsAssignable({ page: page, pageSize: this.pageSize }),
+      new getClientsAssignable({
+        page: page,
+        pageSize: this.pageSize,
+        hourId: this.data.id,
+      }),
     );
   }
 

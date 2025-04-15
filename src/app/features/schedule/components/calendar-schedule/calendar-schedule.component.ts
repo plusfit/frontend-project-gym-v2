@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -12,15 +12,16 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
   ClearClients,
+  ClearSelectedClient,
   DeleteHour,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { EDays } from '@shared/enums/days-enum';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
-import { EDays } from '@shared/enums/days-enum';
 
 @Component({
   selector: 'app-calendar-schedule',
@@ -79,6 +80,7 @@ export class CalendarScheduleComponent implements AfterViewInit {
       .subscribe(() => {
         // Despacha la acción para limpiar el estado de clientes
         this.store.dispatch(new ClearClients());
+        this.store.dispatch(new ClearSelectedClient());
       });
   }
 

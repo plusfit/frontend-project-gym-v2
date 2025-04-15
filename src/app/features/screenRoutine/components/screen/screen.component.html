@@ -5,13 +5,17 @@
       <!-- Rutinas de Hombre -->
       <div class="rounded-lg shadow-md flex-1 overflow-hidden">
         <p
-          class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-blue-600"
+          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-blue-600"
         >
           Fuerza Hombre
         </p>
         <div>
           @for (routine of menRoutines; track $index) {
-            <app-card-routine [routine]="routine"></app-card-routine>
+            <app-card-routine
+              [routine]="routine"
+              [animationDelay]="$index * 1000"
+              class="card-routine max-h-40"
+            ></app-card-routine>
           }
         </div>
       </div>
@@ -19,7 +23,7 @@
       <!-- Rutinas de Mujer -->
       <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
         <p
-          class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-pink-600"
+          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-pink-600"
         >
           Fuerza Mujer
         </p>
@@ -27,7 +31,9 @@
           @for (routine of womenRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
-              class="max-h-40"
+              [animationDelay]="10 * 1000"
+              class="card-routine max-h-40"
+              [backgroundColor]="'#18a29b'"
             ></app-card-routine>
           }
         </div>
@@ -45,7 +51,7 @@
             }
           </div>
           <p
-            class="text-center text-5xl italic font-apexPro tracking-[0.3em] text-green-600"
+            class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-green-600"
           >
             Cardio
           </p>
@@ -58,11 +64,12 @@
             }
           </div>
         </div>
-        <div class="">
+        <div>
           @for (routine of cardioRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
-              class="max-h-40"
+              [animationDelay]="15 * 1000"
+              class="card-routine max-h-40"
             ></app-card-routine>
           }
         </div>

@@ -56,6 +56,7 @@ export class getClientsAssignable {
       page: number;
       pageSize: number;
       searchQ?: string;
+      hourId?: string;
     },
   ) {}
 }
@@ -77,4 +78,8 @@ export class getMaxCount {
 export class SelectedClient {
   static readonly type = '[Schedule] Selected Client';
   constructor(public readonly client: any) {}
+}
+
+export class ClearSelectedClient {
+  static readonly type = '[Schedule] Clear Selected Client';
 }
