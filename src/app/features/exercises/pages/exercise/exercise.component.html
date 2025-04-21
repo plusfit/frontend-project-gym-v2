@@ -17,7 +17,7 @@
     [exercises$]="exercises$"
     [loading$]="loading$"
     (editEmitter)="editExercise($event)"
-    (deleteEmitter)="deleteExercise($event)"
+    (deleteEmitter)="deleteExercise({ id: $event._id, gifUrl: $event.gifUrl })"
   >
     <mat-paginator
       (page)="handlePageEvent($event)"

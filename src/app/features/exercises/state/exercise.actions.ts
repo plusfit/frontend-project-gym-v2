@@ -1,4 +1,4 @@
-import { Exercise, ExercisePayload } from '../interfaces/exercise.interface';
+import { ExercisePayload } from '../interfaces/exercise.interface';
 import {
   FiltersExercise,
   PageExercise,
@@ -21,7 +21,10 @@ export class CreateExercise {
 }
 export class DeleteExercise {
   static readonly type = '[Exercise] DeleteExercise';
-  constructor(public readonly id: string) {}
+  constructor(
+    public readonly id: string,
+    public readonly imagePath: string,
+  ) {}
 }
 export class GetExerciseById {
   static readonly type = '[Exercise] GetExerciseById';
@@ -34,7 +37,26 @@ export class SetLimitPerPage {
 export class UpdateExercise {
   static readonly type = '[Exercise] UpdateExercise';
   constructor(
-    public readonly payload: Exercise,
+    public readonly payload: ExercisePayload,
     public readonly id: string,
+  ) {}
+}
+
+export class GetFileUrl {
+  static readonly type = '[Orders] Get Avatar Url';
+  constructor(public readonly refs: any) {}
+}
+
+export class saveExcercisesFiles {
+  static readonly type = '[Orders] Save Order Files';
+  constructor(public readonly payload: File) {}
+}
+
+export class GetCategories {
+  static readonly type = '[Exercise] GetCategories';
+  constructor(
+    public readonly page: number,
+    public readonly limit: number,
+    public readonly name?: string,
   ) {}
 }

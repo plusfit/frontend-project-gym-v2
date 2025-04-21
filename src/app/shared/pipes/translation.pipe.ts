@@ -80,11 +80,8 @@ export class TranslationPipe implements PipeTransform {
         return 'Intermedio';
       case 'advanced':
         return 'Avanzado';
-
-      // Categorización de ejercicios
-      case 'categorie':
-        return 'Categoría';
-
+      case 'mix':
+        return 'Mixto';
       default:
         return value;
     }

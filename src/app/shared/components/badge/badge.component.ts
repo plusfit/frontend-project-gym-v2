@@ -3,6 +3,7 @@ import { EColorBadge } from '../../enums/badge-color.enum';
 import { Eicon } from '../../enums/icon.enum';
 import { Eshape } from '../../enums/shape.enum';
 import { IBadgeClass } from '../../interfaces/badge_class.interface';
+import { TranslationPipe } from '@shared/pipes/translation.pipe';
 
 /**
  * A component that displays a badge with an optional icon and text.
@@ -10,6 +11,7 @@ import { IBadgeClass } from '../../interfaces/badge_class.interface';
 @Component({
   selector: 'app-badge',
   templateUrl: './badge.component.html',
+  imports: [TranslationPipe],
   standalone: true,
 })
 export class BadgeComponent implements OnChanges {

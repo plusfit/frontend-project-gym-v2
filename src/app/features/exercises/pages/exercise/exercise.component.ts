@@ -55,7 +55,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     'name',
     'description',
     'type',
-    'categorie',
+    'category',
     'createdAt',
     'updatedAt',
     'acciones',
@@ -124,7 +124,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
         {
           name: searchValue,
           type: searchValue,
-          categorie: searchValue,
+          category: searchValue,
         },
       ),
     );
@@ -137,7 +137,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  deleteExercise(exerciseId: string): void {
+  deleteExercise(exercise: { id: string; gifUrl: string }): void {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
@@ -151,7 +151,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeleteExercise(exerciseId));
+      this.store.dispatch(new DeleteExercise(exercise.id, exercise.gifUrl));
 
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))

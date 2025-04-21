@@ -121,8 +121,8 @@ export class TableComponent implements OnInit {
    * Emit identifier to deactivate organization
    * @param id Organization identifier
    */
-  emitDelete(id: string): void {
-    this.delete.emit(id);
+  emitDelete(excercise: { id: string; gifUrl: string }): void {
+    this.delete.emit(excercise);
   }
 
   resolveNestedProperty(object: any, path: string): any {
@@ -191,54 +191,46 @@ export class TableComponent implements OnInit {
         return 'Cardio';
       case 'mix':
         return 'Mixto';
-      default:
-        return 'Desconocido';
-    }
-  }
-
-  getTextBadgeCategorie(categorie: string): string {
-    switch (categorie) {
-      case 'chest':
+      case 'Pecho':
         return 'Pecho';
-      case 'back':
+      case 'Espalda':
         return 'Espalda';
-      case 'shoulders':
+      case 'Hombros':
         return 'Hombros';
-      case 'biceps':
+      case 'Bíceps':
         return 'Bíceps';
-      case 'triceps':
+      case 'Tríceps':
         return 'Tríceps';
-      case 'forearms':
+      case 'Antebrazos':
         return 'Antebrazos';
-      case 'quadriceps':
+      case 'Cuádriceps':
         return 'Cuádriceps';
-      case 'hamstrings':
+      case 'Isquiotibiales':
         return 'Isquiotibiales';
-      case 'glutes':
+      case 'Glúteos':
         return 'Glúteos';
-      case 'calves':
+      case 'Pantorrillas':
         return 'Pantorrillas';
-      case 'core':
+      case 'Core':
         return 'Core';
-      case 'lower_back':
+      case 'Zona Lumbar':
         return 'Zona Lumbar';
-      case 'Pylometrics':
+      case 'Pilométricos':
         return 'Pilométricos';
-      case 'Trapeze':
+      case 'Trapecios':
         return 'Trapecios';
 
       // Tipos de Movimiento
-      case 'push':
+      case 'Empuje':
         return 'Empuje';
-      case 'pull':
+      case 'Tracción':
         return 'Tracción';
-      case 'knee_dominant':
+      case 'Dominante de Rodilla':
         return 'Dominante de Rodilla';
-      case 'hip_dominant':
+      case 'Dominante de Cadera':
         return 'Dominante de Cadera';
-      case 'stabilization':
+      case 'Estabilización':
         return 'Estabilización';
-
       default:
         return 'Desconocido';
     }
