@@ -102,6 +102,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   filePreview: string | ArrayBuffer | null = null;
   dragging = false;
+  typesExcercise = ['minutes', 'reps', 'series'];
 
   types = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -293,7 +294,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     }
 
     // Actualiza campos individuales
-    ['minutes', 'reps', 'series'].forEach((field) =>
+    this.typesExcercise.forEach((field) =>
       controls[field]?.updateValueAndValidity({ emitEvent: false }),
     );
 

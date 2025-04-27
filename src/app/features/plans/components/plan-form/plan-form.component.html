@@ -54,12 +54,11 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Categoría</mat-label>
             <mat-select formControlName="category">
-              <mat-option
-                *ngFor="let cat of planCategories"
-                [value]="cat.value"
-              >
-                {{ cat.label }}
-              </mat-option>
+              @for (cat of planCategories; track $index) {
+                <mat-option [value]="cat.value">
+                  {{ cat.label }}
+                </mat-option>
+              }
             </mat-select>
           </mat-form-field>
 
