@@ -30,13 +30,7 @@ export class PlansPageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = [
-    'name',
-    'type',
-    'createdAt',
-    'updatedAt',
-    'acciones',
-  ];
+  displayedColumns: string[] = ['name', 'type', 'acciones'];
   pageSize: number = environment.config.pageSize;
   filterValues: FilterValues | null = null;
 

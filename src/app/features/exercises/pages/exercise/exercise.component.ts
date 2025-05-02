@@ -51,14 +51,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   pageSize: number = environment.config.pageSize ?? 8;
   currentPage: number = 1;
 
-  displayedColumns: string[] = [
-    'name',
-    'description',
-    'type',
-    'createdAt',
-    'updatedAt',
-    'acciones',
-  ];
+  displayedColumns: string[] = ['name', 'description', 'type', 'acciones'];
 
   dataSource: MatTableDataSource<Exercise> = new MatTableDataSource<Exercise>();
   totalExercises$: Observable<number> = this.store.select(

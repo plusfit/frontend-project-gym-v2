@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
   DeleteClient,
   GetClients,
+  ToggleDisabledClient,
 } from '@features/client/state/clients.actions';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { environment } from '../../../../../environments/environment';
@@ -64,6 +65,11 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetClients({ page: 1, pageSize: this.pageSize }));
   }
 
+  onValueChange(selectedValue: string): void {
+    console.log('El padre recibió:', selectedValue);
+    // acá haces lo que quieras con el valor seleccionado
+  }
+
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
@@ -71,6 +77,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: currentPage,
       pageSize: currentPageSize,
       withoutPlan: this.filterControl.value === 'true' ? true : false,
+      disable: this.filterControl.value === 'false' ? false : true,
     };
     this.store.dispatch(new GetClients(payload));
   }
@@ -81,6 +88,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
       withoutPlan: this.filterControl.value === 'true' ? true : false,
+      disable: this.filterControl.value === 'false' ? false : true,
     };
 
     this.store.dispatch(new GetClients({ ...this.filterValues }));
@@ -96,6 +104,30 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   seeDetailClient(id: string): void {
     this.router.navigate([`/clientes/detalle/${id}`]);
+  }
+
+  toggleDisabledClient(event: any, disabled: boolean): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'Desactivar cliente',
+        contentMessage: '¿Estás seguro que desea desactivar cliente?',
+      },
+    });
+
+    dialogRef.componentInstance.confirm.subscribe((value) => {
+      if (!value) return;
+      const toggleDisabled = !disabled;
+      this.store.dispatch(new ToggleDisabledClient(event.id, toggleDisabled));
+      this.actions
+        .pipe(ofActionSuccessful(ToggleDisabledClient), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess(
+            'Exito',
+            'Cliente desactivado correctamente',
+          );
+        });
+    });
   }
 
   deleteClient(event: any): void {
