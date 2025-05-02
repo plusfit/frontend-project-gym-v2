@@ -185,11 +185,6 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
         // Convertir el archivo a Base64
         const base64File = e.target?.result as string;
 
-        // Asignar el string Base64 al formulario
-        this.exerciseForm.patchValue({
-          gifUrl: base64File, // Aquí asignas el string Base64 al campo gifUrl
-        });
-
         // Actualizar la vista previa (opcional)
         this.filePreview = base64File;
       };
@@ -322,28 +317,47 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   }
 
   update(): void {
-    const sendData = {
-      name: this.exerciseForm.get('name')?.value,
-      description: this.exerciseForm.get('description')?.value,
-      gifUrl: this.exerciseForm.get('gifUrl')?.value || undefined,
-      category: this.exerciseForm.get('category')?.value,
-      type: this.exerciseForm.get('type')?.value,
-      rest: this.exerciseForm.get('rest')?.value || 0,
-      minutes: this.exerciseForm.get('minutes')?.value,
-      reps: this.exerciseForm.get('reps')?.value,
-      series: this.exerciseForm.get('series')?.value,
-    };
-    this.store.dispatch(new UpdateExercise(sendData, this.data.exerciseId));
+    this.store.dispatch(new saveExcercisesFiles(this.selectedFile as any));
     this.actions
-      .pipe(ofActionSuccessful(UpdateExercise), takeUntil(this.destroy))
+      .pipe(ofActionSuccessful(saveExcercisesFiles), take(1))
       .subscribe(() => {
-        this.store.dispatch(
-          new GetExercisesByPage({
-            page: 1,
-          }),
-        );
-        this.snackbar.showSuccess('Éxito!', 'Ejercicio actualizado');
-        this.dialogRef.close();
+        // Obtener la URL del archivo desde el estado
+        const fileUrl = this.store.selectSnapshot(ExerciseState.getCurrentFile);
+
+        // Actualizar el formulario con la URL obtenida
+        this.exerciseForm.patchValue({
+          gifUrl: fileUrl || undefined,
+        });
+
+        // Preparar los datos para enviar
+        const sendData = {
+          name: this.exerciseForm.get('name')?.value,
+          description: this.exerciseForm.get('description')?.value,
+          gifUrl: fileUrl || undefined, // Asegurarse de enviar la URL obtenida
+          category: this.exerciseForm.get('category')?.value,
+          type: this.exerciseForm.get('type')?.value,
+          rest: this.exerciseForm.get('rest')?.value || 0,
+          minutes: this.exerciseForm.get('minutes')?.value,
+          reps: this.exerciseForm.get('reps')?.value,
+          series: this.exerciseForm.get('series')?.value,
+        };
+
+        // Despachar la acción para actualizar el ejercicio
+        this.store.dispatch(new UpdateExercise(sendData, this.data.exerciseId));
+        this.actions
+          .pipe(ofActionSuccessful(UpdateExercise), takeUntil(this.destroy))
+          .subscribe(() => {
+            // Recargar la lista de ejercicios
+            this.store.dispatch(
+              new GetExercisesByPage({
+                page: 1,
+              }),
+            );
+            // Mostrar mensaje de éxito
+            this.snackbar.showSuccess('Éxito!', 'Ejercicio actualizado');
+            // Cerrar el diálogo
+            this.dialogRef.close();
+          });
       });
   }
 
