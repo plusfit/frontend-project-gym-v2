@@ -121,8 +121,8 @@ export class TableComponent implements OnInit {
    * Emit identifier to deactivate organization
    * @param id Organization identifier
    */
-  emitDelete(id: string): void {
-    this.delete.emit(id);
+  emitDelete(excercise: { id: string; gifUrl: string }): void {
+    this.delete.emit(excercise);
   }
 
   resolveNestedProperty(object: any, path: string): any {
@@ -191,6 +191,46 @@ export class TableComponent implements OnInit {
         return 'Cardio';
       case 'mix':
         return 'Mixto';
+      case 'Pecho':
+        return 'Pecho';
+      case 'Espalda':
+        return 'Espalda';
+      case 'Hombros':
+        return 'Hombros';
+      case 'Bíceps':
+        return 'Bíceps';
+      case 'Tríceps':
+        return 'Tríceps';
+      case 'Antebrazos':
+        return 'Antebrazos';
+      case 'Cuádriceps':
+        return 'Cuádriceps';
+      case 'Isquiotibiales':
+        return 'Isquiotibiales';
+      case 'Glúteos':
+        return 'Glúteos';
+      case 'Pantorrillas':
+        return 'Pantorrillas';
+      case 'Core':
+        return 'Core';
+      case 'Zona Lumbar':
+        return 'Zona Lumbar';
+      case 'Pilométricos':
+        return 'Pilométricos';
+      case 'Trapecios':
+        return 'Trapecios';
+
+      // Tipos de Movimiento
+      case 'Empuje':
+        return 'Empuje';
+      case 'Tracción':
+        return 'Tracción';
+      case 'Dominante de Rodilla':
+        return 'Dominante de Rodilla';
+      case 'Dominante de Cadera':
+        return 'Dominante de Cadera';
+      case 'Estabilización':
+        return 'Estabilización';
       default:
         return 'Desconocido';
     }

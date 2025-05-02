@@ -8,6 +8,7 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubRoutineService } from '@features/sub-routines/services/sub-routine.service';
 import {
+  cleanSubRoutineExercises,
   CreateSubRoutine,
   DeleteSubRoutine,
   GetSubRoutine,
@@ -235,5 +236,19 @@ export class SubRoutinesState {
     { subRoutine }: UpdateSelectedSubRoutine,
   ): void {
     ctx.patchState({ selectedSubRoutine: subRoutine });
+  }
+
+  @Action(cleanSubRoutineExercises)
+  cleanSubRoutineExercises(ctx: StateContext<SubRoutineStateModel>): void {
+    ctx.patchState({
+      selectedSubRoutine: {
+        ...ctx.getState().selectedSubRoutine,
+        exercises: [],
+        name: ctx.getState().selectedSubRoutine?.name || '',
+        isCustom: ctx.getState().selectedSubRoutine?.isCustom || false,
+        day: ctx.getState().selectedSubRoutine?.day ?? 0,
+        category: ctx.getState().selectedSubRoutine?.category || '',
+      },
+    });
   }
 }
