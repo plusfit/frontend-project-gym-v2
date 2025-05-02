@@ -3,7 +3,7 @@
     <mat-label>{{ placeholder }}</mat-label>
     <mat-select
       [formControl]="control"
-      (selectionChange)="filterChange($event)"
+      (selectionChange)="filterChange($event.value)"
     >
       @for (filter of filters; track filter) {
         <mat-option [value]="filter.value">{{ filter.viewValue }}</mat-option>

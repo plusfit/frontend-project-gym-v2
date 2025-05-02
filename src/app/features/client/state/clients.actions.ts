@@ -33,14 +33,6 @@ export class DeleteClient {
   constructor(public readonly id: string) {}
 }
 
-export class ToggleDisabledClient {
-  static readonly type = '[Client] ToggleDisabledClient';
-  constructor(
-    public readonly id: string,
-    public disabled: boolean,
-  ) {}
-}
-
 export class RoutineClient {
   static readonly type = '[Client] RoutineClient';
 }

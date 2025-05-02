@@ -46,14 +46,9 @@ export class TableComponent implements OnInit {
   @Output() readonly edit = new EventEmitter<any>();
   @Output() readonly delete = new EventEmitter<any>();
   @Output() readonly seeDetail = new EventEmitter<any>();
-  @Output() readonly disabled = new EventEmitter<{
-    id: string;
-    disabled: boolean;
-  }>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
-  @Input() showDisabled = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -128,10 +123,6 @@ export class TableComponent implements OnInit {
    */
   emitDelete(id: string): void {
     this.delete.emit(id);
-  }
-
-  emitDisabled(id: string, disabled: boolean): void {
-    this.disabled.emit({ id, disabled });
   }
 
   resolveNestedProperty(object: any, path: string): any {
