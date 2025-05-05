@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { GetClients } from '@features/client/state/clients.actions';
 import { Actions, Store } from '@ngxs/store';
 import { environment } from '../../../../environments/environment';
@@ -33,16 +33,11 @@ export class FilterSelectComponent {
   @Input() options!: any[];
   @Input() placeholder!: string;
   @Input() value!: string;
-  @Output() valueSelected = new EventEmitter<string>();
-
-  onValueChange(event: MatSelectChange): void {
-    this.valueSelected.emit(event.value); // emitís el value que seleccionaron
-  }
 
   filters: ValueSelect[] = [
     { value: 'all', viewValue: 'Todos' },
-    { value: 'true', viewValue: 'Sin Plan' },
-    { value: 'true', viewValue: 'Deshabilitados' },
+    { value: 'withoutPlan', viewValue: 'Sin Plan' },
+    { value: 'disabled', viewValue: 'Deshabilitados' },
   ];
 
   constructor(
@@ -54,10 +49,12 @@ export class FilterSelectComponent {
     this.disabled = false;
     this.withoutPlan = false;
 
-    if (event.source.triggerValue === 'Deshabilitados') {
+    const selected = event.value;
+
+    if (selected === 'disabled') {
       this.disabled = true;
-    } else {
-      this.withoutPlan = event.value === 'true';
+    } else if (selected === 'withoutPlan') {
+      this.withoutPlan = true;
     }
 
     this.store.dispatch(

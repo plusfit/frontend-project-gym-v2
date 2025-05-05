@@ -53,7 +53,7 @@ export class ClientService {
       params = params.set('email', email);
     }
 
-    if (disabled) {
+    if (disabled !== undefined) {
       params = params.set('disabled', disabled);
     }
 

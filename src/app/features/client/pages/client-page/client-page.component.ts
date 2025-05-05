@@ -62,12 +62,14 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.clients = this.store.select(ClientsState.getClients);
     this.loading = this.store.select(ClientsState.isLoading);
     this.total = this.store.select(ClientsState.getTotal);
-    this.store.dispatch(new GetClients({ page: 1, pageSize: this.pageSize }));
-  }
-
-  onValueChange(selectedValue: string): void {
-    console.log('El padre recibió:', selectedValue);
-    // acá haces lo que quieras con el valor seleccionado
+    this.filterValues = {
+      page: 1,
+      pageSize: this.pageSize,
+      searchQ: '',
+      withoutPlan: false,
+      disable: false,
+    };
+    this.store.dispatch(new GetClients(this.filterValues));
   }
 
   paginate(pageEvent: PageEvent): void {
@@ -76,6 +78,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const payload = {
       page: currentPage,
       pageSize: currentPageSize,
+      searchQ: this.filterValues.searchQ,
       withoutPlan: this.filterControl.value === 'true' ? true : false,
       disable: this.filterControl.value === 'false' ? false : true,
     };
