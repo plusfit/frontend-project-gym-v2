@@ -1,5 +1,7 @@
 <div class="p-6 w-full max-w-3xl mx-auto flex flex-col space-y-6">
-  <span class="text-center text-4xl md:text-6xl font-semibold text-gray-800 mb-8">
+  <span
+    class="text-center text-4xl md:text-6xl font-semibold text-gray-800 mb-8"
+  >
     {{ title }} 📝
   </span>
 
@@ -11,13 +13,34 @@
         <app-title [title]="'Información general'"></app-title>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <app-input [control]="getControl('name')" label="Nombre del plan" type="text" errorKey="name"></app-input>
+          <app-input
+            [control]="getControl('name')"
+            label="Nombre del plan"
+            type="text"
+            errorKey="name"
+          ></app-input>
 
-          <app-input [control]="getControl('days')" label="Días del plan" type="number" errorKey="days" placeholder="Número de días (1-7)"></app-input>
+          <app-input
+            [control]="getControl('days')"
+            label="Días del plan"
+            type="number"
+            errorKey="days"
+            placeholder="Número de días (1-7)"
+          ></app-input>
 
-          <app-input [control]="getControl('minAge')" label="Edad mínima" type="number" errorKey="minAge"></app-input>
+          <app-input
+            [control]="getControl('minAge')"
+            label="Edad mínima"
+            type="number"
+            errorKey="minAge"
+          ></app-input>
 
-          <app-input [control]="getControl('maxAge')" label="Edad máxima" type="number" errorKey="maxAge"></app-input>
+          <app-input
+            [control]="getControl('maxAge')"
+            label="Edad máxima"
+            type="number"
+            errorKey="maxAge"
+          ></app-input>
 
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Tipo</mat-label>
@@ -31,9 +54,11 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Categoría</mat-label>
             <mat-select formControlName="category">
-              <mat-option *ngFor="let cat of planCategories" [value]="cat.value">
-                {{ cat.label }}
-              </mat-option>
+              @for (cat of planCategories; track $index) {
+                <mat-option [value]="cat.value">
+                  {{ cat.label }}
+                </mat-option>
+              }
             </mat-select>
           </mat-form-field>
 
@@ -49,25 +74,45 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nivel de Experiencia</mat-label>
             <mat-select formControlName="experienceLevel">
-              <mat-option *ngFor="let level of experienceLevels" [value]="level.value">
+              <mat-option
+                *ngFor="let level of experienceLevels"
+                [value]="level.value"
+              >
                 {{ level.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
           <div class="md:col-span-2 flex mt-[-2rem] items-center">
-            <mat-checkbox formControlName="includesCoach">Incluye entrenador</mat-checkbox>
+            <mat-checkbox formControlName="includesCoach"
+              >Incluye entrenador</mat-checkbox
+            >
           </div>
         </div>
 
         <div class="w-full">
-          <app-autocomplete [control]="defaultRoutineControl" [selector]="selector" [action]="action" placeholder="Buscar Rutina" propertyToDisplay="name" (itemSelected)="onSelectedRoutine($event)">
+          <app-autocomplete
+            [control]="defaultRoutineControl"
+            [selector]="selector"
+            [action]="action"
+            placeholder="Buscar Rutina"
+            propertyToDisplay="name"
+            (itemSelected)="onSelectedRoutine($event)"
+          >
           </app-autocomplete>
         </div>
       </form>
 
-      <div class="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-2 mt-8">
-        <button appBtn class="btn-secondary w-full md:w-auto" (click)="goBack()">Volver</button>
+      <div
+        class="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-2 mt-8"
+      >
+        <button
+          appBtn
+          class="btn-secondary w-full md:w-auto"
+          (click)="goBack()"
+        >
+          Volver
+        </button>
         <button
           appBtn
           color="primary"

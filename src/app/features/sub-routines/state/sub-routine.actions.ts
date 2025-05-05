@@ -48,3 +48,7 @@ export class UpdateSelectedSubRoutine {
   static readonly type = '[SubRoutine] Update Selected SubRoutine';
   constructor(public readonly subRoutine: SubRoutine) {}
 }
+
+export class cleanSubRoutineExercises {
+  static readonly type = '[SubRoutine] Clean SubRoutine Exercises';
+}
