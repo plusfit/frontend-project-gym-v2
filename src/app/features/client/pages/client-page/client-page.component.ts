@@ -113,8 +113,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
-        title: 'Desactivar cliente',
-        contentMessage: '¿Estás seguro que desea desactivar cliente?',
+        title: `${disabled ? 'Habilitar' : 'Deshabilitar'} cliente`,
+        contentMessage: `¿Estás seguro que desea ${disabled ? 'habilitar' : 'deshabilitar'} cliente?`,
       },
     });
 
@@ -127,7 +127,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           this.snackbar.showSuccess(
             'Exito',
-            'Cliente desactivado correctamente',
+            `Cliente ${disabled ? 'hablitado' : 'deshabilitado'} correctamente`,
           );
         });
     });
