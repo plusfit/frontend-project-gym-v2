@@ -27,6 +27,7 @@ export class ClientService {
     role?: string,
     CI?: string,
     withoutPlan?: boolean,
+    disabled?: boolean,
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -77,8 +78,9 @@ export class ClientService {
     return this.http.delete<any>(`${environment.api}/clients/${id}`);
   }
 
-  // deletClientFirebase(id: string): Observable<any> {
-  //   const docRef = doc(this.firestore, `Users`, id);
-  //   return from(deleteDoc(docRef));
-  // }
+  toggleDisabledClient(id: string, disabled: boolean): Observable<any> {
+    return this.http.patch<any>(`${environment.api}/clients/${id}/disabled`, {
+      disabled,
+    });
+  }
 }

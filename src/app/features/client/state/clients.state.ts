@@ -32,6 +32,7 @@ import {
   RegisterClient,
   RoutineClient,
   UpdateClient,
+  ToggleDisabledClient,
 } from './clients.actions';
 import { ClientsStateModel } from './clients.model';
 
@@ -424,6 +425,31 @@ export class ClientsState {
     }
 
     return of(null); // Retornar un observable vacío si no hay `planId`
+  }
+
+  @Action(ToggleDisabledClient, { cancelUncompleted: true })
+  toggleDisabledClient(
+    ctx: StateContext<ClientsStateModel>,
+    { id, disabled }: ToggleDisabledClient,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.toggleDisabledClient(id, disabled).pipe(
+      tap(() => {
+        const clients = ctx
+          .getState()
+          .clients?.filter((client) => client._id !== id);
+        ctx.patchState({ clients, loading: false });
+        this.snackBarService.showSuccess(
+          'Éxito',
+          'Cliente desactivado correctamente',
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
   }
 
   private mapFirebaseError(errorCode: string): string {

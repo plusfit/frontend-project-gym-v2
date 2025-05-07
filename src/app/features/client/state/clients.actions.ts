@@ -28,6 +28,14 @@ export class UpdateClient {
     public readonly payload: any,
   ) {}
 }
+
+export class ToggleDisabledClient {
+  static readonly type = '[Client] ToggleDisabledClient';
+  constructor(
+    public readonly id: string,
+    public disabled: boolean,
+  ) {}
+}
 export class DeleteClient {
   static readonly type = '[Client] DeleteClient';
   constructor(public readonly id: string) {}

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
   DeleteClient,
   GetClients,
+  ToggleDisabledClient,
 } from '@features/client/state/clients.actions';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { environment } from '../../../../../environments/environment';
@@ -79,6 +80,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       pageSize: currentPageSize,
       searchQ: this.filterValues.searchQ,
       withoutPlan: this.filterControl.value === 'true' ? true : false,
+      disable: this.filterControl.value === 'false' ? false : true,
     };
     this.store.dispatch(new GetClients(payload));
   }
@@ -89,6 +91,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
       withoutPlan: this.filterControl.value === 'true' ? true : false,
+      disable: this.filterControl.value === 'false' ? false : true,
     };
 
     this.store.dispatch(new GetClients({ ...this.filterValues }));

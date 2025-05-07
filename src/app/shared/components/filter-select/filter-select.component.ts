@@ -27,6 +27,7 @@ interface ValueSelect {
 export class FilterSelectComponent {
   pageSize = environment.config.pageSize;
   withoutPlan = false;
+  disabled = false;
 
   @Input() control!: FormControl;
   @Input() options!: any[];
