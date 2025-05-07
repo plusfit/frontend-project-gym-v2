@@ -22,11 +22,9 @@
     [total]="total | async"
     [loading]="loading | async"
     (edit)="editClient($event)"
-    (disabled)="toggleDisabledClient($event, $event.disabled)"
+    (delete)="deleteClient($event)"
     (seeDetail)="seeDetailClient($event)"
     [showSeeDetail]="true"
-    [showDisabled]="true"
-    [showDelete]="false"
   >
     <mat-paginator
       appJumpPages

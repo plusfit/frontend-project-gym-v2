@@ -8,6 +8,8 @@ import {
 export class ExerciseStateModel {
   loading?: boolean;
   exercises?: Exercise[] = [];
+  categories?: string[] = [];
+  currentFile?: string | null;
   page?: PageExercise | null;
   limit: number = environment.exerciseTableLimit;
   filters?: FiltersExercise | null;

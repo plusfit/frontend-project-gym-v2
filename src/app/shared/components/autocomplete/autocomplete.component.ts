@@ -66,6 +66,7 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy, OnChanges {
 
   filteredItems$!: Observable<T[]>;
   private destroy$ = new Subject<void>();
+  private static initialized = false;
 
   constructor(private store: Store) {}
 
