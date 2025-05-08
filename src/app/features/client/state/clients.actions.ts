@@ -40,3 +40,11 @@ export class RoutineClient {
 export class PlanClient {
   static readonly type = '[Client] PlanClient';
 }
+
+export class ToggleDisabledClient {
+  static readonly type = '[Client] ToggleDisabledClient';
+  constructor(
+    public readonly id: string,
+    public disabled: boolean,
+  ) {}
+}
