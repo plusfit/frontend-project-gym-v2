@@ -20,7 +20,9 @@ import { Store } from '@ngxs/store';
 import { Router } from '@angular/router';
 import {
   ExperienceLevel,
+  InjuryType,
   Plan,
+  PlanGoal,
   PlanType,
 } from '@features/plans/interfaces/plan.interface';
 import { CreatePlan, UpdatePlan } from '@features/plans/state/plan.actions';
@@ -65,21 +67,25 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
 
   private destroy = new Subject<void>();
 
-  planCategories = [
-    { value: 'weightLoss', label: 'Pérdida de peso' },
-    { value: 'muscleGain', label: 'Ganar músculo' },
-    { value: 'endurance', label: 'Resistencia' },
-    { value: 'generalWellness', label: 'Bienestar general' },
-    { value: 'flexibility', label: 'Flexibilidad' },
-    { value: 'strengthTraining', label: 'Entrenamiento de fuerza' },
+  planGoals = [
+    { value: PlanGoal.LOSE_WEIGHT, label: 'Perder peso' },
+    { value: PlanGoal.BUILD_MUSCLE, label: 'Ganar músculo' },
+    { value: PlanGoal.IMPROVE_CARDIO, label: 'Mejorar cardio' },
+    { value: PlanGoal.INCREASE_FLEXIBILITY, label: 'Aumentar flexibilidad' },
+    { value: PlanGoal.GENERAL_FITNESS, label: 'Estado físico general' },
+    { value: PlanGoal.INJURY_RECOVERY, label: 'Recuperación de lesiones' },
   ];
 
-  planGoals = [
-    { value: 'loseWeight', label: 'Perder peso' },
-    { value: 'buildMuscle', label: 'Ganar músculo' },
-    { value: 'improveCardio', label: 'Mejorar cardio' },
-    { value: 'increaseFlexibility', label: 'Aumentar flexibilidad' },
-    { value: 'generalFitness', label: 'Estado físico general' },
+  injuryTypes = [
+    { value: InjuryType.SHOULDER, label: 'Hombro' },
+    { value: InjuryType.KNEE, label: 'Rodilla' },
+    { value: InjuryType.BACK, label: 'Espalda' },
+    { value: InjuryType.ANKLE, label: 'Tobillo' },
+    { value: InjuryType.HIP, label: 'Cadera' },
+    { value: InjuryType.ELBOW, label: 'Codo' },
+    { value: InjuryType.WRIST, label: 'Muñeca' },
+    { value: InjuryType.NECK, label: 'Cuello' },
+    { value: InjuryType.OTHER, label: 'Otra' },
   ];
 
   experienceLevels = [
@@ -113,8 +119,8 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
       {
         name: ['', [Validators.required, Validators.minLength(3)]],
         type: ['', Validators.required],
-        category: ['', Validators.required],
         goal: ['', Validators.required],
+        injuryType: [''],
         experienceLevel: ['', Validators.required],
         minAge: ['', [Validators.min(0), Validators.max(100)]],
         maxAge: ['', [Validators.min(0), Validators.max(100)]],
@@ -122,8 +128,18 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
         days: ['', [Validators.required, Validators.min(1), Validators.max(7)]],
         defaultRoutine: ['', [Validators.required]],
       },
-      { validators: this.ageRangeValidator },
+      { validators: [this.ageRangeValidator, this.injuryTypeValidator] },
     );
+
+    this.planForm.get('goal')?.valueChanges.subscribe((goal) => {
+      const injuryTypeControl = this.planForm.get('injuryType');
+      if (goal === PlanGoal.INJURY_RECOVERY) {
+        injuryTypeControl?.setValidators([Validators.required]);
+      } else {
+        injuryTypeControl?.clearValidators();
+      }
+      injuryTypeControl?.updateValueAndValidity();
+    });
   }
 
   ngOnChanges(): void {
@@ -150,12 +166,26 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
       : null;
   }
 
+  private injuryTypeValidator(group: FormGroup) {
+    const goal = group.get('goal')?.value;
+    const injuryType = group.get('injuryType')?.value;
+
+    if (goal === PlanGoal.INJURY_RECOVERY && !injuryType) {
+      return { injuryTypeRequired: true };
+    }
+    return null;
+  }
+
   get defaultRoutineControl(): FormControl {
     return this.planForm.get('defaultRoutine') as FormControl;
   }
 
   getControl(controlName: string): FormControl {
     return this.planForm.get(controlName) as FormControl;
+  }
+
+  isInjuryRecoveryGoal(): boolean {
+    return this.planForm.get('goal')?.value === PlanGoal.INJURY_RECOVERY;
   }
 
   action(searchTerm: string): GetRoutinesByName {
@@ -170,6 +200,11 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
       ...this.planForm.value,
       defaultRoutine: this.selectedRoutine?._id,
     };
+
+    if (payload.goal !== PlanGoal.INJURY_RECOVERY) {
+      delete payload.injuryType;
+    }
+
     if (this.isEdit()) {
       this.store.dispatch(new UpdatePlan(this.id(), payload)).subscribe(() => {
         this.snackBarService.showSuccess('¡Éxito!', 'Plan actualizado');
