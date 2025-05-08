@@ -42,38 +42,41 @@
             errorKey="maxAge"
           ></app-input>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Tipo</mat-label>
-            <mat-select formControlName="type">
+          <mat-form-field appearance="outline" class="w-full rounded-md">
+            <mat-label class="text-gray-700">Tipo</mat-label>
+            <mat-select formControlName="type" class="bg-gray-50">
               <mat-option *ngFor="let type of planTypes" [value]="type.value">
                 {{ type.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Categoría</mat-label>
-            <mat-select formControlName="category">
-              @for (cat of planCategories; track $index) {
-                <mat-option [value]="cat.value">
-                  {{ cat.label }}
-                </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Objetivo</mat-label>
-            <mat-select formControlName="goal">
+          <mat-form-field appearance="outline" class="w-full rounded-md">
+            <mat-label class="text-gray-700">Objetivo</mat-label>
+            <mat-select formControlName="goal" class="bg-gray-50">
               <mat-option *ngFor="let goal of planGoals" [value]="goal.value">
                 {{ goal.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Nivel de Experiencia</mat-label>
-            <mat-select formControlName="experienceLevel">
+          @if (isInjuryRecoveryGoal()) {
+            <mat-form-field appearance="outline" class="w-full rounded-md">
+              <mat-label class="text-gray-700">Tipo de lesión</mat-label>
+              <mat-select formControlName="injuryType">
+                <mat-option
+                  *ngFor="let injury of injuryTypes"
+                  [value]="injury.value"
+                >
+                  {{ injury.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline" class="w-full rounded-md">
+            <mat-label class="text-gray-700">Nivel de Experiencia</mat-label>
+            <mat-select formControlName="experienceLevel" class="bg-gray-50">
               <mat-option
                 *ngFor="let level of experienceLevels"
                 [value]="level.value"
@@ -84,13 +87,18 @@
           </mat-form-field>
 
           <div class="md:col-span-2 flex mt-[-2rem] items-center">
-            <mat-checkbox formControlName="includesCoach"
+            <mat-checkbox
+              formControlName="includesCoach"
+              class="text-blue-700 font-medium"
               >Incluye entrenador</mat-checkbox
             >
           </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full pt-4 border-t border-gray-200">
+          <p class="text-md text-gray-600 mb-2 font-medium">
+            Rutina por defecto
+          </p>
           <app-autocomplete
             [control]="defaultRoutineControl"
             [selector]="selector"
@@ -98,17 +106,18 @@
             placeholder="Buscar Rutina"
             propertyToDisplay="name"
             (itemSelected)="onSelectedRoutine($event)"
+            class="rounded-md"
           >
           </app-autocomplete>
         </div>
       </form>
 
       <div
-        class="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-2 mt-8"
+        class="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-2 mt-8 pt-4 border-t border-gray-200"
       >
         <button
           appBtn
-          class="btn-secondary w-full md:w-auto"
+          class="btn-secondary w-full md:w-auto transition-all hover:bg-gray-200"
           (click)="goBack()"
         >
           Volver
@@ -121,7 +130,7 @@
           (click)="save()"
           type="button"
           [disabled]="planForm.invalid || (loading$ | async)"
-          class="w-full md:w-auto"
+          class="w-full md:w-auto transition-all hover:shadow-lg"
         >
           {{ btnTitle }}
         </button>
