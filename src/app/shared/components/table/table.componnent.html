@@ -135,6 +135,23 @@
                     </div>
                   </button>
                 }
+                @if (showDisabled) {
+                  <button
+                    (click)="emitDisabled(element._id, element.disabled)"
+                    type="button"
+                    class="group"
+                    mat-menu-item
+                  >
+                    <div class="flex flex-row items-center space-x-2">
+                      <i
+                        class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
+                      ></i>
+                      <span class="text-error-100 group-hover:text-error-200">{{
+                        element.disabled ? "Habilitar" : "Deshabilitar"
+                      }}</span>
+                    </div>
+                  </button>
+                }
               </ng-template>
             </mat-menu>
           </ng-container>

@@ -73,8 +73,8 @@ export class ScreenRoutineState {
               );
 
               const exerciseRequests = subroutines.flatMap((subroutine: any) =>
-                subroutine.exercises.map((exerciseId: string) =>
-                  this.exerciseService.getExerciseById(exerciseId).pipe(
+                subroutine.exercises.map((exercise: any) =>
+                  this.exerciseService.getExerciseById(exercise._id).pipe(
                     map((exerciseResponse) => ({
                       subroutineId: subroutine._id,
                       exercise: exerciseResponse.data,
