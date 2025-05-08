@@ -15,11 +15,12 @@ export interface PlanApiResponse {
   data: PlanData;
 }
 
-interface PlanData {
-  data: Plan[];
-  total: number;
+export interface PlanData {
+  docs: Plan[];
+  totalDocs: number;
   page: number;
   limit: number;
+  totalPages: number;
 }
 
 export enum PlanCategory {
@@ -37,6 +38,21 @@ export enum PlanGoal {
   IMPROVE_CARDIO = 'improveCardio',
   INCREASE_FLEXIBILITY = 'increaseFlexibility',
   GENERAL_FITNESS = 'generalFitness',
+  INJURY_RECOVERY = 'injuryRecovery',
+}
+
+export enum InjuryType {
+  SHOULDER = 'shoulder',
+  KNEE = 'knee',
+  BACK = 'back',
+  ANKLE = 'ankle',
+  HIP = 'hip',
+  ELBOW = 'elbow',
+  WRIST = 'wrist',
+  NECK = 'neck',
+  CERVICAL = 'cervical',
+  LUMBAR = 'lumbar',
+  OTHER = 'other',
 }
 
 export enum ExperienceLevel {
