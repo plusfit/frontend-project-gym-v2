@@ -61,9 +61,8 @@ export class FilterSelectComponent {
       new GetClients({
         page: 1,
         pageSize: this.pageSize,
-        withoutPlan: this.withoutPlan,
-        disabled: this.disabled,
-        role: 'User',
+        withoutPlan: this.withoutPlan, // Mandar explícitamente el filtro de "sin plan"
+        role: 'User', // Si también quieres filtrar por rol, mantén este parámetro
       }),
     );
   }

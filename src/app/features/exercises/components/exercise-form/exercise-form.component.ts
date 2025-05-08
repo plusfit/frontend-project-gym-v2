@@ -1,5 +1,13 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { Storage } from '@angular/fire/storage';
 import {
   FormBuilder,
   FormControl,
@@ -8,28 +16,41 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import {
   CreateExercise,
+  GetCategories,
   GetExerciseById,
   GetExercisesByPage,
+  saveExcercisesFiles,
   UpdateExercise,
 } from '@features/exercises/state/exercise.actions';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { LoaderComponent } from '@shared/components/loader/loader.component';
-import { MatSelectModule } from '@angular/material/select';
 import { InputComponent } from '@shared/components/input/input.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { TextAreaComponent } from '@shared/components/text-area/text-area.component';
 import { TitleComponent } from '@shared/components/title/title.component';
+import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  Observable,
+  Subject,
+  take,
+  takeUntil,
+} from 'rxjs';
 
 @Component({
   selector: 'app-exercise-form',
@@ -48,6 +69,9 @@ import { TitleComponent } from '@shared/components/title/title.component';
     InputComponent,
     TextAreaComponent,
     TitleComponent,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatRadioModule,
   ],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
@@ -59,6 +83,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     private store: Store,
     private actions: Actions,
     private snackbar: SnackBarService,
+    private storage: Storage,
   ) {}
 
   loading$: Observable<boolean> = this.store.select(
@@ -68,6 +93,16 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   title = 'Agregar ejercicio';
   btnTitle = 'Crear';
+  selectedFile: File | null = null;
+  selectedCategory: any;
+  selector = ExerciseState.getCategories;
+  categoryOptions$: Observable<any[]> = this.store.select(
+    ExerciseState.getCategories,
+  );
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  filePreview: string | ArrayBuffer | null = null;
+  dragging = false;
+  typesExcercise = ['minutes', 'reps', 'series'];
 
   types = [
     { value: 'cardio', viewValue: 'Cardio' },
@@ -83,7 +118,9 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     this.exerciseForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      //gifUrl: [''],
+      cardioMetric: ['minutes'],
+      gifUrl: [''],
+      category: ['', Validators.required],
       type: ['', Validators.required],
       //mode: ['', Validators.required],
       rest: ['', [Validators.required, Validators.min(1)]],
@@ -97,6 +134,17 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
       this.toggleExerciseFields(type);
     });
 
+    this.store.dispatch(new GetCategories(1, 10, ''));
+    this.categoryControl.valueChanges
+      .pipe(
+        debounceTime(300), // Espera 300ms después de que el usuario deje de escribir
+        distinctUntilChanged(), // Solo si el texto cambia
+        filter((value) => typeof value === 'string'), // Asegura que sea un string (no un objeto seleccionado)
+      )
+      .subscribe((searchTerm: string) => {
+        this.store.dispatch(new GetCategories(1, 10, searchTerm));
+      });
+
     if (this.data.isEdit && this.data.exerciseId) {
       this.store.dispatch(new GetExerciseById(this.data.exerciseId));
       this.actions
@@ -108,6 +156,90 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
           if (exerciseEditing) this.setDataForEdit(exerciseEditing);
         });
     }
+
+    this.exerciseForm.get('cardioMetric')?.valueChanges.subscribe(() => {
+      if (this.exerciseForm.get('type')?.value === 'cardio') {
+        this.toggleExerciseFields('cardio');
+      }
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+
+      if (
+        !file.type.includes('gif') &&
+        !file.type.includes('jpeg') &&
+        !file.type.includes('jpg') &&
+        !file.type.includes('png')
+      ) {
+        this.snackbar.showError('Error', 'Formato no permitido');
+        return;
+      }
+
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        // Convertir el archivo a Base64
+        const base64File = e.target?.result as string;
+
+        // Actualizar la vista previa (opcional)
+        this.filePreview = base64File;
+      };
+      reader.readAsDataURL(file); // Convertir el archivo a Base64
+    }
+  }
+
+  removeFile(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.filePreview = null;
+
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.dragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.dragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.dragging = false;
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.processFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  processFile(file: File) {
+    if (
+      file.type === 'image/gif' ||
+      file.type === 'image/jpeg' ||
+      file.type === 'image/jpg' ||
+      file.type === 'image/png'
+    ) {
+      this.selectedFile = file;
+
+      // Generar vista previa
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.filePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+
+      console.log('Archivo seleccionado:', file.name);
+    } else {
+      console.error('Formato no permitido. Solo GIF.');
+    }
   }
 
   setDataForEdit(exerciseEditing: Exercise): void {
@@ -115,46 +247,66 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     this.btnTitle = 'Guardar';
     this.exerciseForm.patchValue(exerciseEditing);
     this.toggleExerciseFields(exerciseEditing.type);
+    this.filePreview = exerciseEditing.gifUrl;
   }
 
   toggleExerciseFields(type: string): void {
+    const controls = this.exerciseForm.controls;
+
+    const setFieldState = (
+      field: string,
+      enabled: boolean,
+      validators: any[] = [],
+    ) => {
+      if (enabled) {
+        controls[field]?.enable({ emitEvent: false });
+        controls[field]?.setValidators(validators);
+      } else {
+        controls[field]?.disable({ emitEvent: false });
+        controls[field]?.clearValidators();
+        controls[field]?.setValue(null);
+      }
+    };
+
     if (type === 'cardio') {
-      this.exerciseForm.get('minutes')?.enable();
-      this.exerciseForm
-        .get('minutes')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.exerciseForm.get('reps')?.disable();
-      this.exerciseForm.get('reps')?.clearValidators();
-
-      this.exerciseForm.get('series')?.disable();
-      this.exerciseForm.get('series')?.clearValidators();
+      const cardioMetric =
+        this.exerciseForm.get('cardioMetric')?.value || 'minutes';
+      setFieldState('minutes', cardioMetric === 'minutes', [
+        Validators.required,
+        Validators.min(1),
+      ]);
+      setFieldState('reps', cardioMetric === 'reps', [
+        Validators.required,
+        Validators.min(1),
+      ]);
+      setFieldState('series', false);
+      setFieldState('rest', true, [Validators.required, Validators.min(1)]);
     } else if (type === 'room') {
-      this.exerciseForm.get('reps')?.enable();
-      this.exerciseForm
-        .get('reps')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      this.exerciseForm.get('series')?.enable();
-      this.exerciseForm
-        .get('series')
-        ?.setValidators([Validators.required, Validators.min(1)]);
-
-      // Deshabilita y quita validadores para los campos que no aplican
-      this.exerciseForm.get('minutes')?.disable();
-      this.exerciseForm.get('minutes')?.clearValidators();
+      setFieldState('reps', true, [Validators.required, Validators.min(1)]);
+      setFieldState('series', true, [Validators.required, Validators.min(1)]);
+      setFieldState('minutes', false);
+      setFieldState('rest', false);
     }
 
-    // Actualiza la validez de los campos condicionales
-    this.exerciseForm.get('minutes')?.updateValueAndValidity();
-    this.exerciseForm.get('rest')?.updateValueAndValidity();
-    this.exerciseForm.get('reps')?.updateValueAndValidity();
-    this.exerciseForm.get('series')?.updateValueAndValidity();
+    // Actualiza campos individuales
+    this.typesExcercise.forEach((field) =>
+      controls[field]?.updateValueAndValidity({ emitEvent: false }),
+    );
+
+    // Actualiza el formulario completo
+    this.exerciseForm.updateValueAndValidity();
   }
 
   cancel(): void {
     this.dialogRef.close();
+  }
+
+  onCategorySelected(category: any): void {
+    this.selectedCategory = category;
+  }
+
+  action(searchTerm: string): GetCategories {
+    return new GetCategories(1, 10, searchTerm);
   }
 
   save(): void {
@@ -165,34 +317,83 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   }
 
   update(): void {
-    this.store.dispatch(
-      new UpdateExercise(this.exerciseForm.value, this.data.exerciseId),
-    );
+    this.store.dispatch(new saveExcercisesFiles(this.selectedFile as any));
     this.actions
-      .pipe(ofActionSuccessful(UpdateExercise), takeUntil(this.destroy))
+      .pipe(ofActionSuccessful(saveExcercisesFiles), take(1))
       .subscribe(() => {
-        this.store.dispatch(
-          new GetExercisesByPage({
-            page: 1,
-          }),
-        );
-        this.snackbar.showSuccess('Éxito!', 'Ejercicio actualizado');
-        this.dialogRef.close();
+        // Obtener la URL del archivo desde el estado
+        const fileUrl = this.store.selectSnapshot(ExerciseState.getCurrentFile);
+
+        // Actualizar el formulario con la URL obtenida
+        this.exerciseForm.patchValue({
+          gifUrl: fileUrl || undefined,
+        });
+
+        // Preparar los datos para enviar
+        const sendData = {
+          name: this.exerciseForm.get('name')?.value,
+          description: this.exerciseForm.get('description')?.value,
+          gifUrl: fileUrl || undefined, // Asegurarse de enviar la URL obtenida
+          category: this.exerciseForm.get('category')?.value,
+          type: this.exerciseForm.get('type')?.value,
+          rest: this.exerciseForm.get('rest')?.value || 0,
+          minutes: this.exerciseForm.get('minutes')?.value,
+          reps: this.exerciseForm.get('reps')?.value,
+          series: this.exerciseForm.get('series')?.value,
+        };
+
+        // Despachar la acción para actualizar el ejercicio
+        this.store.dispatch(new UpdateExercise(sendData, this.data.exerciseId));
+        this.actions
+          .pipe(ofActionSuccessful(UpdateExercise), takeUntil(this.destroy))
+          .subscribe(() => {
+            // Recargar la lista de ejercicios
+            this.store.dispatch(
+              new GetExercisesByPage({
+                page: 1,
+              }),
+            );
+            // Mostrar mensaje de éxito
+            this.snackbar.showSuccess('Éxito!', 'Ejercicio actualizado');
+            // Cerrar el diálogo
+            this.dialogRef.close();
+          });
       });
   }
 
   create(): void {
-    this.store.dispatch(new CreateExercise(this.exerciseForm.value));
+    this.store.dispatch(new saveExcercisesFiles(this.selectedFile as any));
     this.actions
-      .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
+      .pipe(ofActionSuccessful(saveExcercisesFiles), take(1))
       .subscribe(() => {
-        this.store.dispatch(
-          new GetExercisesByPage({
-            page: 1,
-          }),
-        );
-        this.snackbar.showSuccess('Éxito!', 'Ejercicio creado');
-        this.dialogRef.close();
+        // Suponiendo que las URLs se guardan en el estado
+        const fileUrl = this.store.selectSnapshot(ExerciseState.getCurrentFile);
+
+        const sendData = {
+          name: this.exerciseForm.get('name')?.value,
+          description: this.exerciseForm.get('description')?.value,
+          gifUrl: fileUrl || undefined,
+          category: this.exerciseForm.get('category')?.value,
+          type: this.exerciseForm.get('type')?.value,
+          rest: this.exerciseForm.get('rest')?.value || 0,
+          minutes: this.exerciseForm.get('minutes')?.value,
+          reps: this.exerciseForm.get('reps')?.value,
+          series: this.exerciseForm.get('series')?.value,
+        };
+
+        this.store.dispatch(new CreateExercise(sendData));
+
+        this.actions
+          .pipe(ofActionSuccessful(CreateExercise), takeUntil(this.destroy))
+          .subscribe(() => {
+            this.store.dispatch(
+              new GetExercisesByPage({
+                page: 1,
+              }),
+            );
+            this.snackbar.showSuccess('Éxito!', 'Ejercicio creado');
+            this.dialogRef.close();
+          });
       });
   }
 
@@ -218,5 +419,9 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
   get seriesControl(): FormControl {
     return this.exerciseForm.get('series') as FormControl;
+  }
+
+  get categoryControl(): FormControl {
+    return this.exerciseForm.get('category') as FormControl;
   }
 }

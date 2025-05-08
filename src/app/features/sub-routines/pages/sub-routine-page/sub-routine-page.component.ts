@@ -32,7 +32,14 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = ['name', 'description', 'category', 'acciones'];
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'category',
+    'createdAt',
+    'updatedAt',
+    'acciones',
+  ];
   pageSize = environment.config.pageSize;
   filterValues: FilterValues | null = null;
 

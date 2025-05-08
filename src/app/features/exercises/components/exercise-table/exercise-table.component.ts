@@ -35,7 +35,7 @@ export class ExerciseTableComponent implements AfterViewInit {
   @Input() loading$!: Observable<boolean>;
 
   editEmitter = output<string>();
-  deleteEmitter = output<string>();
+  deleteEmitter = output<any>();
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -47,7 +47,7 @@ export class ExerciseTableComponent implements AfterViewInit {
     this.editEmitter.emit(id);
   }
 
-  handleDelete(id: string): void {
-    this.deleteEmitter.emit(id);
+  handleDelete(excercise: { id: string; gifUrl: string }): void {
+    this.deleteEmitter.emit(excercise);
   }
 }

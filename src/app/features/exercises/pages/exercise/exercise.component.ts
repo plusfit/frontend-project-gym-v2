@@ -51,7 +51,15 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   pageSize: number = environment.config.pageSize ?? 8;
   currentPage: number = 1;
 
-  displayedColumns: string[] = ['name', 'description', 'type', 'acciones'];
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'type',
+    'category',
+    'createdAt',
+    'updatedAt',
+    'acciones',
+  ];
 
   dataSource: MatTableDataSource<Exercise> = new MatTableDataSource<Exercise>();
   totalExercises$: Observable<number> = this.store.select(
@@ -115,6 +123,8 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
         },
         {
           name: searchValue,
+          type: searchValue,
+          category: searchValue,
         },
       ),
     );
@@ -127,7 +137,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  deleteExercise(exerciseId: string): void {
+  deleteExercise(exercise: { id: string; gifUrl: string }): void {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
@@ -141,7 +151,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeleteExercise(exerciseId));
+      this.store.dispatch(new DeleteExercise(exercise.id, exercise.gifUrl));
 
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))

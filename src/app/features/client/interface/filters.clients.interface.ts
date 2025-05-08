@@ -8,6 +8,5 @@ export interface PageClient {
   pageSize: number;
   searchQ?: string;
   withoutPlan?: boolean;
-  disabled?: boolean;
   role?: string;
 }
