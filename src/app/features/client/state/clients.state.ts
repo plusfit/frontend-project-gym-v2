@@ -42,7 +42,7 @@ import { ClientsStateModel } from './clients.model';
     selectedClient: undefined,
     selectedClientRoutine: undefined,
     selectedClientPlan: undefined,
-    registerClient: null || undefined,
+    registerClient: null,
     total: 0,
     loading: false,
     error: null,
@@ -104,7 +104,7 @@ export class ClientsState {
     ctx: StateContext<ClientsStateModel>,
     action: GetClients,
   ): Observable<ClientApiResponse> {
-    ctx.patchState({ loading: true, error: null });
+    ctx.patchState({ loading: true, clients: [], error: null });
     const { page, pageSize, searchQ, withoutPlan } = action.payload;
 
     let getClientsObservable: Observable<ClientApiResponse[]>;
