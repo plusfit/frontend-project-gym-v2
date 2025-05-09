@@ -347,9 +347,9 @@ export class ClientsState {
           // Creamos un array de observables para obtener los ejercicios
           const subroutineRequests = subroutines.map((subroutine: any) => {
             return forkJoin(
-              subroutine.exercises.map((exerciseId: string) =>
+              subroutine.exercises.map((exercise: any) =>
                 this.exerciseService
-                  .getExerciseById(exerciseId)
+                  .getExerciseById(exercise._id)
                   .pipe(map((exercise) => exercise.data)),
               ),
             ).pipe(
