@@ -1,140 +1,191 @@
-<div class="p-6 w-full max-w-3xl mx-auto flex flex-col space-y-6">
-  <span
-    class="text-center text-4xl md:text-6xl font-semibold text-gray-800 mb-8"
-  >
-    {{ title }} 📝
-  </span>
+<div class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen py-10 px-4">
+  <div class="max-w-7xl mx-auto">
+    <span
+      class="block text-center text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 py-2 mb-8"
+    >
+      {{ title }} 📝
+    </span>
 
-  @if (loading$ | async) {
-    <app-loader></app-loader>
-  } @else {
-    <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
-      <form [formGroup]="planForm" class="space-y-6">
-        <app-title [title]="'Información general'"></app-title>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <app-input
-            [control]="getControl('name')"
-            label="Nombre del plan"
-            type="text"
-            errorKey="name"
-          ></app-input>
-
-          <app-input
-            [control]="getControl('days')"
-            label="Días del plan"
-            type="number"
-            errorKey="days"
-            placeholder="Número de días (1-7)"
-          ></app-input>
-
-          <app-input
-            [control]="getControl('minAge')"
-            label="Edad mínima"
-            type="number"
-            errorKey="minAge"
-          ></app-input>
-
-          <app-input
-            [control]="getControl('maxAge')"
-            label="Edad máxima"
-            type="number"
-            errorKey="maxAge"
-          ></app-input>
-
-          <mat-form-field appearance="outline" class="w-full rounded-md">
-            <mat-label class="text-gray-700">Tipo</mat-label>
-            <mat-select formControlName="type" class="bg-gray-50">
-              <mat-option *ngFor="let type of planTypes" [value]="type.value">
-                {{ type.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full rounded-md">
-            <mat-label class="text-gray-700">Objetivo</mat-label>
-            <mat-select formControlName="goal" class="bg-gray-50">
-              <mat-option *ngFor="let goal of planGoals" [value]="goal.value">
-                {{ goal.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          @if (isInjuryRecoveryGoal()) {
-            <mat-form-field appearance="outline" class="w-full rounded-md">
-              <mat-label class="text-gray-700">Tipo de lesión</mat-label>
-              <mat-select formControlName="injuryType">
-                <mat-option
-                  *ngFor="let injury of injuryTypes"
-                  [value]="injury.value"
-                >
-                  {{ injury.label }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          }
-
-          <mat-form-field appearance="outline" class="w-full rounded-md">
-            <mat-label class="text-gray-700">Nivel de Experiencia</mat-label>
-            <mat-select formControlName="experienceLevel" class="bg-gray-50">
-              <mat-option
-                *ngFor="let level of experienceLevels"
-                [value]="level.value"
-              >
-                {{ level.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <div class="md:col-span-2 flex mt-[-2rem] items-center">
-            <mat-checkbox
-              formControlName="includesCoach"
-              class="text-blue-700 font-medium"
-              >Incluye entrenador</mat-checkbox
-            >
-          </div>
-        </div>
-
-        <div class="w-full pt-4 border-t border-gray-200">
-          <p class="text-md text-gray-600 mb-2 font-medium">
-            Rutina por defecto
-          </p>
-          <app-autocomplete
-            [control]="defaultRoutineControl"
-            [selector]="selector"
-            [action]="action"
-            placeholder="Buscar Rutina"
-            propertyToDisplay="name"
-            (itemSelected)="onSelectedRoutine($event)"
-            class="rounded-md"
-          >
-          </app-autocomplete>
-        </div>
-      </form>
-
+    @if (loading$ | async) {
       <div
-        class="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-2 mt-8 pt-4 border-t border-gray-200"
+        class="bg-white rounded-xl shadow-xl p-8 flex justify-center items-center max-w-4xl mx-auto"
       >
-        <button
-          appBtn
-          class="btn-secondary w-full md:w-auto transition-all hover:bg-gray-200"
-          (click)="goBack()"
-        >
-          Volver
-        </button>
-        <button
-          appBtn
-          color="primary"
-          [loader]="(loading$ | async)!"
-          [animate]="true"
-          (click)="save()"
-          type="button"
-          [disabled]="planForm.invalid || (loading$ | async)"
-          class="w-full md:w-auto transition-all hover:shadow-lg"
-        >
-          {{ btnTitle }}
-        </button>
+        <app-loader></app-loader>
       </div>
-    </div>
-  }
+    } @else {
+      <div class="bg-white rounded-xl shadow-xl p-8 max-w-4xl mx-auto">
+        <form [formGroup]="planForm" class="space-y-6">
+          <app-title
+            [title]="'Información general'"
+            [gradient]="true"
+          ></app-title>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div class="h-[80px]">
+              <app-input
+                [control]="getControl('name')"
+                label="Nombre del plan"
+                type="text"
+                errorKey="name"
+                appearance="outline"
+                class="w-full"
+              ></app-input>
+            </div>
+
+            <div class="h-[80px]">
+              <app-input
+                [control]="getControl('days')"
+                label="Días del plan"
+                type="number"
+                errorKey="days"
+                placeholder="Número de días (1-7)"
+                appearance="outline"
+                class="w-full"
+              ></app-input>
+            </div>
+
+            <div class="h-[80px]">
+              <app-input
+                [control]="getControl('minAge')"
+                label="Edad mínima"
+                type="number"
+                errorKey="minAge"
+                appearance="outline"
+                class="w-full"
+              ></app-input>
+            </div>
+
+            <div class="h-[80px]">
+              <app-input
+                [control]="getControl('maxAge')"
+                label="Edad máxima"
+                type="number"
+                errorKey="maxAge"
+                appearance="outline"
+                class="w-full"
+              ></app-input>
+            </div>
+
+            <div class="h-[80px]">
+              <mat-form-field appearance="outline" class="w-full rounded-md">
+                <mat-label class="text-gray-700">Tipo</mat-label>
+                <mat-select formControlName="type" class="bg-gray-50">
+                  <mat-option
+                    *ngFor="let type of planTypes"
+                    [value]="type.value"
+                  >
+                    {{ type.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="h-[80px]">
+              <mat-form-field appearance="outline" class="w-full rounded-md">
+                <mat-label class="text-gray-700">Objetivo</mat-label>
+                <mat-select formControlName="goal" class="bg-gray-50">
+                  <mat-option
+                    *ngFor="let goal of planGoals"
+                    [value]="goal.value"
+                  >
+                    {{ goal.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            @if (isInjuryRecoveryGoal()) {
+              <div class="h-[80px]">
+                <mat-form-field appearance="outline" class="w-full rounded-md">
+                  <mat-label class="text-gray-700">Tipo de lesión</mat-label>
+                  <mat-select formControlName="injuryType">
+                    <mat-option
+                      *ngFor="let injury of injuryTypes"
+                      [value]="injury.value"
+                    >
+                      {{ injury.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            }
+
+            <div class="h-[80px]">
+              <mat-form-field appearance="outline" class="w-full rounded-md">
+                <mat-label class="text-gray-700"
+                  >Nivel de Experiencia</mat-label
+                >
+                <mat-select
+                  formControlName="experienceLevel"
+                  class="bg-gray-50"
+                >
+                  <mat-option
+                    *ngFor="let level of experienceLevels"
+                    [value]="level.value"
+                  >
+                    {{ level.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="md:col-span-2 flex mt-2 items-center">
+              <mat-checkbox
+                formControlName="includesCoach"
+                class="text-blue-700 font-medium"
+                >Incluye entrenador</mat-checkbox
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4 mt-6 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center mb-4">
+              <app-title
+                [title]="'Rutina por defecto'"
+                [gradient]="true"
+                [divider]="false"
+              ></app-title>
+            </div>
+            <div class="h-50 overflow-y-auto">
+              <div class="h-[80px]">
+                <app-autocomplete
+                  [control]="defaultRoutineControl"
+                  [selector]="selector"
+                  [action]="action"
+                  placeholder="Buscar Rutina"
+                  propertyToDisplay="name"
+                  (itemSelected)="onSelectedRoutine($event)"
+                  class="w-full rounded-md"
+                >
+                </app-autocomplete>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div
+          class="flex justify-end space-x-4 mt-8 pt-4 border-t border-gray-200"
+        >
+          <button
+            class="px-6 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+            (click)="goBack()"
+          >
+            Volver
+          </button>
+          <button
+            appBtn
+            color="primary"
+            class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all"
+            [loader]="(loading$ | async)!"
+            [animate]="true"
+            (click)="save()"
+            type="button"
+            [disabled]="planForm.invalid || (loading$ | async)"
+          >
+            {{ btnTitle }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 </div>
