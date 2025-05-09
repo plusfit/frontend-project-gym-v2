@@ -1,32 +1,42 @@
 @if (clientInfo$ | async; as clientInfo) {
   @if (clientInfo && Object.keys(clientInfo).length > 0) {
-    <div class="bg-white p-6 rounded-lg">
+    <div class="p-6">
       <!-- Sección: Datos Personales -->
-      <div>
-        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+      <div class="mb-8">
+        <span
+          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
+        >
           Datos Personales
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Nombre</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Nombre</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.name
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Cédula de Identidad</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Cédula de Identidad</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.CI
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Sexo</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Sexo</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.sex
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Día de Nacimiento</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Día de Nacimiento</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.dateBirthday | date: "dd/MM/yyyy"
             }}</span>
@@ -35,25 +45,33 @@
       </div>
 
       <!-- Sección: Información de Contacto -->
-      <div class="my-6">
-        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+      <div class="mb-8">
+        <span
+          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
+        >
           Información de Contacto
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Email</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Email</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.identifier
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Celular</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Celular</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.phone
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Dirección</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Dirección</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.address
             }}</span>
@@ -62,27 +80,35 @@
       </div>
 
       <!-- Sección: Información de Salud -->
-      <div class="my-6">
-        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+      <div class="mb-8">
+        <span
+          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
+        >
           Información de Salud
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm"
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1"
               >Frecuencia de Ejercicio Físico</span
             >
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.frequencyOfPhysicalExercise
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Sociedad Médica</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Sociedad Médica</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.medicalSociety
             }}</span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Presión Arterial</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Presión Arterial</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.bloodPressure
             }}</span>
@@ -91,51 +117,92 @@
       </div>
 
       <!-- Sección: Antecedentes -->
-      <div class="my-6">
-        <span class="block text-xl font-bold text-gray-800 border-b pb-2">
+      <div class="mb-8">
+        <span
+          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
+        >
           Antecedentes
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm"
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1"
               >Antecedentes Lesiones Patológicas</span
             >
-            <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.historyofPathologicalLesions === "true" ? "Sí" : "No"
-            }}</span>
+            <span
+              class="text-lg font-medium"
+              [class.text-red-600]="
+                clientInfo.historyofPathologicalLesions === 'true'
+              "
+              [class.text-green-600]="
+                clientInfo.historyofPathologicalLesions !== 'true'
+              "
+            >
+              {{
+                clientInfo.historyofPathologicalLesions === "true" ? "Sí" : "No"
+              }}
+            </span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Antecedentes Cardíacos</span>
-            <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.cardiacHistory === "true" ? "Sí" : "No"
-            }}</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1"
+              >Antecedentes Cardíacos</span
+            >
+            <span
+              class="text-lg font-medium"
+              [class.text-red-600]="clientInfo.cardiacHistory === 'true'"
+              [class.text-green-600]="clientInfo.cardiacHistory !== 'true'"
+            >
+              {{ clientInfo.cardiacHistory === "true" ? "Sí" : "No" }}
+            </span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm">Antecedentes Quirúrgicos</span>
-            <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.surgicalHistory === "true" ? "Sí" : "No"
-            }}</span>
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1"
+              >Antecedentes Quirúrgicos</span
+            >
+            <span
+              class="text-lg font-medium"
+              [class.text-red-600]="clientInfo.surgicalHistory === 'true'"
+              [class.text-green-600]="clientInfo.surgicalHistory !== 'true'"
+            >
+              {{ clientInfo.surgicalHistory === "true" ? "Sí" : "No" }}
+            </span>
           </div>
-          <div class="p-4 bg-gray-100 rounded-lg flex flex-col">
-            <span class="text-gray-500 text-sm"
+          <div
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1"
               >Antecedentes Respiratorios</span
             >
-            <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.respiratoryHistory === "true" ? "Sí" : "No"
-            }}</span>
+            <span
+              class="text-lg font-medium"
+              [class.text-red-600]="clientInfo.respiratoryHistory === 'true'"
+              [class.text-green-600]="clientInfo.respiratoryHistory !== 'true'"
+            >
+              {{ clientInfo.respiratoryHistory === "true" ? "Sí" : "No" }}
+            </span>
           </div>
         </div>
       </div>
     </div>
   } @else {
-    <div
-      class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto my-6 flex justify-center items-center h-64"
-    >
-      <p class="text-lg font-bold text-gray-700">
-        No hay información disponible
-      </p>
+    <div class="flex justify-center items-center h-64 my-6">
+      <div class="bg-blue-50 p-8 rounded-xl border border-blue-100 shadow-sm">
+        <p
+          class="text-xl font-bold text-gray-700 text-center flex items-center"
+        >
+          <i class="ph-info text-blue-500 text-2xl mr-2"></i>
+          No hay información disponible
+        </p>
+      </div>
     </div>
   }
 } @else {
-  <app-loader></app-loader>
+  <div class="flex justify-center items-center p-12">
+    <app-loader></app-loader>
+  </div>
 }
