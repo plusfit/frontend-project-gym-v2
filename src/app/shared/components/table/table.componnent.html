@@ -1,6 +1,6 @@
 <div
-  class="w-full overflow-hidden ring-1 ring-neutral-400 shadow-200 rounded-sm"
-  [ngClass]="{ 'ring-1 ring-neutral-400': headerCssClass !== 'header-primary' }"
+  class="w-full overflow-hidden rounded-xl shadow-md"
+  [ngClass]="{ 'ring-1 ring-blue-200': headerCssClass !== 'header-primary' }"
 >
   <!-- Contenedor scrollable -->
   <div class="max-h-[30rem] overflow-auto">
@@ -11,18 +11,28 @@
       [dataSource]="data || []"
     >
       <ng-container cdkColumnDef="select">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-4"
+        >
           <mat-checkbox
             type="checkbox"
             [checked]="isAllSelected()"
             (change)="toggleSelectAll()"
+            class="accent-white"
           ></mat-checkbox>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td
+          cdk-cell
+          *cdkCellDef="let element"
+          class="p-4 border-b border-gray-100 bg-white"
+        >
           <mat-checkbox
             type="checkbox"
             [checked]="isSelected(element)"
             (change)="toggleSelection(element)"
+            class="accent-blue-500"
           ></mat-checkbox>
         </td>
       </ng-container>
@@ -31,55 +41,62 @@
         *ngFor="let column of displayedColumns"
         [cdkColumnDef]="column"
       >
-        <th cdk-header-cell *cdkHeaderCellDef [ngClass]="headerCssClass">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          [ngClass]="headerCssClass"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-sm p-4"
+        >
           {{ column | translation | camelToTitle }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td
+          cdk-cell
+          *cdkCellDef="let element"
+          class="p-4 border-b border-gray-100 hover:bg-blue-50 transition-colors"
+        >
           @if (column.includes(".")) {
-            <span>{{ resolveNestedProperty(element, column) }}</span>
-          }
-          @if (column === "type") {
-            <app-badge
-              [colorBadge]="
+          <span class="text-gray-700"
+            >{{ resolveNestedProperty(element, column) }}</span
+          >
+          } @if (column === "type") {
+          <app-badge
+            [colorBadge]="
                 element[column] === 'room'
                   ? EColorBadge.SUCCESS
                   : EColorBadge.ERROR
               "
-              [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
-            ></app-badge>
-          }
-          @if (column === "category") {
-            <app-badge
-              [colorBadge]="getColorBadge(element[column])"
-              [textBadge]="getTextBadge(element[column])"
-            ></app-badge>
-          }
-          @if (column === "name") {
-            <span class="font-semibold">{{ element[column] }}</span>
-          }
-          @if (column === "isCustom") {
-            <app-badge
-              [colorBadge]="
+            [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "category") {
+          <app-badge
+            [colorBadge]="getColorBadge(element[column])"
+            [textBadge]="getTextBadge(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "name") {
+          <span class="font-bold text-gray-800 text-base"
+            >{{ element[column] }}</span
+          >
+          } @if (column === "isCustom") {
+          <app-badge
+            [colorBadge]="
                 element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING
               "
-              [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
-            ></app-badge>
-          }
-          @if (
-            column !== "isActive" &&
-            column !== "type" &&
-            column !== "createdAt" &&
-            column !== "updatedAt" &&
-            column !== "name" &&
-            column !== "isCustom" &&
-            column !== "category"
-          ) {
-            <span class="text-xs text-gray-900">{{ element[column] }}</span>
+            [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if ( column !== "isActive" && column !== "type" && column !==
+          "createdAt" && column !== "updatedAt" && column !== "name" && column
+          !== "isCustom" && column !== "category" ) {
+          <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
             *ngIf="column === 'createdAt' || column === 'updatedAt'"
           >
-            {{ element[column] | date: "d MMM y, h:mm a" }}
+            <span class="text-gray-500 text-sm"
+              >{{ element[column] | date: "d MMM y, h:mm a" }}</span
+            >
           </ng-container>
 
           <ng-container *ngIf="column === 'acciones'">
@@ -87,25 +104,27 @@
               title="actions"
               type="button"
               [matMenuTriggerFor]="actionsMenu"
+              class="text-gray-600 hover:text-blue-600 transition-colors rounded-full p-2 hover:bg-blue-50"
             >
-              <i
-                class="ph-dots-three-vertical-fill text-neutral-700 text-3xl"
-              ></i>
+              <i class="ph-dots-three-vertical-fill text-2xl"></i>
             </button>
-            <mat-menu #actionsMenu="matMenu" class="w-fit">
+            <mat-menu #actionsMenu="matMenu" class="bg-gray-800">
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
-                  <button
-                    (click)="emitSeeDetail(element._id)"
-                    type="button"
-                    class="group"
-                    mat-menu-item
-                  >
-                    <div class="flex flex-row items-center space-x-2">
-                      <i class="ph-eye text-button-lg"></i>
-                      <span>Ver Detalle</span>
-                    </div>
-                  </button>
+                <button
+                  (click)="emitSeeDetail(element._id)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i class="ph-eye text-cyan-600 text-button-lg"></i>
+                    <span
+                      class="text-gray-700 group-hover:text-cyan-600 transition-colors"
+                      >Ver Detalle</span
+                    >
+                  </div>
+                </button>
                 }
                 <button
                   (click)="emitEdit(element._id)"
@@ -114,26 +133,31 @@
                   mat-menu-item
                 >
                   <div class="flex flex-row items-center space-x-2">
-                    <i class="ph-pencil-simple text-button-lg"></i>
-                    <span class="group-hover:text-ms-gray-900">Editar</span>
+                    <i
+                      class="ph-pencil-simple text-blue-600 text-button-lg"
+                    ></i>
+                    <span
+                      class="text-gray-700 group-hover:text-blue-600 transition-colors"
+                      >Editar</span
+                    >
                   </div>
                 </button>
                 @if (showDelete) {
-                  <button
-                    (click)="emitDelete(element)"
-                    type="button"
-                    class="group"
-                    mat-menu-item
-                  >
-                    <div class="flex flex-row items-center space-x-2">
-                      <i
-                        class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
-                      ></i>
-                      <span class="text-error-100 group-hover:text-error-200"
-                        >Borrar</span
-                      >
-                    </div>
-                  </button>
+                <button
+                  (click)="emitDelete(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      class="ph-x-circle-fill text-button-lg text-red-500 group-hover:text-red-600"
+                    ></i>
+                    <span class="text-red-500 group-hover:text-red-600"
+                      >Borrar</span
+                    >
+                  </div>
+                </button>
                 }
               </ng-template>
             </mat-menu>
@@ -141,11 +165,19 @@
         </td>
       </ng-container>
 
-      <tr cdk-header-row *cdkHeaderRowDef="tableColumns"></tr>
-      <tr cdk-row *cdkRowDef="let row; columns: tableColumns"></tr>
+      <tr
+        cdk-header-row
+        *cdkHeaderRowDef="tableColumns"
+        class="border-b border-gray-200"
+      ></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: tableColumns"
+        class="hover:bg-gray-50 hover:bg-opacity-70 transition-colors"
+      ></tr>
       <tr class="mat-row" *matNoDataRow>
         <td
-          class="mat-cell h-[30vh]"
+          class="mat-cell h-[30vh] bg-gray-50"
           [attr.colspan]="displayedColumns.length + 1"
         >
           <ng-container *ngIf="loading">
@@ -153,16 +185,18 @@
           </ng-container>
           <ng-container *ngIf="!loading && total === 0 && filteredData">
             <div
-              class="flex flex-col text-center justify-center items-center space-y-4"
+              class="flex flex-col text-center justify-center items-center space-y-4 text-gray-600 p-10"
             >
-              <span>No se encontraron resultados. </span>
+              <i class="ph-magnifying-glass text-6xl text-gray-400 mb-2"></i>
+              <span>No se encontraron resultados.</span>
             </div>
           </ng-container>
           <ng-container *ngIf="!loading && total === 0 && !filteredData">
             <div
-              class="flex flex-col text-center justify-center items-center space-y-4"
+              class="flex flex-col text-center justify-center items-center space-y-4 text-gray-600 p-10"
             >
-              <span>No hay elementos para mostrar 😢</span>
+              <i class="ph-clipboard-text text-6xl text-gray-400 mb-2"></i>
+              <span>No hay elementos para mostrar 💪 ¡Añade uno nuevo!</span>
             </div>
           </ng-container>
         </td>

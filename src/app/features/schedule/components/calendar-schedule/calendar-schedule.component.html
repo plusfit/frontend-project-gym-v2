@@ -1,44 +1,68 @@
-<section class="flex flex-col space-y-6 p-8">
-  <span
-    class="text-center w-full text-6xl tracking-tight font-semibold text-gray-900"
-  >
-    Horarios 🕒
-  </span>
-  @if (loading$ | async) {
-    <app-loader></app-loader>
-  } @else {
-    <div>
-      <div class="flex flex-col">
-        @if (schedule) {
-          @for (day of schedule; track $index) {
-            <mat-accordion class="mt-1">
-              <mat-expansion-panel
-                [expanded]="day.day === currentDay"
-                hideToggle
-              >
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <span class="text-xl font-bold">
-                      {{ day.day }}
-                    </span>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="flex flex-wrap gap-4">
-                  @for (hour of day.hours; track $index) {
-                    <app-card-schedule
-                      [hour]="hour"
-                      [day]="day"
-                      class="flex-1 min-w-[250px] max-w-[300px]"
-                      (edit)="editarHorario($event)"
-                      (delete)="eliminarHorario($event)"
-                    ></app-card-schedule>
-                  }
-                </div>
-              </mat-expansion-panel>
-            </mat-accordion>
-          }
-        }
+<section
+  class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen py-8 px-6"
+>
+  <div class="max-w-7xl mx-auto">
+    <h1
+      class="text-center text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 py-4 mb-8"
+    >
+      HORARIOS <span class="text-4xl">⏱️</span>
+    </h1>
+
+    @if (loading$ | async) {
+      <div class="flex justify-center items-center h-64">
+        <app-loader></app-loader>
       </div>
-    </div>
-  }
+    } @else {
+      <div class="bg-white shadow-xl rounded-xl p-6">
+        <div class="flex flex-col space-y-4">
+          @if (schedule) {
+            @for (day of schedule; track $index) {
+              <mat-accordion class="mt-2">
+                <mat-expansion-panel
+                  [expanded]="day.day === currentDay"
+                  hideToggle
+                  class="bg-white border border-gray-200 rounded-xl overflow-hidden"
+                >
+                  <mat-expansion-panel-header class="py-4">
+                    <mat-panel-title>
+                      <div class="flex items-center space-x-3">
+                        <span
+                          class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
+                        >
+                          {{ day.day }}
+                        </span>
+                        <div
+                          class="h-0.5 flex-grow bg-gradient-to-r from-blue-300 to-transparent"
+                        ></div>
+                      </div>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4"
+                  >
+                    @for (hour of day.hours; track $index) {
+                      <app-card-schedule
+                        [hour]="hour"
+                        [day]="day"
+                        class="transform transition-transform hover:scale-102 duration-200"
+                        (edit)="editarHorario($event)"
+                        (delete)="eliminarHorario($event)"
+                      ></app-card-schedule>
+                    }
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            }
+          } @else {
+            <div
+              class="flex flex-col items-center justify-center p-12 text-center space-y-4"
+            >
+              <i class="ph-calendar-x text-6xl text-gray-400"></i>
+              <p class="text-xl text-gray-600">No hay horarios disponibles</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
 </section>

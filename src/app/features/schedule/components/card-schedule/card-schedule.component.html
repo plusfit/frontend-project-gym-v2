@@ -1,34 +1,76 @@
 <div
-  class="p-2 rounded shadow mb-2 max-h-[90rem]"
+  class="bg-gradient-to-br rounded-xl shadow-md overflow-hidden transform transition-all duration-300 h-full"
   [ngClass]="getBackgroundClass(hour())"
 >
-  <div class="flex justify-between items-center">
-    <p [ngClass]="getTextClass(hour())" class="font-semibold text-lg">
-      {{ hour()?.startTime ?? "" | hourPipe }}
-    </p>
-    <button mat-icon-button [matMenuTriggerFor]="actionsMenu" class="p-0 mb-3">
-      <i class="ph-dots-three-vertical text-xl text-black-600"></i>
-    </button>
+  <div class="p-5">
+    <div class="flex justify-between items-center mb-3">
+      <p
+        [ngClass]="getTextClass(hour())"
+        class="font-bold text-2xl tracking-tight"
+      >
+        {{ hour()?.startTime ?? "" | hourPipe }}
+      </p>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="actionsMenu"
+        [ngClass]="getTextClass(hour())"
+        class="rounded-full p-1 transition-all duration-200 flex items-center justify-center"
+      >
+        <i
+          class="ph-dots-three-vertical text-xl"
+          [ngClass]="getTextClass(hour())"
+        ></i>
+      </button>
+    </div>
+
+    <div class="space-y-3 mt-4">
+      <div class="flex items-center space-x-2">
+        <i class="ph-users text-xl" [ngClass]="getTextClass(hour())"></i>
+        <p [ngClass]="getTextClass(hour())" class="font-medium">
+          Máximo: {{ hour()?.maxCount }}
+        </p>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <i class="ph-list-checks text-xl" [ngClass]="getTextClass(hour())"></i>
+        <p [ngClass]="getTextClass(hour())" class="font-medium">
+          Registrados: {{ hour()?.clients?.length || 0 }}
+        </p>
+      </div>
+
+      <div class="mt-2 w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+        <div
+          class="h-full bg-gradient-to-r from-blue-400 to-cyan-400"
+          [ngStyle]="{ width: getPercentageOccupation() + '%' }"
+        ></div>
+      </div>
+    </div>
   </div>
 
-  <p [ngClass]="getTextClass(hour())" class="font-semibold">
-    Máximo de clientes: {{ hour()?.maxCount }}
-  </p>
-  <p [ngClass]="getTextClass(hour())" class="font-semibold">
-    Clientes registrados: {{ hour()?.clients?.length || 0 }}
-  </p>
   <mat-menu #actionsMenu="matMenu">
-    <button (click)="editarHorario(hour() ?? defaultHour, day())" mat-menu-item>
+    <button
+      (click)="editarHorario(hour() ?? defaultHour, day())"
+      mat-menu-item
+      class="group"
+    >
       <div class="flex items-center space-x-2">
-        <i class="ph-pencil-simple text-button-lg"></i>
-        <span>Editar</span>
+        <i class="ph-pencil-simple text-blue-600 text-button-lg"></i>
+        <span class="text-gray-800 group-hover:text-blue-600 transition-colors"
+          >Editar</span
+        >
       </div>
     </button>
 
-    <button (click)="eliminarHorario(hour() ?? defaultHour)" mat-menu-item>
+    <button
+      (click)="eliminarHorario(hour() ?? defaultHour)"
+      mat-menu-item
+      class="group"
+    >
       <div class="flex items-center space-x-2">
-        <i class="ph-x-circle-fill text-button-lg text-error-100"></i>
-        <span class="text-error-100">Borrar</span>
+        <i
+          class="ph-x-circle-fill text-button-lg text-red-600 group-hover:text-red-700"
+        ></i>
+        <span class="text-red-600 group-hover:text-red-700">Borrar</span>
       </div>
     </button>
   </mat-menu>
