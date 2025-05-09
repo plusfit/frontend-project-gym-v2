@@ -326,10 +326,7 @@ export class ClientsState {
   ): Observable<ClientApiResponse[]> {
     ctx.patchState({ loading: true, error: null });
 
-    return forkJoin([
-      this.clientService.deleteClient(id),
-      // this.clientService.deletClientFirebase(id),
-    ]).pipe(
+    return forkJoin([this.clientService.deleteClient(id)]).pipe(
       tap(() => {
         const clients = ctx
           .getState()
