@@ -3,7 +3,7 @@
     <div class="p-6">
       <div class="mb-6">
         <span
-          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
+          class="block text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200"
         >
           Plan del Cliente
         </span>
@@ -14,80 +14,86 @@
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-tag-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Nombre</span>
+            <i class="ph-tag-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Nombre</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.name }}</p>
+          <p class="text-lg text-gray-700">{{ clientPlan.name }}</p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-crosshair-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Objetivo</span>
+            <i class="ph-crosshair-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Objetivo</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.goal | translation }}</p>
+          <p class="text-lg text-gray-700">
+            {{ clientPlan.goal | translation }}
+          </p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-user-minus-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Edad mínima</span>
+            <i class="ph-user-minus-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Edad mínima</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.minAge }} años</p>
+          <p class="text-lg text-gray-700">{{ clientPlan.minAge }} años</p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-user-plus-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Edad máxima</span>
+            <i class="ph-user-plus-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Edad máxima</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.maxAge }} años</p>
+          <p class="text-lg text-gray-700">{{ clientPlan.maxAge }} años</p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-lightning-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Tipo</span>
+            <i class="ph-lightning-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Tipo</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.type | translation }}</p>
+          <p class="text-lg text-gray-700">
+            {{ clientPlan.type | translation }}
+          </p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-tag-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Categoría</span>
+            <i class="ph-tag-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Categoría</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.category | translation }}</p>
+          <p class="text-lg text-gray-700">
+            {{ clientPlan.category | translation }}
+          </p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-calendar-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Días</span>
+            <i class="ph-calendar-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Días</span>
           </div>
-          <p class="text-gray-700">{{ clientPlan.days }} días</p>
+          <p class="text-lg text-gray-700">{{ clientPlan.days }} días</p>
         </div>
 
         <div
           class="bg-blue-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100"
         >
           <div class="flex items-center mb-4">
-            <i class="ph-chart-line-light text-blue-500 text-xl mr-2"></i>
-            <span class="text-lg font-semibold text-gray-700">Experiencia</span>
+            <i class="ph-chart-line-light text-blue-500 text-2xl mr-2"></i>
+            <span class="text-xl font-semibold text-gray-700">Experiencia</span>
           </div>
-          <p class="text-gray-700">
+          <p class="text-lg text-gray-700">
             {{ clientPlan.experienceLevel | translation }}
           </p>
         </div>
@@ -97,8 +103,8 @@
         class="mt-6 bg-blue-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-100 text-center"
       >
         <div class="flex items-center justify-center mb-2">
-          <i class="ph-user-light text-blue-500 text-2xl mr-2"></i>
-          <span class="text-xl font-bold text-gray-700">Entrenador</span>
+          <i class="ph-user-light text-blue-500 text-3xl mr-2"></i>
+          <span class="text-2xl font-bold text-gray-700">Entrenador</span>
         </div>
         <p
           class="text-2xl font-bold"
@@ -113,9 +119,9 @@
     <div class="flex justify-center items-center h-64 my-6">
       <div class="bg-blue-50 p-8 rounded-xl border border-blue-100 shadow-sm">
         <p
-          class="text-xl font-bold text-gray-700 text-center flex items-center"
+          class="text-2xl font-bold text-gray-700 text-center flex items-center"
         >
-          <i class="ph-info text-blue-500 text-2xl mr-2"></i>
+          <i class="ph-info text-blue-500 text-3xl mr-2"></i>
           No hay información disponible
         </p>
       </div>

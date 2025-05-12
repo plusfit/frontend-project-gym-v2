@@ -14,7 +14,7 @@
         <th
           cdk-header-cell
           *cdkHeaderCellDef
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-4"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2"
         >
           <mat-checkbox
             type="checkbox"
@@ -26,7 +26,7 @@
         <td
           cdk-cell
           *cdkCellDef="let element"
-          class="p-4 border-b border-gray-100 bg-white"
+          class="p-2 border-b border-gray-100 bg-white"
         >
           <mat-checkbox
             type="checkbox"
@@ -158,23 +158,23 @@
                     >
                   </div>
                 </button>
-                }
-                @if (showDisabled) {
-                  <button
-                    (click)="emitDisabled(element._id, element.disabled)"
-                    type="button"
-                    class="group"
-                    mat-menu-item
-                  >
-                    <div class="flex flex-row items-center space-x-2">
-                      <i
-                        class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
-                      ></i>
-                      <span class="text-error-100 group-hover:text-error-200">{{
-                        element.disabled ? "Habilitar" : "Deshabilitar"
-                      }}</span>
-                    </div>
-                  </button>
+                } @if (showDisabled) {
+                <button
+                  (click)="emitDisabled(element._id, element.disabled)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
+                    ></i>
+                    <span class="text-error-100 group-hover:text-error-200"
+                      >{{ element.disabled ? "Habilitar" : "Deshabilitar"
+                      }}</span
+                    >
+                  </div>
+                </button>
                 }
               </ng-template>
             </mat-menu>
