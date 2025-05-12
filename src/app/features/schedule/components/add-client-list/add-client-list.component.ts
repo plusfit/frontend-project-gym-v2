@@ -24,13 +24,11 @@ import {
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { TitleComponent } from '../../../../shared/components/title/title.component';
 
 @Component({
   selector: 'app-add-client-list',
@@ -40,12 +38,10 @@ import { TitleComponent } from '../../../../shared/components/title/title.compon
     MatListModule,
     FormsModule,
     ReactiveFormsModule,
-    BtnDirective,
     TableComponent,
     FiltersBarComponent,
     AsyncPipe,
     MatPaginator,
-    TitleComponent,
   ],
   templateUrl: './add-client-list.component.html',
   styleUrl: './add-client-list.component.css',
