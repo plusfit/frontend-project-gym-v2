@@ -1,9 +1,7 @@
 export const environment = {
   production: true,
   env: 'Production',
-  api:
-    process?.env['NG_APP_API_URL'] ||
-    'https://backend-project-gym-production-9fcf.up.railway.app',
+  api: 'https://backend-project-gym-production-9fcf.up.railway.app',
   exerciseTableLimit: 5,
   exerciseTableLimitOptions: [8, 5],
   routineTableLimit: 8,

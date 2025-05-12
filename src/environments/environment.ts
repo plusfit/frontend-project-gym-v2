@@ -15,9 +15,7 @@ export const environment = {
   /**
    * The URL of the API for the application.
    */
-  api:
-    process?.env['NG_APP_API_URL'] ||
-    'https://backend-project-gym-production-9fcf.up.railway.app',
+  api: 'https://backend-project-gym-production-9fcf.up.railway.app',
   /**
    * The configuration settings for the application.
    */
