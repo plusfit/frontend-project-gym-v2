@@ -56,9 +56,9 @@ interface Client {
 export class AddClientListComponent implements OnInit, AfterViewChecked {
   clientsAssignable$!: Observable<Client[]>;
   totalClients$!: Observable<number>;
-  filteredClients!: Client[]; // Lista filtrada para mostrar
+  filteredClients!: Client[];
   form: FormGroup;
-  searchControl = new FormControl(); // Control de búsqueda
+  searchControl = new FormControl();
   clientsControl = new FormControl();
   client = output<Client>({
     alias: 'client',
