@@ -11,7 +11,10 @@
           <span
             class="text-center text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 mb-8 block"
           >
-            {{ title }} <span class="text-3xl">📋</span>
+            {{ title }}
+            <i
+              class="ph-clipboard-text text-blue-500 text-3xl align-middle"
+            ></i>
           </span>
           <app-client-form [isEdit]="isEdit" [id]="id"></app-client-form>
         </div>

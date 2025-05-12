@@ -45,14 +45,14 @@
           cdk-header-cell
           *cdkHeaderCellDef
           [ngClass]="headerCssClass"
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-sm p-4"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4"
         >
           {{ column | translation | camelToTitle }}
         </th>
         <td
           cdk-cell
           *cdkCellDef="let element"
-          class="p-4 border-b border-gray-100 hover:bg-blue-50 transition-colors"
+          class="pl-4 p-1 border-b border-gray-100 hover:bg-blue-50 transition-colors"
         >
           @if (column.includes(".")) {
           <span class="text-gray-700"

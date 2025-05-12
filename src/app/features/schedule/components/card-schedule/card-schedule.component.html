@@ -26,14 +26,14 @@
     <div class="space-y-3 mt-4">
       <div class="flex items-center space-x-2">
         <i class="ph-users text-xl" [ngClass]="getTextClass(hour())"></i>
-        <p [ngClass]="getTextClass(hour())" class="font-medium">
+        <p [ngClass]="getTextClass(hour())" class="font-medium !m-0 pl-2">
           Máximo: {{ hour()?.maxCount }}
         </p>
       </div>
 
       <div class="flex items-center space-x-2">
         <i class="ph-list-checks text-xl" [ngClass]="getTextClass(hour())"></i>
-        <p [ngClass]="getTextClass(hour())" class="font-medium">
+        <p [ngClass]="getTextClass(hour())" class="font-medium !m-0 pl-2">
           Registrados: {{ hour()?.clients?.length || 0 }}
         </p>
       </div>

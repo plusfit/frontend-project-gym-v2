@@ -2,18 +2,18 @@
   class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen py-8 px-6"
 >
   <div class="max-w-7xl mx-auto">
-    <h1
-      class="text-center text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 py-4 mb-8"
+    <span
+      class="w-full text-center text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 py-6"
     >
       HORARIOS <span class="text-4xl">⏱️</span>
-    </h1>
+    </span>
 
     @if (loading$ | async) {
       <div class="flex justify-center items-center h-64">
         <app-loader></app-loader>
       </div>
     } @else {
-      <div class="bg-white shadow-xl rounded-xl p-6">
+      <div class="bg-white shadow-xl rounded-xl p-6 mt-5">
         <div class="flex flex-col space-y-4">
           @if (schedule) {
             @for (day of schedule; track $index) {

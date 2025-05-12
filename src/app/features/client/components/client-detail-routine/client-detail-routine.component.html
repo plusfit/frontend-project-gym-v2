@@ -1,41 +1,61 @@
 @if (clientRoutine$ | async; as clientRoutine) {
   @if (clientRoutine && Object.keys(clientRoutine).length > 0) {
-    <div class="bg-white p-8 max-w-7xl mx-auto">
-      <div class="py-2 border-b border-gray-200 mb-4">
-        <span class="text-3xl font-bold text-gray-900">
-          <i class="ph-dumbbell-bold text-gray-900 text-2xl mr-2"></i>
+    <div class="bg-white rounded-xl shadow-xl p-8 max-w-7xl mx-auto">
+      <div class="mb-6">
+        <span
+          class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 block"
+        >
+          <i class="ph-dumbbell-bold mr-2"></i>
           Rutina del Cliente
         </span>
+        <div
+          class="h-1 w-32 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mt-2"
+        ></div>
       </div>
 
-      <div class="mb-10 p-8 bg-gray-50 rounded-lg border border-gray-300">
-        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-          <i class="ph-user-bold text-gray-800 text-xl mr-2"></i>
-          Nombre:
-          <span class="font-normal text-gray-700 ml-2">{{
-            clientRoutine.name
-          }}</span>
+      <div
+        class="mb-10 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl shadow-md border border-blue-100"
+      >
+        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-start">
+          <i class="ph-user-bold text-blue-500 text-xl mr-2 mt-1"></i>
+          <span
+            >Nombre:
+            <span class="font-normal text-gray-700 ml-2 break-words">{{
+              clientRoutine.name
+            }}</span>
+          </span>
         </p>
-        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-          <i class="ph-note-pencil text-gray-800 text-xl mr-2"></i>
-          Descripción:
-          <span class="font-normal text-gray-700 ml-2">{{
-            clientRoutine.description
-          }}</span>
+        <p class="text-lg font-semibold text-gray-800 mb-3 flex items-start">
+          <i class="ph-note-pencil text-blue-500 text-xl mr-2 mt-1"></i>
+          <span
+            >Descripción:
+            <span class="font-normal text-gray-700 ml-2 break-words">{{
+              clientRoutine.description
+            }}</span>
+          </span>
         </p>
-        <p class="text-lg font-semibold text-gray-800 flex items-center">
-          <i class="ph-check-circle-bold text-gray-800 text-xl mr-2"></i>
-          Personalizada:
-          <span class="font-normal text-gray-700 ml-2">
-            {{ clientRoutine.isCustom ? "Sí" : "No" }}
+        <p class="text-lg font-semibold text-gray-800 flex items-start">
+          <i class="ph-check-circle-bold text-blue-500 text-xl mr-2 mt-1"></i>
+          <span
+            >Personalizada:
+            <span class="font-normal text-gray-700 ml-2">
+              {{ clientRoutine.isCustom ? "Sí" : "No" }}
+            </span>
           </span>
         </p>
       </div>
 
-      <span class="text-3xl font-bold text-gray-900 mb-8">
-        <i class="ph-list-bold text-gray-900 text-2xl mr-2"></i>
-        Subrutinas
-      </span>
+      <div class="mb-6">
+        <span
+          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 block"
+        >
+          <i class="ph-list-bold mr-2"></i>
+          Subrutinas
+        </span>
+        <div
+          class="h-1 w-28 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mt-2 mb-6"
+        ></div>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mt-4">
         @for (
@@ -44,64 +64,80 @@
           let i = $index
         ) {
           <div
-            class="bg-white shadow-sm rounded-lg p-8 border border-gray-200 flex flex-col"
+            class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 flex flex-col hover:shadow-xl transition-shadow duration-300"
           >
             <!-- Sección superior -->
             <div class="flex-1 mb-6">
-              <span class="text-2xl font-bold text-gray-800 mb-4 flex py-4">
-                <div>
-                  <i class="ph-clipboard-bold text-gray-800 text-xl mr-2"></i>
-                  Subrutina {{ i + 1 }}
-                </div>
-              </span>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
-                <p
-                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
+              <div class="mb-4">
+                <span
+                  class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 flex items-center"
                 >
-                  <i class="ph-user-circle-bold text-gray-700 text-lg mr-1"></i>
-                  Nombre:
-                  <span class="font-medium text-gray-800 ml-1">{{
-                    subRoutine.name
-                  }}</span>
-                </p>
+                  <i class="ph-clipboard-bold mr-2"></i>
+                  <span class="truncate">Subrutina {{ i + 1 }}</span>
+                </span>
+                <div
+                  class="h-1 w-24 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full mt-1"
+                ></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
                 <p
-                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-start"
                 >
-                  <i class="ph-note-pencil text-gray-700 text-lg mr-1"></i>
-                  Descripción:
-                  <span class="font-normal text-gray-800 ml-1">
-                    {{
-                      showFullDescription[i]
-                        ? subRoutine.description
-                        : subRoutine.description.slice(0, 100) + "..."
-                    }}
-                  </span>
-                  @if (subRoutine.description.length > 100) {
-                    <button
-                      (click)="toggleDescription(i)"
-                      class="text-blue-600 hover:underline text-xs ml-2"
-                      style="white-space: pre-line"
-                    >
-                      {{ showFullDescription[i] ? "Ver menos" : "Ver más" }}
-                    </button>
-                  }
-                </p>
-                <p
-                  class="text-sm font-semibold text-gray-700 mb-2 flex items-center"
-                >
-                  <i class="ph-heart-bold text-gray-700 text-lg mr-1"></i>
-                  Personalizada:
-                  <span class="font-medium text-gray-800 ml-1">
-                    {{ subRoutine.isCustom ? "Sí" : "No" }}
+                  <i
+                    class="ph-user-circle-bold text-blue-500 text-lg mr-1 mt-0.5"
+                  ></i>
+                  <span class="flex-1">
+                    Nombre:
+                    <span class="font-medium text-gray-800 ml-1 break-words">{{
+                      subRoutine.name
+                    }}</span>
                   </span>
                 </p>
                 <p
-                  class="text-sm font-semibold text-gray-700 flex items-center"
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-start"
                 >
-                  <i class="ph-tag-bold text-gray-700 text-lg mr-1"></i>
-                  Categoría:
-                  <span class="font-medium text-gray-800 ml-1">
-                    {{ subRoutine.category | translation }}
+                  <i
+                    class="ph-note-pencil text-blue-500 text-lg mr-1 mt-0.5"
+                  ></i>
+                  <span class="flex-1">
+                    Descripción:
+                    <span class="font-normal text-gray-800 ml-1 break-words">
+                      {{
+                        showFullDescription[i]
+                          ? subRoutine.description
+                          : subRoutine.description.slice(0, 100) + "..."
+                      }}
+                    </span>
+                    @if (subRoutine.description.length > 100) {
+                      <button
+                        (click)="toggleDescription(i)"
+                        class="text-blue-600 hover:text-cyan-600 text-xs ml-2 font-medium transition-colors duration-200"
+                      >
+                        {{ showFullDescription[i] ? "Ver menos" : "Ver más" }}
+                      </button>
+                    }
+                  </span>
+                </p>
+                <p
+                  class="text-sm font-semibold text-gray-700 mb-2 flex items-start"
+                >
+                  <i
+                    class="ph-heart-bold text-blue-500 text-lg mr-1 mt-0.5"
+                  ></i>
+                  <span>
+                    Personalizada:
+                    <span class="font-medium text-gray-800 ml-1 break-words">
+                      {{ subRoutine.isCustom ? "Sí" : "No" }}
+                    </span>
+                  </span>
+                </p>
+                <p class="text-sm font-semibold text-gray-700 flex items-start">
+                  <i class="ph-tag-bold text-blue-500 text-lg mr-1 mt-0.5"></i>
+                  <span>
+                    Categoría:
+                    <span class="font-medium text-gray-800 ml-1 truncate block">
+                      {{ subRoutine.category | translation }}
+                    </span>
                   </span>
                 </p>
               </div>
@@ -109,100 +145,125 @@
 
             <!-- Sección de ejercicios -->
             <div>
-              <span class="block text-lg font-bold text-gray-800 mb-4">
-                <i class="ph-activity-bold text-gray-800 text-xl mr-2"></i>
-                Ejercicios
-              </span>
+              <div class="mb-4">
+                <span
+                  class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 flex items-center"
+                >
+                  <i class="ph-activity-bold mr-2"></i>
+                  Ejercicios
+                </span>
+                <div
+                  class="h-px w-full bg-gradient-to-r from-blue-200 to-cyan-200 rounded-full mt-2"
+                ></div>
+              </div>
+
               <div
-                class="max-h-80 overflow-y-auto bg-gray-50 p-4 rounded-lg space-y-4"
+                class="max-h-80 overflow-y-auto bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl shadow-inner space-y-4"
               >
                 @for (
                   exercise of subRoutine.exercises;
                   track exercise;
                   let j = $index
                 ) {
-                  <div>
+                  <div class="mb-2">
                     <p
-                      class="text-base text-gray-500 font-semibold flex items-center"
+                      class="text-base text-blue-600 font-semibold flex items-center mb-2"
                     >
                       <i
-                        class="ph-person-simple-walk text-gray-800 text-lg mr-1"
+                        class="ph-person-simple-walk text-blue-500 text-lg mr-1"
                       ></i>
                       Ejercicio {{ j + 1 }}
                     </p>
                     <div
-                      class="bg-gray-100 rounded-md shadow-sm p-4 flex justify-between"
+                      class="bg-white rounded-lg shadow-sm p-4 border border-blue-50 hover:shadow-md transition-shadow duration-200"
                     >
-                      <div class="flex flex-col">
-                        <p
-                          class="text-sm font-semibold text-gray-700 flex items-center"
-                        >
-                          <i
-                            class="ph-user-circle-bold text-gray-700 text-lg mr-1"
-                          ></i>
-                          Nombre:
-                          <span class="font-medium text-gray-500 ml-1">{{
-                            exercise.name
-                          }}</span>
-                        </p>
-                        <p
-                          class="text-sm font-semibold text-gray-700 flex items-center"
-                        >
-                          <i
-                            class="ph-lightning text-gray-700 text-lg mr-1"
-                          ></i>
-                          Tipo:
-                          <span class="font-medium text-gray-500 ml-1">
-                            {{ exercise.type | translation }}
-                          </span>
-                        </p>
-                      </div>
-                      <div class="flex flex-col">
-                        @if (exercise.type === "room") {
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="flex flex-col space-y-2">
                           <p
-                            class="text-sm font-semibold text-gray-700 flex items-center"
+                            class="text-sm font-semibold text-gray-700 flex items-start"
                           >
                             <i
-                              class="ph-barbell-bold text-gray-700 text-lg mr-1"
+                              class="ph-user-circle-bold text-blue-500 text-lg mr-1 mt-0.5"
                             ></i>
-                            Series:
-                            <span class="font-medium text-gray-500 ml-1">{{
-                              exercise.series
-                            }}</span>
+                            <span class="flex-1">
+                              Nombre:
+                              <span
+                                class="font-medium text-gray-700 ml-1 break-words"
+                                >{{ exercise.name }}</span
+                              >
+                            </span>
                           </p>
                           <p
-                            class="text-sm font-semibold text-gray-700 flex items-center"
+                            class="text-sm font-semibold text-gray-700 flex items-start"
                           >
                             <i
-                              class="ph-repeat-bold text-gray-700 text-lg mr-1"
+                              class="ph-lightning text-blue-500 text-lg mr-1 mt-0.5"
                             ></i>
-                            Repeticiones:
-                            <span class="font-medium text-gray-500 ml-1">{{
-                              exercise.reps
-                            }}</span>
+                            <span>
+                              Tipo:
+                              <span class="font-medium text-gray-700 ml-1">
+                                {{ exercise.type | translation }}
+                              </span>
+                            </span>
                           </p>
-                        } @else if (exercise.type === "cardio") {
-                          <p
-                            class="text-sm font-semibold text-gray-700 flex items-center"
-                          >
-                            <i
-                              class="ph-clock-bold text-gray-700 text-lg mr-1"
-                            ></i>
-                            Minutos:
-                            <span class="font-medium text-gray-500 ml-1"
-                              >{{ exercise.minutes }} min.</span
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                          @if (exercise.type === "room") {
+                            <p
+                              class="text-sm font-semibold text-gray-700 flex items-start"
                             >
-                          </p>
-                        }
-                        <p
-                          class="text-sm font-semibold text-gray-700 flex items-center"
-                        >
-                          <i class="ph-bed-bold text-gray-700 text-lg mr-1"></i>
-                          Descanso:
-                          <span class="font-medium text-gray-500 ml-1"
-                            >{{ exercise.rest }} seg.</span
+                              <i
+                                class="ph-barbell-bold text-blue-500 text-lg mr-1 mt-0.5"
+                              ></i>
+                              <span>
+                                Series:
+                                <span class="font-medium text-gray-700 ml-1">{{
+                                  exercise.series
+                                }}</span>
+                              </span>
+                            </p>
+                            <p
+                              class="text-sm font-semibold text-gray-700 flex items-start"
+                            >
+                              <i
+                                class="ph-repeat-bold text-blue-500 text-lg mr-1 mt-0.5"
+                              ></i>
+                              <span>
+                                Repeticiones:
+                                <span class="font-medium text-gray-700 ml-1">{{
+                                  exercise.reps
+                                }}</span>
+                              </span>
+                            </p>
+                          } @else if (exercise.type === "cardio") {
+                            <p
+                              class="text-sm font-semibold text-gray-700 flex items-start"
+                            >
+                              <i
+                                class="ph-clock-bold text-blue-500 text-lg mr-1 mt-0.5"
+                              ></i>
+                              <span>
+                                Minutos:
+                                <span class="font-medium text-gray-700 ml-1"
+                                  >{{ exercise.minutes }} min.</span
+                                >
+                              </span>
+                            </p>
+                          }
+                          <p
+                            class="text-sm font-semibold text-gray-700 flex items-start"
                           >
-                        </p>
+                            <i
+                              class="ph-bed-bold text-blue-500 text-lg mr-1 mt-0.5"
+                            ></i>
+                            <span>
+                              Descanso:
+                              <span class="font-medium text-gray-700 ml-1"
+                                >{{ exercise.rest }} seg.</span
+                              >
+                            </span>
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -215,13 +276,20 @@
     </div>
   } @else {
     <div
-      class="bg-white p-8 max-w-6xl mx-auto flex justify-center items-center h-64 my-8"
+      class="bg-white rounded-xl shadow-lg p-8 max-w-6xl mx-auto flex justify-center items-center h-64 my-8"
     >
-      <p class="text-2xl font-bold text-gray-800">
-        No hay información disponible
-      </p>
+      <div class="text-center">
+        <i class="ph-info-bold text-blue-500 text-5xl mb-4"></i>
+        <p
+          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
+        >
+          No hay información disponible
+        </p>
+      </div>
     </div>
   }
 } @else {
-  <app-loader></app-loader>
+  <div class="flex justify-center items-center p-12">
+    <app-loader></app-loader>
+  </div>
 }
