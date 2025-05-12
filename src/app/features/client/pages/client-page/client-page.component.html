@@ -40,6 +40,9 @@
           (delete)="deleteClient($event)"
           (seeDetail)="seeDetailClient($event)"
           [showSeeDetail]="true"
+          (disabled)="toggleDisabledClient($event, $event.disabled)"
+          [showDisabled]="true"
+          [showDelete]="false"
           class="w-full"
         >
           <mat-paginator

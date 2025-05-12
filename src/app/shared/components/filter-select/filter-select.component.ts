@@ -27,6 +27,7 @@ interface ValueSelect {
 export class FilterSelectComponent {
   pageSize = environment.config.pageSize;
   withoutPlan = false;
+  disabled = false;
 
   @Input() control!: FormControl;
   @Input() options!: any[];
@@ -35,7 +36,8 @@ export class FilterSelectComponent {
 
   filters: ValueSelect[] = [
     { value: 'all', viewValue: 'Todos' },
-    { value: 'true', viewValue: 'Sin Plan' },
+    { value: 'withoutPlan', viewValue: 'Sin Plan' },
+    { value: 'disabled', viewValue: 'Deshabilitados' },
   ];
 
   constructor(
@@ -43,14 +45,25 @@ export class FilterSelectComponent {
     private actions: Actions,
   ) {}
 
-  filterChange(value: string): void {
-    this.withoutPlan = value === 'true';
+  filterChange(event: any): void {
+    this.disabled = false;
+    this.withoutPlan = false;
+
+    const selected = event.value;
+
+    if (selected === 'disabled') {
+      this.disabled = true;
+    } else if (selected === 'withoutPlan') {
+      this.withoutPlan = true;
+    }
+
     this.store.dispatch(
       new GetClients({
         page: 1,
         pageSize: this.pageSize,
-        withoutPlan: this.withoutPlan, // Mandar explícitamente el filtro de "sin plan"
-        role: 'User', // Si también quieres filtrar por rol, mantén este parámetro
+        withoutPlan: this.withoutPlan,
+        disabled: this.disabled,
+        role: 'User',
       }),
     );
   }

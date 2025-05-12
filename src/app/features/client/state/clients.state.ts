@@ -31,6 +31,7 @@ import {
   PlanClient,
   RegisterClient,
   RoutineClient,
+  ToggleDisabledClient,
   UpdateClient,
 } from './clients.actions';
 import { ClientsStateModel } from './clients.model';
@@ -102,51 +103,39 @@ export class ClientsState {
   @Action(GetClients, { cancelUncompleted: true })
   getClients(
     ctx: StateContext<ClientsStateModel>,
-    action: GetClients,
+    { payload }: GetClients,
   ): Observable<ClientApiResponse> {
     ctx.patchState({ loading: true, clients: [], error: null });
-    const { page, pageSize, searchQ, withoutPlan } = action.payload;
 
-    let getClientsObservable: Observable<ClientApiResponse[]>;
-    if (!withoutPlan && (searchQ === null || searchQ === undefined)) {
-      getClientsObservable = this.clientService.getClientsByName(
-        page,
-        pageSize,
-        '',
-        '',
-        'User',
-        '',
-        false,
-      );
-    } else if (withoutPlan) {
-      getClientsObservable = this.clientService.getClientsByName(
-        page,
-        pageSize,
-        searchQ,
-        searchQ,
-        'User',
-        searchQ,
-        true,
-      );
-    } else {
-      getClientsObservable = this.clientService.getClientsByName(
-        page,
-        pageSize,
-        searchQ,
-        searchQ,
-        'User',
-        searchQ,
-        false,
-      );
-    }
+    const { page, pageSize, searchQ, withoutPlan, disabled } = payload;
+
+    const nameFilter = searchQ ?? '';
+    const emailFilter = searchQ ?? '';
+    const role = 'User';
+    const CIFilter = searchQ ?? '';
+    const withoutPlanFilter = withoutPlan ?? false;
+    const disabledFilter = disabled ?? false;
+
+    const getClientsObservable = this.clientService.getClientsByName(
+      page,
+      pageSize,
+      nameFilter,
+      emailFilter,
+      role,
+      CIFilter,
+      withoutPlanFilter,
+      disabledFilter,
+    );
 
     return getClientsObservable.pipe(
       tap((response: any) => {
         const clients = response.data.data.map((client: any) => ({
           ...client,
         }));
+
         const total = response.data.total;
         const pageCount = Math.ceil(total / pageSize);
+
         ctx.patchState({
           clients,
           total,
@@ -158,7 +147,7 @@ export class ClientsState {
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
-        return throwError(error);
+        return throwError(() => error);
       }),
     );
   }
@@ -358,9 +347,9 @@ export class ClientsState {
           // Creamos un array de observables para obtener los ejercicios
           const subroutineRequests = subroutines.map((subroutine: any) => {
             return forkJoin(
-              subroutine.exercises.map((exerciseId: string) =>
+              subroutine.exercises.map((exercise: any) =>
                 this.exerciseService
-                  .getExerciseById(exerciseId)
+                  .getExerciseById(exercise._id)
                   .pipe(map((exercise) => exercise.data)),
               ),
             ).pipe(
@@ -396,6 +385,31 @@ export class ClientsState {
     }
 
     return of(null); // Retornar un observable vacío si no hay `routineId`
+  }
+
+  @Action(ToggleDisabledClient, { cancelUncompleted: true })
+  toggleDisabledClient(
+    ctx: StateContext<ClientsStateModel>,
+    { id, disabled }: ToggleDisabledClient,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.toggleDisabledClient(id, disabled).pipe(
+      tap(() => {
+        const clients = ctx
+          .getState()
+          .clients?.filter((client) => client._id !== id);
+        ctx.patchState({ clients, loading: false });
+        this.snackBarService.showSuccess(
+          'Éxito',
+          'Cliente desactivado correctamente',
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
   }
 
   @Action(PlanClient, { cancelUncompleted: true })
