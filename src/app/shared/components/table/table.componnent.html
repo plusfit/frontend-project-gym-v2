@@ -55,9 +55,10 @@
           class="pl-4 p-1 border-b border-gray-100 hover:bg-blue-50 transition-colors"
         >
           @if (column.includes(".")) {
-          <span class="text-gray-700"
-            >{{ resolveNestedProperty(element, column) }}</span
-          >
+           <span
+    class="{{ column === 'userInfo.name' ? 'font-bold text-gray-800 text-base' : 'text-gray-700' }}">
+    {{ resolveNestedProperty(element, column) }}
+  </span>
           } @if (column === "type") {
           <app-badge
             [colorBadge]="
