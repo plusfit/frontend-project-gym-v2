@@ -87,7 +87,7 @@ export class SubRoutinesState {
     ctx: StateContext<SubRoutineStateModel>,
     action: GetSubRoutines,
   ): Observable<SubRoutineApiResponse[]> {
-    ctx.patchState({ loading: true, error: null });
+    ctx.patchState({ loading: true, error: null, subRoutines: [], total: 0 });
     const { page, pageSize, searchQ } = action.payload;
 
     let getSubRoutinesObservable: Observable<SubRoutineApiResponse[]>;

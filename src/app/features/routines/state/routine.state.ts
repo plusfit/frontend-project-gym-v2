@@ -85,7 +85,7 @@ export class RoutineState {
     ctx: StateContext<RoutineStateModel>,
     action: GetRoutinesByPage,
   ): Observable<RoutinesApiResponse> {
-    ctx.patchState({ loading: true });
+    ctx.patchState({ loading: true, routines: [], totalRoutines: 0 });
     return this.routineService
       .getRoutinesByPage(action.payload.page, ctx.getState().limit)
       .pipe(
