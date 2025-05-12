@@ -1,4 +1,3 @@
-import process from 'process';
 export const environment = {
   /**
    * A boolean indicating whether the application is in production mode or not.
