@@ -93,7 +93,7 @@ export class ExerciseState {
     ctx: StateContext<ExerciseStateModel>,
     action: GetExercisesByPage,
   ): Observable<Exercise[]> {
-    ctx.patchState({ loading: true });
+    ctx.patchState({ loading: true, exercises: [], totalExercises: 0 });
 
     return this.exerciseService
       .getExercisesByPage(action.payload.page, ctx.getState().limit)

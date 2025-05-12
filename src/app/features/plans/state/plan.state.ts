@@ -83,7 +83,7 @@ export class PlansState {
     ctx: StateContext<PlanStateModel>,
     action: GetPlans,
   ): Observable<PlanApiResponse[]> {
-    ctx.patchState({ loading: true, error: null });
+    ctx.patchState({ loading: true, error: null, plans: [] });
     const { page, pageSize, searchQ } = action.payload;
 
     let getPlansObservable: Observable<PlanApiResponse[]>;
