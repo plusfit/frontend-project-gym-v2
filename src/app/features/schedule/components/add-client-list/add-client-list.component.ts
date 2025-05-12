@@ -30,6 +30,12 @@ import { FiltersBarComponent } from '../../../../shared/components/filter-bar/fi
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
+interface Client {
+  _id: string;
+  email: string;
+  [key: string]: unknown;
+}
+
 @Component({
   selector: 'app-add-client-list',
   standalone: true,
@@ -48,30 +54,30 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrl: './add-client-list.component.css',
 })
 export class AddClientListComponent implements OnInit, AfterViewChecked {
-  clientsAssignable$!: Observable<any[]>;
+  clientsAssignable$!: Observable<Client[]>;
   totalClients$!: Observable<number>;
-  filteredClients!: any[]; // Lista filtrada para mostrar
+  filteredClients!: Client[]; // Lista filtrada para mostrar
   form: FormGroup;
   searchControl = new FormControl(); // Control de búsqueda
   clientsControl = new FormControl();
-  client = output<any>({
+  client = output<Client>({
     alias: 'client',
   });
   loadingAssignable$: Observable<boolean> = this.store.select(
     ScheduleState.loadingAssignable,
   );
   pageSize = environment.config.pageSize;
-  selectedClients: any[] = [];
-  clients!: any[];
+  selectedClients: Client[] = [];
+  clients!: Client[];
   title = '';
-  clientSelected: any[] = [];
+  clientSelected: Client[] = [];
 
   constructor(
     private store: Store,
     private actions: Actions,
     public dialogRef: MatDialogRef<AddClientListComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { id: any; clients: any; title: string },
+    public data: { id: string; clients: Client[]; title: string },
     private snackbar: SnackBarService,
     private cdr: ChangeDetectorRef,
   ) {
@@ -137,20 +143,21 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
     this.loadClients(currentPage);
   }
 
-  toggleClient(element: any): void {
+  toggleClient(element: Client[]): void {
     this.selectedClients = element;
   }
 
   addClient() {
     const clients = this.store.selectSnapshot(ScheduleState.clients);
     const clientsSelected = this.selectedClients.filter(
-      (client) => !clients.some((cs: any) => cs._id === client._id),
+      (client) => !clients.some((cs: Client) => cs._id === client._id),
     );
-    const idsClients = clientsSelected.map((c: any) => c._id);
+    const idsClients = clientsSelected.map((c: Client) => c._id);
     const maxCount = this.store.selectSnapshot(ScheduleState.maxCount);
     let validClient = true;
-    clients.forEach((c: any) => {
-      clientsSelected.forEach((cs: any) => {
+
+    for (const c of clients) {
+      for (const cs of clientsSelected) {
         if (c._id === cs._id) {
           this.snackbar.showError(
             `El cliente ${cs.email} ya se encuentra asignado`,
@@ -158,8 +165,8 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
           );
           validClient = false;
         }
-      });
-    });
+      }
+    }
 
     if (maxCount && clients.length >= maxCount) {
       this.snackbar.showError('Error!', 'No se pueden asignar más clientes');
@@ -175,7 +182,7 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
         ScheduleState.clientsAssignable,
       );
 
-      this.clientSelected = clientsAssignable.filter((c: any) =>
+      this.clientSelected = clientsAssignable.filter((c: Client) =>
         idsClients.includes(c._id),
       );
       this.dialogRef.close(this.clientSelected);
