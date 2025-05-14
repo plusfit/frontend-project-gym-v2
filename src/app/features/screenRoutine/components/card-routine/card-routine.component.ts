@@ -1,4 +1,4 @@
-import { NgStyle } from '@angular/common';
+import { NgStyle, UpperCasePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -11,7 +11,7 @@ import {
 @Component({
   selector: 'app-card-routine',
   standalone: true,
-  imports: [NgStyle],
+  imports: [NgStyle, UpperCasePipe],
   templateUrl: './card-routine.component.html',
   styleUrls: ['./card-routine.component.css'],
 })

@@ -5,7 +5,7 @@
       <!-- Rutinas de Hombre -->
       <div class="rounded-lg shadow-md flex-1 overflow-hidden">
         <p
-          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-blue-600"
+          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-blue-600 gym-logo"
         >
           Fuerza Hombre
         </p>
@@ -23,7 +23,7 @@
       <!-- Rutinas de Mujer -->
       <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
         <p
-          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-pink-600"
+          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-pink-600 gym-logo"
         >
           Fuerza Mujer
         </p>
@@ -46,12 +46,12 @@
             @for (logo of logos; track $index) {
               <img
                 [src]="'../../../../../assets/logos/' + logo"
-                class="object-contain h-16"
+                class="object-contain h-16 gym-logo"
               />
             }
           </div>
           <p
-            class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-green-600"
+            class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-green-600 gym-logo"
           >
             Cardio - Full Body
           </p>
@@ -59,7 +59,7 @@
             @for (logo of logos; track $index) {
               <img
                 [src]="'../../../../../assets/logos/' + logo"
-                class="object-contain h-16"
+                class="object-contain h-16 gym-logo"
               />
             }
           </div>
