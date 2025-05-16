@@ -17,7 +17,7 @@
           @for (exercise of subRoutine.exercises; track $index) {
             <li
               #exerciseText
-              class="text-sm font-bold text-white text-center slide-fade-effect opacity-0"
+              class="text-xl font-bold text-white text-center slide-fade-effect opacity-0"
               [ngStyle]="{ 'animation-delay': getAnimationDelay($index) }"
             >
               {{ exercise.name }} - {{ exercise.series }} x {{ exercise.reps }}
