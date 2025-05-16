@@ -21,7 +21,7 @@ export class ScreenComponent implements OnInit, OnChanges {
   womenRoutines: any[] = [];
   cardioRoutines: any[] = [];
 
-  logos = ['logo-white.png', 'logo-white.png', 'logo6.png'];
+  logos = ['logo-white.png', 'logo-white.png'];
 
   constructor(private store: Store) {}
 
