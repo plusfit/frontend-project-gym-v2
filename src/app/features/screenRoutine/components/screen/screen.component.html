@@ -5,61 +5,79 @@
       <!-- Rutinas de Hombre -->
       <div class="rounded-lg shadow-md flex-1 overflow-hidden">
         <p
-          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-white gym-logo"
+          class="text-center text-8xl italic font-apexPro tracking-[0.3em] text-white gym-logo !m-0"
         >
-          Fuerza Hombre
+          Chicos
         </p>
         <div>
           @for (routine of menRoutines; track $index) {
             <app-card-routine
               [routine]="routine"
               [animationDelay]="$index * 1000"
-              class="card-routine max-h-40"
+              class="max-h-96"
             ></app-card-routine>
           }
         </div>
       </div>
 
       <!-- Rutinas de Mujer -->
-      <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
-        <p
-          class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-yellow-300 gym-logo"
-        >
-          Fuerza Mujer
-        </p>
-        <div>
-          @for (routine of womenRoutines; track $index) {
-            <app-card-routine
-              [routine]="routine"
-              [animationDelay]="10 * 1000"
-              class="card-routine max-h-40"
-              [backgroundColor]="'#18a29b'"
-            ></app-card-routine>
-          }
-        </div>
-      </div>
-
-      <!-- Rutinas de Cardio -->
-      <div class="p-4 rounded-lg shadow-md flex-1 overflow-hidden">
-        <div class="flex justify-between items-center">
+      <div class="p-1 rounded-lg shadow-md flex-1 overflow-hidden">
+        <div class="flex justify-between items-center px-2 pb-2">
           <div class="flex flex-wrap justify-center gap-2">
             @for (logo of logos; track $index) {
               <img
                 [src]="'../../../../../assets/logos/' + logo"
-                class="object-contain h-16 gym-logo"
+                class="object-contain h-20 gym-logo"
               />
             }
           </div>
           <p
-            class="text-center text-6xl italic font-apexPro tracking-[0.3em] text-white gym-logo"
+            class="text-center text-8xl italic font-apexPro tracking-[0.3em] text-[#fbd616] gym-logo !m-0"
           >
-            Cardio - Full Body
+            Chicas
           </p>
           <div class="flex flex-wrap justify-center gap-2">
             @for (logo of logos; track $index) {
               <img
                 [src]="'../../../../../assets/logos/' + logo"
-                class="object-contain h-16 gym-logo"
+                class="object-contain h-20 gym-logo"
+              />
+            }
+          </div>
+        </div>
+          <div>
+            @for (routine of womenRoutines; track $index) {
+              <app-card-routine
+                [routine]="routine"
+                [animationDelay]="10 * 1000"
+                class=" max-h-60"
+                [backgroundColor]="'#18a29b'"
+              ></app-card-routine>
+            }
+          </div>
+      </div>
+
+      <!-- Rutinas de Cardio -->
+      <div class="p-1 rounded-lg shadow-md flex-1 overflow-hidden">
+        <div class="flex justify-between items-center px-2 pb-2">
+          <div class="flex flex-wrap justify-center gap-2">
+            @for (logo of logos; track $index) {
+              <img
+                [src]="'../../../../../assets/logos/' + logo"
+                class="object-contain h-20 gym-logo"
+              />
+            }
+          </div>
+          <p
+            class="text-center text-8xl italic font-apexPro tracking-[0.3em] text-white gym-logo !m-0"
+          >
+            Cardio - Abs
+          </p>
+          <div class="flex flex-wrap justify-center gap-2">
+            @for (logo of logos; track $index) {
+              <img
+                [src]="'../../../../../assets/logos/' + logo"
+                class="object-contain h-20 gym-logo"
               />
             }
           </div>
@@ -69,7 +87,7 @@
             <app-card-routine
               [routine]="routine"
               [animationDelay]="15 * 1000"
-              class="card-routine max-h-40"
+              class="max-h-60"
             ></app-card-routine>
           }
         </div>

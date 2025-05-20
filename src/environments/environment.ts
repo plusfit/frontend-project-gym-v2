@@ -28,5 +28,9 @@ export const environment = {
      * The size of the grid for the application.
      */
     gridSize: 8,
+
+    scrollTimeDown: 10000,
+
+    scrollTimeUp: 5000,
   },
 };
