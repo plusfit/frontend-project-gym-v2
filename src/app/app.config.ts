@@ -25,6 +25,7 @@ import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
 import { environment } from '../environments/environment';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
+import { organizationInterceptor } from '@core/interceptors/organization.interceptor';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { SettingsState } from '@features/settings/state/settings.state';
 import { RoutineState } from '@features/routines/state/routine.state';
@@ -43,6 +44,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([
         tokenInterceptor,
+        organizationInterceptor,
         errorInterceptor,
         authorizeInterceptor,
       ]),

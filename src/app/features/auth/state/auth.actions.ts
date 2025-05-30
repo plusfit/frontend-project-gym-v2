@@ -1,5 +1,9 @@
 import { RefreshTokenPayload } from '@core/interfaces/refresh-token.interface';
-import { AuthCredentials, NewPasswordRequest } from '../interfaces/auth';
+import {
+  AuthCredentials,
+  NewPasswordRequest,
+  Organization,
+} from '../interfaces/auth';
 
 export class Login {
   static readonly type = '[Auth] Login';
@@ -32,4 +36,9 @@ export class Register {
 export class GetNewToken {
   static readonly type = '[Auth] Get New Token';
   constructor(public readonly payload: RefreshTokenPayload) {}
+}
+
+export class SetOrganization {
+  static readonly type = '[Auth] Set Organization';
+  constructor(public readonly payload: Organization) {}
 }

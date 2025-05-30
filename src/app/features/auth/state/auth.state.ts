@@ -17,6 +17,7 @@ import {
   GetUserPreferences,
   Login,
   Logout,
+  SetOrganization,
 } from './auth.actions';
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
@@ -28,6 +29,7 @@ import { SnackBarService } from '@core/services/snackbar.service';
     auth: null,
     loading: false,
     preferences: null,
+    organization: null,
   },
 })
 @Injectable({ providedIn: 'root' })
@@ -50,6 +52,16 @@ export class AuthState {
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
     return !!state.auth?.accessToken;
+  }
+
+  @Selector()
+  static organization(state: AuthStateModel): any {
+    return state.organization || state.auth?.organization;
+  }
+
+  @Selector()
+  static organizationSlug(state: AuthStateModel): string | undefined {
+    return state.organization?.slug || state.auth?.organization?.slug;
   }
 
   @Selector()
@@ -89,12 +101,15 @@ export class AuthState {
       exhaustMap((response: FirebaseAuthResponse) => {
         return this.authService.login(response._tokenResponse.idToken).pipe(
           tap((authResponse: any) => {
-            const { accessToken, refreshToken } = authResponse.data;
+            const { accessToken, refreshToken, organization } =
+              authResponse.data;
             ctx.patchState({
               auth: {
                 accessToken,
                 refreshToken,
+                organization,
               },
+              organization,
             });
           }),
         );
@@ -104,7 +119,6 @@ export class AuthState {
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
-        //TODO: convertir los mensajes
         this.snackbar.showError(
           'Login Erroneo',
           err.error?.data?.message ?? err.message,
@@ -139,6 +153,7 @@ export class AuthState {
       auth: null,
       loading: false,
       preferences: null,
+      organization: null,
     });
     this.utilsService.cleanStorage();
   }
@@ -196,6 +211,7 @@ export class AuthState {
     action: GetNewToken,
   ): Observable<AuthResponse> {
     const refreshToken = action.payload;
+    const currentOrganization = ctx.getState().organization;
     return this.authService.getNewToken(refreshToken).pipe(
       tap((authResponse: any) => {
         const { accessToken, refreshToken } = authResponse.data;
@@ -203,6 +219,7 @@ export class AuthState {
           auth: {
             accessToken,
             refreshToken,
+            organization: currentOrganization,
           },
         });
       }),
@@ -211,9 +228,25 @@ export class AuthState {
           'Sesion Expirada',
           'Por favor inicie sesion nuevamente',
         );
-        //ctx.dispatch(new Logout());
         return throwError(() => err);
       }),
     );
+  }
+
+  @Action(SetOrganization)
+  setOrganization(
+    ctx: StateContext<AuthStateModel>,
+    action: SetOrganization,
+  ): void {
+    const currentAuth = ctx.getState().auth;
+    ctx.patchState({
+      organization: action.payload,
+      auth: currentAuth
+        ? {
+            ...currentAuth,
+            organization: action.payload,
+          }
+        : null,
+    });
   }
 }

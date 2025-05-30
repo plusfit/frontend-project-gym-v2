@@ -12,6 +12,13 @@ export interface AuthCredentials {
 export interface AuthResponse {
   refreshToken: string;
   accessToken: string;
+  organization?: Organization | null;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export interface FirebaseAuthResponse {
@@ -44,6 +51,7 @@ export interface UserPreferences {
   email: string;
   needOnboarding: boolean;
   role: Role;
+  organizationId?: string;
 }
 
 interface Role {
