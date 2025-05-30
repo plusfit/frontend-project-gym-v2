@@ -35,6 +35,7 @@
     "@ngxs/storage-plugin": "^18.1.1",
     "@ngxs/store": "^18.1.1",
     "biome": "^0.3.3",
+    "chart.js": "^4.4.9",
     "express": "^4.18.2",
     "ngx-translate": "^0.0.1-security",
     "rxjs": "~7.8.0",

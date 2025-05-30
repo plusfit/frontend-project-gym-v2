@@ -6,13 +6,11 @@ import { UtilsService } from '@core/services/utils.service';
 import { environment } from '../../../../environments/environment';
 import { FiltersRoutine } from '../interfaces/filters.routine.interface';
 import {
-  Routine,
   RoutineApiResponse,
   RoutinePayload,
   RoutinesApiResponse,
   RoutinesBySubRoutineApiResponse,
 } from '../interfaces/routine.interface';
-import { SubRoutineApiResponse } from '@features/sub-routines/interfaces/sub-routine.interface';
 
 @Injectable({
   providedIn: 'root',

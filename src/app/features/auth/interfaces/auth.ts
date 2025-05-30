@@ -52,6 +52,7 @@ export interface UserPreferences {
   needOnboarding: boolean;
   role: Role;
   organizationId?: string;
+  organizationSlug?: string;
 }
 
 interface Role {

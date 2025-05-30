@@ -61,7 +61,25 @@ export class AuthState {
 
   @Selector()
   static organizationSlug(state: AuthStateModel): string | undefined {
-    return state.organization?.slug || state.auth?.organization?.slug;
+    console.log('🔍 DEBUG - organizationSlug selector called with state:', {
+      'state.organization': state.organization,
+      'state.auth': state.auth,
+      'state.preferences': state.preferences,
+      'state.organization is undefined?': state.organization === undefined,
+      'state.auth?.organization': state.auth?.organization,
+      'state.preferences?.organizationSlug':
+        state.preferences?.organizationSlug,
+    });
+
+    // Cambiar el orden de prioridad para usar preferences como fallback principal
+    const result =
+      state.organization?.slug ||
+      state.auth?.organization?.slug ||
+      state.preferences?.organizationSlug;
+
+    console.log('🔍 DEBUG - organizationSlug result:', result);
+
+    return result;
   }
 
   @Selector()
@@ -96,6 +114,10 @@ export class AuthState {
     ctx: StateContext<AuthStateModel>,
     action: Login,
   ): Observable<AuthResponse> {
+    console.log(
+      '🔍 DEBUG - Login action started, current state:',
+      ctx.getState(),
+    );
     ctx.patchState({ loading: true });
     return this.authService.loginFirebase(action.payload).pipe(
       exhaustMap((response: FirebaseAuthResponse) => {
@@ -103,19 +125,33 @@ export class AuthState {
           tap((authResponse: any) => {
             const { accessToken, refreshToken, organization } =
               authResponse.data;
-            ctx.patchState({
+
+            console.log('🔍 DEBUG - Login response received:', {
+              accessToken: accessToken ? 'present' : 'missing',
+              refreshToken: refreshToken ? 'present' : 'missing',
+              organization,
+            });
+
+            const newState = {
               auth: {
                 accessToken,
                 refreshToken,
                 organization,
               },
               organization,
-            });
+            };
+
+            console.log('🔍 DEBUG - Updating state in Login with:', newState);
+
+            ctx.patchState(newState);
+
+            console.log('🔍 DEBUG - State after Login update:', ctx.getState());
           }),
         );
       }),
       tap(() => {
         ctx.patchState({ loading: false });
+        console.log('🔍 DEBUG - Login completed, final state:', ctx.getState());
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
@@ -138,10 +174,48 @@ export class AuthState {
       return throwError(() => new Error('No hay token de acceso'));
     }
     return this.authService.getUserPreferences().pipe(
-      tap((preferences: UserPreferences) => {
+      tap((response: any) => {
+        console.log('🔍 DEBUG - Raw response from /auth/profile:', response);
+
+        // Extraer los datos según la estructura de la respuesta
+        const preferences: UserPreferences = response.data || response;
+        console.log('🔍 DEBUG - Extracted preferences:', preferences);
+        console.log(
+          '🔍 DEBUG - organizationSlug:',
+          preferences.organizationSlug,
+        );
+
         ctx.patchState({ preferences });
+
+        // Si las preferencias incluyen organizationSlug, actualizar la organización
+        if (preferences.organizationSlug && preferences.organizationId) {
+          const organization = {
+            id: preferences.organizationId,
+            slug: preferences.organizationSlug,
+            name: '', // Se puede completar si es necesario
+          };
+
+          console.log('🔍 DEBUG - Updating organization:', organization);
+
+          const currentAuth = ctx.getState().auth;
+          ctx.patchState({
+            organization,
+            auth: currentAuth
+              ? {
+                  ...currentAuth,
+                  organization,
+                }
+              : null,
+          });
+
+          console.log(
+            '🔍 DEBUG - State after organization update:',
+            ctx.getState(),
+          );
+        }
       }),
       catchError((err: HttpErrorResponse) => {
+        console.error('❌ Error in getUserPreferences:', err);
         return throwError(() => err);
       }),
     );
