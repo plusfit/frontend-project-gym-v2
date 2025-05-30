@@ -382,7 +382,7 @@ tbody tr:nth-child(even):hover {
 
 /* Table action buttons */
 .table-action-btn {
-  @apply text-gray-500 hover:text-primary-600 transition-all duration-200 rounded-lg p-2 hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 hover:shadow-lg transform hover:scale-110;
+  @apply text-gray-500 hover:text-primary-600 transition-all duration-200 rounded-lg p-2 hover:bg-gradient-to-r hover:from-primary-500 hover:to-blue-50 hover:shadow-lg transform hover:scale-110;
 }
 
 .table-action-btn:hover {
