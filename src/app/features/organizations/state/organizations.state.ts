@@ -56,11 +56,14 @@ export class OrganizationsState {
   }
 
   @Action(GetOrganizations)
-  getOrganizations(ctx: StateContext<OrganizationsStateModel>) {
+  getOrganizations(
+    ctx: StateContext<OrganizationsStateModel>,
+    action: GetOrganizations,
+  ) {
     console.log('🔍 DEBUG - GetOrganizations action started');
     ctx.patchState({ loading: true, error: null });
 
-    return this.organizationsService.getAll().pipe(
+    return this.organizationsService.getAll(action.includeInactive).pipe(
       tap((response) => {
         console.log('🔍 DEBUG - GetOrganizations response received:', response);
         console.log('🔍 DEBUG - Response type:', typeof response);

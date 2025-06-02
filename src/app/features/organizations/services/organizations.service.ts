@@ -16,8 +16,11 @@ export class OrganizationsService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Organization[]> {
-    return this.http.get<Organization[]>(this.apiUrl);
+  getAll(includeInactive = true): Observable<Organization[]> {
+    const params = includeInactive
+      ? '?includeInactive=true'
+      : '?includeInactive=false';
+    return this.http.get<Organization[]>(`${this.apiUrl}${params}`);
   }
 
   getById(id: string): Observable<Organization> {

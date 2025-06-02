@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
@@ -25,6 +26,7 @@ import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confir
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     OrganizationFormComponent,
     TableComponent,
     TitleComponent,
@@ -40,6 +42,7 @@ export class OrganizationsPageComponent implements OnInit, OnDestroy {
   showForm = false;
   selectedOrganization: Organization | null = null;
   isEditing = false;
+  includeInactive = true;
 
   displayedColumns = [
     'name',
@@ -90,7 +93,12 @@ export class OrganizationsPageComponent implements OnInit, OnDestroy {
   }
 
   loadOrganizations(): void {
-    this.store.dispatch(new GetOrganizations());
+    this.store.dispatch(new GetOrganizations(this.includeInactive));
+  }
+
+  toggleInactiveFilter(): void {
+    // No necesitamos cambiar el valor aquí porque [(ngModel)] ya lo maneja
+    this.loadOrganizations();
   }
 
   onCreateNew(): void {

@@ -5,6 +5,7 @@ import {
 
 export class GetOrganizations {
   static readonly type = '[Organizations] Get Organizations';
+  constructor(public includeInactive = true) {}
 }
 
 export class GetOrganizationById {
