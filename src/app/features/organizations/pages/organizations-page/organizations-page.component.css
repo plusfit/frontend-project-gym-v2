@@ -1,0 +1,96 @@
+/* Estilos específicos para la página de organizaciones */
+.organizations-page {
+  min-height: 100vh;
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mejoras visuales */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estados hover mejorados */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Mejoras para inputs */
+.form-input {
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.form-input:focus {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
+}
+
+/* Responsive mejorado */
+@media (max-width: 768px) {
+  .organizations-page {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .organizations-page {
+    padding: 0.5rem;
+  }
+}
+
+/* Animaciones de entrada */
+.animate-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in-from-top {
+  animation: slideIn 0.3s ease-out;
+}
+
+.zoom-in-90 {
+  animation: zoomIn 0.3s ease-out;
+}

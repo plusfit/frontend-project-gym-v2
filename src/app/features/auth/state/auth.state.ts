@@ -94,13 +94,20 @@ export class AuthState {
 
   @Selector()
   static userData(state: AuthStateModel): Profile | undefined {
-    return pickProperties(
-      state.preferences,
-      'firstName',
-      'lastName',
-      'email',
-      'role.name',
-    );
+    const preferences = state.preferences;
+    if (!preferences) return undefined;
+
+    const userData = {
+      firstName: preferences.firstName,
+      lastName: preferences.lastName,
+      email: preferences.email,
+      role:
+        typeof preferences.role === 'string'
+          ? preferences.role
+          : preferences.role?.name || '',
+    };
+
+    return userData;
   }
 
   constructor(

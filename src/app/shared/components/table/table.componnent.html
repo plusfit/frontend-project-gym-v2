@@ -46,6 +46,13 @@
                 element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING
               " [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
             class="transform hover:scale-105 transition-all duration-200 hover:shadow-md"></app-badge>
+          } @if (column === "isActive") {
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            [ngClass]="element[column] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+            <span class="w-2 h-2 rounded-full mr-1.5"
+              [ngClass]="element[column] ? 'bg-green-400' : 'bg-red-400'"></span>
+            {{ element[column] ? 'Activa' : 'Inactiva' }}
+          </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
           !== "isCustom" && column !== "category" ) {
@@ -59,7 +66,7 @@
 
           <ng-container *ngIf="column === 'acciones'">
             <button title="actions" type="button" [matMenuTriggerFor]="actionsMenu"
-              class="text-gray-500 hover:text-primary-600 transition-all duration-200 rounded-lg p-2 hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 hover:shadow-lg transform hover:scale-110 group">
+              class="text-gray-500 hover:text-primary-600 transition-all duration-200 rounded-lg p-2 hover:bg-gradient-to-r hover:from-primary-100 hover:to-blue-50 hover:shadow-lg transform hover:scale-110 group">
               <i
                 class="ph-dots-three-vertical-fill text-lg group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
@@ -79,7 +86,7 @@
                 </button>
                 }
                 <button (click)="emitEdit(element._id)" type="button"
-                  class="group w-full text-left hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50"
+                  class="group w-full text-left hover:bg-gradient-to-r hover:from-primary-100 hover:to-blue-50"
                   mat-menu-item>
                   <div class="flex items-center space-x-3 py-2">
                     <div class="bg-primary-100 rounded-lg p-1 group-hover:bg-primary-200 transition-colors">

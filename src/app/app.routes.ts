@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { DashboardLayoutComponent } from '@core/components/dashboard-layout/dashboard-layout.component';
 import { authGuard } from '@core/guards/auth.guards';
 import { signInGuard } from '@core/guards/sign-in.guards';
+import { RoleGuard } from '@core/guards/role.guard';
+import { UserRole } from '@core/enums/roles.enum';
 import { AuthLayoutComponent } from '@features/auth/components/auth-layout/auth-layout.component';
 import { LoginPageComponent } from '@features/auth/pages/login-page/login-page.component';
 import { RegisterPageComponent } from '@features/auth/pages/register-page/register-page.component';
@@ -22,6 +24,7 @@ import { AddClientPageComponent } from '@features/client/pages/add-client-page/a
 import { AddEditClientPageComponent } from '@features/client/pages/add-edit-client-page/add-edit-client-page.component';
 import { DetailClientComponent } from '@features/client/pages/detail-client/detail-client.component';
 import { ScreenPagesComponent } from '@features/screenRoutine/pages/screen-pages/screen-pages.component';
+import { OrganizationsPageComponent } from '@features/organizations/pages/organizations-page/organizations-page.component';
 
 export const routes: Routes = [
   {
@@ -96,6 +99,12 @@ export const routes: Routes = [
       {
         path: 'planes/crear',
         component: AddEditPlanComponent,
+      },
+      {
+        path: 'organizaciones',
+        component: OrganizationsPageComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] },
       },
     ],
   },

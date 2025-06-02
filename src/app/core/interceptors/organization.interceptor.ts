@@ -14,7 +14,9 @@ export const organizationInterceptor: HttpInterceptorFn = (
   const store = inject(Store);
 
   const isAuthEndpoint = request.url.includes('/auth/');
-  if (isAuthEndpoint) {
+  const isOrganizationEndpoint = request.url.includes('/organizations');
+
+  if (isAuthEndpoint || isOrganizationEndpoint) {
     return next(request);
   }
 
