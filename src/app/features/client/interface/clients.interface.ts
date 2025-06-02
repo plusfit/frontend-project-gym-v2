@@ -1,19 +1,23 @@
 export class Client {
   _id!: string;
   name!: string;
+  identifier?: string;  // Email del cliente
   phone!: string;
   address!: string;
   dateBirthday!: string;
   medicalSociety!: string;
   sex!: string;
-  cardiacHistory!: string;
+  cardiacHistory!: string | boolean;
   cardiacHistoryInput!: string;
   bloodPressure!: string;
   frequencyOfPhysicalExercise!: string;
-  respiratoryHistory!: string;
+  respiratoryHistory!: string | boolean;
   respiratoryHistoryInput!: string;
+  surgicalHistory!: string | boolean;
+  historyofPathologicalLesions!: string | boolean;
   CI!: number;
   planId!: string;
+  routineId?: string;
 }
 
 export interface ClientInfo {

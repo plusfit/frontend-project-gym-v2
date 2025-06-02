@@ -122,7 +122,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     );
   }
 
-  deleteRoutine(e: string) {
+  deleteRoutine(e: any) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
@@ -133,11 +133,11 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
-      this.store.dispatch(new DeleteRoutine(e));
+      this.store.dispatch(new DeleteRoutine(e._id));
       this.actions
         .pipe(ofActionSuccessful(DeleteRoutine), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('', 'Ejercicio borrado');
+          this.snackbar.showSuccess('Exito', 'Rutina borrada correctamente');
           this.currentPage = 1;
           this.store
             .dispatch(new GetRoutinesByPage({ page: this.currentPage }))

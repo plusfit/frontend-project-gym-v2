@@ -90,8 +90,9 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
 
   experienceLevels = [
     { value: ExperienceLevel.BEGINNER, label: 'Principiante' },
-    { value: ExperienceLevel.INTERMEDIATE, label: 'Intermedio' },
+    { value: ExperienceLevel.INTERMEDIATE, label: 'Moderado' },
     { value: ExperienceLevel.ADVANCED, label: 'Avanzado' },
+    { value: ExperienceLevel.NONE, label: 'Ninguno' },
   ];
 
   planTypes = [

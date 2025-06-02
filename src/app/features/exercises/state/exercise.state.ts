@@ -276,7 +276,7 @@ export class ExerciseState {
     ctx: StateContext<ExerciseStateModel>,
     action: GetCategories,
   ): Observable<any> {
-    ctx.patchState({ loading: true });
+    // ctx.patchState({ loading: true });
     return this.categoryService
       .getCategories(action.page, action.limit, action.name)
       .pipe(
@@ -284,7 +284,7 @@ export class ExerciseState {
           const categories = response.data.data;
           ctx.patchState({
             categories,
-            loading: false,
+            // loading: false,
           });
         }),
         catchError((error: HttpErrorResponse) => {

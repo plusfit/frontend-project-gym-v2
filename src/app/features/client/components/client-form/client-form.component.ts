@@ -109,20 +109,21 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   loadingClient$ = this.store.select(ClientsState.isLoading);
 
   sexs: any[] = [
-    { value: 'Masculino', viewValue: 'Masculino' },
-    { value: 'Femenino', viewValue: 'Femenino' },
-    { value: 'otros', viewValue: 'otros' },
+    { value: 'male', viewValue: 'Masculino' },
+    { value: 'female', viewValue: 'Femenino' },
+    { value: 'other', viewValue: 'otros' },
   ];
 
   bloodPressures: any[] = [
-    { value: 'Alta', viewValue: 'Alta' },
-    { value: 'Normal', viewValue: 'Normal' },
-    { value: 'Baja', viewValue: 'Baja' },
+    { value: 'high', viewValue: 'Alta' },
+    { value: 'normal', viewValue: 'Normal' },
+    { value: 'low', viewValue: 'Baja' },
   ];
   frequencyOfPhysicalExercise: any[] = [
-    { value: 'Diario', viewValue: 'Diario' },
-    { value: 'Moderado', viewValue: 'Moderado' },
-    { value: 'Ninguno', viewValue: 'Ninguno' },
+    { value: 'beginner', viewValue: 'Principiante' },
+    { value: 'intermediate', viewValue: 'Moderado' },
+    { value: 'advanced', viewValue: 'Avanzado' },
+    { value: 'never', viewValue: 'Ninguno' },
   ];
 
   private _destroyed = new Subject<void>();
@@ -185,13 +186,121 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.isEdit()) {
+      // Deshabilitar campos de email y contraseña en modo edición
+      this.clientForm.get('identifier')?.disable();
+      this.clientForm.get('password')?.disable();
+      
+      // Limpiar validadores del campo contraseña ya que estará deshabilitado
+      this.clientForm.get('password')?.clearValidators();
+      this.clientForm.get('password')?.updateValueAndValidity();
+
       this.clientData = this.store.selectSnapshot(
         (state) => state.clients.selectedClient,
       );
       if (this.clientData) {
-        this.clientForm.patchValue({
-          ...this.clientData,
-        });
+        console.log('Datos originales del cliente:', this.clientData);
+
+        // Actualizar cada control individualmente con conversión explícita para los radio buttons
+
+        // Campos de texto regulares
+        if (this.clientData.name)
+          this.clientForm.get('name')?.setValue(this.clientData.name);
+        if (this.clientData.identifier)
+          this.clientForm
+            .get('identifier')
+            ?.setValue(this.clientData.identifier);
+        if (this.clientData.phone)
+          this.clientForm.get('phone')?.setValue(this.clientData.phone);
+        if (this.clientData.address)
+          this.clientForm.get('address')?.setValue(this.clientData.address);
+        if (this.clientData.dateBirthday)
+          this.clientForm
+            .get('dateBirthday')
+            ?.setValue(this.clientData.dateBirthday);
+        if (this.clientData.medicalSociety)
+          this.clientForm
+            .get('medicalSociety')
+            ?.setValue(this.clientData.medicalSociety);
+        if (this.clientData.CI)
+          this.clientForm.get('CI')?.setValue(this.clientData.CI);
+
+        // Campos de selección
+        if (this.clientData.sex) {
+          console.log('Estableciendo sexo:', this.clientData.sex);
+          this.clientForm.get('sex')?.setValue(this.clientData.sex);
+        }
+
+        if (this.clientData.bloodPressure) {
+          console.log(
+            'Estableciendo presión arterial:',
+            this.clientData.bloodPressure,
+          );
+          this.clientForm
+            .get('bloodPressure')
+            ?.setValue(this.clientData.bloodPressure);
+        }
+
+        if (this.clientData.frequencyOfPhysicalExercise) {
+          console.log(
+            'Estableciendo frecuencia de ejercicio:',
+            this.clientData.frequencyOfPhysicalExercise,
+          );
+          this.clientForm
+            .get('frequencyOfPhysicalExercise')
+            ?.setValue(this.clientData.frequencyOfPhysicalExercise);
+        }
+
+        // Radio buttons - convertir booleanos a strings explícitamente
+        const respiratoryHistoryValue =
+          this.clientData.respiratoryHistory === true
+            ? 'true'
+            : this.clientData.respiratoryHistory === false
+              ? 'false'
+              : String(this.clientData.respiratoryHistory || 'false');
+
+        const cardiacHistoryValue =
+          this.clientData.cardiacHistory === true
+            ? 'true'
+            : this.clientData.cardiacHistory === false
+              ? 'false'
+              : String(this.clientData.cardiacHistory || 'false');
+
+        const surgicalHistoryValue =
+          this.clientData.surgicalHistory === true
+            ? 'true'
+            : this.clientData.surgicalHistory === false
+              ? 'false'
+              : String(this.clientData.surgicalHistory || 'false');
+
+        const historyofPathologicalLesionsValue =
+          this.clientData.historyofPathologicalLesions === true
+            ? 'true'
+            : this.clientData.historyofPathologicalLesions === false
+              ? 'false'
+              : String(this.clientData.historyofPathologicalLesions || 'false');
+
+        // Mostrar los valores que se están asignando
+        console.log('Estableciendo valores para radio buttons:');
+        console.log('respiratoryHistory:', respiratoryHistoryValue);
+        console.log('cardiacHistory:', cardiacHistoryValue);
+        console.log('surgicalHistory:', surgicalHistoryValue);
+        console.log(
+          'historyofPathologicalLesions:',
+          historyofPathologicalLesionsValue,
+        );
+
+        // Asignar valores a los radio buttons
+        this.clientForm
+          .get('respiratoryHistory')
+          ?.setValue(respiratoryHistoryValue);
+        this.clientForm.get('cardiacHistory')?.setValue(cardiacHistoryValue);
+        this.clientForm.get('surgicalHistory')?.setValue(surgicalHistoryValue);
+        this.clientForm
+          .get('historyofPathologicalLesions')
+          ?.setValue(historyofPathologicalLesionsValue);
+
+        // Forzar la actualización de todos los controles
+        this.clientForm.updateValueAndValidity();
       }
 
       this.store.dispatch(new GetPlan(this.clientData?.planId ?? ''));
@@ -204,7 +313,47 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
           ),
         )
         .subscribe((plan) => {
-          if (plan) this.selectedPlan = plan; // Verifica que tengas los datos correctos
+          if (plan) {
+            console.log('Plan seleccionado:', plan);
+            this.selectedPlan = plan;
+            // Actualizar el control del plan después de tener el plan seleccionado
+            this.clientForm.get('plan')?.setValue(plan.name);
+            this.clientForm.get('plan')?.updateValueAndValidity();
+            // Forzar una actualización adicional de los controles del formulario para asegurar la sincronización
+            setTimeout(() => {
+              // Verificar que todos los controles tengan los valores correctos
+              console.log('Estado final del formulario:');
+              console.log('name:', this.clientForm.get('name')?.value);
+              console.log('sex:', this.clientForm.get('sex')?.value);
+              console.log(
+                'bloodPressure:',
+                this.clientForm.get('bloodPressure')?.value,
+              );
+              console.log(
+                'frequencyOfPhysicalExercise:',
+                this.clientForm.get('frequencyOfPhysicalExercise')?.value,
+              );
+              console.log(
+                'respiratoryHistory:',
+                this.clientForm.get('respiratoryHistory')?.value,
+              );
+              console.log(
+                'cardiacHistory:',
+                this.clientForm.get('cardiacHistory')?.value,
+              );
+              console.log(
+                'surgicalHistory:',
+                this.clientForm.get('surgicalHistory')?.value,
+              );
+              console.log(
+                'historyofPathologicalLesions:',
+                this.clientForm.get('historyofPathologicalLesions')?.value,
+              );
+              console.log('plan:', this.clientForm.get('plan')?.value);
+
+              this.clientForm.updateValueAndValidity();
+            }, 100);
+          }
         });
     }
   }
@@ -232,13 +381,17 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
         CI: this.clientForm.get('CI')?.value,
         respiratoryHistory: this.clientForm.get('respiratoryHistory')?.value,
       };
+      
       if (this.isEdit()) {
         if (!this.selectedPlan._id || !this.selectedPlan) {
           this.snackbar.showError('Error', 'El plan seleccionado no es válido');
           return;
         }
 
-        this.store.dispatch(new UpdateClient(this.id(), userInfo));
+        // En modo edición, excluir password e identifier del userInfo ya que están deshabilitados
+        const { password, identifier, ...editUserInfo } = userInfo;
+
+        this.store.dispatch(new UpdateClient(this.id(), editUserInfo));
         this.actions
           .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
           .subscribe(() => {
@@ -367,6 +520,26 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   get planControl(): FormControl {
     return this.clientForm.get('plan') as FormControl;
+  }
+
+  get sexControl(): FormControl {
+    return this.clientForm.get('sex') as FormControl;
+  }
+
+  get frequencyOfPhysicalExerciseControl(): FormControl {
+    return this.clientForm.get('frequencyOfPhysicalExercise') as FormControl;
+  }
+
+  get surgicalHistoryControl(): FormControl {
+    return this.clientForm.get('surgicalHistory') as FormControl;
+  }
+
+  get historyofPathologicalLesionsControl(): FormControl {
+    return this.clientForm.get('historyofPathologicalLesions') as FormControl;
+  }
+
+  get dateBirthdayControl(): FormControl {
+    return this.clientForm.get('dateBirthday') as FormControl;
   }
 
   ngOnDestroy() {

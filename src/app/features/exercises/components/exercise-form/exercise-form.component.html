@@ -71,6 +71,7 @@
           <input
             #fileInput
             type="file"
+            accept=".gif,.jpg,.jpeg,.png,.mp4,image/gif,image/jpeg,image/jpg,image/png,video/mp4"
             (change)="onFileSelected($event)"
             hidden
           />
@@ -98,15 +99,24 @@
               >
             </p>
             <p class="text-xs text-gray-400 mt-1">
-              Solo archivos GIF, JPG, JPEG, PNG
+              Solo archivos GIF, JPG, JPEG, PNG y MP4
             </p>
           }
 
           @if (filePreview) {
-            <img
-              [src]="filePreview"
-              class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
-            />
+            @if (selectedFile?.type.startsWith('video/')) {
+              <video
+                [src]="filePreview"
+                class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+                controls
+                muted
+              ></video>
+            } @else {
+              <img
+                [src]="filePreview"
+                class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+              />
+            }
             <button
               type="button"
               class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
@@ -155,9 +165,9 @@
 
         <div
           *ngIf="exerciseForm.get('type')?.value === 'cardio'"
-          class="flex flex-wrap gap-4 mb-4 items-center"
+          class="flex gap-4 mb-4 items-center"
         >
-          <div class="flex-1 min-w-[250px]">
+          <div class="flex-1">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Minutos o Repeticiones</mat-label>
               <mat-select formControlName="cardioMetric">
@@ -168,7 +178,7 @@
           </div>
 
           @if (exerciseForm.get("cardioMetric")?.value === "minutes") {
-            <div class="flex-1 min-w-[250px]">
+            <div class="flex-1">
               <app-input
                 [control]="minutesControl"
                 label="Minutos"
@@ -179,7 +189,7 @@
               ></app-input>
             </div>
           } @else {
-            <div class="flex-1 min-w-[250px]">
+            <div class="flex-1">
               <app-input
                 [control]="repsControl"
                 label="Repeticiones"
@@ -205,9 +215,9 @@
 
         <div
           *ngIf="exerciseForm.get('type')?.value === 'room'"
-          class="flex flex-wrap gap-4 mb-4"
+          class="flex gap-4 mb-4"
         >
-          <div class="flex-1 min-w-[250px]">
+          <div class="flex-1">
             <app-input
               [control]="seriesControl"
               label="Series"
@@ -217,7 +227,7 @@
               appearance="outline"
             ></app-input>
           </div>
-          <div class="flex-1 min-w-[250px]">
+          <div class="flex-1">
             <app-input
               [control]="repsControl"
               label="Repeticiones"
