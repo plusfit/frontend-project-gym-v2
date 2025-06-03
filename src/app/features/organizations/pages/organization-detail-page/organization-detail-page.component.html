@@ -92,6 +92,20 @@
                     </div>
                 </mat-tab>
 
+                <!-- Permisos Tab -->
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="flex items-center">
+                            <i class="ph-shield-check text-lg mr-2"></i>
+                            Permisos
+                        </span>
+                    </ng-template>
+                    <div class="p-6">
+                        <app-organization-permissions
+                            [organization]="isDemo ? null : (organization$ | async)"></app-organization-permissions>
+                    </div>
+                </mat-tab>
+
                 <!-- Planes Tab -->
                 <mat-tab>
                     <ng-template mat-tab-label>

@@ -26,6 +26,7 @@ import { OrganizationDetailInfoComponent } from '../../components/organization-d
 import { OrganizationDetailPlansComponent } from '../../components/organization-detail-plans/organization-detail-plans.component';
 import { OrganizationDetailClientsComponent } from '../../components/organization-detail-clients/organization-detail-clients.component';
 import { OrganizationDetailRoutinesComponent } from '../../components/organization-detail-routines/organization-detail-routines.component';
+import { OrganizationPermissionsComponent } from '../../components/organization-permissions/organization-permissions.component';
 
 @Component({
   selector: 'app-organization-detail-page',
@@ -39,6 +40,7 @@ import { OrganizationDetailRoutinesComponent } from '../../components/organizati
     OrganizationDetailPlansComponent,
     OrganizationDetailClientsComponent,
     OrganizationDetailRoutinesComponent,
+    OrganizationPermissionsComponent,
   ],
   templateUrl: './organization-detail-page.component.html',
   styleUrl: './organization-detail-page.component.css',
