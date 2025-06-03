@@ -1,0 +1,98 @@
+/* Estilos para los tabs de organización */
+::ng-deep .organization-tabs {
+  .mat-mdc-tab-group {
+    .mat-mdc-tab-header {
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.05) 0%,
+        rgba(99, 102, 241, 0.05) 100%
+      );
+      border-bottom: 1px solid rgb(229, 231, 235, 0.6);
+
+      .mat-mdc-tab-label-container {
+        .mat-mdc-tab-list {
+          .mat-mdc-tab {
+            min-width: 120px;
+
+            .mdc-tab__content {
+              .mdc-tab__text-label {
+                font-weight: 500;
+                color: #64748b;
+                transition: all 0.2s ease;
+              }
+            }
+
+            &.mdc-tab--active {
+              .mdc-tab__content {
+                .mdc-tab__text-label {
+                  color: #3b82f6;
+                  font-weight: 600;
+                }
+              }
+            }
+
+            &:hover:not(.mdc-tab--active) {
+              .mdc-tab__content {
+                .mdc-tab__text-label {
+                  color: #475569;
+                }
+              }
+            }
+          }
+
+          .mat-mdc-tab-ink-bar {
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+            height: 3px;
+            border-radius: 1.5px;
+          }
+        }
+      }
+    }
+
+    .mat-mdc-tab-body-wrapper {
+      .mat-mdc-tab-body {
+        background: transparent;
+      }
+    }
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  ::ng-deep .organization-tabs {
+    .mat-mdc-tab-group {
+      .mat-mdc-tab-header {
+        .mat-mdc-tab-label-container {
+          .mat-mdc-tab-list {
+            .mat-mdc-tab {
+              min-width: 80px;
+              padding: 0 8px;
+
+              .mdc-tab__content {
+                .mdc-tab__text-label {
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

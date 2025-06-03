@@ -18,7 +18,8 @@
     <!-- Navegación para ADMIN y CLIENT -->
     <ng-container *ngIf="(isAdmin$ | async) || (isClient$ | async)">
       <!-- Clientes -->
-      <a routerLink="clientes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="clientes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.CLIENT_READ" [appHasPermissionModule]="Module.CLIENTS">
         <div class="flex items-center">
           <i class="ph-users text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"
@@ -29,7 +30,8 @@
       </a>
 
       <!-- Horarios -->
-      <a routerLink="/horarios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="/horarios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.SCHEDULE_READ" [appHasPermissionModule]="Module.SCHEDULES">
         <div class="flex items-center">
           <i class="ph-calendar text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"
@@ -40,7 +42,8 @@
       </a>
 
       <!-- Rutinas -->
-      <a routerLink="/rutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="/rutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
         <div class="flex items-center">
           <i class="ph-clipboard-text text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"
@@ -51,7 +54,8 @@
       </a>
 
       <!-- Subrutinas -->
-      <a routerLink="/subrutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="/subrutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
         <div class="flex items-center">
           <i class="ph-list-bullets text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"
@@ -62,7 +66,8 @@
       </a>
 
       <!-- Ejercicios -->
-      <a routerLink="/ejercicios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="/ejercicios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.EXERCISE_READ" [appHasPermissionModule]="Module.EXERCISES">
         <div class="flex items-center">
           <i class="ph-barbell text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"
@@ -73,7 +78,8 @@
       </a>
 
       <!-- Planes -->
-      <a routerLink="/planes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+      <a routerLink="/planes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.PLAN_READ" [appHasPermissionModule]="Module.PLANS">
         <div class="flex items-center">
           <i class="ph-clipboard text-xl flex-shrink-0 transition-colors duration-200"></i>
           <span class="ml-3 font-medium text-sm transition-all duration-200"

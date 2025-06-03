@@ -35,3 +35,18 @@ export class SetSelectedOrganization {
   static readonly type = '[Organizations] Set Selected Organization';
   constructor(public organizationId: string | null) {}
 }
+
+export class GetOrganizationPlans {
+  static readonly type = '[Organizations] Get Organization Plans';
+  constructor(public organizationId: string) {}
+}
+
+export class GetOrganizationClients {
+  static readonly type = '[Organizations] Get Organization Clients';
+  constructor(public organizationId: string) {}
+}
+
+export class GetOrganizationRoutines {
+  static readonly type = '[Organizations] Get Organization Routines';
+  constructor(public organizationId: string) {}
+}

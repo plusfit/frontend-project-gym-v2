@@ -5,11 +5,13 @@ import { Observable } from 'rxjs';
 import { RoleService } from '@core/services/role.service';
 import { UserRole } from '@core/enums/roles.enum';
 import { CommonModule } from '@angular/common';
+import { HasPermissionDirective } from '@shared/directives';
+import { Permission, Module } from '@core/enums/permissions.enum';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [RouterLink, NgClass, CommonModule],
+  imports: [RouterLink, NgClass, CommonModule, HasPermissionDirective],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css',
 })
@@ -21,6 +23,9 @@ export class NavigationComponent implements OnInit {
   isSuperAdmin$!: Observable<boolean>;
   isAdmin$!: Observable<boolean>;
   isClient$!: Observable<boolean>;
+
+  Permission = Permission;
+  Module = Module;
 
   constructor(private roleService: RoleService) {}
 
