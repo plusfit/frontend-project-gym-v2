@@ -5,10 +5,8 @@ import {
   Module,
   DEFAULT_PERMISSIONS,
 } from '@core/enums/permissions.enum';
-import { AuthService } from '@features/auth/services/auth.service';
-import { OrganizationsService } from '@features/organizations/services/organizations.service';
-import { RoleService } from '@core/services/role.service';
-import { UserRole } from '@core/enums/roles.enum';
+import { Store } from '@ngxs/store';
+import { AuthState } from '@features/auth/state/auth.state';
 
 @Injectable({
   providedIn: 'root',
@@ -17,67 +15,46 @@ export class PermissionsService {
   private permissionsSubject = new BehaviorSubject<Permission[]>([]);
   public permissions$ = this.permissionsSubject.asObservable();
 
-  constructor(
-    private authService: AuthService,
-    private organizationsService: OrganizationsService,
-    private roleService: RoleService,
-  ) {
-    this.loadPermissions();
-  }
-
-  private async loadPermissions(): Promise<void> {
-    try {
-      // Check if user is SuperAdmin first
-      const isSuperAdmin = await this.roleService.isSuperAdmin().toPromise();
-
-      if (isSuperAdmin) {
-        // SuperAdmins have all permissions
-        const allPermissions = Object.values(Permission);
-        this.permissionsSubject.next(allPermissions);
-        return;
-      }
-
-      // For non-SuperAdmin users, get organization permissions
-      const organizationId = localStorage.getItem('organizationId');
-      if (organizationId) {
-        const permissions = await this.organizationsService
-          .getOrganizationPermissions(organizationId)
-          .toPromise();
-        this.permissionsSubject.next(permissions || []);
-      } else {
-        this.permissionsSubject.next([]);
-      }
-    } catch (error) {
-      console.error('Error loading permissions:', error);
-      this.permissionsSubject.next([]);
-    }
+  constructor(private store: Store) {
+    // Escuchar cambios en los permisos del usuario desde el AuthState
+    this.store.select(AuthState.userPermissions).subscribe((permissions) => {
+      console.log(
+        '🔍 DEBUG - Permissions updated from AuthState:',
+        permissions,
+      );
+      this.permissionsSubject.next(permissions || []);
+    });
   }
 
   hasPermission(permission: Permission): boolean {
-    const currentPermissions = this.permissionsSubject.value;
-    return currentPermissions.includes(permission);
+    const permissions = this.permissionsSubject.value;
+    return permissions.includes(permission);
   }
 
   hasAnyPermission(permissions: Permission[]): boolean {
-    const currentPermissions = this.permissionsSubject.value;
+    const userPermissions = this.permissionsSubject.value;
     return permissions.some((permission) =>
-      currentPermissions.includes(permission),
+      userPermissions.includes(permission),
     );
   }
 
   hasAllPermissions(permissions: Permission[]): boolean {
-    const currentPermissions = this.permissionsSubject.value;
+    const userPermissions = this.permissionsSubject.value;
     return permissions.every((permission) =>
-      currentPermissions.includes(permission),
+      userPermissions.includes(permission),
     );
   }
 
   getModulePermissions(module: Module): Permission[] {
-    const currentPermissions = this.permissionsSubject.value;
+    const userPermissions = this.permissionsSubject.value;
     const modulePermissions = DEFAULT_PERMISSIONS[module];
-    return currentPermissions.filter((permission) =>
+    return userPermissions.filter((permission) =>
       modulePermissions.includes(permission),
     );
+  }
+
+  getCurrentPermissions(): Permission[] {
+    return this.permissionsSubject.value;
   }
 
   canAccessModule(module: Module): boolean {
@@ -154,10 +131,10 @@ export class PermissionsService {
   }
 
   refreshPermissions(): void {
-    this.loadPermissions();
-  }
-
-  getCurrentPermissions(): Permission[] {
-    return this.permissionsSubject.value;
+    // Este método se mantiene para compatibilidad, pero ahora los permisos
+    // se actualizan automáticamente cuando se actualizan las preferencias del usuario
+    console.log(
+      '🔍 DEBUG - refreshPermissions called - permissions update automatically from AuthState',
+    );
   }
 }

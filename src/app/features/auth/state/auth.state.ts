@@ -9,6 +9,7 @@ import {
   FirebaseAuthResponse,
   Profile,
   UserPreferences,
+  Permission,
 } from '../interfaces/auth';
 import { AuthService } from '../services/auth.service';
 import {
@@ -22,6 +23,7 @@ import {
 import { AuthStateModel } from './auth.model';
 import { UtilsService } from '@core/services/utils.service';
 import { SnackBarService } from '@core/services/snackbar.service';
+import { UserRole } from '@core/enums/roles.enum';
 
 @State<AuthStateModel>({
   name: 'auth',
@@ -101,13 +103,15 @@ export class AuthState {
       firstName: preferences.firstName,
       lastName: preferences.lastName,
       email: preferences.email,
-      role:
-        typeof preferences.role === 'string'
-          ? preferences.role
-          : preferences.role?.name || '',
+      role: preferences.role?.toString() || '',
     };
 
     return userData;
+  }
+
+  @Selector()
+  static userPermissions(state: AuthStateModel): Permission[] {
+    return state.preferences?.permissions || [];
   }
 
   constructor(
@@ -187,12 +191,37 @@ export class AuthState {
         // Extraer los datos según la estructura de la respuesta
         const preferences: UserPreferences = response.data || response;
         console.log('🔍 DEBUG - Extracted preferences:', preferences);
-        console.log(
-          '🔍 DEBUG - organizationSlug:',
-          preferences.organizationSlug,
-        );
+        console.log('🔍 DEBUG - User permissions:', preferences.permissions);
 
         ctx.patchState({ preferences });
+
+        // Guardar organizationId y permisos en localStorage
+        if (preferences.organizationId) {
+          localStorage.setItem('organizationId', preferences.organizationId);
+          console.log(
+            '🔍 DEBUG - organizationId saved to localStorage:',
+            preferences.organizationId,
+          );
+        } else {
+          localStorage.removeItem('organizationId');
+          console.log(
+            '🔍 DEBUG - organizationId removed from localStorage (SuperAdmin or no organization)',
+          );
+        }
+
+        // Guardar permisos en localStorage para uso offline
+        if (preferences.permissions) {
+          localStorage.setItem(
+            'userPermissions',
+            JSON.stringify(preferences.permissions),
+          );
+          console.log(
+            '🔍 DEBUG - Permissions saved to localStorage:',
+            preferences.permissions,
+          );
+        } else {
+          localStorage.removeItem('userPermissions');
+        }
 
         // Si las preferencias incluyen organizationSlug, actualizar la organización
         if (preferences.organizationSlug && preferences.organizationId) {

@@ -32,7 +32,12 @@ export class UtilsService {
    * Clears the session storage if the current platform is a browser.
    */
   cleanStorage(): void {
-    if (this.isBrowser) sessionStorage.clear();
+    if (this.isBrowser) {
+      sessionStorage.clear();
+      // Limpiar datos específicos del usuario en localStorage
+      localStorage.removeItem('organizationId');
+      localStorage.removeItem('userPermissions');
+    }
   }
 
   /**
