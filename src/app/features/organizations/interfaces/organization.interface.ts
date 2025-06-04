@@ -7,6 +7,7 @@ export interface Organization {
   description?: string;
   isActive: boolean;
   permissions: Permission[];
+  maxClients: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,6 +23,7 @@ export interface CreateOrganizationDto {
   slug: string;
   description?: string;
   permissions?: Permission[];
+  maxClients: number;
   adminUser: AdminUserDto;
 }
 
@@ -31,6 +33,7 @@ export interface UpdateOrganizationDto {
   description?: string;
   isActive?: boolean;
   permissions?: Permission[];
+  maxClients?: number;
 }
 
 export interface UpdateOrganizationPermissionsDto {
@@ -52,4 +55,11 @@ export interface CreateOrganizationResponse {
     role: string;
     organizationId: string;
   };
+}
+
+export interface OrganizationClientStats {
+  currentClients: number;
+  maxClients: number;
+  available: number;
+  percentage: number;
 }

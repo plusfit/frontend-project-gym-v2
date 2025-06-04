@@ -80,13 +80,14 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
         name: 'Organización Demo',
         slug: 'org-demo',
         isActive: true,
+        maxClients: 100,
         permissions: Object.values(Permission),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
     }
 
-    this.originalPermissions = [...(this.organization.permissions || [])];
+    this.originalPermissions = [...(this.organization?.permissions || [])];
     this.permissionModules = this.createPermissionModules();
     this.updateModuleStates();
   }

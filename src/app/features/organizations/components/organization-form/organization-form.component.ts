@@ -46,6 +46,10 @@ export class OrganizationFormComponent implements OnInit {
         [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)],
       ],
       description: [this.organization?.description || ''],
+      maxClients: [
+        this.organization?.maxClients || 50,
+        [Validators.required, Validators.min(1), Validators.max(10000)]
+      ],
       isActive: [this.organization?.isActive ?? true],
       adminUser: this.isEditing ? null : this.fb.group({
         email: ['', [Validators.required, Validators.email]],
@@ -59,6 +63,7 @@ export class OrganizationFormComponent implements OnInit {
         name: this.organization.name,
         slug: this.organization.slug,
         description: this.organization.description,
+        maxClients: this.organization.maxClients,
         isActive: this.organization.isActive,
       });
     }
@@ -73,6 +78,7 @@ export class OrganizationFormComponent implements OnInit {
           name: formValue.name,
           slug: formValue.slug,
           description: formValue.description,
+          maxClients: formValue.maxClients,
           isActive: formValue.isActive,
         };
         this.formSubmit.emit(updateData);
@@ -81,6 +87,7 @@ export class OrganizationFormComponent implements OnInit {
           name: formValue.name,
           slug: formValue.slug,
           description: formValue.description,
+          maxClients: formValue.maxClients,
           adminUser: formValue.adminUser,
         };
         this.formSubmit.emit(createData);
@@ -130,6 +137,10 @@ export class OrganizationFormComponent implements OnInit {
 
   get descriptionControl() {
     return this.organizationForm.get('description');
+  }
+
+  get maxClientsControl() {
+    return this.organizationForm.get('maxClients');
   }
 
   get isActiveControl() {

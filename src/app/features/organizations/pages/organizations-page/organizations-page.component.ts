@@ -48,6 +48,7 @@ export class OrganizationsPageComponent implements OnInit, OnDestroy {
     'name',
     'slug',
     'description',
+    'maxClients',
     'isActive',
     'createdAt',
     'acciones',

@@ -8,6 +8,7 @@ import {
   UpdateOrganizationDto,
   UpdateOrganizationPermissionsDto,
   CreateOrganizationResponse,
+  OrganizationClientStats,
 } from '../interfaces/organization.interface';
 import { Permission, Module } from '@core/enums/permissions.enum';
 import { Plan } from '@features/plans/interfaces/plan.interface';
@@ -88,6 +89,12 @@ export class OrganizationsService {
   ): Observable<Permission[]> {
     return this.http.get<Permission[]>(
       `${this.apiUrl}/${organizationId}/permissions/${module}`,
+    );
+  }
+
+  getOrganizationClientStats(organizationId: string): Observable<OrganizationClientStats> {
+    return this.http.get<OrganizationClientStats>(
+      `${this.apiUrl}/${organizationId}/client-stats`,
     );
   }
 }
