@@ -63,25 +63,11 @@ export class AuthState {
 
   @Selector()
   static organizationSlug(state: AuthStateModel): string | undefined {
-    console.log('🔍 DEBUG - organizationSlug selector called with state:', {
-      'state.organization': state.organization,
-      'state.auth': state.auth,
-      'state.preferences': state.preferences,
-      'state.organization is undefined?': state.organization === undefined,
-      'state.auth?.organization': state.auth?.organization,
-      'state.preferences?.organizationSlug':
-        state.preferences?.organizationSlug,
-    });
-
-    // Cambiar el orden de prioridad para usar preferences como fallback principal
-    const result =
+    return (
       state.organization?.slug ||
       state.auth?.organization?.slug ||
-      state.preferences?.organizationSlug;
-
-    console.log('🔍 DEBUG - organizationSlug result:', result);
-
-    return result;
+      state.preferences?.organizationSlug
+    );
   }
 
   @Selector()
@@ -125,10 +111,6 @@ export class AuthState {
     ctx: StateContext<AuthStateModel>,
     action: Login,
   ): Observable<AuthResponse> {
-    console.log(
-      '🔍 DEBUG - Login action started, current state:',
-      ctx.getState(),
-    );
     ctx.patchState({ loading: true });
     return this.authService.loginFirebase(action.payload).pipe(
       exhaustMap((response: FirebaseAuthResponse) => {
@@ -136,12 +118,6 @@ export class AuthState {
           tap((authResponse: any) => {
             const { accessToken, refreshToken, organization } =
               authResponse.data;
-
-            console.log('🔍 DEBUG - Login response received:', {
-              accessToken: accessToken ? 'present' : 'missing',
-              refreshToken: refreshToken ? 'present' : 'missing',
-              organization,
-            });
 
             const newState = {
               auth: {
@@ -152,17 +128,12 @@ export class AuthState {
               organization,
             };
 
-            console.log('🔍 DEBUG - Updating state in Login with:', newState);
-
             ctx.patchState(newState);
-
-            console.log('🔍 DEBUG - State after Login update:', ctx.getState());
           }),
         );
       }),
       tap(() => {
         ctx.patchState({ loading: false });
-        console.log('🔍 DEBUG - Login completed, final state:', ctx.getState());
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
@@ -186,52 +157,31 @@ export class AuthState {
     }
     return this.authService.getUserPreferences().pipe(
       tap((response: any) => {
-        console.log('🔍 DEBUG - Raw response from /auth/profile:', response);
-
-        // Extraer los datos según la estructura de la respuesta
         const preferences: UserPreferences = response.data || response;
-        console.log('🔍 DEBUG - Extracted preferences:', preferences);
-        console.log('🔍 DEBUG - User permissions:', preferences.permissions);
 
         ctx.patchState({ preferences });
 
-        // Guardar organizationId y permisos en localStorage
         if (preferences.organizationId) {
           localStorage.setItem('organizationId', preferences.organizationId);
-          console.log(
-            '🔍 DEBUG - organizationId saved to localStorage:',
-            preferences.organizationId,
-          );
         } else {
           localStorage.removeItem('organizationId');
-          console.log(
-            '🔍 DEBUG - organizationId removed from localStorage (SuperAdmin or no organization)',
-          );
         }
 
-        // Guardar permisos en localStorage para uso offline
         if (preferences.permissions) {
           localStorage.setItem(
             'userPermissions',
             JSON.stringify(preferences.permissions),
           );
-          console.log(
-            '🔍 DEBUG - Permissions saved to localStorage:',
-            preferences.permissions,
-          );
         } else {
           localStorage.removeItem('userPermissions');
         }
 
-        // Si las preferencias incluyen organizationSlug, actualizar la organización
         if (preferences.organizationSlug && preferences.organizationId) {
           const organization = {
             id: preferences.organizationId,
             slug: preferences.organizationSlug,
-            name: '', // Se puede completar si es necesario
+            name: '',
           };
-
-          console.log('🔍 DEBUG - Updating organization:', organization);
 
           const currentAuth = ctx.getState().auth;
           ctx.patchState({
@@ -243,11 +193,6 @@ export class AuthState {
                 }
               : null,
           });
-
-          console.log(
-            '🔍 DEBUG - State after organization update:',
-            ctx.getState(),
-          );
         }
       }),
       catchError((err: HttpErrorResponse) => {

@@ -79,25 +79,18 @@ export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('🔍 DEBUG - OrganizationDetailPageComponent ngOnInit started');
     this.organizationId = this.route.snapshot.paramMap.get('id') ?? '';
-    console.log('🔍 DEBUG - Organization ID from route:', this.organizationId);
 
     if (!this.organizationId) {
-      console.log(
-        '🔍 DEBUG - No organization ID found, redirecting to organizations list',
-      );
       this.router.navigate(['/organizaciones']);
       return;
     }
 
-    // Para demo - crear datos ficticios si el ID es "demo"
     if (this.organizationId === 'demo') {
       this.createDemoData();
       return;
     }
 
-    // Clear previous data before loading new organization
     this.clearOrganizationData();
     this.loadOrganizationData();
   }
@@ -108,15 +101,10 @@ export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private clearOrganizationData(): void {
-    console.log('🔍 DEBUG - Clearing previous organization data');
     this.store.dispatch(new SetSelectedOrganization(null));
   }
 
   private loadOrganizationData(): void {
-    console.log(
-      '🔍 DEBUG - Loading organization data for ID:',
-      this.organizationId,
-    );
     this.store.dispatch(new GetOrganizationById(this.organizationId));
     this.store.dispatch(new GetOrganizationPlans(this.organizationId));
     this.store.dispatch(new GetOrganizationClients(this.organizationId));
@@ -124,16 +112,7 @@ export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private createDemoData(): void {
-    console.log('🔍 DEBUG - Creating demo data');
-
-    // Para demo, crear datos locales sin usar el estado del store
-    // Esto evita problemas con los observables del estado
     this.isDemo = true;
-
-    // Los componentes hijos ya manejan sus propios datos de demo cuando no reciben datos
-    console.log(
-      '🔍 DEBUG - Demo mode activated, child components will show demo data',
-    );
   }
 
   onBackToList(): void {

@@ -75,8 +75,6 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadDashboardData(): void {
-    // Cargar todos los datos necesarios
-    console.log('Cargando datos del dashboard...');
     this.store.dispatch(new GetClients({ page: 1, pageSize: 1000 }));
     this.store.dispatch(new GetPlans({ page: 1, pageSize: 1000, searchQ: '' }));
     this.store.dispatch(new GetRoutinesByPage({ page: 1 }));
@@ -108,11 +106,9 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
           activeClients,
         };
 
-        console.log('Stats calculadas:', stats);
         return stats;
       }),
       tap((stats) => {
-        // Crear gráficas cuando tengamos datos y los elementos estén listos
         if (this.canvasElementsReady() && !this.chartsCreated) {
           setTimeout(() => this.createCharts(stats), 100);
         }
@@ -139,11 +135,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeCharts(): void {
-    console.log('Inicializando gráficas...');
-    console.log('Canvas elements ready:', this.canvasElementsReady());
-
     if (this.canvasElementsReady()) {
-      // Suscribirse a stats para crear gráficas cuando tengamos datos
       this.statsSubscription = this.stats$
         .pipe(
           filter(
@@ -162,13 +154,11 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         });
     } else {
-      console.warn('Canvas elements not ready, retrying...');
       setTimeout(() => this.initializeCharts(), 200);
     }
   }
 
   private createCharts(stats: DashboardStats): void {
-    console.log('Creando gráficas con stats:', stats);
     this.createClientsChart(stats);
     this.createPlansChart(stats);
   }
@@ -193,15 +183,12 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createClientsChart(stats: DashboardStats): void {
-    console.log('Creando gráfica de clientes...');
-
     if (this.clientsChartInstance) {
       this.clientsChartInstance.destroy();
     }
 
     const ctx = this.clientsChart?.nativeElement?.getContext('2d');
     if (!ctx) {
-      console.error('No se pudo obtener el contexto del canvas de clientes');
       return;
     }
 
@@ -243,14 +230,12 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       this.clientsChartInstance = new Chart(ctx, config);
-      console.log('Gráfica de clientes creada exitosamente');
     } catch (error) {
       console.error('Error creando gráfica de clientes:', error);
     }
   }
 
   private createPlansChart(stats: DashboardStats): void {
-    console.log('Creando gráfica de planes...');
 
     if (this.plansChartInstance) {
       this.plansChartInstance.destroy();
@@ -258,7 +243,6 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const ctx = this.plansChart?.nativeElement?.getContext('2d');
     if (!ctx) {
-      console.error('No se pudo obtener el contexto del canvas de planes');
       return;
     }
 
@@ -313,7 +297,6 @@ export class WelcomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       this.plansChartInstance = new Chart(ctx, config);
-      console.log('Gráfica de planes creada exitosamente');
     } catch (error) {
       console.error('Error creando gráfica de planes:', error);
     }

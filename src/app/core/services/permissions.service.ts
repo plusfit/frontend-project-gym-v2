@@ -16,12 +16,7 @@ export class PermissionsService {
   public permissions$ = this.permissionsSubject.asObservable();
 
   constructor(private store: Store) {
-    // Escuchar cambios en los permisos del usuario desde el AuthState
     this.store.select(AuthState.userPermissions).subscribe((permissions) => {
-      console.log(
-        '🔍 DEBUG - Permissions updated from AuthState:',
-        permissions,
-      );
       this.permissionsSubject.next(permissions || []);
     });
   }
@@ -133,8 +128,5 @@ export class PermissionsService {
   refreshPermissions(): void {
     // Este método se mantiene para compatibilidad, pero ahora los permisos
     // se actualizan automáticamente cuando se actualizan las preferencias del usuario
-    console.log(
-      '🔍 DEBUG - refreshPermissions called - permissions update automatically from AuthState',
-    );
   }
 }

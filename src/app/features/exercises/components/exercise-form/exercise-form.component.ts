@@ -236,7 +236,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(file);
 
-      console.log('Archivo seleccionado:', file.name);
+      
     } else {
       console.error('Formato no permitido. Solo GIF.');
     }

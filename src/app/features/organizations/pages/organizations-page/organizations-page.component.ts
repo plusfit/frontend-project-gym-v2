@@ -69,21 +69,6 @@ export class OrganizationsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('🔍 DEBUG - OrganizationsPageComponent ngOnInit');
-
-    // Subscribe to observables to debug their values
-    this.loading$.subscribe((loading) => {
-      console.log('🔍 DEBUG - Loading state changed:', loading);
-    });
-
-    this.organizations$.subscribe((organizations) => {
-      console.log('🔍 DEBUG - Organizations data changed:', organizations);
-    });
-
-    this.error$.subscribe((error) => {
-      console.log('🔍 DEBUG - Error state changed:', error);
-    });
-
     this.loadOrganizations();
   }
 

@@ -24,7 +24,7 @@ const handleUnauthorizedError = (
   zone: NgZone,
   router: Router,
 ): void => {
-  console.log(err);
+  
 
   if (err.status === 401 || err.status === 0) {
     //TODO: status 0 cuando es un 401, ver porque

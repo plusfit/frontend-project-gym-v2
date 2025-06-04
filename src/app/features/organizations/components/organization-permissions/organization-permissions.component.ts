@@ -69,24 +69,13 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    console.log(
-      '🔍 DEBUG - ngOnChanges called, organization:',
-      this.organization,
-    );
     if (this.organization) {
       this.initializePermissions();
     }
   }
 
   private initializePermissions() {
-    console.log(
-      '🔍 DEBUG - initializePermissions called, organization:',
-      this.organization,
-    );
-
-    // Solo usar datos demo si realmente no hay organización
     if (!this.organization) {
-      console.log('🔍 DEBUG - No organization found, using demo data');
       this.organization = {
         _id: 'demo-org-id',
         name: 'Organización Demo',
@@ -97,13 +86,6 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
         updatedAt: new Date().toISOString(),
       };
     }
-
-    console.log('🔍 DEBUG - Organization to use:', this.organization);
-    console.log('🔍 DEBUG - Organization ID:', this.organization._id);
-    console.log(
-      '🔍 DEBUG - Organization permissions:',
-      this.organization.permissions,
-    );
 
     this.originalPermissions = [...(this.organization.permissions || [])];
     this.permissionModules = this.createPermissionModules();
@@ -234,8 +216,6 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
   }
 
   onSave() {
-    console.log('🔍 DEBUG - onSave called, organization:', this.organization);
-
     if (
       !this.organization ||
       !this.hasChanges ||
@@ -250,28 +230,16 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Validar que tenemos un ID válido
     if (!this.organization._id || this.organization._id === 'undefined') {
-      console.error(
-        '🔍 DEBUG - Invalid organization ID:',
-        this.organization._id,
-      );
       this.snackBarService.showError('Error', 'ID de organización inválido');
       return;
     }
-
-    console.log(
-      '🔍 DEBUG - Updating permissions for organization ID:',
-      this.organization._id,
-    );
 
     this.saving = true;
     const selectedPermissions = this.getSelectedPermissions();
     const updateDto: UpdateOrganizationPermissionsDto = {
       permissions: selectedPermissions,
     };
-
-    console.log('🔍 DEBUG - Update DTO:', updateDto);
 
     this.organizationsService
       .updateOrganizationPermissions(this.organization._id, updateDto)
@@ -282,10 +250,6 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
       )
       .subscribe({
         next: (updatedOrg) => {
-          console.log(
-            '🔍 DEBUG - Permissions updated successfully:',
-            updatedOrg,
-          );
           this.organization = updatedOrg;
           this.originalPermissions = [...selectedPermissions];
           this.hasChanges = false;
@@ -295,7 +259,6 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
           );
         },
         error: (error) => {
-          console.error('🔍 DEBUG - Error updating permissions:', error);
           this.snackBarService.showError(
             'Error',
             'Error al actualizar los permisos',
