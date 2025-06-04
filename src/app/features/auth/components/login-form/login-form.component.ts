@@ -20,7 +20,11 @@ import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { InputDirective } from '@shared/directives/btn/input.directive';
 import { ConditionalTextPipe } from '@shared/pipes/conditional-text.pipe';
-import { Login } from '../../state/auth.actions';
+import {
+  ForgotPassword,
+  GetUserPreferences,
+  Login,
+} from '../../state/auth.actions';
 import { AuthState } from '../../state/auth.state';
 
 @Component({
@@ -77,10 +81,19 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(Login), takeUntil(this.destroy))
         .subscribe(() => {
-          this.router.navigate(['/']);
-          //TODO
-          //this.store.dispatch(GetUserPreferences);
-          this.snackbar.showSuccess('Éxito!', 'Bienvenido');
+          // Dispatch GetUserPreferences after successful login
+          this.store.dispatch(new GetUserPreferences());
+
+          // Wait for GetUserPreferences to complete before navigating
+          this.actions
+            .pipe(
+              ofActionSuccessful(GetUserPreferences),
+              takeUntil(this.destroy),
+            )
+            .subscribe(() => {
+              this.router.navigate(['/']);
+              this.snackbar.showSuccess('Éxito!', 'Bienvenido');
+            });
         });
     }
   }

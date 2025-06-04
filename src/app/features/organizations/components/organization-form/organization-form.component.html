@@ -1,0 +1,187 @@
+<div class="bg-transparent p-6 sm:p-8">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center space-x-4">
+            <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl p-3 shadow-lg">
+                <i class="ph-buildings text-white text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
+                    {{ isEditing ? 'Editar Organización' : 'Nueva Organización' }}
+                </h2>
+                <p class="text-gray-600 mt-1">{{ isEditing ? 'Modifica los datos de la organización' : 'Completa la
+                    información para crear una nueva organización' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" class="space-y-8">
+        <!-- Información de la Organización -->
+        <div class="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="ph-buildings text-primary-500 mr-2"></i>
+                Información de la Organización
+            </h3>
+
+            <!-- Nombre -->
+            <div class="space-y-2 mb-6">
+                <label for="name" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <i class="ph-textbox text-primary-500 mr-2"></i>
+                    Nombre de la Organización *
+                </label>
+                <input id="name" type="text" formControlName="name" (blur)="generateSlug()"
+                    class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+                    placeholder="Ingrese el nombre de la organización" />
+                <div *ngIf="nameControl?.invalid && nameControl?.touched"
+                    class="mt-2 text-sm text-red-600 flex items-center">
+                    <i class="ph-warning-circle mr-1"></i>
+                    <span *ngIf="nameControl?.errors?.['required']">El nombre es requerido</span>
+                    <span *ngIf="nameControl?.errors?.['minlength']">El nombre debe tener al menos 2 caracteres</span>
+                </div>
+            </div>
+
+            <!-- Slug -->
+            <div class="space-y-2 mb-6">
+                <label for="slug" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <i class="ph-link text-primary-500 mr-2"></i>
+                    Slug (URL amigable) *
+                </label>
+                <div class="flex rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <input id="slug" type="text" formControlName="slug"
+                        class="flex-1 px-4 py-4 border border-gray-300 rounded-l-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                        placeholder="nombre-organizacion" />
+                    <button type="button" (click)="generateSlug()"
+                        class="px-6 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-r-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 transform hover:scale-105 focus:ring-3 focus:ring-primary-500/30 group"
+                        title="Generar slug automáticamente basado en el nombre de la organización">
+                        <i class="ph-magic-wand text-lg group-hover:animate-bounce"></i>
+                    </button>
+                </div>
+                <div *ngIf="slugControl?.invalid && slugControl?.touched"
+                    class="mt-2 text-sm text-red-600 flex items-center">
+                    <i class="ph-warning-circle mr-1"></i>
+                    <span *ngIf="slugControl?.errors?.['required']">El slug es requerido</span>
+                    <span *ngIf="slugControl?.errors?.['pattern']">El slug solo puede contener letras minúsculas,
+                        números y
+                        guiones</span>
+                </div>
+                <div class="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p class="text-sm text-blue-700 flex items-center">
+                        <i class="ph-info text-blue-500 mr-2"></i>
+                        <span class="font-medium">URL de la organización:</span>
+                        <code
+                            class="ml-2 px-2 py-1 bg-blue-100 rounded text-blue-800">/org/{{ slugControl?.value || 'slug' }}</code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="space-y-2">
+                <label for="description" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <i class="ph-note text-primary-500 mr-2"></i>
+                    Descripción
+                </label>
+                <textarea id="description" formControlName="description" rows="4"
+                    class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 resize-none bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+                    placeholder="Descripción opcional de la organización (máximo 200 caracteres)"></textarea>
+                <p class="text-xs text-gray-500 text-right">{{ (descriptionControl?.value || '').length }}/200
+                    caracteres
+                </p>
+            </div>
+        </div>
+
+        <!-- Información del Administrador (solo para creación) -->
+        <div *ngIf="!isEditing && adminUserGroup"
+            class="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="ph-user-gear text-primary-500 mr-2"></i>
+                Administrador de la Organización
+            </h3>
+            <p class="text-sm text-gray-600 mb-6">Se creará automáticamente un usuario administrador para esta
+                organización.</p>
+
+            <div formGroupName="adminUser" class="space-y-6">
+                <!-- Email del Admin -->
+                <div class="space-y-2">
+                    <label for="adminEmail" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <i class="ph-envelope text-primary-500 mr-2"></i>
+                        Email del Administrador *
+                    </label>
+                    <input id="adminEmail" type="email" formControlName="email"
+                        class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+                        placeholder="admin@organizacion.com" />
+                    <div *ngIf="adminEmailControl?.invalid && adminEmailControl?.touched"
+                        class="mt-2 text-sm text-red-600 flex items-center">
+                        <i class="ph-warning-circle mr-1"></i>
+                        <span *ngIf="adminEmailControl?.errors?.['required']">El email es requerido</span>
+                        <span *ngIf="adminEmailControl?.errors?.['email']">Ingrese un email válido</span>
+                    </div>
+                </div>
+
+                <!-- Nombre del Admin -->
+                <div class="space-y-2">
+                    <label for="adminName" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <i class="ph-user text-primary-500 mr-2"></i>
+                        Nombre Completo *
+                    </label>
+                    <input id="adminName" type="text" formControlName="name"
+                        class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+                        placeholder="Nombre completo del administrador" />
+                    <div *ngIf="adminNameControl?.invalid && adminNameControl?.touched"
+                        class="mt-2 text-sm text-red-600 flex items-center">
+                        <i class="ph-warning-circle mr-1"></i>
+                        <span *ngIf="adminNameControl?.errors?.['required']">El nombre es requerido</span>
+                        <span *ngIf="adminNameControl?.errors?.['minlength']">El nombre debe tener al menos 2
+                            caracteres</span>
+                    </div>
+                </div>
+
+                <!-- Teléfono del Admin (opcional) -->
+                <div class="space-y-2">
+                    <label for="adminPhone" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                        <i class="ph-phone text-primary-500 mr-2"></i>
+                        Teléfono (opcional)
+                    </label>
+                    <input id="adminPhone" type="tel" formControlName="phone"
+                        class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+                        placeholder="+54 11 1234-5678" />
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p class="text-sm text-yellow-700 flex items-center">
+                    <i class="ph-warning text-yellow-500 mr-2"></i>
+                    <span><strong>Importante:</strong> Se enviará un email al administrador con las instrucciones para
+                        activar su cuenta.</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Estado Activo (solo en edición) -->
+        <div *ngIf="isEditing" class="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <input id="isActive" type="checkbox" formControlName="isActive"
+                class="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded-md transition-colors" />
+            <label for="isActive" class="ml-3 block text-sm font-medium text-gray-700">
+                <span class="flex items-center">
+                    <i class="ph-toggle-right text-primary-500 mr-2"></i>
+                    Organización activa
+                </span>
+                <span class="text-xs text-gray-500 mt-1 block">Las organizaciones inactivas no aparecerán en el
+                    sistema</span>
+            </label>
+        </div>
+
+        <!-- Botones -->
+        <div
+            class="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-8 border-t border-gray-200">
+            <button type="button" (click)="onCancel()"
+                class="w-full sm:w-auto px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium transform hover:scale-105 focus:ring-3 focus:ring-gray-300">
+                <i class="ph-x mr-2"></i>
+                Cancelar
+            </button>
+            <button type="submit" [disabled]="organizationForm.invalid"
+                class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium transform hover:scale-105 focus:ring-3 focus:ring-primary-500/30 shadow-lg hover:shadow-xl disabled:shadow-none">
+                <i class="ph-{{ isEditing ? 'pencil' : 'plus' }} mr-2"></i>
+                {{ isEditing ? 'Actualizar' : 'Crear' }} Organización
+            </button>
+        </div>
+    </form>
+</div>

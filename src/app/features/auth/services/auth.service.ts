@@ -47,12 +47,9 @@ export class AuthService {
   }
 
   getUserPreferences(): Observable<UserPreferences> {
-    return this._getUserPreferences();
+    return this.http.get<UserPreferences>(`${environment.api}/auth/profile`);
   }
 
-  _getUserPreferences(): any {
-    return sessionStorage.getItem('auth');
-  }
   register(email: string): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(
       `${environment.api}/auth/register`,

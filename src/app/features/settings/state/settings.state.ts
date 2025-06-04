@@ -36,8 +36,7 @@ export class SettingsState {
     ctx: StateContext<SettingsStateModel>,
     { payload }: CrateSettings,
   ) {
-    const token = localStorage.getItem('accessToken') || ''; // Provide a default value for token if it is null
-    return this.settingsService.createSettings(token, payload).pipe(
+    return this.settingsService.createSettings(payload).pipe(
       tap((settings: any) => {
         ctx.patchState({ settings });
       }),

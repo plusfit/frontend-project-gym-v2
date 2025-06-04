@@ -1,0 +1,239 @@
+/* Animaciones suaves para el dashboard */
+.group:hover {
+  transform: translateY(-2px);
+}
+
+/* Animación de carga personalizada */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-custom {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Efecto hover para las tarjetas de estadísticas */
+.stat-card {
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Estilos para las gráficas */
+canvas {
+  max-height: 300px !important;
+}
+
+/* Animación de entrada suave */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Efecto de brillo para las métricas */
+.metric-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.metric-glow:hover::before {
+  left: 100%;
+}
+
+/* Estilos para el nuevo header profesional */
+
+/* Efecto de brillo en el título principal */
+.title-glow {
+  position: relative;
+  display: inline-block;
+}
+
+.title-glow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Animaciones con delay para las partículas de fondo */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Efecto de flotar para el logo principal */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+.w-24.h-24 {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Efectos para el logo */
+.w-24.h-24 img {
+  transition: all 0.3s ease;
+}
+
+.w-24.h-24:hover img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.3));
+}
+
+/* Efecto glassmorphism mejorado para el contenedor del logo */
+.bg-white\/10 {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Efecto de parpadeo para el indicador de estado */
+@keyframes pulse-green {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.bg-green-500.rounded-full .bg-white {
+  animation: pulse-green 2s infinite;
+}
+
+/* Efecto de texto con gradiente mejorado */
+.bg-clip-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mejoras para móviles */
+@media (max-width: 768px) {
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+
+  .text-6xl {
+    font-size: 3rem;
+  }
+
+  .text-7xl {
+    font-size: 3.5rem;
+  }
+
+  /* Ajustar espacios en móvil */
+  .space-x-8 > * + * {
+    margin-left: 1rem;
+  }
+
+  .w-24.h-24 {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .w-24.h-24 img {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .text-4xl {
+    font-size: 2rem;
+  }
+}
+
+/* Efecto glassmorphism para el badge */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Transiciones suaves para todos los elementos interactivos */
+* {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Mejora del contraste para accesibilidad */
+.text-blue-100 {
+  color: #dbeafe;
+}
+
+.text-blue-200 {
+  color: #bfdbfe;
+}
+
+.text-blue-300 {
+  color: #93c5fd;
+}

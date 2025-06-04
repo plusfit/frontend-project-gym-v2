@@ -10,8 +10,9 @@ import { NgClass } from '@angular/common';
   styleUrls: ['./title.component.css'],
 })
 export class TitleComponent {
-  //TODO:
   @Input() title!: string;
+  @Input() subtitle?: string;
+  @Input() icon?: string;
   @Input() divider = true;
   @Input() gradient = true;
 }

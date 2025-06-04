@@ -1,81 +1,118 @@
-<div class="flex flex-col space-y-6 h-full">
-  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'flex-shrink-0': !isMenuOpen() }">
-    <!-- Botón hamburguesa (solo visible en móviles/tablets) -->
-    <a routerLink="/">
-      <img
-        title="logo"
-        class="w-full"
-        src="./assets/logos/logo-white.png"
-        [alt]="appName"
-      />
-    </a>
-  </div>
-  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'block': !isMenuOpen() }">
-    <div class="flex flex-col space-y-2">
-      <a
-        routerLink="clientes"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-users-light text-white text-xl"></i>
-        <span>Clientes</span>
+<div class="flex flex-col h-full px-3">
+  <!-- Navigation Items -->
+  <div class="space-y-1">
+
+    <!-- Organizaciones - Solo para SUPER_ADMIN -->
+    <ng-container *ngIf="isSuperAdmin$ | async">
+      <a routerLink="/organizaciones" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+        <div class="flex items-center">
+          <i class="ph-buildings text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Organizaciones
+          </span>
+        </div>
+      </a>
+    </ng-container>
+
+    <!-- Navegación para ADMIN y CLIENT -->
+    <ng-container *ngIf="(isAdmin$ | async) || (isClient$ | async)">
+      <!-- Clientes -->
+      <a routerLink="clientes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.CLIENT_READ" [appHasPermissionModule]="Module.CLIENTS">
+        <div class="flex items-center">
+          <i class="ph-users text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Clientes
+          </span>
+        </div>
       </a>
 
-      <a
-        routerLink="/horarios"
-        routerLinkActive="nav-item-selected"
-        class="nav-item"
-        ><i class="ph-calendar-light text-white text-xl"></i
-        ><span> Horarios</span></a
-      >
-      <a
-        routerLink="/rutinas"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-clipboard-text text-white text-xl"></i>
-        <span> Rutinas</span>
-      </a>
-      <a
-        routerLink="/subrutinas"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-list-bullets-light text-white text-xl"></i>
-        <span> Subrutinas</span>
+      <!-- Horarios -->
+      <a routerLink="/horarios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.SCHEDULE_READ" [appHasPermissionModule]="Module.SCHEDULES">
+        <div class="flex items-center">
+          <i class="ph-calendar text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Horarios
+          </span>
+        </div>
       </a>
 
-      <a
-        routerLink="/ejercicios"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-barbell-light text-white text-xl"></i>
-        <span> Ejercicios</span>
+      <!-- Rutinas -->
+      <a routerLink="/rutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
+        <div class="flex items-center">
+          <i class="ph-clipboard-text text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Rutinas
+          </span>
+        </div>
       </a>
-      <a
-        routerLink="/planes"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-clipboard text-white text-xl"></i>
-        <span> Planes</span>
+
+      <!-- Subrutinas -->
+      <a routerLink="/subrutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
+        <div class="flex items-center">
+          <i class="ph-list-bullets text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Subrutinas
+          </span>
+        </div>
       </a>
-      <a
-        routerLink="/pantalla"
-        routerLinkActive="nav-item-selected"
-        class="nav-item cursor-pointer"
-      >
-        <i class="ph-screencast text-white text-xl"></i>
-        <span> Pantalla</span>
+
+      <!-- Ejercicios -->
+      <a routerLink="/ejercicios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.EXERCISE_READ" [appHasPermissionModule]="Module.EXERCISES">
+        <div class="flex items-center">
+          <i class="ph-barbell text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Ejercicios
+          </span>
+        </div>
       </a>
-      <a
-        routerLink="/configuracion"
-        routerLinkActive="nav-item-selected"
-        class="nav-item"
-        ><i class="ph-gear-light text-white text-xl"></i
-        ><span> Configuracion</span></a
-      >
-    </div>
+
+      <!-- Planes -->
+      <a routerLink="/planes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
+        [appHasPermission]="Permission.PLAN_READ" [appHasPermissionModule]="Module.PLANS">
+        <div class="flex items-center">
+          <i class="ph-clipboard text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Planes
+          </span>
+        </div>
+      </a>
+
+      <!-- Pantalla -->
+      <a routerLink="/pantalla" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+        <div class="flex items-center">
+          <i class="ph-screencast text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Pantalla
+          </span>
+        </div>
+      </a>
+
+      <!-- Divider -->
+      <div class="h-px bg-primary-600/30 my-4" [ngClass]="{ 'mx-2': !isMenuOpen(), 'mx-1': isMenuOpen() }"></div>
+
+      <!-- Configuración -->
+      <a routerLink="/configuracion" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
+        <div class="flex items-center">
+          <i class="ph-gear text-xl flex-shrink-0 transition-colors duration-200"></i>
+          <span class="ml-3 font-medium text-sm transition-all duration-200"
+            [ngClass]="{ 'opacity-0 w-0': isMenuOpen(), 'opacity-100': !isMenuOpen() }">
+            Configuración
+          </span>
+        </div>
+      </a>
+    </ng-container>
   </div>
 </div>

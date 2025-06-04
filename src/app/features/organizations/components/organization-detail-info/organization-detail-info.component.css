@@ -1,0 +1,37 @@
+/* Animaciones suaves */
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Efectos hover para las tarjetas */
+.bg-gradient-to-r {
+  transition: all 0.3s ease;
+}
+
+.bg-gradient-to-r:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Estilos para los campos de información */
+.bg-white {
+  transition: all 0.2s ease;
+}
+
+.bg-white:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .grid-cols-1 {
+    gap: 1rem;
+  }
+
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+}

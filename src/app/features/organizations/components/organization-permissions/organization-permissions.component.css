@@ -1,0 +1,25 @@
+.mat-mdc-checkbox {
+  --mdc-checkbox-selected-icon-color: #0066cc;
+  --mdc-checkbox-selected-container-color: #0066cc;
+  --mdc-checkbox-unselected-outline-color: #d1d5db;
+}
+
+.mat-mdc-checkbox .mdc-checkbox__background {
+  border-radius: 4px;
+}
+
+.mat-mdc-checkbox .mdc-form-field {
+  color: #374151;
+}
+
+/* Loading spinner styling */
+::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-1.md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}

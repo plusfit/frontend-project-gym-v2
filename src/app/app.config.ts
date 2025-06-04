@@ -25,6 +25,7 @@ import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
 import { environment } from '../environments/environment';
 import { tokenInterceptor } from '@core/interceptors/token.interceptor';
 import { authorizeInterceptor } from '@core/interceptors/authorize.interceptor';
+import { organizationInterceptor } from '@core/interceptors/organization.interceptor';
 import { ExerciseState } from '@features/exercises/state/exercise.state';
 import { SettingsState } from '@features/settings/state/settings.state';
 import { RoutineState } from '@features/routines/state/routine.state';
@@ -33,6 +34,7 @@ import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { ClientsState } from '@features/client/state/clients.state';
 import { PlansState } from '@features/plans/state/plan.state';
 import { ScreenRoutineState } from '@features/screenRoutine/state/screenRoutine.state';
+import { OrganizationsState } from '@features/organizations/state/organizations.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,6 +45,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([
         tokenInterceptor,
+        organizationInterceptor,
         errorInterceptor,
         authorizeInterceptor,
       ]),
@@ -72,6 +75,7 @@ export const appConfig: ApplicationConfig = {
           ClientsState,
           PlansState,
           ScreenRoutineState,
+          OrganizationsState,
         ],
         {
           developmentMode: true,

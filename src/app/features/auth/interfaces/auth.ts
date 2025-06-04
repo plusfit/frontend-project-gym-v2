@@ -1,3 +1,9 @@
+import { UserRole } from '@core/enums/roles.enum';
+import { Permission } from '@core/enums/permissions.enum';
+
+// Re-export para evitar problemas de importación
+export { Permission };
+
 export interface NewPasswordRequest {
   userId: string | null;
   resetToken: string | null;
@@ -12,6 +18,13 @@ export interface AuthCredentials {
 export interface AuthResponse {
   refreshToken: string;
   accessToken: string;
+  organization?: Organization | null;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export interface FirebaseAuthResponse {
@@ -43,18 +56,10 @@ export interface UserPreferences {
   lastName: string;
   email: string;
   needOnboarding: boolean;
-  role: Role;
-}
-
-interface Role {
-  id: string;
-  name: string;
+  role: UserRole;
+  organizationId?: string;
+  organizationSlug?: string;
   permissions: Permission[];
-}
-
-interface Permission {
-  name: string;
-  id: string;
 }
 
 export interface Profile {

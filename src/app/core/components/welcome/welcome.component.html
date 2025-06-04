@@ -1,84 +1,300 @@
-<div class="bg-gray-50 text-gray-800 min-h-screen flex flex-col pt-0">
-  <!-- Encabezado -->
+<div class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col">
+  <!-- Encabezado mejorado y profesional -->
   <header
-    class="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-10 px-6 text-center"
-  >
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-wide">
-      Panel de Administración
-      <br />
-      <span class="text-gray-200">Gestión eficiente del gimnasio</span>
-    </h1>
-    <p class="mt-4 text-lg">
-      Administra clientes, clases y entrenadores fácilmente.
-    </p>
+    class="relative bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white shadow-2xl overflow-hidden">
+    <!-- Efecto de partículas de fondo -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-cyan-600/10"></div>
+
+    <!-- Patrón geométrico de fondo -->
+    <div class="absolute inset-0 opacity-10">
+      <div
+        class="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse">
+      </div>
+      <div
+        class="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000">
+      </div>
+      <div
+        class="absolute bottom-0 left-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000">
+      </div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 py-16">
+      <div class="text-center">
+        <!-- Logo principal y badge -->
+        <div class="flex justify-center items-center mb-6">
+          <div class="relative">
+            <div
+              class="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300 border border-white/20">
+              <img src="assets/logos/logo-white.png" alt="Gym Logo"
+                class="w-16 h-16 object-contain filter drop-shadow-lg">
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título principal con efectos -->
+        <div class="mb-6">
+          <h1
+            class="text-6xl md:text-7xl font-black tracking-tight mb-4 bg-gradient-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent leading-tight">
+            <span class="block title-glow">GYM</span>
+            <span class="block text-5xl md:text-6xl font-light">Dashboard</span>
+          </h1>
+
+          <!-- Badge profesional -->
+          <div
+            class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-4">
+            <i class="ph-crown text-yellow-400 text-sm mr-2"></i>
+            <span class="text-sm font-medium text-white/90">Panel Ejecutivo</span>
+          </div>
+        </div>
+
+        <!-- Subtítulo mejorado -->
+        <div class="max-w-3xl mx-auto">
+          <p class="text-xl md:text-2xl text-blue-100 font-light leading-relaxed mb-6">
+            Gestión inteligente y análisis avanzado para tu
+            <span class="font-semibold text-white">centro deportivo</span>
+          </p>
+
+          <!-- Métricas rápidas en el header -->
+          <div class="flex justify-center items-center space-x-8 text-sm text-blue-200">
+            <div class="flex items-center">
+              <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+              <span>Sistema Activo</span>
+            </div>
+            <div class="flex items-center">
+              <i class="ph-clock text-blue-300 mr-2"></i>
+              <span>Tiempo Real</span>
+            </div>
+            <div class="flex items-center">
+              <i class="ph-shield-check text-green-300 mr-2"></i>
+              <span>Seguro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Línea decorativa inferior -->
+    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500"></div>
   </header>
 
   <!-- Contenido Principal -->
-  <main class="py-12 px-6 space-y-16 flex-grow">
-    <!-- Accesos Rápidos -->
-    <section>
-      <h2 class="text-2xl font-semibold text-center mb-8">Accesos Rápidos</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-          routerLink="clientes"
-        >
-          <div class="text-blue-600 text-3xl mr-4">
-            <i class="ph-clipboard-text text-blue-600 text-3xl"></i>
-          </div>
-          <span class="text-lg font-medium">Gestión de Clientes</span>
-        </a>
-        <a
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-          routerLink="horarios"
-        >
-          <div class="text-blue-600 text-3xl mr-4">
-            <i class="ph-calendar text-blue-600 text-3xl"></i>
-          </div>
-          <span class="text-lg font-medium">Gestión de Horarios</span>
-        </a>
-        <a
-          class="bg-white shadow-md flex items-center justify-center p-6 rounded-lg hover:shadow-lg transition"
-          routerLink="planes"
-        >
-          <div class="text-blue-600 text-3xl mr-4">
-            <i class="ph-user-focus text-blue-600 text-3xl"></i>
-          </div>
-          <span class="text-lg font-medium">Gestión de Planes</span>
-        </a>
-      </div>
-    </section>
+  <main class="flex-grow py-8 px-6">
+    <div class="max-w-7xl mx-auto space-y-8">
 
-    <!-- Estadísticas Resumidas -->
-    <section>
-      <h2 class="text-2xl font-semibold text-center mb-8">
-        Resumen de Actividad
-      </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div class="bg-white shadow-md rounded-lg p-6 text-center">
-          <h3 class="text-lg font-bold text-gray-700">Clientes Activos</h3>
-          <p class="text-3xl font-semibold text-blue-600">
-            {{ total | async }}
-          </p>
+      <!-- Indicador de carga -->
+      <div *ngIf="(isLoading$ | async)" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <span class="ml-3 text-lg text-gray-600">Cargando datos...</span>
+      </div>
+
+      <!-- Estadísticas principales -->
+      <div *ngIf="!(isLoading$ | async)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl shadow-lg border-l-4 border-blue-500 p-6 hover:shadow-xl transition-shadow">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <i class="ph-users text-blue-600 text-2xl"></i>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Total Clientes</p>
+              <p class="text-3xl font-bold text-gray-900">{{ (stats$ | async)?.totalClients || 0 }}</p>
+            </div>
+          </div>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-6 text-center">
-          <h3 class="text-lg font-bold text-gray-700">Clases Programadas</h3>
-          <p class="text-3xl font-semibold text-blue-600">45</p>
+
+        <div class="bg-white rounded-xl shadow-lg border-l-4 border-purple-500 p-6 hover:shadow-xl transition-shadow">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <i class="ph-clipboard-text text-purple-600 text-2xl"></i>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Planes Activos</p>
+              <p class="text-3xl font-bold text-gray-900">{{ (stats$ | async)?.totalPlans || 0 }}</p>
+            </div>
+          </div>
         </div>
-        <div class="bg-white shadow-md rounded-lg p-6 text-center">
-          <h3 class="text-lg font-bold text-gray-700">
-            Entrenadores Disponibles
-          </h3>
-          <p class="text-3xl font-semibold text-blue-600">8</p>
+
+        <div class="bg-white rounded-xl shadow-lg border-l-4 border-cyan-500 p-6 hover:shadow-xl transition-shadow">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                <i class="ph-barbell text-cyan-600 text-2xl"></i>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Rutinas</p>
+              <p class="text-3xl font-bold text-gray-900">{{ (stats$ | async)?.totalRoutines || 0 }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg border-l-4 border-green-500 p-6 hover:shadow-xl transition-shadow">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <i class="ph-check-circle text-green-600 text-2xl"></i>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Con Planes</p>
+              <p class="text-3xl font-bold text-gray-900">{{ (stats$ | async)?.clientsWithPlans || 0 }}</p>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+
+      <!-- Gráficas y análisis -->
+      <div *ngIf="!(isLoading$ | async)" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Gráfica de distribución de clientes -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Distribución de Clientes</h3>
+            <p class="text-gray-600">Análisis de clientes con y sin planes asignados</p>
+          </div>
+          <div class="relative h-64">
+            <canvas #clientsChart class="max-w-full max-h-full"></canvas>
+            <!-- Mensaje de fallback -->
+            <div *ngIf="(stats$ | async)?.totalClients === 0"
+              class="absolute inset-0 flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <i class="ph-chart-pie text-4xl mb-2 text-gray-300"></i>
+                <p>No hay datos de clientes disponibles</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfica comparativa -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Resumen General</h3>
+            <p class="text-gray-600">Comparativa de clientes, planes y rutinas</p>
+          </div>
+          <div class="relative h-64">
+            <canvas #plansChart class="max-w-full max-h-full"></canvas>
+            <!-- Mensaje de fallback -->
+            <div *ngIf="(stats$ | async)?.totalClients === 0 && (stats$ | async)?.totalPlans === 0"
+              class="absolute inset-0 flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <i class="ph-chart-bar text-4xl mb-2 text-gray-300"></i>
+                <p>No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de debugging (solo en desarrollo) -->
+      <div *ngIf="!(isLoading$ | async)" class="bg-gray-100 rounded-xl p-4 text-sm text-gray-600 mt-4">
+        <details>
+          <summary class="cursor-pointer font-medium mb-2">Información de debugging</summary>
+          <div class="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <strong>Estados:</strong>
+              <ul class="list-disc list-inside">
+                <li>Total Clientes: {{ (stats$ | async)?.totalClients || 'N/A' }}</li>
+                <li>Total Planes: {{ (stats$ | async)?.totalPlans || 'N/A' }}</li>
+                <li>Total Rutinas: {{ (stats$ | async)?.totalRoutines || 'N/A' }}</li>
+              </ul>
+            </div>
+            <div>
+              <strong>Distribución:</strong>
+              <ul class="list-disc list-inside">
+                <li>Con Planes: {{ (stats$ | async)?.clientsWithPlans || 'N/A' }}</li>
+                <li>Sin Planes: {{ (stats$ | async)?.clientsWithoutPlans || 'N/A' }}</li>
+                <li>Cargando: {{ (isLoading$ | async) ? 'Sí' : 'No' }}</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Accesos rápidos modernos -->
+      <div *ngIf="!(isLoading$ | async)" class="bg-white rounded-xl shadow-lg p-8">
+        <h3 class="text-2xl font-semibold text-gray-900 text-center mb-8">Accesos Rápidos</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a routerLink="clientes"
+            class="group bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6 text-center hover:from-blue-100 hover:to-blue-200 transition-all duration-300 hover:shadow-lg">
+            <div
+              class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class="ph-users text-white text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Gestión de Clientes</h4>
+            <p class="text-gray-600 text-sm">Administra y monitorea todos tus clientes</p>
+          </a>
+
+          <a routerLink="horarios"
+            class="group bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-6 text-center hover:from-purple-100 hover:to-purple-200 transition-all duration-300 hover:shadow-lg">
+            <div
+              class="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class="ph-calendar text-white text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Gestión de Horarios</h4>
+            <p class="text-gray-600 text-sm">Programa y organiza las clases</p>
+          </a>
+
+          <a routerLink="planes"
+            class="group bg-gradient-to-br from-cyan-50 to-cyan-100 border border-cyan-200 rounded-xl p-6 text-center hover:from-cyan-100 hover:to-cyan-200 transition-all duration-300 hover:shadow-lg">
+            <div
+              class="w-16 h-16 bg-cyan-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class="ph-clipboard-text text-white text-2xl"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Gestión de Planes</h4>
+            <p class="text-gray-600 text-sm">Crea y gestiona planes de entrenamiento</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Métricas adicionales -->
+      <div *ngIf="!(isLoading$ | async)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-r from-green-400 to-green-600 rounded-xl shadow-lg p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-lg font-semibold mb-2">Tasa de Asignación</h4>
+              <p class="text-3xl font-bold">
+                {{ ((stats$ | async)?.totalClients && (stats$ | async)?.clientsWithPlans) ?
+                (((stats$ | async)!.clientsWithPlans / (stats$ | async)!.totalClients) * 100).toFixed(1) : 0 }}%
+              </p>
+              <p class="text-green-100 text-sm mt-1">Clientes con planes asignados</p>
+            </div>
+            <div class="text-4xl text-green-200">
+              <i class="ph-trend-up"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl shadow-lg p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-lg font-semibold mb-2">Promedio por Plan</h4>
+              <p class="text-3xl font-bold">
+                {{ ((stats$ | async)?.totalPlans && (stats$ | async)?.clientsWithPlans) ?
+                (((stats$ | async)!.clientsWithPlans / (stats$ | async)!.totalPlans)).toFixed(1) : 0 }}
+              </p>
+              <p class="text-amber-100 text-sm mt-1">Clientes por plan en promedio</p>
+            </div>
+            <div class="text-4xl text-amber-200">
+              <i class="ph-chart-bar"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <footer class="py-4 bg-gray-900 text-center text-white">
-    <p class="text-sm">
-      &copy; {{ getYear() }} | Powered by
-      <span class="font-semibold">G3ek Tech</span>
-    </p>
+  <!-- Footer elegante -->
+  <footer class="bg-gray-900 text-white py-6">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-sm text-gray-400">
+        &copy; {{ getYear() }} | Desarrollado con ❤️ por
+        <span class="font-semibold text-blue-400">G3ek Tech</span>
+      </p>
+    </div>
   </footer>
 </div>

@@ -1,7 +1,12 @@
-import { AuthResponse, UserPreferences } from '../interfaces/auth';
+import {
+  AuthResponse,
+  UserPreferences,
+  Organization,
+} from '../interfaces/auth';
 
 export class AuthStateModel {
   loading?: boolean;
   auth?: AuthResponse | null;
   preferences?: UserPreferences | null;
+  organization?: Organization | null;
 }

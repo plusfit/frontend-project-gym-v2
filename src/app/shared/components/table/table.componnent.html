@@ -1,179 +1,121 @@
-<div
-  class="w-full overflow-hidden rounded-xl shadow-md"
-  [ngClass]="{ 'ring-1 ring-blue-200': headerCssClass !== 'header-primary' }"
->
+<div class="w-full bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden backdrop-blur-sm">
   <!-- Contenedor scrollable -->
-  <div class="max-h-[30rem] overflow-auto">
-    <table
-      class="w-full"
-      cdk-table
-      aria-describedby="table"
-      [dataSource]="data || []"
-    >
+  <div class="max-h-[32rem] overflow-auto">
+    <table class="w-full" cdk-table aria-describedby="table" [dataSource]="data || []">
       <ng-container cdkColumnDef="select">
-        <th
-          cdk-header-cell
-          *cdkHeaderCellDef
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2"
-        >
-          <mat-checkbox
-            type="checkbox"
-            [checked]="isAllSelected()"
-            (change)="toggleSelectAll()"
-            class="accent-white"
-          ></mat-checkbox>
+        <th cdk-header-cell *cdkHeaderCellDef
+          class="bg-gradient-to-r from-slate-100 to-gray-100 text-gray-800 px-4 py-4 font-semibold text-xs tracking-wide uppercase sticky top-0 z-10 border-b-2 border-gray-300 shadow-sm">
+          <mat-checkbox type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()"
+            class="accent-primary-500 scale-110 hover:scale-125 transition-transform"></mat-checkbox>
         </th>
-        <td
-          cdk-cell
-          *cdkCellDef="let element"
-          class="p-2 border-b border-gray-100 bg-white"
-        >
-          <mat-checkbox
-            type="checkbox"
-            [checked]="isSelected(element)"
-            (change)="toggleSelection(element)"
-            class="accent-blue-500"
-          ></mat-checkbox>
+        <td cdk-cell *cdkCellDef="let element"
+          class="px-4 py-3 border-b border-gray-100 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-sm">
+          <mat-checkbox type="checkbox" [checked]="isSelected(element)" (change)="toggleSelection(element)"
+            class="accent-primary-500 scale-110 hover:scale-125 transition-transform"></mat-checkbox>
         </td>
       </ng-container>
 
-      <ng-container
-        *ngFor="let column of displayedColumns"
-        [cdkColumnDef]="column"
-      >
-        <th
-          cdk-header-cell
-          *cdkHeaderCellDef
-          [ngClass]="headerCssClass"
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4"
-        >
+      <ng-container *ngFor="let column of displayedColumns" [cdkColumnDef]="column">
+        <th cdk-header-cell *cdkHeaderCellDef [ngClass]="headerCssClass"
+          class="bg-gradient-to-r from-slate-100 to-gray-100 text-gray-800 font-semibold text-xs tracking-wide uppercase px-4 py-4 text-left sticky top-0 z-10 border-b-2 border-gray-300 shadow-sm">
           {{ column | translation | camelToTitle }}
         </th>
-        <td
-          cdk-cell
-          *cdkCellDef="let element"
-          class="pl-4 p-1 border-b border-gray-100 hover:bg-blue-50 transition-colors"
-        >
+        <td cdk-cell *cdkCellDef="let element"
+          class="px-4 py-3 border-b border-gray-100 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-sm group">
           @if (column.includes(".")) {
-           <span
-    class="{{ column === 'userInfo.name' ? 'font-bold text-gray-800 text-base' : 'text-gray-700' }}">
-    {{ resolveNestedProperty(element, column) }}
-  </span>
+          <span
+            class="{{ column === 'userInfo.name' ? 'font-semibold text-gray-900 text-sm' : 'text-gray-700 text-sm' }}">
+            {{ resolveNestedProperty(element, column) }}
+          </span>
           } @if (column === "type") {
-          <app-badge
-            [colorBadge]="
+          <app-badge [colorBadge]="
                 element[column] === 'room'
                   ? EColorBadge.SUCCESS
                   : EColorBadge.ERROR
-              "
-            [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
-            class="transform hover:scale-105 transition-transform"
-          ></app-badge>
+              " [textBadge]="element[column] === 'room' ? 'Sala' : 'Cardio'"
+            class="transform hover:scale-105 transition-all duration-200 hover:shadow-md"></app-badge>
           } @if (column === "category") {
-          <app-badge
-            [colorBadge]="getColorBadge(element[column])"
-            [textBadge]="getTextBadge(element[column])"
-            class="transform hover:scale-105 transition-transform"
-          ></app-badge>
+          <app-badge [colorBadge]="getColorBadge(element[column])" [textBadge]="getTextBadge(element[column])"
+            class="transform hover:scale-105 transition-all duration-200 hover:shadow-md"></app-badge>
           } @if (column === "name") {
-          <span class="font-bold text-gray-800 text-base"
-            >{{ element[column] }}</span
-          >
+          <span
+            class="font-semibold text-gray-900 text-sm group-hover:text-primary-600 transition-colors duration-200">{{
+            element[column] }}</span>
           } @if (column === "isCustom") {
-          <app-badge
-            [colorBadge]="
+          <app-badge [colorBadge]="
                 element[column] ? EColorBadge.SUCCESS : EColorBadge.WARNING
-              "
-            [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
-            class="transform hover:scale-105 transition-transform"
-          ></app-badge>
+              " [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
+            class="transform hover:scale-105 transition-all duration-200 hover:shadow-md"></app-badge>
+          } @if (column === "isActive") {
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            [ngClass]="element[column] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+            <span class="w-2 h-2 rounded-full mr-1.5"
+              [ngClass]="element[column] ? 'bg-green-400' : 'bg-red-400'"></span>
+            {{ element[column] ? 'Activa' : 'Inactiva' }}
+          </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
           !== "isCustom" && column !== "category" ) {
-          <span class="text-gray-700">{{ element[column] }}</span>
+          <span class="text-gray-700 text-sm">{{ element[column] }}</span>
           }
-          <ng-container
-            *ngIf="column === 'createdAt' || column === 'updatedAt'"
-          >
-            <span class="text-gray-500 text-sm"
-              >{{ element[column] | date: "d MMM y, h:mm a" }}</span
-            >
+          <ng-container *ngIf="column === 'createdAt' || column === 'updatedAt'">
+            <span
+              class="text-gray-500 text-xs font-medium bg-gradient-to-r from-gray-100 to-slate-100 px-3 py-1 rounded-full shadow-sm">{{
+              element[column] | date: "d MMM y, h:mm a" }}</span>
           </ng-container>
 
           <ng-container *ngIf="column === 'acciones'">
-            <button
-              title="actions"
-              type="button"
-              [matMenuTriggerFor]="actionsMenu"
-              class="text-gray-600 hover:text-blue-600 transition-colors rounded-full p-2 hover:bg-blue-50"
-            >
-              <i class="ph-dots-three-vertical-fill text-2xl"></i>
+            <button title="actions" type="button" [matMenuTriggerFor]="actionsMenu"
+              class="text-gray-500 hover:text-primary-600 transition-all duration-200 rounded-lg p-2 hover:bg-gradient-to-r hover:from-primary-100 hover:to-blue-50 hover:shadow-lg transform hover:scale-110 group">
+              <i
+                class="ph-dots-three-vertical-fill text-lg group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
-            <mat-menu #actionsMenu="matMenu" class="bg-gray-800">
+            <mat-menu #actionsMenu="matMenu" class="rounded-xl shadow-2xl border border-gray-100 backdrop-blur-sm">
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
-                <button
-                  (click)="emitSeeDetail(element._id)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i class="ph-eye text-cyan-600 text-button-lg"></i>
-                    <span
-                      class="text-gray-700 group-hover:text-cyan-600 transition-colors"
-                      >Ver Detalle</span
-                    >
+                <button (click)="emitSeeDetail(element._id)" type="button"
+                  class="group w-full text-left hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50"
+                  mat-menu-item>
+                  <div class="flex items-center space-x-3 py-2">
+                    <div class="bg-cyan-100 rounded-lg p-1 group-hover:bg-cyan-200 transition-colors">
+                      <i class="ph-eye text-cyan-700 text-base"></i>
+                    </div>
+                    <span class="text-gray-700 group-hover:text-cyan-700 transition-colors font-medium">Ver
+                      Detalle</span>
                   </div>
                 </button>
                 }
-                <button
-                  (click)="emitEdit(element._id)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i
-                      class="ph-pencil-simple text-blue-600 text-button-lg"
-                    ></i>
-                    <span
-                      class="text-gray-700 group-hover:text-blue-600 transition-colors"
-                      >Editar</span
-                    >
+                <button (click)="emitEdit(element._id)" type="button"
+                  class="group w-full text-left hover:bg-gradient-to-r hover:from-primary-100 hover:to-blue-50"
+                  mat-menu-item>
+                  <div class="flex items-center space-x-3 py-2">
+                    <div class="bg-primary-100 rounded-lg p-1 group-hover:bg-primary-200 transition-colors">
+                      <i class="ph-pencil-simple text-primary-700 text-base"></i>
+                    </div>
+                    <span class="text-gray-700 group-hover:text-primary-700 transition-colors font-medium">Editar</span>
                   </div>
                 </button>
                 @if (showDelete) {
-                <button
-                  (click)="emitDelete(element)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i
-                      class="ph-x-circle-fill text-button-lg text-red-500 group-hover:text-red-600"
-                    ></i>
-                    <span class="text-red-500 group-hover:text-red-600"
-                      >Borrar</span
-                    >
+                <button (click)="emitDelete(element)" type="button"
+                  class="group w-full text-left hover:bg-gradient-to-r hover:from-red-50 hover:to-rose-50"
+                  mat-menu-item>
+                  <div class="flex items-center space-x-3 py-2">
+                    <div class="bg-red-100 rounded-lg p-1 group-hover:bg-red-200 transition-colors">
+                      <i class="ph-trash text-red-700 text-base"></i>
+                    </div>
+                    <span class="text-gray-700 group-hover:text-red-700 transition-colors font-medium">Borrar</span>
                   </div>
                 </button>
                 } @if (showDisabled) {
-                <button
-                  (click)="emitDisabled(element._id, element.disabled)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i
-                      class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
-                    ></i>
-                    <span class="text-error-100 group-hover:text-error-200"
-                      >{{ element.disabled ? "Habilitar" : "Deshabilitar"
-                      }}</span
-                    >
+                <button (click)="emitDisabled(element._id, element.disabled)" type="button"
+                  class="group w-full text-left hover:bg-gradient-to-r hover:from-orange-50 hover:to-yellow-50"
+                  mat-menu-item>
+                  <div class="flex items-center space-x-3 py-2">
+                    <div class="bg-orange-100 rounded-lg p-1 group-hover:bg-orange-200 transition-colors">
+                      <i class="ph-prohibit text-orange-700 text-base"></i>
+                    </div>
+                    <span class="text-gray-700 group-hover:text-orange-700 transition-colors font-medium">{{
+                      element.disabled ? "Habilitar" : "Deshabilitar" }}</span>
                   </div>
                 </button>
                 }
@@ -183,38 +125,42 @@
         </td>
       </ng-container>
 
-      <tr
-        cdk-header-row
-        *cdkHeaderRowDef="tableColumns"
-        class="border-b border-gray-200"
-      ></tr>
-      <tr
-        cdk-row
-        *cdkRowDef="let row; columns: tableColumns"
-        class="hover:bg-gray-50 hover:bg-opacity-70 transition-colors"
-      ></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="tableColumns" class="border-b-2 border-gray-300"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: tableColumns"
+        class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-sm transition-all duration-300 border-b border-gray-100 last:border-b-0 hover:scale-[1.01] hover:z-10">
+      </tr>
       <tr class="mat-row" *matNoDataRow>
-        <td
-          class="mat-cell h-[30vh] bg-gray-50"
-          [attr.colspan]="displayedColumns.length + 1"
-        >
+        <td class="mat-cell h-[30vh] bg-gradient-to-b from-gray-50 to-white"
+          [attr.colspan]="displayedColumns.length + 1">
           <ng-container *ngIf="loading">
-            <app-loader [text]="'Cargando...'"></app-loader>
+            <div class="flex justify-center items-center h-full">
+              <app-loader [text]="'Cargando datos...'"></app-loader>
+            </div>
           </ng-container>
           <ng-container *ngIf="!loading && total === 0 && filteredData">
-            <div
-              class="flex flex-col text-center justify-center items-center space-y-4 text-gray-600 p-10"
-            >
-              <i class="ph-magnifying-glass text-6xl text-gray-400 mb-2"></i>
-              <span>No se encontraron resultados.</span>
+            <div class="flex flex-col text-center justify-center items-center space-y-6 text-gray-600 p-12">
+              <div class="bg-gradient-to-r from-gray-100 to-slate-100 rounded-full p-8 shadow-lg">
+                <i class="ph-magnifying-glass text-6xl text-gray-400"></i>
+              </div>
+              <div class="space-y-2">
+                <h3
+                  class="text-lg font-semibold text-gray-700 bg-gradient-to-r from-gray-700 to-slate-600 bg-clip-text text-transparent">
+                  No se encontraron resultados</h3>
+                <p class="text-gray-500">Intenta ajustar los filtros de búsqueda</p>
+              </div>
             </div>
           </ng-container>
           <ng-container *ngIf="!loading && total === 0 && !filteredData">
-            <div
-              class="flex flex-col text-center justify-center items-center space-y-4 text-gray-600 p-10"
-            >
-              <i class="ph-clipboard-text text-6xl text-gray-400 mb-2"></i>
-              <span>No hay elementos para mostrar 💪 ¡Añade uno nuevo!</span>
+            <div class="flex flex-col text-center justify-center items-center space-y-6 text-gray-600 p-12">
+              <div class="bg-gradient-to-r from-primary-100 to-blue-100 rounded-full p-8 shadow-lg">
+                <i class="ph-clipboard-text text-6xl text-primary-500"></i>
+              </div>
+              <div class="space-y-2">
+                <h3
+                  class="text-lg font-semibold text-gray-700 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                  ¡Comienza agregando datos!</h3>
+                <p class="text-gray-500">No hay elementos para mostrar 💪 ¡Añade uno nuevo!</p>
+              </div>
             </div>
           </ng-container>
         </td>

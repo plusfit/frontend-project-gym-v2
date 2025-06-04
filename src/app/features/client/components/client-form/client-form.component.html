@@ -1,37 +1,18 @@
-<form
-  [formGroup]="clientForm"
-  (ngSubmit)="registerClient()"
-  class="p-8 bg-white rounded-xl shadow-xl w-full max-w-5xl mx-auto"
->
+<form [formGroup]="clientForm" (ngSubmit)="registerClient()"
+  class="p-8 bg-white rounded-xl shadow-xl w-full max-w-5xl mx-auto">
   <!-- USER INFORMATION SECTION -->
   <div class="mb-8">
     <span
-      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block"
-    >
+      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block">
       Información de Usuario
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
-      <app-input
-        [control]="identifierControl"
-        label="Email"
-        type="text"
-        errorKey="email"
-        placeholder="Email"
-        appearance="outline"
-        class="w-full"
-      ></app-input>
+      <app-input [control]="identifierControl" label="Email" type="text" errorKey="email" placeholder="Email"
+        appearance="outline" class="w-full"></app-input>
 
       <div class="flex flex-col w-full">
-        <app-input
-          [control]="passwordControl"
-          label="Contraseña"
-          type="password"
-          errorKey="password"
-          placeholder="Contraseña"
-          appearance="outline"
-          class="w-full"
-          [isPasswordField]="true"
-        ></app-input>
+        <app-input [control]="passwordControl" label="Contraseña" type="password" errorKey="password"
+          placeholder="Contraseña" appearance="outline" class="w-full" [isPasswordField]="true"></app-input>
         <span class="text-xs mt-1 px-1 text-gray-500">
           La contraseña debe tener al menos 8 caracteres, una letra mayúscula,
           una letra minúscula, un número y un caracter especial.
@@ -43,65 +24,28 @@
   <!-- PERSONAL INFORMATION SECTION -->
   <div class="mb-8">
     <span
-      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block"
-    >
+      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block">
       Datos Personales
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
-      <app-input
-        [control]="nameControl"
-        label="Nombre Completo"
-        type="text"
-        errorKey="name"
-        placeholder="Nombre Completo"
-        appearance="outline"
-        class="w-full"
-      ></app-input>
+      <app-input [control]="nameControl" label="Nombre Completo" type="text" errorKey="name"
+        placeholder="Nombre Completo" appearance="outline" class="w-full"></app-input>
 
-      <app-input
-        [control]="addressControl"
-        label="Dirección"
-        type="text"
-        errorKey="address"
-        placeholder="Dirección"
-        appearance="outline"
-        class="w-full"
-      ></app-input>
+      <app-input [control]="addressControl" label="Dirección" type="text" errorKey="address" placeholder="Dirección"
+        appearance="outline" class="w-full"></app-input>
 
-      <app-input
-        [control]="phoneControl"
-        label="Teléfono"
-        type="text"
-        errorKey="phone"
-        placeholder="Teléfono"
-        appearance="outline"
-        class="w-full"
-      ></app-input>
+      <app-input [control]="phoneControl" label="Teléfono" type="text" errorKey="phone" placeholder="Teléfono"
+        appearance="outline" class="w-full"></app-input>
 
-      <app-input
-        [control]="medicalSocietyControl"
-        label="Sociedad Médica"
-        type="text"
-        errorKey="medicalSociety"
-        placeholder="Sociedad Médica"
-        appearance="outline"
-        class="w-full"
-      ></app-input>
+      <app-input [control]="medicalSocietyControl" label="Sociedad Médica" type="text" errorKey="medicalSociety"
+        placeholder="Sociedad Médica" appearance="outline" class="w-full"></app-input>
 
       <div>
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Fecha de Nacimiento</mat-label>
-          <input
-            matInput
-            formControlName="dateBirthday"
-            [matDatepicker]="picker"
-            class="w-full"
-          />
+          <input matInput formControlName="dateBirthday" [matDatepicker]="picker" class="w-full" />
           <mat-hint>DD/MM/YYYY</mat-hint>
-          <mat-datepicker-toggle
-            matIconSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
@@ -111,7 +55,7 @@
           <mat-label>Sexo</mat-label>
           <mat-select formControlName="sex">
             @for (sex of sexs; track sexs) {
-              <mat-option [value]="sex.value">{{ sex.viewValue }}</mat-option>
+            <mat-option [value]="sex.value">{{ sex.viewValue }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -122,8 +66,7 @@
   <!-- HEALTH INFORMATION SECTION -->
   <div class="mb-8">
     <span
-      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block"
-    >
+      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block">
       Información de Salud
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
@@ -132,8 +75,8 @@
           <mat-label>Presión Arterial</mat-label>
           <mat-select formControlName="bloodPressure">
             @for (blood of bloodPressures; track bloodPressures) {
-              <mat-option [value]="blood.value">{{
-                blood.viewValue
+            <mat-option [value]="blood.value">{{
+              blood.viewValue
               }}</mat-option>
             }
           </mat-select>
@@ -145,11 +88,11 @@
           <mat-label>Nivel de Ejercicio Físico</mat-label>
           <mat-select formControlName="frequencyOfPhysicalExercise">
             @for (
-              frecuencyExercise of frequencyOfPhysicalExercise;
-              track frequencyOfPhysicalExercise
+            frecuencyExercise of frequencyOfPhysicalExercise;
+            track frequencyOfPhysicalExercise
             ) {
-              <mat-option [value]="frecuencyExercise.value">{{
-                frecuencyExercise.viewValue
+            <mat-option [value]="frecuencyExercise.value">{{
+              frecuencyExercise.viewValue
               }}</mat-option>
             }
           </mat-select>
@@ -161,33 +104,19 @@
   <!-- PLAN AND ID SECTION -->
   <div class="mb-8">
     <span
-      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block"
-    >
+      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block">
       Plan y Cédula de Identidad
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
       <div>
-        <app-autocomplete
-          [control]="planControl"
-          placeholder="Buscar Plan"
-          [action]="action"
-          [selector]="selector"
-          propertyToDisplay="name"
-          (itemSelected)="onPlanSelected($event)"
-          [initialValue]="selectedPlan"
-        ></app-autocomplete>
+        <app-autocomplete [control]="planControl" placeholder="Buscar Plan" [action]="action" [selector]="selector"
+          propertyToDisplay="name" (itemSelected)="onPlanSelected($event)"
+          [initialValue]="selectedPlan"></app-autocomplete>
       </div>
 
       <div>
-        <app-input
-          [control]="CIControl"
-          label="Cédula de Identidad"
-          type="number"
-          errorKey="CI"
-          placeholder="Cédula de Identidad"
-          appearance="outline"
-          class="w-full"
-        ></app-input>
+        <app-input [control]="CIControl" label="Cédula de Identidad" type="number" errorKey="CI"
+          placeholder="Cédula de Identidad" appearance="outline" class="w-full"></app-input>
       </div>
     </div>
   </div>
@@ -195,24 +124,16 @@
   <!-- MEDICAL HISTORY SECTION -->
   <div class="mb-8">
     <span
-      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block"
-    >
+      class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 pb-2 border-b border-gray-200 block">
       Antecedentes
     </span>
     <div class="mt-5">
       <div class="bg-blue-50 rounded-lg p-5 border border-blue-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div
-            class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow"
-          >
-            <mat-radio-group
-              formControlName="respiratoryHistory"
-              aria-label="Respiratorios"
-              class="flex flex-col gap-2 w-full"
-            >
-              <span
-                class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100"
-              >
+          <div class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow">
+            <mat-radio-group formControlName="respiratoryHistory" aria-label="Respiratorios"
+              class="flex flex-col gap-2 w-full">
+              <span class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100">
                 Respiratorios
               </span>
               <div class="flex gap-4 justify-center mt-3">
@@ -222,17 +143,9 @@
             </mat-radio-group>
           </div>
 
-          <div
-            class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow"
-          >
-            <mat-radio-group
-              formControlName="cardiacHistory"
-              aria-label="Cardiacos"
-              class="flex flex-col gap-2 w-full"
-            >
-              <span
-                class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100"
-              >
+          <div class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow">
+            <mat-radio-group formControlName="cardiacHistory" aria-label="Cardiacos" class="flex flex-col gap-2 w-full">
+              <span class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100">
                 Cardiacos
               </span>
               <div class="flex gap-4 justify-center mt-3">
@@ -242,17 +155,10 @@
             </mat-radio-group>
           </div>
 
-          <div
-            class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow"
-          >
-            <mat-radio-group
-              formControlName="surgicalHistory"
-              aria-label="Quirúrgicos"
-              class="flex flex-col gap-2 w-full"
-            >
-              <span
-                class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100"
-              >
+          <div class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow">
+            <mat-radio-group formControlName="surgicalHistory" aria-label="Quirúrgicos"
+              class="flex flex-col gap-2 w-full">
+              <span class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100">
                 Quirúrgicos
               </span>
               <div class="flex gap-4 justify-center mt-3">
@@ -262,17 +168,10 @@
             </mat-radio-group>
           </div>
 
-          <div
-            class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow"
-          >
-            <mat-radio-group
-              formControlName="historyofPathologicalLesions"
-              aria-label="Lesiones Patológicas"
-              class="flex flex-col gap-2 w-full"
-            >
-              <span
-                class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100"
-              >
+          <div class="bg-white shadow-sm p-4 rounded-lg hover:shadow-md transition-shadow">
+            <mat-radio-group formControlName="historyofPathologicalLesions" aria-label="Lesiones Patológicas"
+              class="flex flex-col gap-2 w-full">
+              <span class="font-semibold text-center text-gray-800 block pb-2 border-b border-gray-100">
                 Lesiones Patológicas
               </span>
               <div class="flex gap-4 justify-center mt-3">
@@ -288,21 +187,13 @@
 
   <!-- BUTTONS SECTION -->
   <div class="flex justify-center space-x-6 mt-8">
-    <button
-      class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-8 rounded-lg transition-colors"
-      (click)="cancel()"
-    >
+    <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-8 rounded-lg transition-colors"
+      (click)="cancel()">
       Cancelar
     </button>
-    <button
-      appBtn
-      [disabled]="clientForm.invalid || (loadingClient$ | async)"
-      [animate]="true"
-      [loader]="(loadingClient$ | async)!"
-      type="submit"
-      color="primary"
-      class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transform hover:scale-105 transition-all"
-    >
+    <button appBtn [disabled]="clientForm.invalid || (loadingClient$ | async)" [animate]="true"
+      [loader]="(loadingClient$ | async)!" type="submit" color="primary"
+      class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transform hover:scale-105 transition-all">
       Enviar
     </button>
   </div>

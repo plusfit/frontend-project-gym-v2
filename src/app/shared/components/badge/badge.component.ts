@@ -73,13 +73,13 @@ export class BadgeComponent implements OnChanges {
    * @param {SimpleChanges} changes - The changes object.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['colorBadge']) {
+    if ('colorBadge' in changes) {
       this.setColorBadge(changes['colorBadge'].currentValue);
     }
-    if (changes['shapeBadge']) {
+    if ('shapeBadge' in changes) {
       this.getShapeBadge(changes['shapeBadge'].currentValue);
     }
-    if (changes['icon']) {
+    if ('icon' in changes) {
       this.getIcon(changes['icon'].currentValue);
     }
     this.badgeClass = this.badgeClass + this.shapeClasses;
@@ -90,7 +90,7 @@ export class BadgeComponent implements OnChanges {
    * @param {string} shape - The shape input value.
    */
   getShapeBadge(shape: string): void {
-    if (shape == Eshape.SQUARE) {
+    if (shape === Eshape.SQUARE) {
       this.shapeClasses = ' rounded-sm';
     }
   }
@@ -118,20 +118,42 @@ export class BadgeComponent implements OnChanges {
    * @param {string} color - The color input value.
    */
   setColorBadge(color = ''): void {
-    const badgeClassAux: IBadgeClass = {
+    const badgeClassAux = {
       primary:
-        'inline-flex items-center py-1 px-2 body-xs font-semibold bg-primary-100 text-primary-500',
+        'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-primary-100 to-blue-100 text-primary-700 border border-primary-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
       success:
-        'inline-flex items-center py-1 px-2 body-xs font-semibold bg-success-50 text-success-200',
+        'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
       warning:
-        'inline-flex items-center py-1 px-2 body-xs font-semibold bg-warning-50 text-warning-200',
+        'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border border-yellow-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
       error:
-        'inline-flex items-center py-1 px-2 body-xs font-semibold bg-error-50 text-error-200',
-      info: 'inline-flex items-center py-1 px-2 body-xs font-semibold bg-info-50 text-info-200',
+        'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
+      info: 'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-100 to-sky-100 text-blue-800 border border-blue-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
       neutral:
-        'inline-flex items-center py-1 px-2 font-semibold body-xs bg-neutral-300 text-neutral-1000',
+        'inline-flex items-center py-2 px-3 text-xs font-semibold rounded-lg bg-gradient-to-r from-gray-100 to-slate-100 text-gray-700 border border-gray-200 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200',
     };
 
-    this.badgeClass = badgeClassAux[color as keyof IBadgeClass];
+    switch (color) {
+      case 'primary':
+        this.badgeClass = badgeClassAux.primary;
+        break;
+      case 'success':
+        this.badgeClass = badgeClassAux.success;
+        break;
+      case 'warning':
+        this.badgeClass = badgeClassAux.warning;
+        break;
+      case 'error':
+        this.badgeClass = badgeClassAux.error;
+        break;
+      case 'info':
+        this.badgeClass = badgeClassAux.info;
+        break;
+      case 'neutral':
+        this.badgeClass = badgeClassAux.neutral;
+        break;
+      default:
+        this.badgeClass = badgeClassAux.primary;
+        break;
+    }
   }
 }
