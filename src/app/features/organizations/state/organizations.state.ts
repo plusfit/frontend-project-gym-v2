@@ -178,8 +178,9 @@ export class OrganizationsState {
         );
 
         // Handle response that might be wrapped in a data property
-        const organization = (response as any)?.data || response;
+        const organization = (response as any)?.data?.organization || response.organization || response;
         console.log('🔍 DEBUG - Extracted organization:', organization);
+        console.log('🔍 DEBUG - Admin user created:', (response as any)?.data?.admin || response.admin);
 
         const state = ctx.getState();
         ctx.patchState({

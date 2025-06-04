@@ -11,11 +11,18 @@ export interface Organization {
   updatedAt: string;
 }
 
+export interface AdminUserDto {
+  email: string;
+  name: string;
+  phone?: string;
+}
+
 export interface CreateOrganizationDto {
   name: string;
   slug: string;
   description?: string;
   permissions?: Permission[];
+  adminUser: AdminUserDto;
 }
 
 export interface UpdateOrganizationDto {
@@ -35,4 +42,14 @@ export interface OrganizationResponse {
   total: number;
   page: number;
   pageSize: number;
+}
+
+export interface CreateOrganizationResponse {
+  organization: Organization;
+  admin: {
+    _id: string;
+    email: string;
+    role: string;
+    organizationId: string;
+  };
 }

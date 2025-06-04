@@ -47,6 +47,11 @@ export class OrganizationFormComponent implements OnInit {
       ],
       description: [this.organization?.description || ''],
       isActive: [this.organization?.isActive ?? true],
+      adminUser: this.isEditing ? null : this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        name: ['', [Validators.required, Validators.minLength(2)]],
+        phone: ['']
+      })
     });
 
     if (this.isEditing && this.organization) {
@@ -76,6 +81,7 @@ export class OrganizationFormComponent implements OnInit {
           name: formValue.name,
           slug: formValue.slug,
           description: formValue.description,
+          adminUser: formValue.adminUser,
         };
         this.formSubmit.emit(createData);
       }
@@ -128,5 +134,21 @@ export class OrganizationFormComponent implements OnInit {
 
   get isActiveControl() {
     return this.organizationForm.get('isActive');
+  }
+
+  get adminUserGroup() {
+    return this.organizationForm.get('adminUser') as FormGroup;
+  }
+
+  get adminEmailControl() {
+    return this.adminUserGroup?.get('email');
+  }
+
+  get adminNameControl() {
+    return this.adminUserGroup?.get('name');
+  }
+
+  get adminPhoneControl() {
+    return this.adminUserGroup?.get('phone');
   }
 }

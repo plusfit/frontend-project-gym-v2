@@ -7,6 +7,7 @@ import {
   CreateOrganizationDto,
   UpdateOrganizationDto,
   UpdateOrganizationPermissionsDto,
+  CreateOrganizationResponse,
 } from '../interfaces/organization.interface';
 import { Permission, Module } from '@core/enums/permissions.enum';
 import { Plan } from '@features/plans/interfaces/plan.interface';
@@ -36,8 +37,8 @@ export class OrganizationsService {
     return this.http.get<Organization>(`${this.apiUrl}/slug/${slug}`);
   }
 
-  create(organization: CreateOrganizationDto): Observable<Organization> {
-    return this.http.post<Organization>(this.apiUrl, organization);
+  create(organization: CreateOrganizationDto): Observable<CreateOrganizationResponse> {
+    return this.http.post<CreateOrganizationResponse>(this.apiUrl, organization);
   }
 
   update(
