@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -47,9 +47,8 @@ interface Client {
     TableComponent,
     FiltersBarComponent,
     AsyncPipe,
-    MatPaginator,
-    NgIf,
-  ],
+    MatPaginator
+],
   templateUrl: './add-client-list.component.html',
   styleUrl: './add-client-list.component.css',
 })

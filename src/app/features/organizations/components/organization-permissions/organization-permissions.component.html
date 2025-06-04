@@ -1,134 +1,140 @@
 <div class="max-w-4xl mx-auto">
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex justify-center items-center py-12">
-        <div class="text-center">
-            <mat-spinner diameter="40"></mat-spinner>
-            <p class="text-gray-600 mt-4">Cargando permisos...</p>
-        </div>
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="flex justify-center items-center py-12">
+      <div class="text-center">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="text-gray-600 mt-4">Cargando permisos...</p>
+      </div>
     </div>
+  }
 
-    <!-- Main Content -->
-    <div *ngIf="!loading">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
+  <!-- Main Content -->
+  @if (!loading) {
+    <div>
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Permisos de Organización</h2>
+          <p class="text-gray-600 mt-1">
+            Configura qué funcionalidades puede acceder esta organización
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button type="button" (click)="selectAllPermissions()"
+            class="px-4 py-2 text-sm font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors"
+            [disabled]="saving">
+            <i class="ph-check-square text-lg mr-2"></i>
+            Seleccionar Todo
+          </button>
+          <button type="button" (click)="deselectAllPermissions()"
+            class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            [disabled]="saving">
+            <i class="ph-square text-lg mr-2"></i>
+            Deseleccionar Todo
+          </button>
+        </div>
+      </div>
+      <!-- Permission Modules -->
+      <div class="space-y-6">
+        @for (module of permissionModules; track module) {
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+            <!-- Module Header -->
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="bg-primary-100 rounded-lg p-2">
+                    <i [class]="'ph-' + module.icon + ' text-primary-600 text-xl'"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900">{{ module.name }}</h3>
+                    <p class="text-sm text-gray-600">{{ module.description }}</p>
+                  </div>
+                </div>
+                <mat-checkbox [checked]="module.allSelected" [indeterminate]="module.indeterminate"
+                  (change)="onModuleToggle(module)" [disabled]="saving" color="primary">
+                  <span class="text-sm font-medium">
+                    {{ module.allSelected ? 'Todos seleccionados' : 'Seleccionar todos' }}
+                  </span>
+                </mat-checkbox>
+              </div>
+            </div>
+            <!-- Module Permissions -->
+            <div class="px-6 py-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (permission of module.permissions; track permission) {
+                  <div
+                    class="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center space-x-3">
+                      <div class="flex-shrink-0">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium"
+                          [class.bg-green-100]="permission.selected"
+                          [class.text-green-600]="permission.selected"
+                          [class.bg-gray-100]="!permission.selected"
+                          [class.text-gray-400]="!permission.selected">
+                          <i [class]="permission.selected ? 'ph-check' : 'ph-minus'"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">{{ permission.name }}</p>
+                        <p class="text-xs text-gray-500">{{ permission.description }}</p>
+                      </div>
+                    </div>
+                    <mat-checkbox [(ngModel)]="permission.selected" (change)="onPermissionToggle()"
+                    [disabled]="saving" color="primary"></mat-checkbox>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Demo Warning -->
+      @if (organization?._id === 'demo-org-id') {
+        <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div class="flex items-start">
+            <i class="ph-info text-blue-600 text-lg mr-2 mt-0.5"></i>
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Permisos de Organización</h2>
-                <p class="text-gray-600 mt-1">
-                    Configura qué funcionalidades puede acceder esta organización
-                </p>
+              <h4 class="text-sm font-medium text-blue-800">Modo Demostración</h4>
+              <p class="text-sm text-blue-700 mt-1">
+                Estás viendo una demostración. Los cambios no se guardarán en la base de datos.
+              </p>
             </div>
-
-            <div class="flex items-center space-x-3">
-                <button type="button" (click)="selectAllPermissions()"
-                    class="px-4 py-2 text-sm font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors"
-                    [disabled]="saving">
-                    <i class="ph-check-square text-lg mr-2"></i>
-                    Seleccionar Todo
-                </button>
-
-                <button type="button" (click)="deselectAllPermissions()"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                    [disabled]="saving">
-                    <i class="ph-square text-lg mr-2"></i>
-                    Deseleccionar Todo
-                </button>
-            </div>
+          </div>
         </div>
-
-        <!-- Permission Modules -->
-        <div class="space-y-6">
-            <div *ngFor="let module of permissionModules"
-                class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
-                <!-- Module Header -->
-                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="bg-primary-100 rounded-lg p-2">
-                                <i [class]="'ph-' + module.icon + ' text-primary-600 text-xl'"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">{{ module.name }}</h3>
-                                <p class="text-sm text-gray-600">{{ module.description }}</p>
-                            </div>
-                        </div>
-
-                        <mat-checkbox [checked]="module.allSelected" [indeterminate]="module.indeterminate"
-                            (change)="onModuleToggle(module)" [disabled]="saving" color="primary">
-                            <span class="text-sm font-medium">
-                                {{ module.allSelected ? 'Todos seleccionados' : 'Seleccionar todos' }}
-                            </span>
-                        </mat-checkbox>
-                    </div>
-                </div>
-
-                <!-- Module Permissions -->
-                <div class="px-6 py-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div *ngFor="let permission of module.permissions"
-                            class="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
-                            <div class="flex items-center space-x-3">
-                                <div class="flex-shrink-0">
-                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium"
-                                        [class.bg-green-100]="permission.selected"
-                                        [class.text-green-600]="permission.selected"
-                                        [class.bg-gray-100]="!permission.selected"
-                                        [class.text-gray-400]="!permission.selected">
-                                        <i [class]="permission.selected ? 'ph-check' : 'ph-minus'"></i>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">{{ permission.name }}</p>
-                                    <p class="text-xs text-gray-500">{{ permission.description }}</p>
-                                </div>
-                            </div>
-
-                            <mat-checkbox [(ngModel)]="permission.selected" (change)="onPermissionToggle()"
-                                [disabled]="saving" color="primary"></mat-checkbox>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      }
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 mt-8">
+        <button type="button" (click)="onReset()"
+          class="px-6 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          [disabled]="saving || !hasChanges">
+          <i class="ph-arrow-counter-clockwise text-lg mr-2"></i>
+          Restablecer
+        </button>
+        <button type="button" (click)="onSave()"
+          class="px-6 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          [disabled]="saving || !hasChanges">
+          @if (saving) {
+            <mat-spinner diameter="16" class="mr-2"></mat-spinner>
+          }
+          @if (!saving) {
+            <i class="ph-floppy-disk text-lg mr-2"></i>
+          }
+          {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+      </div>
+      <!-- Changes Indicator -->
+      @if (hasChanges) {
+        <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div class="flex items-center">
+            <i class="ph-warning text-amber-600 text-lg mr-2"></i>
+            <span class="text-sm text-amber-800">
+              Tienes cambios sin guardar. No olvides guardarlos antes de salir.
+            </span>
+          </div>
         </div>
-
-        <!-- Demo Warning -->
-        <div *ngIf="organization?._id === 'demo-org-id'" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div class="flex items-start">
-                <i class="ph-info text-blue-600 text-lg mr-2 mt-0.5"></i>
-                <div>
-                    <h4 class="text-sm font-medium text-blue-800">Modo Demostración</h4>
-                    <p class="text-sm text-blue-700 mt-1">
-                        Estás viendo una demostración. Los cambios no se guardarán en la base de datos.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 mt-8">
-            <button type="button" (click)="onReset()"
-                class="px-6 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                [disabled]="saving || !hasChanges">
-                <i class="ph-arrow-counter-clockwise text-lg mr-2"></i>
-                Restablecer
-            </button>
-
-            <button type="button" (click)="onSave()"
-                class="px-6 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                [disabled]="saving || !hasChanges">
-                <mat-spinner *ngIf="saving" diameter="16" class="mr-2"></mat-spinner>
-                <i *ngIf="!saving" class="ph-floppy-disk text-lg mr-2"></i>
-                {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
-            </button>
-        </div>
-
-        <!-- Changes Indicator -->
-        <div *ngIf="hasChanges" class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <div class="flex items-center">
-                <i class="ph-warning text-amber-600 text-lg mr-2"></i>
-                <span class="text-sm text-amber-800">
-                    Tienes cambios sin guardar. No olvides guardarlos antes de salir.
-                </span>
-            </div>
-        </div>
+      }
     </div>
+  }
 </div>

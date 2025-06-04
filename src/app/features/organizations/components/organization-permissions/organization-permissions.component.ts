@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,14 +41,13 @@ interface PermissionItem {
   selector: 'app-organization-permissions',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatCheckboxModule,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatProgressSpinnerModule,
-  ],
+    MatProgressSpinnerModule
+],
   templateUrl: './organization-permissions.component.html',
   styleUrl: './organization-permissions.component.css',
 })

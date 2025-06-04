@@ -8,13 +8,13 @@ import {
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
 import { whiteSpaceValidator } from '@core/validators/white-space.validator';
 
 @Component({
   selector: 'app-filter-bar',
   templateUrl: './filter-bar.component.html',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule],
   standalone: true,
 })
 export class FiltersBarComponent implements OnInit, OnDestroy {

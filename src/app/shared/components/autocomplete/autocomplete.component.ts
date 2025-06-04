@@ -39,21 +39,24 @@ import { CommonModule } from '@angular/common';
         [formControl]="control"
         [matAutocomplete]="auto"
         [placeholder]="placeholder"
-      />
+        />
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="onSelect($event.option.value)"
-      >
-        <mat-option
-          *ngFor="let item of filteredItems$ | async"
-          [value]="item[propertyToDisplay]"
         >
-          {{ item[propertyToDisplay] }}
-        </mat-option>
+        @for (item of filteredItems$ | async; track item) {
+          <mat-option
+            [value]="item[propertyToDisplay]"
+            >
+            {{ item[propertyToDisplay] }}
+          </mat-option>
+        }
       </mat-autocomplete>
-      <mat-error *ngIf="control.errors"> Este campo es obligatorio. </mat-error>
+      @if (control.errors) {
+        <mat-error> Este campo es obligatorio. </mat-error>
+      }
     </mat-form-field>
-  `,
+    `,
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy, OnChanges {
   @Input() control!: FormControl;

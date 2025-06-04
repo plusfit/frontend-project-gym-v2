@@ -1,159 +1,172 @@
-<div *ngIf="clients && clients.length > 0" class="space-y-4">
-
+@if (clients && clients.length > 0) {
+  <div class="space-y-4">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center">
-            <i class="ph-users text-green-600 text-2xl mr-3"></i>
-            <div>
-                <h3 class="text-xl font-bold text-gray-900">Clientes de la Organización</h3>
-                <p class="text-gray-600">{{ clients.length }} cliente{{ clients.length !== 1 ? 's' : '' }} registrado{{
-                    clients.length !== 1 ? 's' : '' }}</p>
-            </div>
+      <div class="flex items-center">
+        <i class="ph-users text-green-600 text-2xl mr-3"></i>
+        <div>
+          <h3 class="text-xl font-bold text-gray-900">Clientes de la Organización</h3>
+          <p class="text-gray-600">{{ clients.length }} cliente{{ clients.length !== 1 ? 's' : '' }} registrado{{
+          clients.length !== 1 ? 's' : '' }}</p>
         </div>
+      </div>
     </div>
-
     <!-- Clients Table -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gradient-to-r from-green-50 to-green-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Cliente
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Contacto
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Información Personal
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Información Médica
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Plan
-                        </th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-green-700 uppercase tracking-wider">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <tr *ngFor="let client of clients; trackBy: trackByClientId"
-                        class="hover:bg-gray-50 transition-colors duration-200">
-
-                        <!-- Nombre del cliente -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-full p-2 mr-3">
-                                    <i class="ph-user text-white text-lg"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
-                                    <div class="text-xs text-gray-500">{{ getSexLabel(client.sex) }}</div>
-                                    <div class="text-xs text-gray-500 font-mono">CI: {{ client.CI || 'No disponible' }}
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-
-                        <!-- Contacto -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="space-y-1">
-                                <div class="flex items-center text-sm">
-                                    <i class="ph-phone text-gray-400 mr-2"></i>
-                                    <span class="text-gray-900">{{ client.phone || 'Sin teléfono' }}</span>
-                                </div>
-                                <div class="flex items-center text-sm">
-                                    <i class="ph-map-pin text-gray-400 mr-2"></i>
-                                    <span class="text-gray-900 truncate max-w-xs"
-                                        [title]="client.address || 'Sin dirección'">
-                                        {{ client.address || 'Sin dirección' }}
-                                    </span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <!-- Información Personal -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div *ngIf="client.dateBirthday" class="flex items-center text-sm">
-                                <i class="ph-calendar text-gray-400 mr-2"></i>
-                                <div>
-                                    <div class="text-sm text-gray-900">{{ calculateAge(client.dateBirthday) }} años
-                                    </div>
-                                    <div class="text-xs text-gray-500">{{ formatDate(client.dateBirthday) }}</div>
-                                </div>
-                            </div>
-                            <div *ngIf="!client.dateBirthday" class="text-sm text-gray-500">
-                                Fecha no disponible
-                            </div>
-                        </td>
-
-                        <!-- Información Médica -->
-                        <td class="px-6 py-4">
-                            <div class="space-y-1">
-                                <div *ngIf="client.medicalSociety" class="text-xs">
-                                    <span class="text-gray-600">Obra Social:</span>
-                                    <span class="text-gray-900 ml-1">{{ client.medicalSociety }}</span>
-                                </div>
-                                <div *ngIf="client.bloodPressure" class="text-xs">
-                                    <span class="text-gray-600">Presión:</span>
-                                    <span class="text-gray-900 ml-1">{{ client.bloodPressure }}</span>
-                                </div>
-                                <div *ngIf="client.frequencyOfPhysicalExercise" class="text-xs">
-                                    <span class="text-gray-600">Frecuencia:</span>
-                                    <span class="text-gray-900 ml-1">{{ client.frequencyOfPhysicalExercise }}</span>
-                                </div>
-                                <div *ngIf="!client.medicalSociety && !client.bloodPressure && !client.frequencyOfPhysicalExercise"
-                                    class="text-xs text-gray-500">
-                                    Sin información médica
-                                </div>
-                            </div>
-                        </td>
-
-                        <!-- Plan -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div *ngIf="client.planId" class="flex items-center">
-                                <i class="ph-clipboard-text text-blue-500 mr-2"></i>
-                                <div>
-                                    <div class="text-sm text-gray-900">Plan asignado</div>
-                                    <div class="text-xs text-gray-500 font-mono">{{ client.planId }}</div>
-                                </div>
-                            </div>
-                            <div *ngIf="!client.planId" class="text-sm text-gray-500">
-                                Sin plan asignado
-                            </div>
-                        </td>
-
-                        <!-- Acciones -->
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex items-center justify-end space-x-2">
-                                <button class="text-green-600 hover:text-green-900 transition-colors">
-                                    <i class="ph-eye text-lg"></i>
-                                </button>
-                                <button class="text-blue-600 hover:text-blue-900 transition-colors">
-                                    <i class="ph-pencil text-lg"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gradient-to-r from-green-50 to-green-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                Cliente
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                Contacto
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                Información Personal
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                Información Médica
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">
+                Plan
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-green-700 uppercase tracking-wider">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (client of clients; track trackByClientId($index, client)) {
+              <tr
+                class="hover:bg-gray-50 transition-colors duration-200">
+                <!-- Nombre del cliente -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-full p-2 mr-3">
+                      <i class="ph-user text-white text-lg"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">{{ client.name }}</div>
+                      <div class="text-xs text-gray-500">{{ getSexLabel(client.sex) }}</div>
+                      <div class="text-xs text-gray-500 font-mono">CI: {{ client.CI || 'No disponible' }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <!-- Contacto -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="space-y-1">
+                    <div class="flex items-center text-sm">
+                      <i class="ph-phone text-gray-400 mr-2"></i>
+                      <span class="text-gray-900">{{ client.phone || 'Sin teléfono' }}</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                      <i class="ph-map-pin text-gray-400 mr-2"></i>
+                      <span class="text-gray-900 truncate max-w-xs"
+                        [title]="client.address || 'Sin dirección'">
+                        {{ client.address || 'Sin dirección' }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <!-- Información Personal -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  @if (client.dateBirthday) {
+                    <div class="flex items-center text-sm">
+                      <i class="ph-calendar text-gray-400 mr-2"></i>
+                      <div>
+                        <div class="text-sm text-gray-900">{{ calculateAge(client.dateBirthday) }} años
+                        </div>
+                        <div class="text-xs text-gray-500">{{ formatDate(client.dateBirthday) }}</div>
+                      </div>
+                    </div>
+                  }
+                  @if (!client.dateBirthday) {
+                    <div class="text-sm text-gray-500">
+                      Fecha no disponible
+                    </div>
+                  }
+                </td>
+                <!-- Información Médica -->
+                <td class="px-6 py-4">
+                  <div class="space-y-1">
+                    @if (client.medicalSociety) {
+                      <div class="text-xs">
+                        <span class="text-gray-600">Obra Social:</span>
+                        <span class="text-gray-900 ml-1">{{ client.medicalSociety }}</span>
+                      </div>
+                    }
+                    @if (client.bloodPressure) {
+                      <div class="text-xs">
+                        <span class="text-gray-600">Presión:</span>
+                        <span class="text-gray-900 ml-1">{{ client.bloodPressure }}</span>
+                      </div>
+                    }
+                    @if (client.frequencyOfPhysicalExercise) {
+                      <div class="text-xs">
+                        <span class="text-gray-600">Frecuencia:</span>
+                        <span class="text-gray-900 ml-1">{{ client.frequencyOfPhysicalExercise }}</span>
+                      </div>
+                    }
+                    @if (!client.medicalSociety && !client.bloodPressure && !client.frequencyOfPhysicalExercise) {
+                      <div
+                        class="text-xs text-gray-500">
+                        Sin información médica
+                      </div>
+                    }
+                  </div>
+                </td>
+                <!-- Plan -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  @if (client.planId) {
+                    <div class="flex items-center">
+                      <i class="ph-clipboard-text text-blue-500 mr-2"></i>
+                      <div>
+                        <div class="text-sm text-gray-900">Plan asignado</div>
+                        <div class="text-xs text-gray-500 font-mono">{{ client.planId }}</div>
+                      </div>
+                    </div>
+                  }
+                  @if (!client.planId) {
+                    <div class="text-sm text-gray-500">
+                      Sin plan asignado
+                    </div>
+                  }
+                </td>
+                <!-- Acciones -->
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-green-600 hover:text-green-900 transition-colors">
+                      <i class="ph-eye text-lg"></i>
+                    </button>
+                    <button class="text-blue-600 hover:text-blue-900 transition-colors">
+                      <i class="ph-pencil text-lg"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
-
-</div>
+  </div>
+}
 
 <!-- Empty State -->
-<div *ngIf="!clients || clients.length === 0" class="text-center py-12">
+@if (!clients || clients.length === 0) {
+  <div class="text-center py-12">
     <div class="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300">
-        <i class="ph-users text-gray-400 text-6xl mb-4"></i>
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">Sin clientes registrados</h3>
-        <p class="text-gray-600 mb-4">Esta organización no tiene clientes asignados.</p>
-        <button
-            class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-            <i class="ph-plus text-lg mr-2"></i>
-            Agregar primer cliente
-        </button>
+      <i class="ph-users text-gray-400 text-6xl mb-4"></i>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Sin clientes registrados</h3>
+      <p class="text-gray-600 mb-4">Esta organización no tiene clientes asignados.</p>
+      <button
+        class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+        <i class="ph-plus text-lg mr-2"></i>
+        Agregar primer cliente
+      </button>
     </div>
-</div>
+  </div>
+}

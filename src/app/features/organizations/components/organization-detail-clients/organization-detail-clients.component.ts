@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Client } from '@features/client/interface/clients.interface';
 
 @Component({
   selector: 'app-organization-detail-clients',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './organization-detail-clients.component.html',
   styleUrl: './organization-detail-clients.component.css',
 })

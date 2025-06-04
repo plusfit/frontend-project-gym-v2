@@ -5,7 +5,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import {
   Organization,
   CreateOrganizationDto,
@@ -15,7 +15,7 @@ import {
 @Component({
   selector: 'app-organization-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './organization-form.component.html',
   styleUrl: './organization-form.component.css',
 })

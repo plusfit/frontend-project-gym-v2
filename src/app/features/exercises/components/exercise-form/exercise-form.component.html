@@ -6,20 +6,20 @@
     type="button"
     class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition-colors rounded-full hover:bg-gray-100 p-1"
     (click)="cancel()"
-  >
+    >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-5 w-5"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-    >
+      >
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
         stroke-width="2"
         d="M6 18L18 6M6 6l12 12"
-      />
+        />
     </svg>
   </button>
 
@@ -67,13 +67,13 @@
           (dragover)="onDragOver($event)"
           (dragleave)="onDragLeave($event)"
           (drop)="onDrop($event)"
-        >
+          >
           <input
             #fileInput
             type="file"
             (change)="onFileSelected($event)"
             hidden
-          />
+            />
 
           @if (!filePreview) {
             <svg
@@ -84,7 +84,7 @@
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
-            >
+              >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -95,160 +95,160 @@
               Arrastra y suelta aquí o
               <span class="text-indigo-500 font-medium"
                 >haz clic para subir</span
+                >
+              </p>
+              <p class="text-xs text-gray-400 mt-1">
+                Solo archivos GIF, JPG, JPEG, PNG
+              </p>
+            }
+
+            @if (filePreview) {
+              <img
+                [src]="filePreview"
+                class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+                />
+              <button
+                type="button"
+                class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
+                (click)="removeFile($event)"
+                >
+                ✕
+              </button>
+            }
+          </div>
+
+          <div class="flex flex-wrap gap-4 mb-4">
+            <div class="flex-1 min-w-[250px]">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Seleccionar Tipo</mat-label>
+                <mat-select formControlName="type">
+                  @for (option of types; track option) {
+                    <mat-option [value]="option.value">{{
+                      option.viewValue
+                    }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="flex-1 min-w-[250px]">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Seleccionar Categoría</mat-label>
+                <input
+                  type="text"
+                  placeholder="Seleccionar Categoria"
+                  aria-label="Seleccionar Categoria"
+                  matInput
+                  [formControl]="categoryControl"
+                  [matAutocomplete]="auto"
+                  />
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  @for (option of categoryOptions$ | async; track option) {
+                    <mat-option [value]="option.name">{{
+                      option.name
+                    }}</mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+
+          @if (exerciseForm.get('type')?.value === 'cardio') {
+            <div
+              class="flex flex-wrap gap-4 mb-4 items-center"
               >
-            </p>
-            <p class="text-xs text-gray-400 mt-1">
-              Solo archivos GIF, JPG, JPEG, PNG
-            </p>
-          }
-
-          @if (filePreview) {
-            <img
-              [src]="filePreview"
-              class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
-            />
-            <button
-              type="button"
-              class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
-              (click)="removeFile($event)"
-            >
-              ✕
-            </button>
-          }
-        </div>
-
-        <div class="flex flex-wrap gap-4 mb-4">
-          <div class="flex-1 min-w-[250px]">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Seleccionar Tipo</mat-label>
-              <mat-select formControlName="type">
-                @for (option of types; track option) {
-                  <mat-option [value]="option.value">{{
-                    option.viewValue
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="flex-1 min-w-[250px]">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Seleccionar Categoría</mat-label>
-              <input
-                type="text"
-                placeholder="Seleccionar Categoria"
-                aria-label="Seleccionar Categoria"
-                matInput
-                [formControl]="categoryControl"
-                [matAutocomplete]="auto"
-              />
-              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                @for (option of categoryOptions$ | async; track option) {
-                  <mat-option [value]="option.name">{{
-                    option.name
-                  }}</mat-option>
-                }
-              </mat-autocomplete>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div
-          *ngIf="exerciseForm.get('type')?.value === 'cardio'"
-          class="flex flex-wrap gap-4 mb-4 items-center"
-        >
-          <div class="flex-1 min-w-[250px]">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Minutos o Repeticiones</mat-label>
-              <mat-select formControlName="cardioMetric">
-                <mat-option value="minutes">Minutos</mat-option>
-                <mat-option value="reps">Repeticiones</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          @if (exerciseForm.get("cardioMetric")?.value === "minutes") {
-            <div class="flex-1 min-w-[250px]">
-              <app-input
-                [control]="minutesControl"
-                label="Minutos"
-                type="number"
-                errorKey="minutes"
-                placeholder="Duración en minutos"
-                appearance="outline"
-              ></app-input>
-            </div>
-          } @else {
-            <div class="flex-1 min-w-[250px]">
-              <app-input
-                [control]="repsControl"
-                label="Repeticiones"
-                type="number"
-                errorKey="reps"
-                placeholder="Cantidad de repeticiones"
-                appearance="outline"
-              ></app-input>
+              <div class="flex-1 min-w-[250px]">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Minutos o Repeticiones</mat-label>
+                  <mat-select formControlName="cardioMetric">
+                    <mat-option value="minutes">Minutos</mat-option>
+                    <mat-option value="reps">Repeticiones</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              @if (exerciseForm.get("cardioMetric")?.value === "minutes") {
+                <div class="flex-1 min-w-[250px]">
+                  <app-input
+                    [control]="minutesControl"
+                    label="Minutos"
+                    type="number"
+                    errorKey="minutes"
+                    placeholder="Duración en minutos"
+                    appearance="outline"
+                  ></app-input>
+                </div>
+              } @else {
+                <div class="flex-1 min-w-[250px]">
+                  <app-input
+                    [control]="repsControl"
+                    label="Repeticiones"
+                    type="number"
+                    errorKey="reps"
+                    placeholder="Cantidad de repeticiones"
+                    appearance="outline"
+                  ></app-input>
+                </div>
+              }
+              <div class="flex-1 min-w-[250px]">
+                <app-input
+                  [control]="restControl"
+                  label="Descanso"
+                  type="number"
+                  errorKey="rest"
+                  placeholder="Tiempo de descanso en segundos"
+                  appearance="outline"
+                ></app-input>
+              </div>
             </div>
           }
 
-          <div class="flex-1 min-w-[250px]">
-            <app-input
-              [control]="restControl"
-              label="Descanso"
-              type="number"
-              errorKey="rest"
-              placeholder="Tiempo de descanso en segundos"
-              appearance="outline"
-            ></app-input>
-          </div>
-        </div>
-
-        <div
-          *ngIf="exerciseForm.get('type')?.value === 'room'"
-          class="flex flex-wrap gap-4 mb-4"
+          @if (exerciseForm.get('type')?.value === 'room') {
+            <div
+              class="flex flex-wrap gap-4 mb-4"
+              >
+              <div class="flex-1 min-w-[250px]">
+                <app-input
+                  [control]="seriesControl"
+                  label="Series"
+                  type="number"
+                  errorKey="series"
+                  placeholder="Cantidad de series"
+                  appearance="outline"
+                ></app-input>
+              </div>
+              <div class="flex-1 min-w-[250px]">
+                <app-input
+                  [control]="repsControl"
+                  label="Repeticiones"
+                  type="number"
+                  errorKey="reps"
+                  placeholder="Cantidad de repeticiones"
+                  appearance="outline"
+                ></app-input>
+              </div>
+            </div>
+          }
+        </form>
+      </mat-dialog-content>
+    }
+    <div class="flex justify-end gap-3 mt-6">
+      <button
+        type="button"
+        class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+        (click)="cancel()"
         >
-          <div class="flex-1 min-w-[250px]">
-            <app-input
-              [control]="seriesControl"
-              label="Series"
-              type="number"
-              errorKey="series"
-              placeholder="Cantidad de series"
-              appearance="outline"
-            ></app-input>
-          </div>
-          <div class="flex-1 min-w-[250px]">
-            <app-input
-              [control]="repsControl"
-              label="Repeticiones"
-              type="number"
-              errorKey="reps"
-              placeholder="Cantidad de repeticiones"
-              appearance="outline"
-            ></app-input>
-          </div>
-        </div>
-      </form>
-    </mat-dialog-content>
-  }
-  <div class="flex justify-end gap-3 mt-6">
-    <button
-      type="button"
-      class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
-      (click)="cancel()"
-    >
-      Cancelar
-    </button>
-    <button
-      appBtn
-      color="primary"
-      class="px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
-      [loader]="(loading$ | async)!"
-      [animate]="true"
-      (click)="save()"
-      [disabled]="exerciseForm.invalid || (loading$ | async)"
-    >
-      {{ btnTitle }}
-    </button>
+        Cancelar
+      </button>
+      <button
+        appBtn
+        color="primary"
+        class="px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
+        [loader]="(loading$ | async)!"
+        [animate]="true"
+        (click)="save()"
+        [disabled]="exerciseForm.invalid || (loading$ | async)"
+        >
+        {{ btnTitle }}
+      </button>
+    </div>
   </div>
-</div>

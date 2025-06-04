@@ -13,7 +13,7 @@ import {
   FieldValidationErrorMessages,
   ValidationErrorsPipe,
 } from '@shared/pipes/validation-errors.pipe';
-import {NgIf} from "@angular/common";
+
 import {MatIconButton} from "@angular/material/button";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -39,9 +39,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     ReactiveFormsModule,
     ValidationErrorsPipe,
-    NgIf,
-    MatIconButton,
-  ],
+    MatIconButton
+],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css'],
 })

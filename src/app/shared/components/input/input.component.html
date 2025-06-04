@@ -11,18 +11,23 @@
       [placeholder]="placeholder"
       (input)="onInputChange($event)"
       class="shadow-none"
-    />
-    <button
-      *ngIf="isPasswordField"
-      mat-icon-button
-      matSuffix
-      type="button"
-      class="mr-2"
-      (click)="togglePasswordVisibility()"
-    >
-      <i class="ph-eye text-xl" *ngIf="!isPasswordVisible"></i>
-      <i class="ph-eye-slash text-xl" *ngIf="isPasswordVisible"></i>
-    </button>
+      />
+    @if (isPasswordField) {
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        class="mr-2"
+        (click)="togglePasswordVisibility()"
+        >
+        @if (!isPasswordVisible) {
+          <i class="ph-eye text-xl"></i>
+        }
+        @if (isPasswordVisible) {
+          <i class="ph-eye-slash text-xl"></i>
+        }
+      </button>
+    }
     <mat-error>
       @if (control.errors) {
         {{ control.errors | validationErrors: errorMessages?.[errorKey] }}

@@ -3,5 +3,7 @@
     class="ph-circle-notch animate-spin"
     [ngClass]="size + ' text-primary-500'"
   ></i>
-  <p *ngIf="!!text" class="text-ms-gray-600 font-ms-inter">{{ text }}</p>
+  @if (!!text) {
+    <p class="text-ms-gray-600 font-ms-inter">{{ text }}</p>
+  }
 </div>

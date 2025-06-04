@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Organization } from '../../interfaces/organization.interface';
 
 @Component({
   selector: 'app-organization-detail-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './organization-detail-info.component.html',
   styleUrl: './organization-detail-info.component.css',
 })

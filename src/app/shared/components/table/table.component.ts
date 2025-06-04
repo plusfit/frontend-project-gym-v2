@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { EColorBadge } from '../../enums/badge-color.enum';
 import { CdkTableModule } from '@angular/cdk/table';
-import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import {
   MatMenu,
   MatMenuContent,
@@ -31,14 +31,12 @@ import { MatCheckbox } from '@angular/material/checkbox';
     MatNoDataRow,
     BadgeComponent,
     LoaderComponent,
-    NgFor,
-    NgIf,
     CdkTableModule,
     TranslationPipe,
     CamelToTitlePipe,
     DatePipe,
-    MatCheckbox,
-  ],
+    MatCheckbox
+],
 })
 export class TableComponent implements OnInit {
   EColorBadge: typeof EColorBadge = EColorBadge;

@@ -3,7 +3,7 @@
   <div class="space-y-1">
 
     <!-- Organizaciones - Solo para SUPER_ADMIN -->
-    <ng-container *ngIf="isSuperAdmin$ | async">
+    @if (isSuperAdmin$ | async) {
       <a routerLink="/organizaciones" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
         <div class="flex items-center">
           <i class="ph-buildings text-xl flex-shrink-0 transition-colors duration-200"></i>
@@ -13,10 +13,10 @@
           </span>
         </div>
       </a>
-    </ng-container>
+    }
 
     <!-- Navegación para ADMIN y CLIENT -->
-    <ng-container *ngIf="(isAdmin$ | async) || (isClient$ | async)">
+    @if ((isAdmin$ | async) || (isClient$ | async)) {
       <!-- Clientes -->
       <a routerLink="clientes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.CLIENT_READ" [appHasPermissionModule]="Module.CLIENTS">
@@ -28,7 +28,6 @@
           </span>
         </div>
       </a>
-
       <!-- Horarios -->
       <a routerLink="/horarios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.SCHEDULE_READ" [appHasPermissionModule]="Module.SCHEDULES">
@@ -40,7 +39,6 @@
           </span>
         </div>
       </a>
-
       <!-- Rutinas -->
       <a routerLink="/rutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
@@ -52,7 +50,6 @@
           </span>
         </div>
       </a>
-
       <!-- Subrutinas -->
       <a routerLink="/subrutinas" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.ROUTINE_READ" [appHasPermissionModule]="Module.ROUTINES">
@@ -64,7 +61,6 @@
           </span>
         </div>
       </a>
-
       <!-- Ejercicios -->
       <a routerLink="/ejercicios" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.EXERCISE_READ" [appHasPermissionModule]="Module.EXERCISES">
@@ -76,7 +72,6 @@
           </span>
         </div>
       </a>
-
       <!-- Planes -->
       <a routerLink="/planes" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group"
         [appHasPermission]="Permission.PLAN_READ" [appHasPermissionModule]="Module.PLANS">
@@ -88,7 +83,6 @@
           </span>
         </div>
       </a>
-
       <!-- Pantalla -->
       <a routerLink="/pantalla" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
         <div class="flex items-center">
@@ -99,10 +93,8 @@
           </span>
         </div>
       </a>
-
       <!-- Divider -->
       <div class="h-px bg-primary-600/30 my-4" [ngClass]="{ 'mx-2': !isMenuOpen(), 'mx-1': isMenuOpen() }"></div>
-
       <!-- Configuración -->
       <a routerLink="/configuracion" routerLinkActive="nav-item-primary-selected" class="nav-item-primary group">
         <div class="flex items-center">
@@ -113,6 +105,6 @@
           </span>
         </div>
       </a>
-    </ng-container>
+    }
   </div>
 </div>

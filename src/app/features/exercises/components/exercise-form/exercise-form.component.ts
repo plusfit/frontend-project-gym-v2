@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -60,7 +60,6 @@ import {
   imports: [
     MatDialogModule,
     ReactiveFormsModule,
-    NgIf,
     BtnDirective,
     CommonModule,
     LoaderComponent,
@@ -71,8 +70,8 @@ import {
     TitleComponent,
     MatAutocompleteModule,
     MatInputModule,
-    MatRadioModule,
-  ],
+    MatRadioModule
+],
 })
 export class ExerciseFormComponent implements OnInit, OnDestroy {
   constructor(
