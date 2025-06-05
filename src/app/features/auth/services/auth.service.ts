@@ -17,6 +17,8 @@ import {
 } from '@angular/fire/auth';
 import { RefreshTokenPayload } from '@core/interfaces/refresh-token.interface';
 import { RegisterResponse } from '@features/client/interface/clients.interface';
+import { Store } from '@ngxs/store';
+import { AuthState } from '../state/auth.state';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,7 @@ export class AuthService {
     private http: HttpClient,
     private utilsService: UtilsService,
     private _auth: Auth,
+    private store: Store,
   ) {}
   // googleLogin(): Observable<UserCredential> {
   //   return from(signInWithPopup(this._auth, new GoogleAuthProvider()));
@@ -51,11 +54,19 @@ export class AuthService {
   }
 
   register(email: string): Observable<RegisterResponse> {
+    const organizationSlug = this.store.selectSnapshot(AuthState.organizationSlug);
+    
+    const headers: any = {};
+    if (organizationSlug) {
+      headers['x-organization'] = organizationSlug;
+    }
+
     return this.http.post<RegisterResponse>(
       `${environment.api}/auth/register`,
       {
         email,
       },
+      { headers }
     );
   }
 
