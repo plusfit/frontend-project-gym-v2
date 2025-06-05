@@ -1,5 +1,9 @@
 export interface Settings {
-  days: string;
+  schedule: Hour[];
+}
+
+export interface Hour {
+  day: string;
   hours: number[];
   maxCount: number;
 }

@@ -110,7 +110,17 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
 
   createSettings(): void {
     if (this.settingsForm.valid && !this.settings) {
-      this.store.dispatch(new CrateSettings(this.settingsForm.value));
+      // Transformar los datos del formulario al formato esperado por el backend
+      const formValue = this.settingsForm.value;
+      const settingsData = {
+        schedule: formValue['days'].map((day: string) => ({
+          day,
+          hours: formValue['hours'],
+          maxCount: formValue['maxCount']
+        }))
+      };
+      
+      this.store.dispatch(new CrateSettings(settingsData));
       this.actions.pipe(ofActionSuccessful(CrateSettings)).subscribe(() => {
         this.snackbar.showSuccess('Éxito!', 'Configuración guardada');
       });
