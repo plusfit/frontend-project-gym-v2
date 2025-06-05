@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { 
   DashboardMetrics, 
@@ -32,7 +33,8 @@ export class ReportsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    return this.http.get<DashboardMetrics>(`${this.apiUrl}/dashboard/${organizationId}`, { params });
+    return this.http.get<{ success: boolean; data: DashboardMetrics }>(`${this.apiUrl}/dashboard/${organizationId}`, { params })
+      .pipe(map(response => response.data));
   }
 
   getClientMetrics(organizationId: string, filters: ReportFilters): Observable<ClientMetrics> {
@@ -46,7 +48,8 @@ export class ReportsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    return this.http.get<ClientMetrics>(`${this.apiUrl}/clients/${organizationId}`, { params });
+    return this.http.get<{ success: boolean; data: ClientMetrics }>(`${this.apiUrl}/clients/${organizationId}`, { params })
+      .pipe(map(response => response.data));
   }
 
   getFinancialMetrics(organizationId: string, filters: ReportFilters): Observable<FinancialMetrics> {
@@ -60,7 +63,8 @@ export class ReportsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    return this.http.get<FinancialMetrics>(`${this.apiUrl}/financial/${organizationId}`, { params });
+    return this.http.get<{ success: boolean; data: FinancialMetrics }>(`${this.apiUrl}/financial/${organizationId}`, { params })
+      .pipe(map(response => response.data));
   }
 
   getOccupancyMetrics(organizationId: string, filters: ReportFilters): Observable<OccupancyMetrics> {
@@ -74,7 +78,8 @@ export class ReportsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    return this.http.get<OccupancyMetrics>(`${this.apiUrl}/occupancy/${organizationId}`, { params });
+    return this.http.get<{ success: boolean; data: OccupancyMetrics }>(`${this.apiUrl}/occupancy/${organizationId}`, { params })
+      .pipe(map(response => response.data));
   }
 
   getRoutineMetrics(organizationId: string, filters: ReportFilters): Observable<RoutineMetrics> {
@@ -88,7 +93,8 @@ export class ReportsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    return this.http.get<RoutineMetrics>(`${this.apiUrl}/routines/${organizationId}`, { params });
+    return this.http.get<{ success: boolean; data: RoutineMetrics }>(`${this.apiUrl}/routines/${organizationId}`, { params })
+      .pipe(map(response => response.data));
   }
 
   exportReport(organizationId: string, type: ReportType, filters: ReportFilters): Observable<any> {
