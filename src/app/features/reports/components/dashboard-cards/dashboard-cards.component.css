@@ -1,0 +1,63 @@
+/* Animations for cards */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Pulse animation for important metrics */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.metric-pulse {
+  animation: pulse-subtle 2s infinite;
+}
+
+/* Icon container animations */
+.icon-container {
+  transition: transform 0.3s ease;
+}
+
+.card-hover:hover .icon-container {
+  transform: scale(1.1);
+}
+
+/* Progress indicators */
+.progress-bar {
+  position: relative;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 9999px;
+  transition: width 0.8s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card-mobile {
+    padding: 1rem;
+  }
+  
+  .text-mobile {
+    font-size: 1.5rem;
+  }
+} 

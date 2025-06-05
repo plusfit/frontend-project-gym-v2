@@ -28,6 +28,7 @@ import { DetailClientComponent } from '@features/client/pages/detail-client/deta
 import { ScreenPagesComponent } from '@features/screenRoutine/pages/screen-pages/screen-pages.component';
 import { OrganizationsPageComponent } from '@features/organizations/pages/organizations-page/organizations-page.component';
 import { OrganizationDetailPageComponent } from '@features/organizations/pages/organization-detail-page/organization-detail-page.component';
+import { ReportsDashboardComponent } from '@features/reports/pages/reports-dashboard/reports-dashboard.component';
 import { UnauthorizedComponent } from '@shared/components/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
@@ -97,6 +98,15 @@ export const routes: Routes = [
       {
         path: 'configuracion',
         component: SettingsPagesComponent,
+      },
+      {
+        path: 'reportes',
+        component: ReportsDashboardComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          module: Module.CLIENTS,
+          permissions: [Permission.CLIENT_READ],
+        },
       },
       {
         path: 'rutinas',

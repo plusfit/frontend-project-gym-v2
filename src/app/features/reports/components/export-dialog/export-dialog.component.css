@@ -1,0 +1,48 @@
+/* Dialog styling */
+.mat-mdc-dialog-container {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Form controls */
+.mat-mdc-select {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+/* Custom button styling */
+.mat-mdc-raised-button {
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* Loading spinner */
+.mat-mdc-progress-spinner {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Date picker styling */
+.mat-datepicker-toggle {
+  color: #6B7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .flex.justify-end {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .flex.justify-end button {
+    width: 100%;
+  }
+} 
