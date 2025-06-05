@@ -124,6 +124,12 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
         icon: 'barbell',
         description: 'Administrar biblioteca de ejercicios',
       },
+      {
+        module: Module.REPORTS,
+        name: 'Reportes',
+        icon: 'chart-bar',
+        description: 'Acceder a reportes y análisis de datos',
+      },
     ];
 
     return modules.map((moduleInfo) => ({
@@ -144,6 +150,9 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
         description: 'Modificar registros existentes',
       },
       delete: { name: 'Eliminar', description: 'Eliminar registros' },
+      view: { name: 'Visualizar', description: 'Ver dashboard y métricas básicas' },
+      export: { name: 'Exportar', description: 'Descargar reportes en Excel' },
+      advanced: { name: 'Avanzado', description: 'Acceder a métricas financieras y analytics avanzados' },
     };
 
     return modulePermissions.map((permission) => {
