@@ -12,13 +12,15 @@ import { FiltersBarComponent } from '../../../../shared/components/filter-bar/fi
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { Client } from '@features/client/interface/clients.interface';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { ClientsState } from '@features/client/state/clients.state';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackBarService } from '@core/services/snackbar.service';
 import { FilterSelectComponent } from '../../../../shared/components/filter-select/filter-select.component';
 import { FormControl } from '@angular/forms';
+import { OrganizationsService } from '@features/organizations/services/organizations.service';
+import { OrganizationClientStats } from '@features/organizations/interfaces/organization.interface';
 
 @Component({
   selector: 'app-client-page',
@@ -28,6 +30,7 @@ import { FormControl } from '@angular/forms';
     TableComponent,
     MatPaginator,
     AsyncPipe,
+    CommonModule,
     FilterSelectComponent,
   ],
   templateUrl: './client-page.component.html',
@@ -38,6 +41,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
   filterControl = new FormControl('all');
+
+  // Estadísticas de clientes
+  clientStats: OrganizationClientStats | null = null;
+  loadingStats = false;
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
@@ -56,6 +63,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private snackbar: SnackBarService,
+    private organizationsService: OrganizationsService,
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +78,24 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       disable: false,
     };
     this.store.dispatch(new GetClients(this.filterValues));
+    
+    // Cargar estadísticas de demo por ahora
+    this.loadClientStats();
+  }
+
+  private loadClientStats(): void {
+    // Demo data con valores más realistas para mostrar diferentes estados
+    const currentClients = 47;
+    const maxClients = 50;
+    const available = maxClients - currentClients;
+    const percentage = Math.round((currentClients / maxClients) * 100);
+    
+    this.clientStats = {
+      currentClients,
+      maxClients,
+      available,
+      percentage
+    };
   }
 
   paginate(pageEvent: PageEvent): void {
@@ -79,7 +105,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: currentPage,
       pageSize: currentPageSize,
       searchQ: this.filterValues.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      withoutPlan: this.filterControl.value === 'true',
     };
     this.store.dispatch(new GetClients(payload));
   }
@@ -89,7 +115,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: 1,
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      withoutPlan: this.filterControl.value === 'true',
     };
 
     this.store.dispatch(new GetClients({ ...this.filterValues }));
@@ -149,6 +175,13 @@ export class ClientPageComponent implements OnInit, OnDestroy {
           this.snackbar.showSuccess('Exito', 'Cliente eliminado correctamente');
         });
     });
+  }
+
+  getProgressBarColor(percentage: number): string {
+    if (percentage <= 60) return 'bg-gradient-to-r from-green-400 to-green-500';
+    if (percentage <= 75) return 'bg-gradient-to-r from-yellow-400 to-yellow-500';
+    if (percentage <= 90) return 'bg-gradient-to-r from-orange-400 to-orange-500';
+    return 'bg-gradient-to-r from-red-400 to-red-500';
   }
 
   ngOnDestroy(): void {
