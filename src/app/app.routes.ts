@@ -104,8 +104,8 @@ export const routes: Routes = [
         component: ReportsDashboardComponent,
         canActivate: [PermissionsGuard],
         data: {
-          module: Module.CLIENTS,
-          permissions: [Permission.CLIENT_READ],
+          module: Module.REPORTS,
+          permissions: [Permission.REPORTS_VIEW],
         },
       },
       {

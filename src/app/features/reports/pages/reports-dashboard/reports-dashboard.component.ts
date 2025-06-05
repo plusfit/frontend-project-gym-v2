@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, takeUntil, switchMap } from 'rxjs';
 import { Store } from '@ngxs/store';
+import { Permission, Module } from '@core/enums/permissions.enum';
 
 import { ReportsService } from '../../services/reports.service';
 import { AuthState } from '@features/auth/state/auth.state';
@@ -17,6 +18,7 @@ import { DoughnutChartComponent } from '../../components/charts/doughnut-chart/d
 import { ExportDialogComponent } from '../../components/export-dialog/export-dialog.component';
 import { TitleComponent } from '@shared/components/title/title.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
+import { HasPermissionDirective } from '@shared/directives/has-permission.directive';
 import { 
   DashboardMetrics, 
   DateRange, 
@@ -37,7 +39,8 @@ import {
     LineChartComponent,
     DoughnutChartComponent,
     TitleComponent,
-    LoaderComponent
+    LoaderComponent,
+    HasPermissionDirective
   ],
   template: `
     <div class="min-h-screen bg-gray-50 p-6">
@@ -103,7 +106,9 @@ import {
               <button mat-stroked-button 
                       (click)="openExportDialog()"
                       [disabled]="loading || !metrics"
-                      class="w-full border border-gray-300 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors">
+                      class="w-full border border-gray-300 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors"
+                      [appHasPermission]="Permission.REPORTS_EXPORT" 
+                      [appHasPermissionModule]="Module.REPORTS">
                 <i class="ph-download mr-2"></i>
                 Exportar
               </button>
@@ -243,6 +248,10 @@ export class ReportsDashboardComponent implements OnInit, OnDestroy {
   error: string | null = null;
   
   dateRangeOptions = this.reportsService.getDateRangeOptions();
+  
+  // Permisos para controlar funcionalidades
+  Permission = Permission;
+  Module = Module;
   
   private destroy$ = new Subject<void>();
   private organizationId = '';
