@@ -21,6 +21,7 @@ import { FilterSelectComponent } from '../../../../shared/components/filter-sele
 import { FormControl } from '@angular/forms';
 import { OrganizationsService } from '@features/organizations/services/organizations.service';
 import { OrganizationClientStats } from '@features/organizations/interfaces/organization.interface';
+import { AuthState } from '@features/auth/state/auth.state';
 
 @Component({
   selector: 'app-client-page',
@@ -79,23 +80,31 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(new GetClients(this.filterValues));
     
-    // Cargar estadísticas de demo por ahora
     this.loadClientStats();
   }
 
   private loadClientStats(): void {
-    // Demo data con valores más realistas para mostrar diferentes estados
-    const currentClients = 47;
-    const maxClients = 50;
-    const available = maxClients - currentClients;
-    const percentage = Math.round((currentClients / maxClients) * 100);
+    const organization = this.store.selectSnapshot(AuthState.organization);
     
-    this.clientStats = {
-      currentClients,
-      maxClients,
-      available,
-      percentage
-    };
+    if (!organization?.id) {
+      console.warn('No organization found, cannot load client stats');
+      return;
+    }
+
+    this.loadingStats = true;
+    this.organizationsService.getOrganizationClientStats(organization.id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: (stats) => {
+          this.clientStats = stats;
+          this.loadingStats = false;
+        },
+        error: (error) => {
+          console.error('Error loading client stats:', error);
+          this.loadingStats = false;
+          this.snackbar.showError('Error', 'No se pudieron cargar las estadísticas de clientes');
+        }
+      });
   }
 
   paginate(pageEvent: PageEvent): void {

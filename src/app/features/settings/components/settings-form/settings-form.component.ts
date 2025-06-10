@@ -113,10 +113,10 @@ export class SettingsFormComponent implements OnInit, OnDestroy, OnChanges {
       // Transformar los datos del formulario al formato esperado por el backend
       const formValue = this.settingsForm.value;
       const settingsData = {
-        schedule: formValue['days'].map((day: string) => ({
+        schedule: formValue.days.map((day: string) => ({
           day,
-          hours: formValue['hours'],
-          maxCount: formValue['maxCount']
+          hours: formValue.hours,
+          maxCount: formValue.maxCount
         }))
       };
       
