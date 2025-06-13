@@ -15,6 +15,7 @@ export interface Organization {
 export interface AdminUserDto {
   email: string;
   name: string;
+  password: string;
   phone?: string;
 }
 
@@ -54,6 +55,10 @@ export interface CreateOrganizationResponse {
     email: string;
     role: string;
     organizationId: string;
+  };
+  firebaseUser: {
+    uid: string;
+    email: string;
   };
 }
 

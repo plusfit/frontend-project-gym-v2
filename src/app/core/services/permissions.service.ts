@@ -69,6 +69,8 @@ export class PermissionsService {
         return this.hasPermission(Permission.SCHEDULE_CREATE);
       case Module.EXERCISES:
         return this.hasPermission(Permission.EXERCISE_CREATE);
+      case Module.SCREEN:
+        return this.hasPermission(Permission.SCREEN_MANAGE);
       default:
         return false;
     }
@@ -86,6 +88,8 @@ export class PermissionsService {
         return this.hasPermission(Permission.SCHEDULE_READ);
       case Module.EXERCISES:
         return this.hasPermission(Permission.EXERCISE_READ);
+      case Module.SCREEN:
+        return this.hasPermission(Permission.SCREEN_VIEW);
       default:
         return false;
     }
@@ -103,6 +107,8 @@ export class PermissionsService {
         return this.hasPermission(Permission.SCHEDULE_UPDATE);
       case Module.EXERCISES:
         return this.hasPermission(Permission.EXERCISE_UPDATE);
+      case Module.SCREEN:
+        return this.hasPermission(Permission.SCREEN_MANAGE);
       default:
         return false;
     }
@@ -120,9 +126,19 @@ export class PermissionsService {
         return this.hasPermission(Permission.SCHEDULE_DELETE);
       case Module.EXERCISES:
         return this.hasPermission(Permission.EXERCISE_DELETE);
+      case Module.SCREEN:
+        return this.hasPermission(Permission.SCREEN_MANAGE);
       default:
         return false;
     }
+  }
+
+  canViewScreen(): boolean {
+    return this.hasPermission(Permission.SCREEN_VIEW);
+  }
+
+  canManageScreen(): boolean {
+    return this.hasPermission(Permission.SCREEN_MANAGE);
   }
 
   refreshPermissions(): void {

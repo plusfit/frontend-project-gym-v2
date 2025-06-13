@@ -152,6 +152,11 @@ export class OrganizationsState {
           organizations: [...state.organizations, organization],
           loading: false,
         });
+
+        // Log información de Firebase para depuración
+        if ((response as any).firebaseUser) {
+          console.log('Usuario administrador creado en Firebase:', (response as any).firebaseUser);
+        }
       }),
       catchError((error) => {
         ctx.patchState({

@@ -1,4 +1,4 @@
-# 🎯 **Guía: Configurar Permisos de Reportes en Organización**
+# 🎯 **Guía: Configurar Permisos en Organización**
 
 ## 📍 **Ubicación de los Permisos**
 
@@ -7,9 +7,15 @@ Para configurar los permisos de reportes, navega a:
 Organizaciones → [Seleccionar Organización] → Pestaña "Permisos"
 ```
 
-## 📊 **Nuevo Módulo: Reportes**
+## 📊 **Módulos Disponibles**
 
-Ahora verás una nueva sección llamada **"Reportes"** con los siguientes permisos:
+Ahora verás las siguientes secciones con sus respectivos permisos:
+
+### **Reportes**
+Sección llamada **"Reportes"** con los siguientes permisos:
+
+### **Pantalla** 
+Sección llamada **"Pantalla"** para gestionar las pantallas de visualización de rutinas:
 
 ### 🔍 **Permisos Disponibles**
 
@@ -19,39 +25,66 @@ Ahora verás una nueva sección llamada **"Reportes"** con los siguientes permis
 | **Exportar** | 📥 | Descargar reportes en Excel | • Exportar datos a Excel<br>• Reportes personalizados<br>• Filtros de fecha |
 | **Avanzado** | 🎯 | Acceder a métricas financieras y analytics avanzados | • Ingresos detallados<br>• Proyecciones<br>• ARR/MRR<br>• Métricas financieras |
 
+### 📱 **Permisos del Módulo Pantalla**
+
+| Permiso | Icono | Descripción | Funcionalidad |
+|---------|-------|-------------|---------------|
+| **Visualizar** | 📺 | Ver pantallas de rutinas | • Acceso a pantallas públicas<br>• Visualización de rutinas<br>• Modo pantalla completa |
+| **Gestionar** | ⚙️ | Administrar pantallas y configuraciones | • Configurar contenido<br>• Gestionar rutinas mostradas<br>• Administrar pantallas |
+
 ## 👥 **Configuraciones Recomendadas por Rol**
 
 ### 🔴 **SuperAdmin (Completo)**
 ```
+Reportes:
 ✅ Visualizar
 ✅ Exportar  
 ✅ Avanzado
+
+Pantalla:
+✅ Visualizar
+✅ Gestionar
 ```
-**Acceso:** Dashboard completo + Exportación + Métricas financieras
+**Acceso:** Dashboard completo + Exportación + Métricas financieras + Gestión total de pantallas
 
 ### 🟡 **Admin de Gimnasio (Operacional)**
 ```
+Reportes:
 ✅ Visualizar
 ✅ Exportar
 ❌ Avanzado
+
+Pantalla:
+✅ Visualizar
+✅ Gestionar
 ```
-**Acceso:** Dashboard completo + Exportación (sin datos financieros sensibles)
+**Acceso:** Dashboard completo + Exportación + Gestión de pantallas (sin datos financieros sensibles)
 
 ### 🟢 **Manager/Staff (Solo Lectura)**
 ```
+Reportes:
 ✅ Visualizar
 ❌ Exportar
 ❌ Avanzado
+
+Pantalla:
+✅ Visualizar
+❌ Gestionar
 ```
-**Acceso:** Solo visualización de métricas operacionales
+**Acceso:** Solo visualización de métricas operacionales y pantallas
 
 ### 🔵 **Cliente (Sin Acceso)**
 ```
+Reportes:
 ❌ Visualizar
 ❌ Exportar
 ❌ Avanzado
+
+Pantalla:
+✅ Visualizar
+❌ Gestionar
 ```
-**Acceso:** Ninguno (para reportes administrativos)
+**Acceso:** Solo visualización de pantallas públicas (ningún acceso a reportes administrativos)
 
 ## 🔧 **Cómo Configurar**
 

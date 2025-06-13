@@ -54,6 +54,7 @@ export class OrganizationFormComponent implements OnInit {
       adminUser: this.isEditing ? null : this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         name: ['', [Validators.required, Validators.minLength(2)]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
         phone: ['']
       })
     });
@@ -161,5 +162,9 @@ export class OrganizationFormComponent implements OnInit {
 
   get adminPhoneControl() {
     return this.adminUserGroup?.get('phone');
+  }
+
+  get adminPasswordControl() {
+    return this.adminUserGroup?.get('password');
   }
 }

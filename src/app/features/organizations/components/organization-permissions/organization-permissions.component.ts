@@ -130,6 +130,12 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
         icon: 'chart-bar',
         description: 'Acceder a reportes y análisis de datos',
       },
+      {
+        module: Module.SCREEN,
+        name: 'Pantalla',
+        icon: 'monitor',
+        description: 'Gestionar pantallas de visualización de rutinas',
+      },
     ];
 
     return modules.map((moduleInfo) => ({
@@ -153,6 +159,7 @@ export class OrganizationPermissionsComponent implements OnInit, OnChanges {
       view: { name: 'Visualizar', description: 'Ver dashboard y métricas básicas' },
       export: { name: 'Exportar', description: 'Descargar reportes en Excel' },
       advanced: { name: 'Avanzado', description: 'Acceder a métricas financieras y analytics avanzados' },
+      manage: { name: 'Gestionar', description: 'Administrar configuraciones y contenido' },
     };
 
     return modulePermissions.map((permission) => {

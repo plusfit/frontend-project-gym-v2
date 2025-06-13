@@ -1,4 +1,4 @@
-# 📊 **Sistema de Permisos para Reportes**
+# 📊 **Sistema de Permisos**
 
 ## 🎯 **Permisos Implementados**
 
@@ -10,6 +10,13 @@
 | `REPORTS_EXPORT` | **Exportación de datos** | • Descargar reportes en Excel<br>• Exportar datos filtrados<br>• Generar archivos personalizados |
 | `REPORTS_ADVANCED` | **Analytics avanzados** | • Ver métricas financieras<br>• Acceder a proyecciones<br>• Ver datos de ingresos detallados |
 
+### **Módulo: SCREEN**
+
+| Permiso | Descripción | Funcionalidades |
+|---------|-------------|-----------------|
+| `SCREEN_VIEW` | **Visualización de pantallas** | • Ver pantallas de rutinas<br>• Acceder a modo pantalla completa<br>• Ver contenido público de rutinas |
+| `SCREEN_MANAGE` | **Gestión de pantallas** | • Configurar pantallas<br>• Administrar contenido mostrado<br>• Gestionar rutinas en pantallas |
+
 ## 👥 **Configuración Recomendada por Rol**
 
 ### **🔴 SuperAdmin**
@@ -17,33 +24,42 @@
 permissions: [
   Permission.REPORTS_VIEW,
   Permission.REPORTS_EXPORT, 
-  Permission.REPORTS_ADVANCED
+  Permission.REPORTS_ADVANCED,
+  Permission.SCREEN_VIEW,
+  Permission.SCREEN_MANAGE
 ]
 ```
 - ✅ **Acceso completo** a todos los reportes
 - ✅ **Visualización** de métricas financieras
 - ✅ **Exportación** sin restricciones
+- ✅ **Gestión completa** de pantallas
 
 ### **🟡 Admin (Dueño de Gimnasio)**
 ```typescript
 permissions: [
   Permission.REPORTS_VIEW,
-  Permission.REPORTS_EXPORT
+  Permission.REPORTS_EXPORT,
+  Permission.SCREEN_VIEW,
+  Permission.SCREEN_MANAGE
 ]
 ```
 - ✅ **Dashboard completo** de su organización
 - ✅ **Exportación** de reportes operacionales
+- ✅ **Gestión de pantallas** para su gimnasio
 - ❌ **Sin acceso** a métricas financieras avanzadas
 
 ### **🟢 Manager/Staff**
 ```typescript
 permissions: [
-  Permission.REPORTS_VIEW
+  Permission.REPORTS_VIEW,
+  Permission.SCREEN_VIEW
 ]
 ```
 - ✅ **Visualización básica** de ocupación
 - ✅ **Métricas operacionales** (horarios pico, rutinas)
+- ✅ **Visualización de pantallas** de rutinas
 - ❌ **Sin exportación** ni datos financieros
+- ❌ **Sin gestión** de pantallas
 
 ### **🔵 Cliente**
 ```typescript
