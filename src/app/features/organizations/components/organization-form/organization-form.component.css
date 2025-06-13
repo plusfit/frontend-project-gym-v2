@@ -3,17 +3,30 @@
   max-width: 600px;
 }
 
-/* Estados de validación mejorados */
-.ng-invalid.ng-touched {
+/* Estados de validación mejorados - solo para campos de formulario */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
   border-color: #ef4444 !important;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
   background-color: rgba(254, 242, 242, 0.5) !important;
 }
 
-.ng-valid.ng-touched {
+input.ng-valid.ng-touched,
+textarea.ng-valid.ng-touched,
+select.ng-valid.ng-touched {
   border-color: #10b981 !important;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
   background-color: rgba(240, 253, 244, 0.5) !important;
+}
+
+/* Estilos para asegurar que las cards no se vean afectadas por validación */
+.bg-white\/50,
+.backdrop-blur-sm,
+.rounded-2xl,
+div[class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgb(229, 231, 235) !important;
 }
 
 /* Efectos de enfoque mejorados */
@@ -60,6 +73,41 @@
 
 .btn-primary:hover::before {
   left: 100%;
+}
+
+/* Estilos específicos para inputs con error */
+.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  background-color: rgba(254, 242, 242, 0.3) !important;
+}
+
+/* Estilos específicos para inputs válidos */
+.input-success {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+  background-color: rgba(240, 253, 244, 0.3) !important;
+}
+
+/* Transiciones suaves para estados de error */
+input, textarea, select {
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Checkbox personalizado */

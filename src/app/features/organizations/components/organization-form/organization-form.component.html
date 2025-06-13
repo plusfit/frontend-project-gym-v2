@@ -28,11 +28,11 @@
           <i class="ph-textbox text-primary-500 mr-2"></i>
           Nombre de la Organización *
         </label>
-        <input id="name" type="text" formControlName="name" (blur)="generateSlug()"
-          class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+        <input id="name" type="text" formControlName="name" (blur)="generateSlug()" [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                   (nameControl?.invalid && nameControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')"
           placeholder="Ingrese el nombre de la organización" />
         @if (nameControl?.invalid && nameControl?.touched) {
-        <div class="mt-2 text-sm text-red-600 flex items-center">
+        <div class="mt-2 text-sm text-red-600 flex items-center error-message">
           <i class="ph-warning-circle mr-1"></i>
           @if (nameControl?.errors?.['required']) {
           <span>El nombre es requerido</span>
@@ -52,8 +52,8 @@
         </label>
         <div class="flex rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
           <input id="slug" type="text" formControlName="slug"
-            class="flex-1 px-4 py-4 border border-gray-300 rounded-l-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
-            placeholder="nombre-organizacion" />
+            [class]="'flex-1 px-4 py-4 border rounded-l-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm ' + 
+                     (slugControl?.invalid && slugControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="nombre-organizacion" />
           <button type="button" (click)="generateSlug()"
             class="px-6 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-r-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 transform hover:scale-105 focus:ring-3 focus:ring-primary-500/30 group"
             title="Generar slug automáticamente basado en el nombre de la organización">
@@ -61,15 +61,13 @@
           </button>
         </div>
         @if (slugControl?.invalid && slugControl?.touched) {
-        <div class="mt-2 text-sm text-red-600 flex items-center">
+        <div class="mt-2 text-sm text-red-600 flex items-center error-message">
           <i class="ph-warning-circle mr-1"></i>
           @if (slugControl?.errors?.['required']) {
           <span>El slug es requerido</span>
           }
           @if (slugControl?.errors?.['pattern']) {
-          <span>El slug solo puede contener letras minúsculas,
-            números y
-            guiones</span>
+          <span>El slug solo puede contener letras minúsculas, números y guiones</span>
           }
         </div>
         }
@@ -92,9 +90,7 @@
         <textarea id="description" formControlName="description" rows="4"
           class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 resize-none bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
           placeholder="Descripción opcional de la organización (máximo 200 caracteres)"></textarea>
-        <p class="text-xs text-gray-500 text-right">{{ (descriptionControl?.value || '').length }}/200
-          caracteres
-        </p>
+        <p class="text-xs text-gray-500 text-right">{{ (descriptionControl?.value || '').length }}/200 caracteres</p>
       </div>
 
       <!-- Máximo de Clientes -->
@@ -105,14 +101,14 @@
         </label>
         <div class="flex items-center space-x-4">
           <input id="maxClients" type="number" formControlName="maxClients" min="1" max="10000"
-            class="flex-1 px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
-            placeholder="50" />
+            [class]="'flex-1 px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (maxClientsControl?.invalid && maxClientsControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="50" />
           <div class="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border">
             <span class="font-medium">clientes</span>
           </div>
         </div>
         @if (maxClientsControl?.invalid && maxClientsControl?.touched) {
-        <div class="mt-2 text-sm text-red-600 flex items-center">
+        <div class="mt-2 text-sm text-red-600 flex items-center error-message">
           <i class="ph-warning-circle mr-1"></i>
           @if (maxClientsControl?.errors?.['required']) {
           <span>El máximo de clientes es requerido</span>
@@ -152,10 +148,10 @@
             Email del Administrador *
           </label>
           <input id="adminEmail" type="email" formControlName="email"
-            class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
-            placeholder="admin@organizacion.com" />
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminEmailControl?.invalid && adminEmailControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="admin@organizacion.com" />
           @if (adminEmailControl?.invalid && adminEmailControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center">
+          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminEmailControl?.errors?.['required']) {
             <span>El email es requerido</span>
@@ -173,10 +169,11 @@
             Nombre del Administrador *
           </label>
           <input id="adminName" type="text" formControlName="name"
-            class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminNameControl?.invalid && adminNameControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')"
             placeholder="Nombre completo del administrador" />
           @if (adminNameControl?.invalid && adminNameControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center">
+          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminNameControl?.errors?.['required']) {
             <span>El nombre es requerido</span>
@@ -194,10 +191,10 @@
             Contraseña del Administrador *
           </label>
           <input id="adminPassword" type="password" formControlName="password"
-            class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
-            placeholder="Contraseña segura" />
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminPasswordControl?.invalid && adminPasswordControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="Contraseña segura" />
           @if (adminPasswordControl?.invalid && adminPasswordControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center">
+          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminPasswordControl?.errors?.['required']) {
             <span>La contraseña es requerida</span>
