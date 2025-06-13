@@ -21,12 +21,12 @@ select.ng-valid.ng-touched {
 }
 
 /* Estilos para asegurar que las cards no se vean afectadas por validación */
-.bg-white\/50,
+.bg-white\/70,
 .backdrop-blur-sm,
 .rounded-2xl,
 div[class*="bg-white"] {
-  background-color: rgba(255, 255, 255, 0.5) !important;
-  border-color: rgb(229, 231, 235) !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgb(148, 163, 184) !important;
 }
 
 /* Efectos de enfoque mejorados */
@@ -37,7 +37,22 @@ div[class*="bg-white"] {
 .form-field input:focus,
 .form-field textarea:focus {
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+/* Estilos para títulos con gradiente */
+.gradient-title {
+  background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-title-admin {
+  background: linear-gradient(135deg, #047857 0%, #0d9488 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Animaciones de etiquetas */
@@ -46,7 +61,7 @@ div[class*="bg-white"] {
 }
 
 .form-label:hover {
-  color: #1976d2;
+  color: #2563eb;
 }
 
 /* Efectos de botón mejorados */
@@ -77,15 +92,15 @@ div[class*="bg-white"] {
 
 /* Estilos específicos para inputs con error */
 .input-error {
-  border-color: #ef4444 !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
   background-color: rgba(254, 242, 242, 0.3) !important;
 }
 
 /* Estilos específicos para inputs válidos */
 .input-success {
-  border-color: #10b981 !important;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1) !important;
   background-color: rgba(240, 253, 244, 0.3) !important;
 }
 
@@ -110,6 +125,22 @@ input, textarea, select {
   }
 }
 
+/* Estilos mejorados para placeholders */
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Estilos para iconos con mejor contraste */
+.icon-blue {
+  color: #2563eb;
+}
+
+.icon-emerald {
+  color: #059669;
+}
+
 /* Checkbox personalizado */
 input[type="checkbox"] {
   appearance: none;
@@ -125,8 +156,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background: #1976d2;
-  border-color: #1976d2;
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
 input[type="checkbox"]:checked::after {
@@ -149,5 +180,10 @@ input[type="checkbox"]:checked::after {
   .form-field input,
   .form-field textarea {
     font-size: 16px; /* Previene zoom en iOS */
+  }
+
+  /* Ajustar tamaño de títulos en móvil */
+  .gradient-title {
+    font-size: 1.5rem;
   }
 }

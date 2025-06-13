@@ -1,35 +1,37 @@
 <div class="bg-transparent p-6 sm:p-8">
   <div class="flex items-center justify-between mb-8">
     <div class="flex items-center space-x-4">
-      <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl p-3 shadow-lg">
+      <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-3 shadow-lg">
         <i class="ph-buildings text-white text-2xl"></i>
       </div>
       <div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h2
+          class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
           {{ isEditing ? 'Editar Organización' : 'Nueva Organización' }}
         </h2>
-        <p class="text-gray-600 mt-1">{{ isEditing ? 'Modifica los datos de la organización' : 'Completa la
-          información para crear una nueva organización' }}</p>
+        <p class="text-slate-600 mt-2 text-base font-medium">{{ isEditing ? 'Modifica los datos de la organización' :
+          'Completa la información para crear una nueva organización' }}</p>
       </div>
     </div>
   </div>
 
   <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" class="space-y-8">
     <!-- Información de la Organización -->
-    <div class="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 shadow-sm">
-      <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-        <i class="ph-buildings text-primary-500 mr-2"></i>
+    <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 shadow-lg">
+      <h3
+        class="text-xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent mb-6 flex items-center">
+        <i class="ph-buildings text-blue-600 mr-3 text-xl"></i>
         Información de la Organización
       </h3>
 
       <!-- Nombre -->
       <div class="space-y-2 mb-6">
-        <label for="name" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-          <i class="ph-textbox text-primary-500 mr-2"></i>
+        <label for="name" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+          <i class="ph-textbox text-blue-600 mr-2"></i>
           Nombre de la Organización *
         </label>
-        <input id="name" type="text" formControlName="name" (blur)="generateSlug()" [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
-                   (nameControl?.invalid && nameControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')"
+        <input id="name" type="text" formControlName="name" (blur)="generateSlug()" [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                   (nameControl?.invalid && nameControl?.touched ? 'border-red-400 bg-red-50/50' : 'border-slate-300')"
           placeholder="Ingrese el nombre de la organización" />
         @if (nameControl?.invalid && nameControl?.touched) {
         <div class="mt-2 text-sm text-red-600 flex items-center error-message">
@@ -46,16 +48,16 @@
 
       <!-- Slug -->
       <div class="space-y-2 mb-6">
-        <label for="slug" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-          <i class="ph-link text-primary-500 mr-2"></i>
+        <label for="slug" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+          <i class="ph-link text-blue-600 mr-2"></i>
           Slug (URL amigable) *
         </label>
         <div class="flex rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
           <input id="slug" type="text" formControlName="slug"
-            [class]="'flex-1 px-4 py-4 border rounded-l-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm ' + 
-                     (slugControl?.invalid && slugControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="nombre-organizacion" />
+            [class]="'flex-1 px-4 py-4 border rounded-l-xl focus:ring-3 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200 bg-white/60 backdrop-blur-sm ' + 
+                     (slugControl?.invalid && slugControl?.touched ? 'border-red-400 bg-red-50/50' : 'border-slate-300')" placeholder="nombre-organizacion" />
           <button type="button" (click)="generateSlug()"
-            class="px-6 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-r-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 transform hover:scale-105 focus:ring-3 focus:ring-primary-500/30 group"
+            class="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-r-xl hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 transform hover:scale-105 focus:ring-3 focus:ring-blue-500/30 group"
             title="Generar slug automáticamente basado en el nombre de la organización">
             <i class="ph-magic-wand text-lg group-hover:animate-bounce"></i>
           </button>
@@ -83,20 +85,20 @@
 
       <!-- Descripción -->
       <div class="space-y-2 mb-6">
-        <label for="description" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-          <i class="ph-note text-primary-500 mr-2"></i>
+        <label for="description" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+          <i class="ph-note text-blue-600 mr-2"></i>
           Descripción
         </label>
         <textarea id="description" formControlName="description" rows="4"
-          class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 resize-none bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+          class="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-3 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200 resize-none bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md"
           placeholder="Descripción opcional de la organización (máximo 200 caracteres)"></textarea>
         <p class="text-xs text-gray-500 text-right">{{ (descriptionControl?.value || '').length }}/200 caracteres</p>
       </div>
 
       <!-- Máximo de Clientes -->
       <div class="space-y-2">
-        <label for="maxClients" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-          <i class="ph-users text-primary-500 mr-2"></i>
+        <label for="maxClients" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+          <i class="ph-users text-blue-600 mr-2"></i>
           Máximo de Clientes *
         </label>
         <div class="flex items-center space-x-4">
@@ -133,25 +135,26 @@
 
     <!-- Información del Administrador (solo para creación) -->
     @if (!isEditing && adminUserGroup) {
-    <div class="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 shadow-sm">
-      <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-        <i class="ph-user-gear text-primary-500 mr-2"></i>
+    <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 shadow-lg">
+      <h3
+        class="text-xl font-bold bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent mb-6 flex items-center">
+        <i class="ph-user-gear text-emerald-600 mr-3 text-xl"></i>
         Administrador de la Organización
       </h3>
-      <p class="text-sm text-gray-600 mb-6">Se creará automáticamente un usuario administrador para esta
+      <p class="text-slate-600 mb-6 font-medium">Se creará automáticamente un usuario administrador para esta
         organización.</p>
       <div formGroupName="adminUser" class="space-y-6">
         <!-- Email del Admin -->
         <div class="space-y-2">
-          <label for="adminEmail" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-            <i class="ph-envelope text-primary-500 mr-2"></i>
+          <label for="adminEmail" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+            <i class="ph-envelope text-emerald-600 mr-2"></i>
             Email del Administrador *
           </label>
           <input id="adminEmail" type="email" formControlName="email"
-            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
-                     (adminEmailControl?.invalid && adminEmailControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="admin@organizacion.com" />
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all duration-200 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminEmailControl?.invalid && adminEmailControl?.touched ? 'border-red-400 bg-red-50/50' : 'border-slate-300')" placeholder="admin@organizacion.com" />
           @if (adminEmailControl?.invalid && adminEmailControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
+          <div class="mt-2 text-sm text-red-700 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminEmailControl?.errors?.['required']) {
             <span>El email es requerido</span>
@@ -164,16 +167,16 @@
         </div>
         <!-- Nombre del Admin -->
         <div class="space-y-2">
-          <label for="adminName" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-            <i class="ph-user text-primary-500 mr-2"></i>
+          <label for="adminName" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+            <i class="ph-user text-emerald-600 mr-2"></i>
             Nombre del Administrador *
           </label>
           <input id="adminName" type="text" formControlName="name"
-            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
-                     (adminNameControl?.invalid && adminNameControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')"
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all duration-200 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminNameControl?.invalid && adminNameControl?.touched ? 'border-red-400 bg-red-50/50' : 'border-slate-300')"
             placeholder="Nombre completo del administrador" />
           @if (adminNameControl?.invalid && adminNameControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
+          <div class="mt-2 text-sm text-red-700 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminNameControl?.errors?.['required']) {
             <span>El nombre es requerido</span>
@@ -186,15 +189,15 @@
         </div>
         <!-- Contraseña del Admin -->
         <div class="space-y-2">
-          <label for="adminPassword" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-            <i class="ph-lock text-primary-500 mr-2"></i>
+          <label for="adminPassword" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+            <i class="ph-lock text-emerald-600 mr-2"></i>
             Contraseña del Administrador *
           </label>
           <input id="adminPassword" type="password" formControlName="password"
-            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
-                     (adminPasswordControl?.invalid && adminPasswordControl?.touched ? 'border-red-300 bg-red-50/50' : 'border-gray-300')" placeholder="Contraseña segura" />
+            [class]="'w-full px-4 py-4 border rounded-xl focus:ring-3 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all duration-200 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md ' + 
+                     (adminPasswordControl?.invalid && adminPasswordControl?.touched ? 'border-red-400 bg-red-50/50' : 'border-slate-300')" placeholder="Contraseña segura" />
           @if (adminPasswordControl?.invalid && adminPasswordControl?.touched) {
-          <div class="mt-2 text-sm text-red-600 flex items-center error-message">
+          <div class="mt-2 text-sm text-red-700 flex items-center error-message">
             <i class="ph-warning-circle mr-1"></i>
             @if (adminPasswordControl?.errors?.['required']) {
             <span>La contraseña es requerida</span>
@@ -204,26 +207,26 @@
             }
           </div>
           }
-          <div class="mt-2 text-xs text-gray-500">
+          <div class="mt-2 text-xs text-slate-500 font-medium">
             La contraseña debe tener al menos 8 caracteres.
           </div>
         </div>
         <!-- Teléfono del Admin (opcional) -->
         <div class="space-y-2">
-          <label for="adminPhone" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-            <i class="ph-phone text-primary-500 mr-2"></i>
+          <label for="adminPhone" class="block text-sm font-bold text-slate-700 mb-3 flex items-center">
+            <i class="ph-phone text-emerald-600 mr-2"></i>
             Teléfono (opcional)
           </label>
           <input id="adminPhone" type="tel" formControlName="phone"
-            class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
+            class="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-3 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all duration-200 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md"
             placeholder="+54 11 1234-5678" />
         </div>
       </div>
-      <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-        <p class="text-sm text-yellow-700 flex items-center">
-          <i class="ph-warning text-yellow-500 mr-2"></i>
-          <span><strong>Importante:</strong> Se enviará un email al administrador con las instrucciones para
-            activar su cuenta.</span>
+      <div class="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200">
+        <p class="text-sm text-amber-800 flex items-center">
+          <i class="ph-warning text-amber-600 mr-2"></i>
+          <span class="font-semibold">Importante:</span> Se enviará un email al administrador con las instrucciones para
+          activar su cuenta.
         </p>
       </div>
     </div>
@@ -247,14 +250,14 @@
 
     <!-- Botones -->
     <div
-      class="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-8 border-t border-gray-200">
+      class="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-8 border-t border-slate-200">
       <button type="button" (click)="onCancel()"
-        class="w-full sm:w-auto px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium transform hover:scale-105 focus:ring-3 focus:ring-gray-300">
+        class="w-full sm:w-auto px-8 py-4 border-2 border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 font-semibold transform hover:scale-105 focus:ring-3 focus:ring-slate-300">
         <i class="ph-x mr-2"></i>
         Cancelar
       </button>
       <button type="submit" [disabled]="organizationForm.invalid"
-        class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium transform hover:scale-105 focus:ring-3 focus:ring-primary-500/30 shadow-lg hover:shadow-xl disabled:shadow-none">
+        class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl hover:from-blue-700 hover:to-indigo-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed transition-all duration-200 font-semibold transform hover:scale-105 focus:ring-3 focus:ring-blue-500/30 shadow-lg hover:shadow-xl disabled:shadow-none">
         <i class="ph-{{ isEditing ? 'pencil' : 'plus' }} mr-2"></i>
         {{ isEditing ? 'Actualizar' : 'Crear' }} Organización
       </button>

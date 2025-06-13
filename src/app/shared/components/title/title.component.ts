@@ -15,4 +15,6 @@ export class TitleComponent {
   @Input() icon?: string;
   @Input() divider = true;
   @Input() gradient = true;
+  @Input() titleClass?: string;
+  @Input() subtitleClass?: string;
 }

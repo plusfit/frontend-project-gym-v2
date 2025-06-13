@@ -5,11 +5,13 @@
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <app-title [title]="(organization$ | async)?.name || 'Detalle de Organización'"
-          subtitle="Administra la información, planes, clientes y rutinas" icon="ph-buildings">
+          subtitle="Administra la información, planes, clientes y rutinas" icon="ph-buildings"
+          [titleClass]="'text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent'"
+          [subtitleClass]="'text-slate-600 font-medium'">
         </app-title>
 
         <button (click)="onBackToList()"
-          class="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium">
+          class="inline-flex items-center px-4 py-2 bg-slate-500 text-white rounded-xl hover:bg-slate-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold">
           <i class="ph-arrow-left text-lg mr-2"></i>
           Volver a Lista
         </button>
@@ -18,152 +20,153 @@
 
     <!-- Loading -->
     @if (loading$ | async) {
-      <div class="flex justify-center items-center py-12">
-        <app-loader></app-loader>
-      </div>
+    <div class="flex justify-center items-center py-12">
+      <app-loader></app-loader>
+    </div>
     }
 
     <!-- Error Message -->
     @if (error$ | async; as error) {
-      <div class="mb-6 animate-in slide-in-from-top duration-300">
-        <div class="bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg backdrop-blur-sm">
-          <div class="flex items-start">
-            <div class="bg-red-100 rounded-lg p-2 mr-3">
-              <i class="ph-warning-circle text-red-600 text-xl"></i>
-            </div>
-            <div class="flex-1">
-              <h3 class="text-sm font-semibold text-red-800">Error</h3>
-              <p class="text-sm text-red-700 mt-1">{{ error }}</p>
-            </div>
+    <div class="mb-6 animate-in slide-in-from-top duration-300">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg backdrop-blur-sm">
+        <div class="flex items-start">
+          <div class="bg-red-100 rounded-lg p-2 mr-3">
+            <i class="ph-warning-circle text-red-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-red-800">Error</h3>
+            <p class="text-sm text-red-700 mt-1">{{ error }}</p>
           </div>
         </div>
       </div>
+    </div>
     }
 
     <!-- Main Content -->
     @if ((!(loading$ | async) && (organization$ | async)) || isDemo) {
+    <div
+      class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden transition-all duration-300 hover:shadow-2xl">
+      <!-- Organization Header Card -->
       <div
-        class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden transition-all duration-300 hover:shadow-2xl">
-        <!-- Organization Header Card -->
-        <div
-          class="px-6 py-5 border-b border-gray-200/60 bg-gradient-to-r from-primary-100/80 via-blue-50/60 to-indigo-50/40">
-          <div class="flex items-center space-x-4">
-            <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl p-3 shadow-lg">
-              <i class="ph-buildings text-white text-2xl"></i>
-            </div>
-            <div class="flex-1">
-              <h1 class="text-2xl font-bold text-gray-900">
-                {{ isDemo ? 'Organización Demo' : (organization$ | async)?.name }}
-              </h1>
-              <p class="text-gray-600 mt-1">
-                {{ isDemo ? 'Esta es una organización de demostración para mostrar las funcionalidades' :
-                ((organization$ | async)?.description || 'Sin descripción') }}
-              </p>
-              <div class="flex items-center mt-2 space-x-4">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                  [class.bg-green-100]="isDemo || (organization$ | async)?.isActive"
-                  [class.text-green-800]="isDemo || (organization$ | async)?.isActive"
-                  [class.bg-red-100]="!isDemo && !(organization$ | async)?.isActive"
-                  [class.text-red-800]="!isDemo && !(organization$ | async)?.isActive">
-                  <span class="w-1.5 h-1.5 rounded-full mr-1.5"
-                    [class.bg-green-400]="isDemo || (organization$ | async)?.isActive"
+        class="px-6 py-5 border-b border-slate-200/60 bg-gradient-to-r from-blue-100/80 via-indigo-50/60 to-slate-50/40">
+        <div class="flex items-center space-x-4">
+          <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-3 shadow-lg">
+            <i class="ph-buildings text-white text-2xl"></i>
+          </div>
+          <div class="flex-1">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              {{ isDemo ? 'Organización Demo' : (organization$ | async)?.name }}
+            </h1>
+            <p class="text-slate-600 mt-1 font-medium">
+              {{ isDemo ? 'Esta es una organización de demostración para mostrar las funcionalidades' :
+              ((organization$ | async)?.description || 'Sin descripción') }}
+            </p>
+            <div class="flex items-center mt-2 space-x-4">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
+                [class.bg-green-100]="isDemo || (organization$ | async)?.isActive"
+                [class.text-green-800]="isDemo || (organization$ | async)?.isActive"
+                [class.bg-red-100]="!isDemo && !(organization$ | async)?.isActive"
+                [class.text-red-800]="!isDemo && !(organization$ | async)?.isActive">
+                <span class="w-1.5 h-1.5 rounded-full mr-1.5"
+                  [class.bg-green-400]="isDemo || (organization$ | async)?.isActive"
                   [class.bg-red-400]="!isDemo && !(organization$ | async)?.isActive"></span>
-                  {{ (isDemo || (organization$ | async)?.isActive) ? 'Activa' : 'Inactiva' }}
-                </span>
-                <span class="text-sm text-gray-500">
-                  Slug: <span class="font-medium">{{ isDemo ? 'org-demo' : (organization$ | async)?.slug
-                }}</span>
+                {{ (isDemo || (organization$ | async)?.isActive) ? 'Activa' : 'Inactiva' }}
+              </span>
+              <span class="text-sm text-slate-500 font-medium">
+                Slug: <span class="font-bold text-slate-700">{{ isDemo ? 'org-demo' : (organization$ | async)?.slug
+                  }}</span>
               </span>
             </div>
           </div>
         </div>
       </div>
-      <!-- Tabs -->
-      <mat-tab-group mat-align-tabs="center" class="organization-tabs">
-        <!-- Información Tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span class="flex items-center">
-              <i class="ph-info text-lg mr-2"></i>
-              Información
-            </span>
-          </ng-template>
-          <div class="p-6">
-            <app-organization-detail-info
-            [organization]="isDemo ? null : (organization$ | async)"></app-organization-detail-info>
-          </div>
-        </mat-tab>
-        <!-- Permisos Tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span class="flex items-center">
-              <i class="ph-shield-check text-lg mr-2"></i>
-              Permisos
-            </span>
-          </ng-template>
-          <div class="p-6">
-            <app-organization-permissions
-            [organization]="isDemo ? null : (organization$ | async)"></app-organization-permissions>
-          </div>
-        </mat-tab>
-        <!-- Planes Tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span class="flex items-center">
-              <i class="ph-clipboard-text text-lg mr-2"></i>
-              Planes ({{ isDemo ? '3' : ((plans$ | async)?.length || 0) }})
-            </span>
-          </ng-template>
-          <div class="p-6">
-            <app-organization-detail-plans
-            [plans]="isDemo ? null : (plans$ | async)"></app-organization-detail-plans>
-          </div>
-        </mat-tab>
-        <!-- Clientes Tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span class="flex items-center">
-              <i class="ph-users text-lg mr-2"></i>
-              Clientes ({{ isDemo ? '3' : ((clients$ | async)?.length || 0) }})
-            </span>
-          </ng-template>
-          <div class="p-6">
-            <app-organization-detail-clients
-            [clients]="isDemo ? null : (clients$ | async)"></app-organization-detail-clients>
-          </div>
-        </mat-tab>
-        <!-- Rutinas Tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span class="flex items-center">
-              <i class="ph-list-dashes text-lg mr-2"></i>
-              Rutinas ({{ isDemo ? '3' : ((routines$ | async)?.length || 0) }})
-            </span>
-          </ng-template>
-          <div class="p-6">
-            <app-organization-detail-routines
-            [routines]="isDemo ? null : (routines$ | async)"></app-organization-detail-routines>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
     </div>
-  }
+    <!-- Tabs -->
+    <mat-tab-group mat-align-tabs="center" class="organization-tabs">
+      <!-- Información Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="flex items-center">
+            <i class="ph-info text-lg mr-2"></i>
+            Información
+          </span>
+        </ng-template>
+        <div class="p-6">
+          <app-organization-detail-info
+            [organization]="isDemo ? null : (organization$ | async)"></app-organization-detail-info>
+        </div>
+      </mat-tab>
+      <!-- Permisos Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="flex items-center">
+            <i class="ph-shield-check text-lg mr-2"></i>
+            Permisos
+          </span>
+        </ng-template>
+        <div class="p-6">
+          <app-organization-permissions
+            [organization]="isDemo ? null : (organization$ | async)"></app-organization-permissions>
+        </div>
+      </mat-tab>
+      <!-- Planes Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="flex items-center">
+            <i class="ph-clipboard-text text-lg mr-2"></i>
+            Planes ({{ isDemo ? '3' : ((plans$ | async)?.length || 0) }})
+          </span>
+        </ng-template>
+        <div class="p-6">
+          <app-organization-detail-plans [plans]="isDemo ? null : (plans$ | async)"></app-organization-detail-plans>
+        </div>
+      </mat-tab>
+      <!-- Clientes Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="flex items-center">
+            <i class="ph-users text-lg mr-2"></i>
+            Clientes ({{ isDemo ? '3' : ((clients$ | async)?.length || 0) }})
+          </span>
+        </ng-template>
+        <div class="p-6">
+          <app-organization-detail-clients
+            [clients]="isDemo ? null : (clients$ | async)"></app-organization-detail-clients>
+        </div>
+      </mat-tab>
+      <!-- Rutinas Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="flex items-center">
+            <i class="ph-list-dashes text-lg mr-2"></i>
+            Rutinas ({{ isDemo ? '3' : ((routines$ | async)?.length || 0) }})
+          </span>
+        </ng-template>
+        <div class="p-6">
+          <app-organization-detail-routines
+            [routines]="isDemo ? null : (routines$ | async)"></app-organization-detail-routines>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    }
 
-  <!-- No Data State -->
-  @if (!(loading$ | async) && !(organization$ | async) && !isDemo) {
+    <!-- No Data State -->
+    @if (!(loading$ | async) && !(organization$ | async) && !isDemo) {
     <div class="text-center py-12">
       <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
-        <i class="ph-buildings text-gray-400 text-6xl mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">Organización no encontrada</h3>
-        <p class="text-gray-600 mb-6">La organización que buscas no existe o no tienes permisos para verla.</p>
+        <i class="ph-buildings text-slate-400 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2">
+          Organización no encontrada</h3>
+        <p class="text-slate-600 mb-6 font-medium">La organización que buscas no existe o no tienes permisos para verla.
+        </p>
         <button (click)="onBackToList()"
-          class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-all duration-200">
+          class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 font-semibold">
           <i class="ph-arrow-left text-lg mr-2"></i>
           Volver a Lista
         </button>
       </div>
     </div>
-  }
+    }
 
-</div>
+  </div>
 </div>
