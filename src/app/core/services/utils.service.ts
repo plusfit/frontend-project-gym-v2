@@ -1,12 +1,12 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { isPlatformBrowser } from "@angular/common";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 /**
  * The UtilsService provides utility methods for common tasks.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UtilsService {
   /**
@@ -32,7 +32,12 @@ export class UtilsService {
    * Clears the session storage if the current platform is a browser.
    */
   cleanStorage(): void {
-    if (this.isBrowser) sessionStorage.clear();
+    if (this.isBrowser) {
+      sessionStorage.clear();
+      sessionStorage.removeItem("auth");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("userId");
+    }
   }
 
   /**

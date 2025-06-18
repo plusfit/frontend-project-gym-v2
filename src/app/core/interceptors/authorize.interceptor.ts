@@ -4,15 +4,15 @@ import {
   HttpHandlerFn,
   HttpRequest,
   HttpInterceptorFn,
-} from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { UtilsService } from '@core/services/utils.service';
-import { GetNewToken, Logout } from '@features/auth/state/auth.actions';
-import { AuthState } from '@features/auth/state/auth.state';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { NgZone } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+} from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { UtilsService } from "@core/services/utils.service";
+import { GetNewToken, Logout } from "@features/auth/state/auth.actions";
+import { AuthState } from "@features/auth/state/auth.state";
+import { Actions, ofActionSuccessful, Store } from "@ngxs/store";
+import { NgZone } from "@angular/core";
+import { Observable, catchError, throwError } from "rxjs";
 
 const handleUnauthorizedError = (
   actions: Actions,
@@ -38,12 +38,9 @@ const handleUnauthorizedError = (
       //actions.pipe(ofActionSuccessful(GetNewToken)).subscribe(() => {
       // window.location.reload(); //hago el reload para que el usuario no tenga que hacerlo y pase "mas desapercibido"
       //});
-    } else if (!isAccessTokenExpired && !isRefreshTokenExpired) {
-      store.dispatch(new Logout());
-      zone.run(() => router.navigate(['auth/login']));
     } else {
-      utilsService.cleanStorage();
-      zone.run(() => router.navigate(['auth/login']));
+      store.dispatch(new Logout());
+      zone.run(() => router.navigate(["auth/login"]));
     }
   }
 };
