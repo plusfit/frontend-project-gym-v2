@@ -98,7 +98,7 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(id: string, clientsList?: { email: string }[]): void {
+  openDialog(plan: any, clientsList?: { email: string }[]): void {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
@@ -114,7 +114,7 @@ export class PlansPageComponent implements OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeletePlan(id));
+      this.store.dispatch(new DeletePlan(plan._id));
       this.actions.pipe(ofActionSuccessful(DeletePlan), takeUntil(this.destroy)).subscribe(() => {
         this.snackbar.showSuccess("Éxito", "Plan eliminado correctamente");
       });
