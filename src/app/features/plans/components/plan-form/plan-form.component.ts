@@ -94,7 +94,7 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
 
   sexOptions = [
     { value: "male", label: "Hombre" },
-    { value: "false", label: "Mujer" },
+    { value: "female", label: "Mujer" },
     { value: "unisex", label: "Ambos" },
   ];
 
