@@ -97,6 +97,20 @@
               </mat-form-field>
             </div>
 
+            <div class="h-[80px]">
+              <mat-form-field appearance="outline" class="w-full rounded-md">
+                <mat-label class="text-gray-700">Sexo</mat-label>
+                <mat-select formControlName="sexType" class="bg-gray-50">
+                  <mat-option
+                    *ngFor="let sexOption of sexOptions"
+                    [value]="sexOption.value"
+                  >
+                    {{ sexOption.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
             @if (isInjuryRecoveryGoal()) {
               <div class="h-[80px]">
                 <mat-form-field appearance="outline" class="w-full rounded-md">
