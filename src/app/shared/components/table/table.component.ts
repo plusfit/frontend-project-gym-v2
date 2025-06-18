@@ -228,6 +228,8 @@ export class TableComponent implements OnInit {
         return 'Pilométricos';
       case 'Trapecios':
         return 'Trapecios';
+      case 'Full Body':
+        return 'Full Body';
 
       // Tipos de Movimiento
       case 'Empuje':

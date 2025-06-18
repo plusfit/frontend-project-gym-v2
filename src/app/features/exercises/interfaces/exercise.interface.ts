@@ -4,6 +4,7 @@ export interface Exercise {
   description: string;
   category: string[];
   gifUrl: string;
+  mediaType?: 'image' | 'video';
   type: string;
   minutes?: number;
   reps: number;
@@ -17,6 +18,7 @@ export interface ExercisePayload {
   name: string;
   description: string;
   gifUrl?: string;
+  mediaType?: 'image' | 'video';
   type: string;
   minutes?: number;
   reps: number;

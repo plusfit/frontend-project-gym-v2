@@ -59,6 +59,7 @@ export enum ExperienceLevel {
   BEGINNER = 'beginner',
   INTERMEDIATE = 'intermediate',
   ADVANCED = 'advanced',
+  NONE = 'none',
 }
 
 export enum Tags {

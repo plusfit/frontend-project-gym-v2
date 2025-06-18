@@ -163,7 +163,7 @@ export class ClientsState {
         const selectedClient = {
           _id: response.data._id,
           name: response.data.userInfo.name,
-          identifier: response.data.userInfo.identifier,
+          identifier: response.data.email,
           password: response.data.userInfo.password,
           phone: response.data.userInfo.phone,
           address: response.data.userInfo.address,
@@ -255,6 +255,8 @@ export class ClientsState {
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
           CI: response.data.CI,
           planId: response.data.planId,
+          surgicalHistory: response.data.surgicalHistory,
+          historyofPathologicalLesions: response.data.historyofPathologicalLesions,
         };
         ctx.patchState({
           clients: [...clients, mappedClient],
@@ -295,6 +297,8 @@ export class ClientsState {
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
           CI: response.data.CI,
           planId: response.data.planId,
+          surgicalHistory: response.data.surgicalHistory,
+          historyofPathologicalLesions: response.data.historyofPathologicalLesions,
         };
         const updatedClients = clients.map((client) =>
           client._id === payload._id ? mappedClient : client,
