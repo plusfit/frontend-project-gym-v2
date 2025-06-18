@@ -4,7 +4,7 @@ export interface Plan {
   _id: string;
   name: string;
   type: string;
-  sexType?: string;
+  sexType: string;
   defaultRoutine: Routine;
   days: number;
   updatedAt: Date;
