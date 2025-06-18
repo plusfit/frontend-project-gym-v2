@@ -130,8 +130,6 @@ export class PlansPageComponent implements OnInit, OnDestroy {
 
   getSexTypeLabel(sexType: string): string {
     const sexTypeLabels: { [key: string]: string } = {
-      Hombre: "Masculino",
-      Mujer: "Femenino",
       male: "Masculino",
       female: "Femenino",
       unisex: "Unisex",
@@ -141,8 +139,6 @@ export class PlansPageComponent implements OnInit, OnDestroy {
 
   getSexTypeBadgeClass(sexType: string): string {
     const sexTypeClasses: { [key: string]: string } = {
-      Hombre: "bg-blue-100 text-blue-800",
-      Mujer: "bg-pink-100 text-pink-800",
       male: "bg-blue-100 text-blue-800",
       female: "bg-pink-100 text-pink-800",
       unisex: "bg-gray-100 text-gray-800",
