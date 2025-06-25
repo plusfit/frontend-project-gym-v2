@@ -95,6 +95,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   btnTitle = 'Crear';
   selectedFile: File | null = null;
   selectedCategory: any;
+  mediaType: 'image' | 'video' | undefined = undefined;
   selector = ExerciseState.getCategories;
   categoryOptions$: Observable<any[]> = this.store.select(
     ExerciseState.getCategories,
@@ -104,6 +105,15 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   dragging = false;
   typesExcercise = ['minutes', 'reps', 'series'];
 
+  // Tipos de archivo permitidos
+  private readonly allowedFileTypes = [
+    'image/gif',
+    'image/jpeg', 
+    'image/jpg',
+    'image/png',
+    'video/mp4'
+  ];
+
   types = [
     { value: 'cardio', viewValue: 'Cardio' },
     { value: 'room', viewValue: 'Sala' },
@@ -112,6 +122,15 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  private getMediaType(fileType: string): 'image' | 'video' | undefined {
+    if (fileType.startsWith('image/')) {
+      return 'image';
+    } else if (fileType.startsWith('video/')) {
+      return 'video';
+    }
+    return undefined;
   }
 
   ngOnInit(): void {
@@ -166,20 +185,20 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+    // biome-ignore lint/complexity/useOptionalChain: <explanation>
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      if (
-        !file.type.includes('gif') &&
-        !file.type.includes('jpeg') &&
-        !file.type.includes('jpg') &&
-        !file.type.includes('png')
-      ) {
-        this.snackbar.showError('Error', 'Formato no permitido');
+      if (!this.allowedFileTypes.includes(file.type)) {
+        this.snackbar.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG, PNG y MP4');
+        // Limpiar el input
+        input.value = '';
         return;
       }
 
       this.selectedFile = file;
+      this.mediaType = this.getMediaType(file.type);
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         // Convertir el archivo a Base64
@@ -196,6 +215,8 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     this.filePreview = null;
+    this.selectedFile = null;
+    this.mediaType = undefined;
 
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
@@ -221,13 +242,9 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
   }
 
   processFile(file: File) {
-    if (
-      file.type === 'image/gif' ||
-      file.type === 'image/jpeg' ||
-      file.type === 'image/jpg' ||
-      file.type === 'image/png'
-    ) {
+    if (this.allowedFileTypes.includes(file.type)) {
       this.selectedFile = file;
+      this.mediaType = this.getMediaType(file.type);
 
       // Generar vista previa
       const reader = new FileReader();
@@ -238,7 +255,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
 
       console.log('Archivo seleccionado:', file.name);
     } else {
-      console.error('Formato no permitido. Solo GIF.');
+      this.snackbar.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG, PNG y MP4');
     }
   }
 
@@ -248,6 +265,19 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
     this.exerciseForm.patchValue(exerciseEditing);
     this.toggleExerciseFields(exerciseEditing.type);
     this.filePreview = exerciseEditing.gifUrl;
+    
+    // Usar el mediaType existente si está disponible, si no, detectarlo por la URL
+    if (exerciseEditing.mediaType) {
+      this.mediaType = exerciseEditing.mediaType;
+    } else if (exerciseEditing.gifUrl) {
+      // Detectar el tipo de archivo basado en la URL o extensión
+      const url = exerciseEditing.gifUrl.toLowerCase();
+      if (url.includes('.mp4') || url.includes('video')) {
+        this.mediaType = 'video';
+      } else if (url.includes('.gif') || url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || url.includes('image')) {
+        this.mediaType = 'image';
+      }
+    }
   }
 
   toggleExerciseFields(type: string): void {
@@ -334,6 +364,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
           name: this.exerciseForm.get('name')?.value,
           description: this.exerciseForm.get('description')?.value,
           gifUrl: fileUrl || undefined, // Asegurarse de enviar la URL obtenida
+          mediaType: this.mediaType, // Incluir el tipo de archivo
           category: this.exerciseForm.get('category')?.value,
           type: this.exerciseForm.get('type')?.value,
           rest: this.exerciseForm.get('rest')?.value || 0,
@@ -373,6 +404,7 @@ export class ExerciseFormComponent implements OnInit, OnDestroy {
           name: this.exerciseForm.get('name')?.value,
           description: this.exerciseForm.get('description')?.value,
           gifUrl: fileUrl || undefined,
+          mediaType: this.mediaType, // Incluir el tipo de archivo
           category: this.exerciseForm.get('category')?.value,
           type: this.exerciseForm.get('type')?.value,
           rest: this.exerciseForm.get('rest')?.value || 0,
