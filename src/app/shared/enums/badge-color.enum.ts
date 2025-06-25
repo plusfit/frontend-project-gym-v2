@@ -5,25 +5,29 @@ export enum EColorBadge {
   /**
    * The primary color option for badges.
    */
-  PRIMARY = 'primary',
+  PRIMARY = "primary",
   /**
    * The success color option for badges.
    */
-  SUCCESS = 'success',
+  SUCCESS = "success",
   /**
    * The warning color option for badges.
    */
-  WARNING = 'warning',
+  WARNING = "warning",
   /**
    * The error color option for badges.
    */
-  ERROR = 'error',
+  ERROR = "error",
   /**
    * The info color option for badges.
    */
-  INFO = 'info',
+  INFO = "info",
   /**
    * The neutral color option for badges.
    */
-  NEUTRAL = 'neutral',
+  NEUTRAL = "neutral",
+  /**
+   * The pink color option for badges.
+   */
+  PINK = "pink",
 }
