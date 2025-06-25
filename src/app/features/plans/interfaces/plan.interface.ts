@@ -79,3 +79,9 @@ export enum PlanType {
   CARDIO = "cardio",
   MIXED = "mixed",
 }
+
+export enum SexType {
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
+}
