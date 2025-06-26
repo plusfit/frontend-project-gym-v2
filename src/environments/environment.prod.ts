@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  env: 'Production',
-  api: 'https://backend-project-gym-production-9fcf.up.railway.app',
+  env: "Production",
+  api: "https://backend-project-gym-production-9fcf.up.railway.app",
   exerciseTableLimit: 5,
   exerciseTableLimitOptions: [8, 5],
   routineTableLimit: 8,
@@ -21,5 +21,11 @@ export const environment = {
     scrollTimeDown: 10000,
 
     scrollTimeUp: 5000,
+  },
+  /**
+   * Google reCAPTCHA v3 configuration
+   */
+  recaptcha: {
+    siteKey: "YOUR_PRODUCTION_SITE_KEY", // TODO: Reemplazar con tu site key de producción
   },
 };
