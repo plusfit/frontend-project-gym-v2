@@ -7,6 +7,7 @@ export interface NewPasswordRequest {
 export interface AuthCredentials {
   identifier: string;
   password: string;
+  recaptchaToken?: string;
 }
 
 export interface AuthResponse {
