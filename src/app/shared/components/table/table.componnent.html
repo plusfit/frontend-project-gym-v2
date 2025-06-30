@@ -87,9 +87,15 @@
             [textBadge]="element[column] ? 'Personalizado' : 'Predeterminado'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "sexType") {
+          <app-badge
+            [colorBadge]="getSexTypeBadgeColor(element[column])"
+            [textBadge]="getSexTypeLabel(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container

@@ -1,26 +1,21 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { EColorBadge } from '../../enums/badge-color.enum';
-import { CdkTableModule } from '@angular/cdk/table';
-import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import {
-  MatMenu,
-  MatMenuContent,
-  MatMenuItem,
-  MatMenuTrigger,
-} from '@angular/material/menu';
-import { MatNoDataRow } from '@angular/material/table';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { LoaderComponent } from '@shared/components/loader/loader.component';
-import { TranslationPipe } from '@shared/pipes/translation.pipe';
-import { CamelToTitlePipe } from '@shared/pipes/camel-to-title.pipe';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
+import { EColorBadge } from "../../enums/badge-color.enum";
+import { CdkTableModule } from "@angular/cdk/table";
+import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
+import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatNoDataRow } from "@angular/material/table";
+import { BadgeComponent } from "@shared/components/badge/badge.component";
+import { LoaderComponent } from "@shared/components/loader/loader.component";
+import { TranslationPipe } from "@shared/pipes/translation.pipe";
+import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
+import { MatCheckbox } from "@angular/material/checkbox";
 
 /**
  * The TableComponent displays a table of data.
  */
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.componnent.html',
+  selector: "app-table",
+  templateUrl: "./table.componnent.html",
   standalone: true,
   imports: [
     NgClass,
@@ -88,7 +83,7 @@ export class TableComponent implements OnInit {
    * Header CSS class
    * @type {string} css class
    */
-  @Input() headerCssClass = 'header-default';
+  @Input() headerCssClass = "header-default";
 
   @Input() isSelect = false;
   @Input() selected: any[] = [];
@@ -101,9 +96,7 @@ export class TableComponent implements OnInit {
 
   get tableColumns(): string[] {
     const isSelect = this.isSelect;
-    const tableColums = isSelect
-      ? ['select', ...this.displayedColumns]
-      : this.displayedColumns;
+    const tableColums = isSelect ? ["select", ...this.displayedColumns] : this.displayedColumns;
     return tableColums;
   }
 
@@ -135,9 +128,7 @@ export class TableComponent implements OnInit {
   }
 
   resolveNestedProperty(object: any, path: string): any {
-    return (
-      path.split('.').reduce((o, key) => (o ? o[key] : null), object) || 'N/A'
-    );
+    return path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A";
   }
 
   toggleSelection(element: any): void {
@@ -174,76 +165,67 @@ export class TableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selected
-      ? (this.selection = [...this.selected])
-      : (this.selection = []);
+    this.selected ? (this.selection = [...this.selected]) : (this.selection = []);
   }
 
   getColorBadge(category: string): EColorBadge {
     switch (category) {
-      case 'room':
+      case "room":
         return EColorBadge.SUCCESS;
-      case 'cardio':
+      case "cardio":
         return EColorBadge.ERROR;
-      case 'mix':
+      case "mix":
         return EColorBadge.INFO;
       default:
         return EColorBadge.INFO;
     }
   }
 
-  getTextBadge(category: string): string {
-    switch (category) {
-      case 'room':
-        return 'Sala';
-      case 'cardio':
-        return 'Cardio';
-      case 'mix':
-        return 'Mixto';
-      case 'Pecho':
-        return 'Pecho';
-      case 'Espalda':
-        return 'Espalda';
-      case 'Hombros':
-        return 'Hombros';
-      case 'Bíceps':
-        return 'Bíceps';
-      case 'Tríceps':
-        return 'Tríceps';
-      case 'Antebrazos':
-        return 'Antebrazos';
-      case 'Cuádriceps':
-        return 'Cuádriceps';
-      case 'Isquiotibiales':
-        return 'Isquiotibiales';
-      case 'Glúteos':
-        return 'Glúteos';
-      case 'Pantorrillas':
-        return 'Pantorrillas';
-      case 'Core':
-        return 'Core';
-      case 'Zona Lumbar':
-        return 'Zona Lumbar';
-      case 'Pilométricos':
-        return 'Pilométricos';
-      case 'Trapecios':
-        return 'Trapecios';
-      case 'Full Body':
-        return 'Full Body';
-
-      // Tipos de Movimiento
-      case 'Empuje':
-        return 'Empuje';
-      case 'Tracción':
-        return 'Tracción';
-      case 'Dominante de Rodilla':
-        return 'Dominante de Rodilla';
-      case 'Dominante de Cadera':
-        return 'Dominante de Cadera';
-      case 'Estabilización':
-        return 'Estabilización';
+  /**
+   * Get the text badge for a given value.
+   */
+  getTextBadge(value: string): string {
+    switch (value) {
+      case "upper_body":
+        return "Tren Superior";
+      case "lower_body":
+        return "Tren Inferior";
+      case "core":
+        return "Core";
+      case "cardio":
+        return "Cardio";
+      case "flexibility":
+        return "Flexibilidad";
+      case "strength":
+        return "Fuerza";
+      case "endurance":
+        return "Resistencia";
+      case "balance":
+        return "Equilibrio";
       default:
-        return 'Desconocido';
+        return value;
     }
+  }
+
+  getSexTypeLabel(sexType: string): string {
+    const sexTypeLabels: { [key: string]: string } = {
+      Hombre: "Masculino",
+      Mujer: "Femenino",
+      male: "Masculino",
+      female: "Femenino",
+      unisex: "Unisex",
+    };
+    return sexTypeLabels[sexType] || sexType;
+  }
+
+  getSexTypeBadgeColor(sexType: string): EColorBadge {
+    const sexTypeColors: { [key: string]: EColorBadge } = {
+      Hombre: EColorBadge.INFO,
+      Mujer: EColorBadge.PINK,
+      male: EColorBadge.INFO,
+      female: EColorBadge.PINK,
+      unisex: EColorBadge.WARNING,
+    };
+    return sexTypeColors[sexType] || EColorBadge.NEUTRAL;
   }
 }

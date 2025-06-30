@@ -26,4 +26,8 @@ export interface IBadgeClass {
    * The CSS class for a primary badge.
    */
   primary: string;
+  /**
+   * The CSS class for a pink badge.
+   */
+  pink: string;
 }
