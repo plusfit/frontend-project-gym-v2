@@ -26,6 +26,6 @@ export const environment = {
    * Google reCAPTCHA v3 configuration
    */
   recaptcha: {
-    siteKey: "YOUR_PRODUCTION_SITE_KEY", // TODO: Reemplazar con tu site key de producción
+    siteKey: "6Led5m4rAAAAANjCNb_XFHRocWnlsuGDYKFkjtvf", // TODO: Reemplazar con tu site key de producción
   },
 };
