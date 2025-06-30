@@ -1,36 +1,25 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
-import { pickProperties } from '@core/utilities/helpers';
-import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Observable, catchError, tap, throwError, exhaustMap } from 'rxjs';
-import {
-  AuthResponse,
-  FirebaseAuthResponse,
-  Profile,
-  UserPreferences,
-} from '../interfaces/auth';
-import { AuthService } from '../services/auth.service';
-import {
-  ForgotPassword,
-  GetNewToken,
-  GetUserPreferences,
-  Login,
-  Logout,
-} from './auth.actions';
-import { AuthStateModel } from './auth.model';
-import { UtilsService } from '@core/services/utils.service';
-import { SnackBarService } from '@core/services/snackbar.service';
+import { pickProperties } from "@core/utilities/helpers";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
+import { Observable, catchError, tap, throwError, exhaustMap } from "rxjs";
+import { AuthResponse, FirebaseAuthResponse, Profile, UserPreferences } from "../interfaces/auth";
+import { AuthService } from "../services/auth.service";
+import { ForgotPassword, GetNewToken, GetUserPreferences, Login, Logout } from "./auth.actions";
+import { AuthStateModel } from "./auth.model";
+import { UtilsService } from "@core/services/utils.service";
+import { SnackBarService } from "@core/services/snackbar.service";
 
 @State<AuthStateModel>({
-  name: 'auth',
+  name: "auth",
   defaults: {
     auth: null,
     loading: false,
     preferences: null,
   },
 })
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthState {
   @Selector()
   static authLoading(state: AuthStateModel): boolean {
@@ -64,13 +53,7 @@ export class AuthState {
 
   @Selector()
   static userData(state: AuthStateModel): Profile | undefined {
-    return pickProperties(
-      state.preferences,
-      'firstName',
-      'lastName',
-      'email',
-      'role.name',
-    );
+    return pickProperties(state.preferences, "firstName", "lastName", "email", "role.name");
   }
 
   constructor(
@@ -80,24 +63,23 @@ export class AuthState {
   ) {}
 
   @Action(Login, { cancelUncompleted: true })
-  login(
-    ctx: StateContext<AuthStateModel>,
-    action: Login,
-  ): Observable<AuthResponse> {
+  login(ctx: StateContext<AuthStateModel>, action: Login): Observable<AuthResponse> {
     ctx.patchState({ loading: true });
     return this.authService.loginFirebase(action.payload).pipe(
       exhaustMap((response: FirebaseAuthResponse) => {
-        return this.authService.login(response._tokenResponse.idToken).pipe(
-          tap((authResponse: any) => {
-            const { accessToken, refreshToken } = authResponse.data;
-            ctx.patchState({
-              auth: {
-                accessToken,
-                refreshToken,
-              },
-            });
-          }),
-        );
+        return this.authService
+          .login(response._tokenResponse.idToken, action.payload.recaptchaToken)
+          .pipe(
+            tap((authResponse: any) => {
+              const { accessToken, refreshToken } = authResponse.data;
+              ctx.patchState({
+                auth: {
+                  accessToken,
+                  refreshToken,
+                },
+              });
+            }),
+          );
       }),
       tap(() => {
         ctx.patchState({ loading: false });
@@ -105,23 +87,18 @@ export class AuthState {
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
         //TODO: convertir los mensajes
-        this.snackbar.showError(
-          'Login Erroneo',
-          err.error?.data?.message ?? err.message,
-        );
+        this.snackbar.showError("Login Erroneo", err.error?.data?.message ?? err.message);
         return throwError(() => err);
       }),
     );
   }
 
   @Action(GetUserPreferences, { cancelUncompleted: true })
-  getUserPreferences(
-    ctx: StateContext<AuthStateModel>,
-  ): Observable<UserPreferences> {
+  getUserPreferences(ctx: StateContext<AuthStateModel>): Observable<UserPreferences> {
     ctx.patchState({ preferences: null });
     const accessToken = ctx.getState().auth?.accessToken;
     if (!accessToken) {
-      return throwError(() => new Error('No hay token de acceso'));
+      return throwError(() => new Error("No hay token de acceso"));
     }
     return this.authService.getUserPreferences().pipe(
       tap((preferences: UserPreferences) => {
@@ -184,17 +161,14 @@ export class AuthState {
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
         //TODO: convertir los mensajes
-        this.snackbar.showError('Falló en recuperar contraseña', err.message);
+        this.snackbar.showError("Falló en recuperar contraseña", err.message);
         return throwError(() => err);
       }),
     );
   }
 
   @Action(GetNewToken, { cancelUncompleted: true })
-  getNewToken(
-    ctx: StateContext<AuthStateModel>,
-    action: GetNewToken,
-  ): Observable<AuthResponse> {
+  getNewToken(ctx: StateContext<AuthStateModel>, action: GetNewToken): Observable<AuthResponse> {
     const refreshToken = action.payload;
     return this.authService.getNewToken(refreshToken).pipe(
       tap((authResponse: any) => {
@@ -207,10 +181,7 @@ export class AuthState {
         });
       }),
       catchError((err: HttpErrorResponse) => {
-        this.snackbar.showError(
-          'Sesion Expirada',
-          'Por favor inicie sesion nuevamente',
-        );
+        this.snackbar.showError("Sesion Expirada", "Por favor inicie sesion nuevamente");
         //ctx.dispatch(new Logout());
         return throwError(() => err);
       }),
