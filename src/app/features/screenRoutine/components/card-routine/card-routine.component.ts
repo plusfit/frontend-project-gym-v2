@@ -24,9 +24,11 @@ export class CardRoutineComponent implements AfterViewInit {
   @ViewChildren('exerciseList') exerciseLists!: QueryList<
     ElementRef<HTMLUListElement>
   >;
+  @ViewChildren('titleText') titleTexts!: QueryList<ElementRef>;
 
   ngAfterViewInit() {
     this.animationScroll();
+    this.initializeTitleScroll();
   }
 
   animationScroll() {
@@ -37,10 +39,10 @@ export class CardRoutineComponent implements AfterViewInit {
           // Calcular duración basada en el tamaño del contenido
           const scrollDistance = el.scrollHeight - el.clientHeight;
           const scrollDuration = this.calculateScrollDuration(scrollDistance);
-          
+
           // Scroll hacia abajo con duración proporcional al contenido
           this.smoothScroll(el, scrollDistance, scrollDuration);
-          
+
           setTimeout(() => {
             // Scroll hacia arriba
             this.smoothScroll(el, 0, environment.config.scrollTimeDown);
@@ -102,5 +104,58 @@ export class CardRoutineComponent implements AfterViewInit {
         textElement.nativeElement.classList.add('slide-fade-effect');
       }, 0); // Todos los ejercicios comienzan al mismo tiempo (sin delay)
     });
+  }  
+  
+  initializeTitleScroll() {
+    this.titleTexts.forEach((titleElement: ElementRef) => {
+      const element = titleElement.nativeElement;
+      const container = element.parentElement;
+      
+      // Verificar si el texto es más ancho que el contenedor
+      if (container && element.scrollWidth > container.clientWidth) {
+        // Iniciar el scroll después de 1 segundo
+        setTimeout(() => {
+          this.startTitleScroll(element);
+        }, 1000);
+      }
+    });
   }
+
+  startTitleScroll(element: HTMLElement) {
+    const container = element.parentElement;
+    if (!container) return;
+  
+    // Agregar un pequeño buffer para asegurar que se vea todo el texto
+    const scrollAmount = element.scrollWidth - container.clientWidth + 30;
+  
+    // Establecer la variable CSS para mover el texto
+    if (scrollAmount > 0) {
+      element.style.setProperty('--scroll-amount', `-${scrollAmount}px`);
+      const isLongText = element.scrollWidth > container.clientWidth * 1.5;
+  
+      if (isLongText) {
+        element.classList.add('scrolling-long');
+      } else {
+        element.classList.add('scrolling');
+      }
+  
+      // Reiniciar la animación cada 5 segundos
+      setInterval(() => {
+        element.classList.remove('scrolling', 'scrolling-long');
+        
+        setTimeout(() => {
+          // Recalcular por si el contenido cambió
+          const newScrollAmount = element.scrollWidth - container.clientWidth + 20;
+          element.style.setProperty('--scroll-amount', `-${newScrollAmount}px`);
+  
+          if (isLongText) {
+            element.classList.add('scrolling-long');
+          } else {
+            element.classList.add('scrolling');
+          }
+        }, 100);
+      }, 5000);
+    }
+  }
+  
 }
