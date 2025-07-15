@@ -127,25 +127,6 @@
               </div>
             }
 
-            <div class="h-[80px]">
-              <mat-form-field appearance="outline" class="w-full rounded-md">
-                <mat-label class="text-gray-700"
-                  >Nivel de Experiencia</mat-label
-                >
-                <mat-select
-                  formControlName="experienceLevel"
-                  class="bg-gray-50"
-                >
-                  <mat-option
-                    *ngFor="let level of experienceLevels"
-                    [value]="level.value"
-                  >
-                    {{ level.label }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
             <div class="md:col-span-2 flex mt-2 items-center">
               <mat-checkbox
                 formControlName="includesCoach"

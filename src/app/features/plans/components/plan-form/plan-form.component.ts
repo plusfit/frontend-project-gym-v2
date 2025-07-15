@@ -11,13 +11,7 @@ import { BtnDirective } from "@shared/directives/btn/btn.directive";
 import { Observable, Subject } from "rxjs";
 import { Store } from "@ngxs/store";
 import { Router } from "@angular/router";
-import {
-  ExperienceLevel,
-  InjuryType,
-  Plan,
-  PlanGoal,
-  PlanType,
-} from "@features/plans/interfaces/plan.interface";
+import { InjuryType, Plan, PlanGoal, PlanType } from "@features/plans/interfaces/plan.interface";
 import { CreatePlan, UpdatePlan } from "@features/plans/state/plan.actions";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { InputComponent } from "@shared/components/input/input.component";
@@ -81,12 +75,6 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
     { value: InjuryType.OTHER, label: "Otra" },
   ];
 
-  experienceLevels = [
-    { value: ExperienceLevel.BEGINNER, label: "Principiante" },
-    { value: ExperienceLevel.INTERMEDIATE, label: "Intermedio" },
-    { value: ExperienceLevel.ADVANCED, label: "Avanzado" },
-  ];
-
   planTypes = [
     { value: PlanType.MIXED, label: "Mixto" },
     { value: PlanType.ROOM, label: "Sala" },
@@ -120,7 +108,6 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
         goal: ["", Validators.required],
         sexType: ["", Validators.required],
         injuryType: [""],
-        experienceLevel: ["", Validators.required],
         minAge: ["", [Validators.min(0), Validators.max(100)]],
         maxAge: ["", [Validators.min(0), Validators.max(100)]],
         includesCoach: [false],

@@ -56,12 +56,6 @@ export enum InjuryType {
   OTHER = "other",
 }
 
-export enum ExperienceLevel {
-  BEGINNER = "beginner",
-  INTERMEDIATE = "intermediate",
-  ADVANCED = "advanced",
-}
-
 export enum Tags {
   CARDIO = "cardio",
   STRENGTH = "strength",
@@ -81,7 +75,7 @@ export enum PlanType {
 }
 
 export enum SexType {
-  MALE = 'male',
-  FEMALE = 'female',
-  OTHER = 'other',
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other",
 }
