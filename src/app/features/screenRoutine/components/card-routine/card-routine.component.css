@@ -3,7 +3,7 @@
   padding: 16px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(var(21, 101, 192), 0.5);
+  box-shadow: 0 0 15px rgba(21, 101, 192, 0.5);
 }
 
 .backgroundTitle::after {
@@ -82,3 +82,67 @@
   z-index: 10;
   background: linear-gradient(135deg, #181c24 60%, #232a36 100%);
   }
+
+.title-scroll-container {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title-scroll-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: none;
+  transition: transform 0.3s ease;
+  min-width: 100%;
+}
+
+.title-scroll-text.scrolling {
+  animation: horizontalScroll 5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes horizontalScroll {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(var(--scroll-amount, -100px));
+  }
+  70% {
+    transform: translateX(var(--scroll-amount, -100px));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Versión más suave para textos muy largos */
+.title-scroll-text.scrolling-long {
+  animation: horizontalScrollLong 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes horizontalScrollLong {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(var(--scroll-amount, -100px));
+  }
+  70% {
+    transform: translateX(var(--scroll-amount, -100px));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

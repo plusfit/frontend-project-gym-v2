@@ -60,10 +60,10 @@ export class RoutineService {
   updateRoutine(
     payload: RoutinePayload,
     id: string,
-    idClient: string,
+    clientId: string,
   ): Observable<any> {
     return this.http.put<any>(
-      `${environment.api}/routines/${id}?idClient=${idClient}`,
+      `${environment.api}/routines/${id}?clientId=${clientId}`,
       payload,
     );
   }
