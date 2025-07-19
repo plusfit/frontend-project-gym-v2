@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { FirebaseRegisterResponse } from '@features/auth/interfaces/auth';
-import { AuthService } from '@features/auth/services/auth.service';
-import { ExerciseService } from '@features/exercises/services/exercise.service';
-import { PlansService } from '@features/plans/services/plan.service';
-import { RoutineService } from '@features/routines/services/routine.service';
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Injectable } from "@angular/core";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { FirebaseRegisterResponse } from "@features/auth/interfaces/auth";
+import { AuthService } from "@features/auth/services/auth.service";
+import { ExerciseService } from "@features/exercises/services/exercise.service";
+import { PlansService } from "@features/plans/services/plan.service";
+import { RoutineService } from "@features/routines/services/routine.service";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
 import {
   catchError,
   exhaustMap,
@@ -16,13 +16,9 @@ import {
   switchMap,
   tap,
   throwError,
-} from 'rxjs';
-import {
-  Client,
-  ClientApiResponse,
-  RegisterResponse,
-} from '../interface/clients.interface';
-import { ClientService } from '../services/client.service';
+} from "rxjs";
+import { Client, ClientApiResponse, RegisterResponse } from "../interface/clients.interface";
+import { ClientService } from "../services/client.service";
 import {
   CreateClient,
   DeleteClient,
@@ -33,11 +29,11 @@ import {
   RoutineClient,
   ToggleDisabledClient,
   UpdateClient,
-} from './clients.actions';
-import { ClientsStateModel } from './clients.model';
+} from "./clients.actions";
+import { ClientsStateModel } from "./clients.model";
 
 @State<ClientsStateModel>({
-  name: 'clients',
+  name: "clients",
   defaults: {
     clients: [],
     selectedClient: undefined,
@@ -53,7 +49,7 @@ import { ClientsStateModel } from './clients.model';
   },
 })
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClientsState {
   @Selector()
@@ -109,10 +105,10 @@ export class ClientsState {
 
     const { page, pageSize, searchQ, withoutPlan, disabled } = payload;
 
-    const nameFilter = searchQ ?? '';
-    const emailFilter = searchQ ?? '';
-    const role = 'User';
-    const CIFilter = searchQ ?? '';
+    const nameFilter = searchQ ?? "";
+    const emailFilter = searchQ ?? "";
+    const role = "User";
+    const CIFilter = searchQ ?? "";
     const withoutPlanFilter = withoutPlan ?? false;
     const disabledFilter = disabled ?? false;
 
@@ -169,18 +165,14 @@ export class ClientsState {
           address: response.data.userInfo.address,
           dateBirthday: response.data.userInfo.dateBirthday,
           surgicalHistory: response.data.userInfo.surgicalHistory,
-          historyofPathologicalLesions:
-            response.data.userInfo.historyofPathologicalLesions,
+          historyofPathologicalLesions: response.data.userInfo.historyofPathologicalLesions,
           medicalSociety: response.data.userInfo.medicalSociety,
           sex: response.data.userInfo.sex,
           cardiacHistory: response.data.userInfo.cardiacHistory,
           cardiacHistoryInput: response.data.userInfo.cardiacHistoryInput,
           bloodPressure: response.data.userInfo.bloodPressure,
-          frequencyOfPhysicalExercise:
-            response.data.userInfo.frequencyOfPhysicalExercise,
           respiratoryHistory: response.data.userInfo.respiratoryHistory,
-          respiratoryHistoryInput:
-            response.data.userInfo.respiratoryHistoryInput,
+          respiratoryHistoryInput: response.data.userInfo.respiratoryHistoryInput,
           CI: response.data.userInfo.CI,
           planId: response.data.planId,
           routineId: response.data.routineId,
@@ -220,10 +212,7 @@ export class ClientsState {
       }),
       catchError((err: any) => {
         ctx.patchState({ loading: false });
-        this.snackBarService.showError(
-          'Error al crear Cliente',
-          this.getFriendlyErrorMessage(err),
-        );
+        this.snackBarService.showError("Error al crear Cliente", this.getFriendlyErrorMessage(err));
         return throwError(() => err);
       }),
     );
@@ -249,8 +238,6 @@ export class ClientsState {
           cardiacHistory: response.data.cardiacHistory,
           cardiacHistoryInput: response.data.cardiacHistoryInput,
           bloodPressure: response.data.bloodPressure,
-          frequencyOfPhysicalExercise:
-            response.data.frequencyOfPhysicalExercise,
           respiratoryHistory: response.data.respiratoryHistory,
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
           CI: response.data.CI,
@@ -291,8 +278,6 @@ export class ClientsState {
           cardiacHistory: response.data.cardiacHistory,
           cardiacHistoryInput: response.data.cardiacHistoryInput,
           bloodPressure: response.data.bloodPressure,
-          frequencyOfPhysicalExercise:
-            response.data.frequencyOfPhysicalExercise,
           respiratoryHistory: response.data.respiratoryHistory,
           respiratoryHistoryInput: response.data.respiratoryHistoryInput,
           CI: response.data.CI,
@@ -321,9 +306,7 @@ export class ClientsState {
 
     return forkJoin([this.clientService.deleteClient(id)]).pipe(
       tap(() => {
-        const clients = ctx
-          .getState()
-          .clients?.filter((client) => client._id !== id);
+        const clients = ctx.getState().clients?.filter((client) => client._id !== id);
         ctx.patchState({ clients, loading: false });
       }),
       catchError((error) => {
@@ -381,7 +364,7 @@ export class ClientsState {
           });
         }),
         catchError((error) => {
-          console.error('Error obteniendo la rutina:', error);
+          console.error("Error obteniendo la rutina:", error);
           ctx.patchState({ error, loading: false });
           return throwError(() => error);
         }),
@@ -400,14 +383,9 @@ export class ClientsState {
 
     return this.clientService.toggleDisabledClient(id, disabled).pipe(
       tap(() => {
-        const clients = ctx
-          .getState()
-          .clients?.filter((client) => client._id !== id);
+        const clients = ctx.getState().clients?.filter((client) => client._id !== id);
         ctx.patchState({ clients, loading: false });
-        this.snackBarService.showSuccess(
-          'Éxito',
-          'Cliente desactivado correctamente',
-        );
+        this.snackBarService.showSuccess("Éxito", "Cliente desactivado correctamente");
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
@@ -431,7 +409,7 @@ export class ClientsState {
           });
         }),
         catchError((error) => {
-          console.error('Error obteniendo el plan:', error);
+          console.error("Error obteniendo el plan:", error);
           ctx.patchState({ error, loading: false });
           return throwError(() => error);
         }),
@@ -443,18 +421,18 @@ export class ClientsState {
 
   private mapFirebaseError(errorCode: string): string {
     switch (errorCode) {
-      case 'auth/email-already-in-use':
-        return 'El email ya existe';
-      case 'auth/operation-not-allowed':
-        return 'La operación no está permitida';
-      case 'auth/too-many-requests':
-        return 'Demasiados intentos. Inténtalo más tarde';
-      case 'auth/invalid-password':
-        return 'Contraseña inválida';
-      case 'auth/user-disabled':
-        return 'El usuario está deshabilitado';
+      case "auth/email-already-in-use":
+        return "El email ya existe";
+      case "auth/operation-not-allowed":
+        return "La operación no está permitida";
+      case "auth/too-many-requests":
+        return "Demasiados intentos. Inténtalo más tarde";
+      case "auth/invalid-password":
+        return "Contraseña inválida";
+      case "auth/user-disabled":
+        return "El usuario está deshabilitado";
       default:
-        return 'Ha ocurrido un error. Por favor, inténtalo de nuevo';
+        return "Ha ocurrido un error. Por favor, inténtalo de nuevo";
     }
   }
 
@@ -462,6 +440,6 @@ export class ClientsState {
     if (err.code) {
       return this.mapFirebaseError(err.code);
     }
-    return 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo';
+    return "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo";
   }
 }

@@ -30,7 +30,7 @@
           >
             <span class="text-gray-500 text-sm mb-1">Sexo</span>
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.sex
+              clientInfo.sex | translation
             }}</span>
           </div>
           <div
@@ -90,16 +90,6 @@
           <div
             class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
           >
-            <span class="text-gray-500 text-sm mb-1"
-              >Frecuencia de Ejercicio Físico</span
-            >
-            <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.frequencyOfPhysicalExercise
-            }}</span>
-          </div>
-          <div
-            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
-          >
             <span class="text-gray-500 text-sm mb-1">Sociedad Médica</span>
             <span class="text-lg font-medium text-gray-800">{{
               clientInfo.medicalSociety
@@ -110,7 +100,7 @@
           >
             <span class="text-gray-500 text-sm mb-1">Presión Arterial</span>
             <span class="text-lg font-medium text-gray-800">{{
-              clientInfo.bloodPressure
+              clientInfo.bloodPressure | translation
             }}</span>
           </div>
         </div>

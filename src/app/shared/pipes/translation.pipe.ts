@@ -84,6 +84,20 @@ export class TranslationPipe implements PipeTransform {
         return "Avanzado";
       case "mix":
         return "Mixto";
+      case "mixed":
+        return "Mixto";
+      case "female":
+        return "Mujer";
+      case "male":
+        return "Hombre";
+      case "high":
+        return "Alta";
+      case "low":
+        return "Baja";
+      case "normal":
+        return "Normal";
+      case "other":
+        return "Otros";
       default:
         return value;
     }

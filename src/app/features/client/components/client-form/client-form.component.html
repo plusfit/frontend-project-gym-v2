@@ -139,22 +139,6 @@
           </mat-select>
         </mat-form-field>
       </div>
-
-      <div>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Nivel de Ejercicio Físico</mat-label>
-          <mat-select formControlName="frequencyOfPhysicalExercise">
-            @for (
-              frecuencyExercise of frequencyOfPhysicalExercise;
-              track frequencyOfPhysicalExercise
-            ) {
-              <mat-option [value]="frecuencyExercise.value">{{
-                frecuencyExercise.viewValue
-              }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
     </div>
   </div>
 
@@ -303,7 +287,7 @@
       color="primary"
       class="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transform hover:scale-105 transition-all"
     >
-      Enviar
+      Guardar
     </button>
   </div>
 </form>

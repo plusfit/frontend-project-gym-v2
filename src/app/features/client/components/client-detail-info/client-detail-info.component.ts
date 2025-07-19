@@ -1,16 +1,17 @@
-import { AsyncPipe, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ClientsState } from '@features/client/state/clients.state';
-import { Actions, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { AsyncPipe, DatePipe } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import { ClientsState } from "@features/client/state/clients.state";
+import { Actions, Store } from "@ngxs/store";
+import { Observable } from "rxjs";
+import { LoaderComponent } from "../../../../shared/components/loader/loader.component";
+import { TranslationPipe } from "@shared/pipes/translation.pipe";
 
 @Component({
-  selector: 'app-client-detail-info',
+  selector: "app-client-detail-info",
   standalone: true,
-  imports: [AsyncPipe, LoaderComponent, DatePipe],
-  templateUrl: './client-detail-info.component.html',
-  styleUrl: './client-detail-info.component.css',
+  imports: [AsyncPipe, LoaderComponent, DatePipe, TranslationPipe],
+  templateUrl: "./client-detail-info.component.html",
+  styleUrl: "./client-detail-info.component.css",
 })
 export class ClientDetailInfoComponent implements OnInit {
   clientInfo$: Observable<any> | undefined;

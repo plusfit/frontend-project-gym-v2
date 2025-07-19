@@ -130,8 +130,8 @@ export class PlansPageComponent implements OnInit, OnDestroy {
 
   getSexTypeLabel(sexType: string): string {
     const sexTypeLabels: { [key: string]: string } = {
-      male: "Masculino",
-      female: "Femenino",
+      male: "Hombre",
+      female: "Mujer",
       unisex: "Unisex",
     };
     return sexTypeLabels[sexType] || sexType;

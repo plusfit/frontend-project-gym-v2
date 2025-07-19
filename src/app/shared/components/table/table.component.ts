@@ -209,10 +209,10 @@ export class TableComponent implements OnInit {
 
   getSexTypeLabel(sexType: string): string {
     const sexTypeLabels: { [key: string]: string } = {
-      Hombre: "Masculino",
-      Mujer: "Femenino",
-      male: "Masculino",
-      female: "Femenino",
+      Hombre: "Hombre",
+      Mujer: "Mujer",
+      male: "Hombre",
+      female: "Mujer",
       unisex: "Unisex",
     };
     return sexTypeLabels[sexType] || sexType;

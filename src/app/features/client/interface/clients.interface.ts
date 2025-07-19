@@ -1,7 +1,7 @@
 export class Client {
   _id!: string;
   name!: string;
-  identifier?: string;  // Email del cliente
+  identifier?: string; // Email del cliente
   phone!: string;
   address!: string;
   dateBirthday!: string;
@@ -10,7 +10,6 @@ export class Client {
   cardiacHistory!: string | boolean;
   cardiacHistoryInput!: string;
   bloodPressure!: string;
-  frequencyOfPhysicalExercise!: string;
   respiratoryHistory!: string | boolean;
   respiratoryHistoryInput!: string;
   surgicalHistory!: string | boolean;
@@ -32,7 +31,6 @@ export interface ClientInfo {
     cardiacHistory: string;
     cardiacHistoryInput: string;
     bloodPressure: string;
-    frequencyOfPhysicalExercise: string;
     respiratoryHistory: string;
     respiratoryHistoryInput: string;
   };
