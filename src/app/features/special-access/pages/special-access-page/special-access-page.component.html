@@ -1,0 +1,321 @@
+<div class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen w-full">
+  <!-- Header Section -->
+  <div class="text-center py-6 bg-white shadow-sm">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+      <i class="ph-building text-blue-500 mr-3 align-middle"></i>
+      ACCESO AL GIMNASIO
+    </h1>
+    <p class="text-gray-600 mt-2 text-lg">{{ currentTime }}</p>
+  </div>
+
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      
+      <!-- Left Column: Access Form -->
+      <div class="order-2 lg:order-1">
+        <mat-card class="bg-white rounded-xl shadow-2xl overflow-hidden" *ngIf="!formState.showResult">
+          <mat-card-header class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-6">
+            <mat-card-title class="text-2xl font-bold text-center w-full">
+              <i class="ph-identification-card mr-2"></i>
+              Ingrese su Cédula
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content class="p-8">
+            <!-- Cedula Input -->
+            <div class="text-center mb-8">
+              <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <div class="text-4xl md:text-6xl font-mono font-bold text-center mb-4 h-20 flex items-center justify-center">
+                  <span [class]="formState.isValid ? 'text-green-600' : 'text-gray-400'">
+                    {{ formattedCedula || '_.___.___ -_' }}
+                  </span>
+                </div>
+                
+                <!-- Hidden input for accessibility and physical keyboard -->
+                <input 
+                  type="text" 
+                  [(ngModel)]="formState.cedula"
+                  (input)="onCedulaChange()"
+                  (keyup.enter)="onSubmit()"
+                  maxlength="8"
+                  pattern="[0-9]{8}"
+                  class="sr-only"
+                  placeholder="Ingrese 8 dígitos"
+                  aria-label="Cédula de identidad - 8 dígitos"
+                  [attr.aria-describedby]="'cedula-help'">
+                
+                <div id="cedula-help" class="text-sm text-gray-500 mt-2">
+                  Ingrese su cédula de identidad (8 dígitos)
+                </div>
+              </div>
+
+              <!-- Validation Status -->
+              <div class="mb-4" [attr.aria-live]="'polite'">
+                <div *ngIf="formState.cedula.length > 0 && !formState.isValid" 
+                     class="text-orange-500 text-sm flex items-center justify-center">
+                  <i class="ph-warning mr-1"></i>
+                  {{ formState.cedula.length }}/8 dígitos
+                </div>
+                <div *ngIf="formState.isValid" 
+                     class="text-green-500 text-sm flex items-center justify-center">
+                  <i class="ph-check-circle mr-1"></i>
+                  Cédula válida
+                </div>
+              </div>
+            </div>
+
+            <!-- Virtual Keypad -->
+            <div class="mb-8" *ngIf="showKeypad">
+              <h3 class="text-lg font-semibold text-center mb-4 text-gray-700">
+                Teclado Virtual
+              </h3>
+              <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+                <!-- Number buttons -->
+                <button 
+                  *ngFor="let number of keypadNumbers" 
+                  (click)="onKeypadClick(number)"
+                  [disabled]="formState.isLoading || formState.cedula.length >= 8"
+                  class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-2xl py-4 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  [attr.aria-label]="'Dígito ' + number">
+                  {{ number }}
+                </button>
+              </div>
+              
+              <!-- Action buttons -->
+              <div class="flex justify-center gap-3 mt-4">
+                <button 
+                  (click)="onBackspace()"
+                  [disabled]="formState.isLoading || formState.cedula.length === 0"
+                  class="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-orange-300"
+                  aria-label="Borrar último dígito">
+                  <i class="ph-backspace text-xl"></i>
+                </button>
+                
+                <button 
+                  (click)="onClear()"
+                  [disabled]="formState.isLoading || formState.cedula.length === 0"
+                  class="bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-red-300"
+                  aria-label="Limpiar todo">
+                  <i class="ph-x text-xl"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+              <button 
+                (click)="onSubmit()"
+                [disabled]="!formState.isValid || formState.isLoading"
+                class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold text-xl py-4 px-12 rounded-lg shadow-lg transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-green-300"
+                aria-label="Validar acceso al gimnasio">
+                <span *ngIf="!formState.isLoading" class="flex items-center justify-center">
+                  <i class="ph-check mr-2 text-2xl"></i>
+                  VALIDAR ACCESO
+                </span>
+                <span *ngIf="formState.isLoading" class="flex items-center justify-center">
+                  <mat-spinner diameter="24" class="mr-2"></mat-spinner>
+                  Validando...
+                </span>
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Result Display -->
+        <mat-card class="bg-white rounded-xl shadow-2xl overflow-hidden" *ngIf="formState.showResult">
+          <!-- Success Result -->
+          <div *ngIf="isSuccessResult" class="text-center">
+            <mat-card-header class="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6">
+              <mat-card-title class="text-2xl font-bold text-center w-full">
+                <i class="ph-check-circle mr-2 text-3xl"></i>
+                ACCESO AUTORIZADO
+              </mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content class="p-8">
+              <!-- Client Info -->
+              <div class="text-center mb-6">
+                <div *ngIf="formState.response?.client?.photo" class="mb-4">
+                  <img 
+                    [src]="formState.response?.client?.photo" 
+                    [alt]="'Foto de ' + (formState.response?.client?.name || 'Cliente')"
+                    class="w-24 h-24 mx-auto rounded-full border-4 border-green-500 shadow-lg object-cover">
+                </div>
+                <div *ngIf="!formState.response?.client?.photo" class="mb-4">
+                  <div class="w-24 h-24 mx-auto rounded-full border-4 border-green-500 bg-green-100 flex items-center justify-center">
+                    <i class="ph-user text-4xl text-green-600"></i>
+                  </div>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">
+                  ¡Bienvenido/a {{ formState.response?.client?.name }}!
+                </h2>
+                <p class="text-green-600 text-xl font-semibold">
+                  {{ formState.response?.message }}
+                </p>
+              </div>
+
+              <!-- Stats -->
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                  <i class="ph-calendar-check text-blue-600 text-3xl mb-2"></i>
+                  <div class="text-2xl font-bold text-blue-600">
+                    {{ formState.response?.client?.consecutiveDays || 0 }}
+                  </div>
+                  <div class="text-sm text-gray-600">Días consecutivos</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 text-center">
+                  <i class="ph-chart-bar text-purple-600 text-3xl mb-2"></i>
+                  <div class="text-2xl font-bold text-purple-600">
+                    {{ formState.response?.client?.totalAccesses || 0 }}
+                  </div>
+                  <div class="text-sm text-gray-600">Visitas totales</div>
+                </div>
+              </div>
+
+              <!-- Plan Info -->
+              <div class="bg-gray-50 rounded-lg p-4 mb-6 text-center" *ngIf="formState.response?.client?.plan">
+                <i class="ph-crown text-yellow-600 text-2xl mb-2"></i>
+                <div class="text-lg font-semibold text-gray-800">
+                  Plan: {{ formState.response?.client?.plan }}
+                </div>
+              </div>
+
+              <!-- Reward Notification -->
+              <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-6 text-center text-white mb-6" 
+                   *ngIf="hasReward">
+                <div class="animate-bounce mb-3">
+                  <i class="ph-trophy text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">¡FELICITACIONES!</h3>
+                <p class="text-lg font-semibold mb-1">{{ formState.response?.reward?.name }}</p>
+                <p class="text-sm opacity-90">{{ formState.response?.reward?.description }}</p>
+                <p class="text-xs mt-2 opacity-75">
+                  Recompensa por {{ formState.response?.reward?.requiredDays }} días consecutivos
+                </p>
+              </div>
+            </mat-card-content>
+          </div>
+
+          <!-- Error Result -->
+          <div *ngIf="isErrorResult" class="text-center">
+            <mat-card-header class="bg-gradient-to-r from-red-500 to-pink-500 text-white p-6">
+              <mat-card-title class="text-2xl font-bold text-center w-full">
+                <i class="ph-x-circle mr-2 text-3xl"></i>
+                ACCESO DENEGADO
+              </mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content class="p-8">
+              <div class="text-center mb-6">
+                <div class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center mb-4">
+                  <i class="ph-warning text-4xl text-red-600"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                  No se pudo autorizar el acceso
+                </h2>
+                
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                  <p class="text-red-700 font-semibold">
+                    {{ formState.response?.reason || formState.response?.message }}
+                  </p>
+                </div>
+
+                <p class="text-gray-600 mb-6">
+                  Por favor, verifique los datos o contacte con recepción para obtener ayuda.
+                </p>
+              </div>
+            </mat-card-content>
+          </div>
+
+          <!-- Reset Button -->
+          <mat-card-actions class="p-6 bg-gray-50 text-center">
+            <button 
+              (click)="resetForm()"
+              class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300">
+              <i class="ph-arrow-clockwise mr-2"></i>
+              Nuevo Acceso
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <!-- Right Column: Information Panel -->
+      <div class="order-1 lg:order-2">
+        <mat-card class="bg-white rounded-xl shadow-lg">
+          <mat-card-header class="bg-gradient-to-r from-gray-600 to-gray-700 text-white p-6">
+            <mat-card-title class="text-xl font-bold text-center w-full">
+              <i class="ph-info mr-2"></i>
+              Información
+            </mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content class="p-6">
+            <!-- Instructions -->
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                <i class="ph-question text-blue-500 mr-2"></i>
+                ¿Cómo usar el sistema?
+              </h3>
+              <ol class="text-sm text-gray-600 space-y-2 list-decimal list-inside">
+                <li>Ingrese su cédula de identidad (8 dígitos)</li>
+                <li>Use el teclado virtual o el teclado de la tablet</li>
+                <li>Presione "VALIDAR ACCESO" para continuar</li>
+                <li>Espere la confirmación del sistema</li>
+              </ol>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="bg-blue-50 rounded-lg p-4 mb-6">
+              <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                <i class="ph-headset text-blue-500 mr-2"></i>
+                ¿Necesita ayuda?
+              </h3>
+              <p class="text-sm text-gray-600">
+                Si tiene problemas para acceder, diríjase a recepción o contacte con el personal del gimnasio.
+              </p>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="border-t pt-4">
+              <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
+                Acciones de Administración
+              </h3>
+              <div class="grid grid-cols-1 gap-2">
+                <button 
+                  mat-button
+                  (click)="goToDashboard()"
+                  class="text-left justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium py-2 px-3 rounded transition-colors">
+                  <mat-icon class="mr-2">dashboard</mat-icon>
+                  Dashboard
+                </button>
+                <button 
+                  mat-button
+                  (click)="goToClients()"
+                  class="text-left justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium py-2 px-3 rounded transition-colors">
+                  <mat-icon class="mr-2">people</mat-icon>
+                  Clientes
+                </button>
+                <button 
+                  mat-button
+                  (click)="goToRoutines()"
+                  class="text-left justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium py-2 px-3 rounded transition-colors">
+                  <mat-icon class="mr-2">fitness_center</mat-icon>
+                  Rutinas
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center py-6 mt-8 bg-white border-t">
+    <p class="text-gray-500 text-sm">Plus Fit Gym - Sistema de Acceso</p>
+    <p class="text-gray-400 text-xs mt-1">Powered by Angular & TailwindCSS</p>
+  </div>
+</div>

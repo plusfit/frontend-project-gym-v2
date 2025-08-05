@@ -22,6 +22,9 @@ import { AddClientPageComponent } from '@features/client/pages/add-client-page/a
 import { AddEditClientPageComponent } from '@features/client/pages/add-edit-client-page/add-edit-client-page.component';
 import { DetailClientComponent } from '@features/client/pages/detail-client/detail-client.component';
 import { ScreenPagesComponent } from '@features/screenRoutine/pages/screen-pages/screen-pages.component';
+import { SpecialAccessPageComponent } from '@features/special-access/pages/special-access-page/special-access-page.component';
+import { GymAccessPageComponent } from '@features/gym-access/pages/gym-access-page/gym-access-page.component';
+import { GymAccessStatsPageComponent } from '@features/gym-access/pages/gym-access-stats-page/gym-access-stats-page.component';
 
 export const routes: Routes = [
   {
@@ -97,11 +100,24 @@ export const routes: Routes = [
         path: 'planes/crear',
         component: AddEditPlanComponent,
       },
+      {
+        path: 'historial-accesos',
+        component: GymAccessPageComponent,
+      },
+      {
+        path: 'estadisticas-accesos',
+        component: GymAccessStatsPageComponent,
+      },
     ],
   },
   {
     path: 'pantalla',
     component: ScreenPagesComponent,
+    canActivate: [signInGuard], // 🔐 Protege la ruta con el guard
+  },
+  {
+    path: 'acceso-especial',
+    component: SpecialAccessPageComponent,
     canActivate: [signInGuard], // 🔐 Protege la ruta con el guard
   },
   {

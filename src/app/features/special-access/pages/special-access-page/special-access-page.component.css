@@ -1,0 +1,195 @@
+/* Tablet-optimized styles for gym access system */
+
+/* Ensure full height and smooth scrolling */
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Large touch targets for tablets */
+.keypad-button {
+  min-width: 80px;
+  min-height: 80px;
+  font-size: 2rem;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.keypad-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.keypad-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* Large, readable cedula display */
+.cedula-display {
+  font-size: 4rem;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* High contrast focus states for accessibility */
+button:focus {
+  outline: 3px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+input:focus {
+  outline: 3px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Success animations */
+.success-card {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.error-card {
+  animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reward celebration animation */
+.reward-celebration {
+  animation: celebration 2s ease-in-out infinite;
+}
+
+@keyframes celebration {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Photo container with better aspect ratio */
+.client-photo {
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Loading overlay improvements */
+.loading-overlay {
+  backdrop-filter: blur(4px);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Tablet landscape optimizations */
+@media (orientation: landscape) and (min-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+  }
+  
+  .cedula-display {
+    font-size: 3rem;
+  }
+  
+  .keypad-button {
+    min-width: 70px;
+    min-height: 70px;
+    font-size: 1.75rem;
+  }
+}
+
+/* Tablet portrait optimizations */
+@media (orientation: portrait) and (min-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .cedula-display {
+    font-size: 5rem;
+  }
+  
+  .keypad-button {
+    min-width: 90px;
+    min-height: 90px;
+    font-size: 2.25rem;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 768px) {
+  .cedula-display {
+    font-size: 2.5rem;
+  }
+  
+  .keypad-button {
+    min-width: 60px;
+    min-height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+}
+
+/* High DPI displays */
+@media (min-resolution: 192dpi) {
+  .cedula-display {
+    text-rendering: optimizeLegibility;
+  }
+  
+  button {
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :host {
+    --bg-primary: #1f2937;
+    --bg-secondary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .keypad-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .keypad-button {
+    border: 2px solid currentColor;
+  }
+  
+  .cedula-display {
+    text-shadow: none;
+    border: 2px solid currentColor;
+    padding: 0.5rem;
+  }
+}

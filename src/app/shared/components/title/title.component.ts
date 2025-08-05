@@ -12,6 +12,7 @@ import { NgClass } from '@angular/common';
 export class TitleComponent {
   //TODO:
   @Input() title!: string;
+  @Input() subtitle?: string;
   @Input() divider = true;
   @Input() gradient = true;
 }

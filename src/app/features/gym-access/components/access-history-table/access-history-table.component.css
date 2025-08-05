@@ -1,0 +1,239 @@
+/* Custom styles for access history table */
+
+.mat-mdc-table {
+  background: transparent;
+}
+
+.mat-mdc-header-row {
+  background-color: #f9fafb;
+}
+
+.mat-mdc-row:hover {
+  background-color: #f9fafb;
+  transition: background-color 0.2s ease;
+}
+
+.mat-mdc-cell {
+  padding: 12px 16px;
+}
+
+.mat-mdc-header-cell {
+  padding: 16px;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* Form field customization */
+.mat-mdc-form-field {
+  font-size: 14px;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-label {
+  font-size: 14px;
+}
+
+/* Button customization */
+.mat-mdc-raised-button, .mat-mdc-stroked-button {
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+/* Icon sizing */
+.mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Table responsive styling */
+@media (max-width: 768px) {
+  .mat-mdc-table {
+    font-size: 12px;
+  }
+  
+  .mat-mdc-cell, .mat-mdc-header-cell {
+    padding: 8px 12px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Badge spacing */
+.mat-chip {
+  font-size: 12px;
+  min-height: 24px;
+}
+
+/* Photo styling */
+.client-photo {
+  border: 2px solid #e5e7eb;
+  transition: border-color 0.2s ease;
+}
+
+.client-photo:hover {
+  border-color: #3b82f6;
+}
+
+/* Quick filter buttons */
+.quick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.quick-filters button {
+  font-size: 12px;
+  padding: 4px 12px;
+  min-height: 32px;
+}
+
+/* Export menu styling */
+.mat-mdc-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Loading state */
+.loading-container {
+  padding: 64px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-state .mat-icon {
+  font-size: 72px;
+  width: 72px;
+  height: 72px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+/* Filter section */
+.filter-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.filter-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+/* Table section */
+.table-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.table-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Status badges */
+.status-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+/* Plan badges */
+.plan-badge {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Consecutive days styling */
+.consecutive-days-high {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.consecutive-days-medium {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.consecutive-days-low {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* Reward indicator */
+.reward-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.reward-indicator .mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #f59e0b;
+}
+
+/* Active filters indicator */
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Pagination styling */
+.mat-mdc-paginator {
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .filter-controls {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .filter-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-header {
+    padding: 16px;
+  }
+  
+  .filter-header {
+    padding: 16px;
+  }
+}

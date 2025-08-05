@@ -1,0 +1,340 @@
+/* Gym Access Stats Page Styles */
+
+/* Page header */
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Period selection section */
+.period-selection {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.period-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.period-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.period-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Period controls grid */
+.period-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+/* Quick periods */
+.quick-periods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.quick-periods span {
+  font-size: 0.875rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.quick-period-btn {
+  font-size: 0.75rem !important;
+  padding: 4px 12px !important;
+  min-height: 32px !important;
+  border-radius: 16px !important;
+}
+
+/* Period summary */
+.period-summary {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.period-summary-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.period-summary-content .mat-icon {
+  color: #2563eb;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.period-summary-text {
+  font-size: 0.875rem;
+  color: #1e40af;
+  margin: 0;
+}
+
+.period-summary-subtext {
+  font-size: 0.75rem;
+  color: #1d4ed8;
+  margin: 4px 0 0 0;
+}
+
+/* Form field customization */
+.mat-mdc-form-field {
+  font-size: 14px;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-label {
+  font-size: 14px;
+}
+
+/* Button styling */
+.mat-mdc-raised-button, .mat-mdc-stroked-button {
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.mat-mdc-icon-button {
+  border-radius: 6px;
+}
+
+/* Guide section */
+.guide-section {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.guide-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.guide-header .mat-icon {
+  color: #6b7280;
+  margin-top: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.guide-content h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.guide-section-title {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+
+.guide-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  space-y: 4px;
+}
+
+.guide-list li {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.guide-list strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Tips section */
+.tips-section {
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.tips-title {
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-list li {
+  font-size: 0.875rem;
+  color: #a16207;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+/* Disabled state */
+.mat-mdc-button:disabled,
+.mat-mdc-raised-button:disabled,
+.mat-mdc-stroked-button:disabled {
+  opacity: 0.6;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .period-controls {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  
+  .guide-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .period-selection {
+    padding: 1rem;
+  }
+  
+  .period-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .period-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-periods {
+    justify-content: flex-start;
+  }
+  
+  .guide-section {
+    padding: 1rem;
+  }
+  
+  .guide-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .period-summary-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .quick-periods {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .quick-periods span {
+    margin-bottom: 4px;
+  }
+}
+
+/* Animation effects */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus states */
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: #2563eb;
+}
+
+/* Color utilities */
+.text-blue-600 { color: #2563eb; }
+.text-blue-700 { color: #1d4ed8; }
+.text-blue-800 { color: #1e40af; }
+.text-gray-600 { color: #4b5563; }
+.text-gray-700 { color: #374151; }
+.text-gray-800 { color: #1f2937; }
+.text-gray-900 { color: #111827; }
+.text-yellow-700 { color: #a16207; }
+.text-yellow-800 { color: #92400e; }
+
+.bg-blue-50 { background-color: #eff6ff; }
+.bg-yellow-50 { background-color: #fefce8; }
+.bg-gray-50 { background-color: #f9fafb; }
+
+.border-blue-200 { border-color: #bfdbfe; }
+.border-yellow-200 { border-color: #fde047; }
+.border-gray-200 { border-color: #e5e7eb; }

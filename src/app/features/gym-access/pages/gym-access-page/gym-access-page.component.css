@@ -1,0 +1,298 @@
+/* Gym Access Page Styles */
+
+/* Page header */
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Quick stats cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card-info h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.stat-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stat-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card-icon .mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+/* Success rate colors */
+.success-rate-high {
+  color: #16a34a;
+}
+
+.success-rate-medium {
+  color: #ca8a04;
+}
+
+.success-rate-low {
+  color: #dc2626;
+}
+
+.success-rate-bg-high {
+  background-color: #f0fdf4;
+}
+
+.success-rate-bg-medium {
+  background-color: #fefce8;
+}
+
+.success-rate-bg-low {
+  background-color: #fef2f2;
+}
+
+/* Summary information */
+.summary-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-content .mat-icon {
+  color: #2563eb;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.summary-text {
+  font-size: 0.875rem;
+  color: #1e40af;
+  margin: 0;
+}
+
+/* Help section */
+.help-section {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.help-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.help-header .mat-icon {
+  color: #6b7280;
+  margin-top: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.help-content h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.help-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.help-text p {
+  margin-bottom: 8px;
+}
+
+.help-text ul {
+  margin: 8px 0;
+  padding-left: 1rem;
+}
+
+.help-text li {
+  margin-bottom: 4px;
+}
+
+.help-text strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Status indicators in help */
+.status-success {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.status-error {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Button styling */
+.mat-mdc-stroked-button {
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.mat-mdc-icon-button {
+  border-radius: 6px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-card {
+    padding: 0.75rem;
+  }
+  
+  .stat-card-value {
+    font-size: 1.25rem;
+  }
+  
+  .stat-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .stat-card-icon .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .help-section {
+    padding: 1rem;
+  }
+  
+  .summary-info {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .summary-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .help-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Loading states */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Color utilities */
+.text-blue-600 { color: #2563eb; }
+.text-green-600 { color: #16a34a; }
+.text-indigo-600 { color: #4f46e5; }
+.text-gray-600 { color: #4b5563; }
+.text-gray-800 { color: #1f2937; }
+
+.bg-blue-100 { background-color: #dbeafe; }
+.bg-green-100 { background-color: #dcfce7; }
+.bg-indigo-100 { background-color: #e0e7ff; }
+.bg-blue-50 { background-color: #eff6ff; }
+.bg-green-50 { background-color: #f0fdf4; }
+.bg-yellow-50 { background-color: #fefce8; }
+.bg-red-50 { background-color: #fef2f2; }
