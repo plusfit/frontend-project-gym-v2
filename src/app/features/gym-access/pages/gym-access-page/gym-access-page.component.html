@@ -1,3 +1,48 @@
+<section class="p-8">
+<div class="bg-gray-100 border border-gray-300 rounded-lg p-8 mb-4">
+  <details>
+    <summary class="cursor-pointer font-semibold">Debug Information (Click to expand)</summary>
+    <div class="mt-2 space-y-1">
+      <div><strong>Auth Status:</strong> {{ getAuthStatus() | json }}</div>
+      <div><strong>Loading:</strong> {{ loading }}</div>
+      <div><strong>Access History Length:</strong> {{ accessHistory.length }}</div>
+      <div><strong>Total Count:</strong> {{ totalCount }}</div>
+      <div><strong>Current Filters:</strong> {{ filters | json }}</div>
+      <div><strong>API URL:</strong> http://localhost:3000/gym-access</div>
+      <div class="mt-3 space-x-2">
+        <button 
+          mat-raised-button 
+          color="accent" 
+          (click)="testWithMockData()"
+          class="text-sm">
+          Cargar Datos de Prueba
+        </button>
+        <button 
+          mat-stroked-button 
+          color="primary" 
+          (click)="testBackendConnectivity()"
+          class="text-sm">
+          Test Conectividad
+        </button>
+        <button 
+          mat-stroked-button 
+          color="primary" 
+          (click)="testAuthentication()"
+          class="text-sm">
+          Test Auth
+        </button>
+        <button 
+          mat-raised-button 
+          color="warn" 
+          (click)="runDiagnostics()"
+          class="text-sm">
+          Ejecutar Diagnósticos
+        </button>
+      </div>
+    </div>
+  </details>
+</div>
+
 <!-- Page Header -->
 <div class="flex flex-col space-y-4 mb-8">
   <div class="flex items-center justify-between">
@@ -98,6 +143,40 @@
   </div>
 </div>
 
+<!-- Error State Information - Only show if there was actually an error, not just empty data -->
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" *ngIf="hasError">
+  <div class="flex items-center space-x-2">
+    <mat-icon class="text-red-600">warning</mat-icon>
+    <div class="flex-1">
+      <p class="text-sm text-red-800">
+        <span class="font-semibold">{{ errorMessage || 'No se pudieron cargar los datos.' }}</span>
+        <span *ngIf="!errorMessage">Verifique su conexión a internet y que esté autenticado correctamente.</span>
+      </p>
+      <button 
+        mat-button 
+        color="primary" 
+        (click)="refreshData()" 
+        class="mt-2 text-sm">
+        <mat-icon>refresh</mat-icon>
+        Intentar de nuevo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Empty State Information - Show when data loaded successfully but is empty -->
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="!loading && !hasError && !hasRecords() && totalCount === 0">
+  <div class="flex items-center space-x-2">
+    <mat-icon class="text-blue-600">info</mat-icon>
+    <div class="flex-1">
+      <p class="text-sm text-blue-800">
+        <span class="font-semibold">No hay registros de acceso disponibles.</span>
+        Los registros aparecerán aquí una vez que los clientes comiencen a usar el sistema de acceso.
+      </p>
+    </div>
+  </div>
+</div>
+
 <!-- Access History Table -->
 <app-access-history-table
   [data]="accessHistory"
@@ -133,3 +212,6 @@
     </div>
   </div>
 </div>
+</section>
+<!-- Debug Information (only visible in development) -->
+

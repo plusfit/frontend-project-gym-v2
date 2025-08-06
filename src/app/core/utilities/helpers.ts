@@ -55,6 +55,9 @@ export const isEmpty = (obj: any) => {
  * @returns An object with only the specified properties.
  */
 export const pickProperties = (obj: any, ...props: any) => {
+  if (!obj || typeof obj !== 'object') {
+    return {};
+  }
   return Object.assign(
     {},
     ...props.map((prop: any) =>

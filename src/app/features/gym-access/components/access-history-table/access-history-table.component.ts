@@ -81,10 +81,8 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     'accessDate',
     'clientName',
     'cedula',
-    'planName',
-    'success',
-    'consecutiveDays',
-    'rewardEarned',
+    'successful',
+    'reason',
     'actions'
   ];
 
@@ -92,10 +90,8 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     { key: 'accessDate', label: 'Fecha y Hora', sortable: true, type: 'date' },
     { key: 'clientName', label: 'Cliente', sortable: true, type: 'text' },
     { key: 'cedula', label: 'Cédula', sortable: true, type: 'text' },
-    { key: 'planName', label: 'Plan', sortable: false, type: 'text' },
-    { key: 'success', label: 'Estado', sortable: true, type: 'badge' },
-    { key: 'consecutiveDays', label: 'Días Consecutivos', sortable: true, type: 'number' },
-    { key: 'rewardEarned', label: 'Recompensa', sortable: false, type: 'text' },
+    { key: 'successful', label: 'Estado', sortable: true, type: 'badge' },
+    { key: 'reason', label: 'Motivo', sortable: false, type: 'text' },
     { key: 'actions', label: 'Acciones', sortable: false, type: 'text' }
   ];
 
@@ -197,29 +193,79 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   /**
    * Get badge color for access status
    */
-  getStatusBadgeColor(success: boolean): EColorBadge {
-    return success ? EColorBadge.SUCCESS : EColorBadge.ERROR;
+  getStatusBadgeColor(successful: any): EColorBadge {
+    console.log('getStatusBadgeColor called with:', successful, typeof successful);
+    
+    // Use the same normalization logic
+    const isSuccessful = this.normalizeSuccessfulValue(successful);
+    
+    console.log('Badge color - normalized successful value:', isSuccessful);
+    
+    if (isSuccessful) {
+      console.log('Returning SUCCESS badge color');
+      return EColorBadge.SUCCESS;
+    } else {
+      console.log('Returning ERROR badge color');
+      return EColorBadge.ERROR;
+    }
   }
 
   /**
    * Get status text
    */
-  getStatusText(success: boolean, reason?: string): string {
-    if (success) {
+  getStatusText(successful: any, reason?: string): string {
+    // Debug: Log the actual value and its type
+    console.log('getStatusText called with:', { 
+      successful, 
+      type: typeof successful, 
+      reason,
+      isStrictTrue: successful === true,
+      isLooseTrue: successful == true,
+      booleanValue: Boolean(successful)
+    });
+    
+    // Normalize the successful value to boolean
+    const isSuccessful = this.normalizeSuccessfulValue(successful);
+    
+    console.log('Normalized successful value:', isSuccessful);
+    
+    if (isSuccessful) {
+      console.log('Returning: Exitoso');
       return 'Exitoso';
+    } else {
+      console.log('Returning:', reason || 'Fallido');
+      return reason || 'Fallido';
     }
-    return reason || 'Fallido';
   }
 
   /**
-   * Get consecutive days badge color
+   * Normalize successful value to boolean
    */
-  getConsecutiveDaysBadgeColor(days: number): EColorBadge {
-    if (days >= 30) return EColorBadge.SUCCESS;
-    if (days >= 14) return EColorBadge.INFO;
-    if (days >= 7) return EColorBadge.WARNING;
-    return EColorBadge.NEUTRAL;
+  private normalizeSuccessfulValue(successful: any): boolean {
+    // Handle null, undefined
+    if (successful === null || successful === undefined) {
+      return false;
+    }
+    
+    // Handle boolean
+    if (typeof successful === 'boolean') {
+      return successful;
+    }
+    
+    // Handle string
+    if (typeof successful === 'string') {
+      return successful.toLowerCase() === 'true';
+    }
+    
+    // Handle number
+    if (typeof successful === 'number') {
+      return successful === 1;
+    }
+    
+    // Default to boolean conversion
+    return Boolean(successful);
   }
+
 
   /**
    * Format date for display
@@ -268,22 +314,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     return count;
   }
 
-  /**
-   * Get reward display text
-   */
-  getRewardText(item: GymAccessHistoryItem): string {
-    if (item.rewardEarned) {
-      return item.rewardEarned.name;
-    }
-    return '-';
-  }
 
-  /**
-   * Check if item has reward
-   */
-  hasReward(item: GymAccessHistoryItem): boolean {
-    return !!item.rewardEarned;
-  }
 
   /**
    * Format cedula for display
@@ -307,6 +338,13 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
    */
   onPhotoError(event: any): void {
     event.target.src = 'assets/defaults/user-placeholder.png';
+  }
+
+  /**
+   * Debug helper to show value type in template
+   */
+  getDebugInfo(value: any): string {
+    return `${value} (${typeof value})`;
   }
 
   /**

@@ -143,18 +143,18 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
 
     // Daily access chart
     this.chartData['dailyAccesses'] = {
-      labels: this.stats.dailyStats.map(stat => this.formatDate(stat.date)),
+      labels: this.stats.dailyStats.map((stat: any) => this.formatDate(stat.date)),
       datasets: [
         {
           label: 'Accesos Exitosos',
-          data: this.stats.dailyStats.map(stat => stat.successfulAccesses),
+          data: this.stats.dailyStats.map((stat: any) => stat.successfulAccesses),
           backgroundColor: '#10b981',
           borderColor: '#059669',
           tension: 0.4
         },
         {
           label: 'Accesos Fallidos',
-          data: this.stats.dailyStats.map(stat => stat.failedAccesses),
+          data: this.stats.dailyStats.map((stat: any) => stat.failedAccesses),
           backgroundColor: '#ef4444',
           borderColor: '#dc2626',
           tension: 0.4
@@ -164,11 +164,11 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
 
     // Popular times chart
     this.chartData['popularTimes'] = {
-      labels: this.stats.popularTimes.map(time => this.formatHour(time.hour)),
+      labels: this.stats.popularTimes.map((time: any) => this.formatHour(time.hour)),
       datasets: [
         {
           label: 'Accesos por Hora',
-          data: this.stats.popularTimes.map(time => time.accessCount),
+          data: this.stats.popularTimes.map((time: any) => time.accessCount),
           backgroundColor: '#3b82f6',
           borderColor: '#2563eb'
         }
@@ -178,11 +178,11 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
     // Weekly stats chart (if available)
     if (this.stats.weeklyStats.length > 0) {
       this.chartData['weeklyStats'] = {
-        labels: this.stats.weeklyStats.map(stat => stat.week),
+        labels: this.stats.weeklyStats.map((stat: any) => stat.week),
         datasets: [
           {
             label: 'Accesos Semanales',
-            data: this.stats.weeklyStats.map(stat => stat.totalAccesses),
+            data: this.stats.weeklyStats.map((stat: any) => stat.totalAccesses),
             backgroundColor: '#8b5cf6',
             borderColor: '#7c3aed'
           }
@@ -193,11 +193,11 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
     // Monthly stats chart (if available)
     if (this.stats.monthlyStats.length > 0) {
       this.chartData['monthlyStats'] = {
-        labels: this.stats.monthlyStats.map(stat => stat.month),
+        labels: this.stats.monthlyStats.map((stat: any) => stat.month),
         datasets: [
           {
             label: 'Accesos Mensuales',
-            data: this.stats.monthlyStats.map(stat => stat.totalAccesses),
+            data: this.stats.monthlyStats.map((stat: any) => stat.totalAccesses),
             backgroundColor: '#f59e0b',
             borderColor: '#d97706'
           }

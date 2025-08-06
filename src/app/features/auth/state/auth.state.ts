@@ -53,6 +53,9 @@ export class AuthState {
 
   @Selector()
   static userData(state: AuthStateModel): Profile | undefined {
+    if (!state.preferences) {
+      return undefined;
+    }
     return pickProperties(state.preferences, "firstName", "lastName", "email", "role.name");
   }
 

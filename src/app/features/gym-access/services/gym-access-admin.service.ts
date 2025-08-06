@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import {
   GymAccessHistoryResponse,
+  WrappedGymAccessHistoryResponse,
   GymAccessStatsResponse,
+  DirectGymAccessStatsResponse,
   ClientAccessHistoryResponse,
   AccessFilters,
   StatsPeriod,
@@ -18,7 +20,10 @@ import {
 export class GymAccessAdminService {
   private readonly apiUrl = `${environment.api}/gym-access`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    console.log('GymAccessAdminService initialized with API URL:', this.apiUrl);
+    console.log('Environment API URL:', environment.api);
+  }
 
   /**
    * Get paginated gym access history with filters
@@ -50,9 +55,81 @@ export class GymAccessAdminService {
       params = params.set('cedula', filters.cedula);
     }
 
-    return this.http.get<GymAccessHistoryResponse>(`${this.apiUrl}/history`, { params })
+    const url = `${this.apiUrl}/history`;
+    console.log('=== ACCESS HISTORY REQUEST DEBUG ===');
+    console.log('Full URL:', url);
+    console.log('Query params:', params.toString());
+    console.log('Request filters:', JSON.stringify(filters, null, 2));
+    console.log('Environment config:', {
+      api: environment.api,
+      production: environment.production
+    });
+
+    const requestStart = performance.now();
+
+    return this.http.get<GymAccessHistoryResponse | WrappedGymAccessHistoryResponse>(url, { params })
       .pipe(
-        catchError(error => this.handleError(error))
+        map(response => {
+          console.log('=== RAW BACKEND RESPONSE ===');
+          console.log('Full raw response:', JSON.stringify(response, null, 2));
+          
+          // Handle wrapped response format
+          if ((response as any).success !== undefined && (response as any).data) {
+            console.log('Detected wrapped response format');
+            return (response as WrappedGymAccessHistoryResponse).data;
+          }
+          
+          // Handle direct response format
+          if ((response as any).history && (response as any).pagination) {
+            console.log('Detected direct response format');
+            return response as GymAccessHistoryResponse;
+          }
+          
+          // Handle unexpected format
+          console.warn('Unexpected response format:', response);
+          return {
+            history: [],
+            pagination: {
+              currentPage: 1,
+              totalPages: 0,
+              totalCount: 0,
+              limit: 10
+            }
+          } as GymAccessHistoryResponse;
+        }),
+        tap(response => {
+          const requestTime = performance.now() - requestStart;
+          console.log('=== ACCESS HISTORY RESPONSE SUCCESS ===');
+          console.log('Request time:', `${requestTime.toFixed(2)}ms`);
+          console.log('Processed response structure:', {
+            hasHistory: !!response?.history,
+            historyLength: response?.history?.length || 0,
+            hasPagination: !!response?.pagination,
+            totalCount: response?.pagination?.totalCount || 0
+          });
+          console.log('Processed response:', JSON.stringify(response, null, 2));
+        }),
+        catchError(error => {
+          const requestTime = performance.now() - requestStart;
+          console.error('=== ACCESS HISTORY REQUEST FAILED ===');
+          console.error('Request time:', `${requestTime.toFixed(2)}ms`);
+          console.error('Error status:', error.status);
+          console.error('Error statusText:', error.statusText);
+          console.error('Error URL:', error.url);
+          console.error('Error headers:', error.headers?.keys());
+          console.error('Error body:', error.error);
+          console.error('Full error object:', error);
+          
+          // Additional network diagnostics
+          if (error.status === 0) {
+            console.error('Network Error Details:');
+            console.error('- This usually indicates a CORS issue or network connectivity problem');
+            console.error('- Check if the backend server is running on:', environment.api);
+            console.error('- Verify CORS configuration on the backend');
+          }
+          
+          return this.handleError(error);
+        })
       );
   }
 
@@ -141,16 +218,77 @@ export class GymAccessAdminService {
    * Get today's access summary
    * @returns Observable with today's statistics
    */
-  getTodaysStats(): Observable<any> {
-    const today = new Date().toISOString().split('T')[0];
-    const params = new HttpParams()
-      .set('startDate', today)
-      .set('endDate', today)
-      .set('period', 'daily');
+  getTodaysStats(): Observable<GymAccessStatsResponse> {
+    const url = `${this.apiUrl}/stats`;
+    console.log('=== STATS REQUEST DEBUG ===');
+    console.log('Stats URL:', url);
+    
+    const requestStart = performance.now();
 
-    return this.http.get<GymAccessStatsResponse>(`${this.apiUrl}/stats`, { params })
+    return this.http.get<GymAccessStatsResponse | DirectGymAccessStatsResponse>(url)
       .pipe(
-        catchError(error => this.handleError(error))
+        map(response => {
+          console.log('=== RAW STATS RESPONSE ===');
+          console.log('Raw stats response:', JSON.stringify(response, null, 2));
+          
+          // Handle wrapped response format with success field
+          if ((response as any).success !== undefined && (response as any).data) {
+            console.log('Detected wrapped stats response format');
+            return response as GymAccessStatsResponse;
+          }
+          
+          // Handle direct stats response format
+          if ((response as any).overview || (response as any).dailyStats) {
+            console.log('Detected direct stats response format - wrapping in success object');
+            return {
+              success: true,
+              data: response as DirectGymAccessStatsResponse,
+              message: 'Stats loaded successfully'
+            } as GymAccessStatsResponse;
+          }
+          
+          // Handle unexpected format
+          console.warn('Unexpected stats response format:', response);
+          return {
+            success: false,
+            data: {
+              overview: {
+                totalAccessesToday: 0,
+                totalAccessesThisWeek: 0,
+                totalAccessesThisMonth: 0,
+                uniqueClientsToday: 0,
+                uniqueClientsThisMonth: 0,
+                averageSuccessRate: 0,
+                peakHour: 0
+              },
+              dailyStats: [],
+              weeklyStats: [],
+              monthlyStats: [],
+              topClients: [],
+              popularTimes: [],
+              rewardStats: {
+                totalRewardsEarned: 0,
+                activeRewards: 0,
+                rewardsByType: [],
+                topRewardEarners: []
+              }
+            },
+            message: 'No stats data available'
+          } as GymAccessStatsResponse;
+        }),
+        tap(response => {
+          const requestTime = performance.now() - requestStart;
+          console.log('=== STATS RESPONSE SUCCESS ===');
+          console.log('Request time:', `${requestTime.toFixed(2)}ms`);
+          console.log('Processed stats response:', JSON.stringify(response, null, 2));
+        }),
+        catchError(error => {
+          const requestTime = performance.now() - requestStart;
+          console.error('=== STATS REQUEST FAILED ===');
+          console.error('Request time:', `${requestTime.toFixed(2)}ms`);
+          console.error('Stats error:', error);
+          return this.handleError(error);
+        })
       );
   }
 
@@ -211,6 +349,95 @@ export class GymAccessAdminService {
     link.download = filename;
     link.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Test backend connectivity
+   * @returns Observable with connectivity test result
+   */
+  testConnectivity(): Observable<any> {
+    const testUrl = `${environment.api}/health`;
+    console.log('=== CONNECTIVITY TEST ===');
+    console.log('Testing connectivity to:', testUrl);
+    
+    const requestStart = performance.now();
+    
+    return this.http.get(testUrl, { 
+      headers: { 'Content-Type': 'application/json' },
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        const requestTime = performance.now() - requestStart;
+        console.log('=== CONNECTIVITY TEST SUCCESS ===');
+        console.log('Response time:', `${requestTime.toFixed(2)}ms`);
+        console.log('Status:', response.status);
+        console.log('Headers:', response.headers.keys());
+        console.log('Body:', response.body);
+        
+        return {
+          success: true,
+          status: response.status,
+          responseTime: requestTime,
+          message: 'Backend connectivity successful'
+        };
+      }),
+      catchError(error => {
+        const requestTime = performance.now() - requestStart;
+        console.error('=== CONNECTIVITY TEST FAILED ===');
+        console.error('Response time:', `${requestTime.toFixed(2)}ms`);
+        console.error('Error:', error);
+        
+        return throwError(() => ({
+          success: false,
+          status: error.status || 0,
+          responseTime: requestTime,
+          message: `Backend connectivity failed: ${error.message || 'Unknown error'}`,
+          error: error
+        }));
+      })
+    );
+  }
+
+  /**
+   * Test authentication endpoint
+   * @returns Observable with auth test result
+   */
+  testAuthentication(): Observable<any> {
+    const testUrl = `${this.apiUrl}/stats`; // Use stats endpoint as auth test
+    console.log('=== AUTHENTICATION TEST ===');
+    console.log('Testing auth with:', testUrl);
+    
+    const requestStart = performance.now();
+    
+    return this.http.get(testUrl, { observe: 'response' }).pipe(
+      map(response => {
+        const requestTime = performance.now() - requestStart;
+        console.log('=== AUTHENTICATION TEST SUCCESS ===');
+        console.log('Response time:', `${requestTime.toFixed(2)}ms`);
+        console.log('Status:', response.status);
+        
+        return {
+          success: true,
+          status: response.status,
+          responseTime: requestTime,
+          message: 'Authentication successful'
+        };
+      }),
+      catchError(error => {
+        const requestTime = performance.now() - requestStart;
+        console.error('=== AUTHENTICATION TEST FAILED ===');
+        console.error('Response time:', `${requestTime.toFixed(2)}ms`);
+        console.error('Error:', error);
+        
+        return throwError(() => ({
+          success: false,
+          status: error.status || 0,
+          responseTime: requestTime,
+          message: `Authentication failed: ${error.message || 'Unknown error'}`,
+          error: error
+        }));
+      })
+    );
   }
 
   /**

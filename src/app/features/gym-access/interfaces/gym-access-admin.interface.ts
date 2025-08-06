@@ -1,32 +1,32 @@
 export interface GymAccessHistoryItem {
-  _id: string;
+  id: string;
+  clientId: string;
   cedula: string;
   clientName: string;
   clientPhoto?: string;
-  planName: string;
-  success: boolean;
-  reason?: string;
   accessDate: string;
-  rewardEarned?: {
-    name: string;
-    description: string;
-    type: string;
-  };
-  consecutiveDays?: number;
-  totalAccesses?: number;
+  accessDay: string;
+  successful: boolean;
+  reason?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// Backend response format - matches exactly what backend returns
 export interface GymAccessHistoryResponse {
-  success: boolean;
-  data: {
-    history: GymAccessHistoryItem[];
-    pagination: {
-      currentPage: number;
-      totalPages: number;
-      totalCount: number;
-      limit: number;
-    };
+  history: GymAccessHistoryItem[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    limit: number;
   };
+}
+
+// Alternative interface for wrapped responses (if backend uses success wrapper)
+export interface WrappedGymAccessHistoryResponse {
+  success: boolean;
+  data: GymAccessHistoryResponse;
   message?: string;
 }
 
@@ -41,40 +41,50 @@ export interface AccessFilters {
 }
 
 export interface GymAccessStats {
+  overview: {
+    totalAccessesToday: number;
+    totalAccessesThisWeek: number;
+    totalAccessesThisMonth: number;
+    uniqueClientsToday: number;
+    uniqueClientsThisMonth: number;
+    averageSuccessRate: number;
+    peakHour: number;
+  };
   dailyStats: {
     date: string;
     totalAccesses: number;
-    uniqueClients: number;
     successfulAccesses: number;
     failedAccesses: number;
-    successRate: number;
+    uniqueClients: number;
   }[];
   weeklyStats: {
     week: string;
     totalAccesses: number;
+    successfulAccesses: number;
+    failedAccesses: number;
     uniqueClients: number;
-    averageDailyAccesses: number;
   }[];
   monthlyStats: {
     month: string;
     totalAccesses: number;
+    successfulAccesses: number;
+    failedAccesses: number;
     uniqueClients: number;
-    averageDailyAccesses: number;
-  }[];
-  popularTimes: {
-    hour: number;
-    accessCount: number;
-    percentage: number;
   }[];
   topClients: {
     clientName: string;
     cedula: string;
     totalAccesses: number;
     consecutiveDays: number;
-    lastAccess: string;
+    lastAccess?: string;
+  }[];
+  popularTimes: {
+    hour: number;
+    accessCount: number;
   }[];
   rewardStats: {
     totalRewardsEarned: number;
+    activeRewards: number;
     rewardsByType: {
       type: string;
       count: number;
@@ -82,26 +92,20 @@ export interface GymAccessStats {
     topRewardEarners: {
       clientName: string;
       cedula: string;
-      rewardsEarned: number;
+      rewardCount: number;
     }[];
-  };
-  overview: {
-    totalAccessesToday: number;
-    totalAccessesThisWeek: number;
-    totalAccessesThisMonth: number;
-    uniqueClientsToday: number;
-    uniqueClientsThisWeek: number;
-    uniqueClientsThisMonth: number;
-    averageSuccessRate: number;
-    peakHour: number;
   };
 }
 
+// Backend stats response format - check if backend wraps in success object
 export interface GymAccessStatsResponse {
   success: boolean;
   data: GymAccessStats;
   message?: string;
 }
+
+// Direct stats response (if backend doesn't wrap in success object)
+export interface DirectGymAccessStatsResponse extends GymAccessStats {}
 
 export interface StatsPeriod {
   startDate: string;
