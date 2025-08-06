@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
-import { pickProperties } from "@core/utilities/helpers";
+import { pickProperties, getFriendlyErrorMessage } from "@core/utilities/helpers";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { Observable, catchError, tap, throwError, exhaustMap } from "rxjs";
 import { AuthResponse, FirebaseAuthResponse, Profile, UserPreferences } from "../interfaces/auth";
@@ -89,8 +89,8 @@ export class AuthState {
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
-        //TODO: convertir los mensajes
-        this.snackbar.showError("Login Erroneo", err.error?.data?.message ?? err.message);
+        const errorMessage = getFriendlyErrorMessage(err, "Error al iniciar sesión");
+        this.snackbar.showError("Login Erróneo", errorMessage);
         return throwError(() => err);
       }),
     );

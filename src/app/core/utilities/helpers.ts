@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 
 /**
  * Converts an enum to an array of objects with name and value properties.
@@ -31,9 +25,7 @@ export const enum2Array = (element: any) => {
  * @returns An object with only the keys that have non-null and non-undefined values.
  */
 export const notNullKeys = (obj: any) => {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([_, v]) => v !== null && v !== undefined),
-  );
+  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== null && v !== undefined));
 };
 
 /**
@@ -55,7 +47,7 @@ export const isEmpty = (obj: any) => {
  * @returns An object with only the specified properties.
  */
 export const pickProperties = (obj: any, ...props: any) => {
-  if (!obj || typeof obj !== 'object') {
+  if (!obj || typeof obj !== "object") {
     return {};
   }
   return Object.assign(
@@ -83,11 +75,7 @@ export const allNullValues = (obj: any) => {
  */
 export const uniqueArrayItemsById = (oldArray: any, newArray: any) => {
   const all = oldArray ? newArray.concat(oldArray) : newArray;
-  return [
-    ...all
-      .reduce((map: any, obj: any) => map.set(obj.id, obj), new Map())
-      .values(),
-  ];
+  return [...all.reduce((map: any, obj: any) => map.set(obj.id, obj), new Map()).values()];
 };
 
 /**
@@ -111,13 +99,9 @@ export function flattenControls(form: AbstractControl): AbstractControl[] {
  * @param valueToInsert The value to insert into the route.
  * @returns The modified route.
  */
-export function addIdToRoute(
-  route: string,
-  fragment: string,
-  valueToInsert: string,
-) {
+export function addIdToRoute(route: string, fragment: string, valueToInsert: string) {
   if (route.includes(fragment)) {
-    const slices = route.split('/');
+    const slices = route.split("/");
     return `${slices[0]}/${valueToInsert}/${slices[1]}`;
   }
   return route;
@@ -140,25 +124,21 @@ export function updateValidators(control: FormControl, valid: boolean): void {
 export function parseExercises(
   input: string,
 ): Array<
-  | { exerciseName: string; series: number; reps: string }
-  | { exerciseName: string; reps: string }
+  { exerciseName: string; series: number; reps: string } | { exerciseName: string; reps: string }
 > {
-  const exerciseList = input.split('.').filter((e) => e.trim() !== '');
+  const exerciseList = input.split(".").filter((e) => e.trim() !== "");
 
   return exerciseList.map((exerciseString) => {
     //execiseString = 'desde los 2: para adelante y pipe para transformar'
-    const shortenedString = exerciseString
-      .substring(exerciseString.indexOf(':') + 1)
-      .trim();
+    const shortenedString = exerciseString.substring(exerciseString.indexOf(":") + 1).trim();
     const seriesMatch = shortenedString.match(/(\d+) series/);
     const repsMatch =
-      shortenedString.match(/de\s(.+?)(\.|$)/) ||
-      shortenedString.match(/(\d+)\srep/);
+      shortenedString.match(/de\s(.+?)(\.|$)/) || shortenedString.match(/(\d+)\srep/);
 
     const series = seriesMatch ? parseInt(seriesMatch[1], 10) : 0;
-    const reps = repsMatch ? repsMatch[1] : 'rep'; // Si no hay repeticiones, se pone '' asi no aparece en el panel
+    const reps = repsMatch ? repsMatch[1] : "rep"; // Si no hay repeticiones, se pone '' asi no aparece en el panel
 
-    const exerciseName = exerciseString.split(':')[0].trim();
+    const exerciseName = exerciseString.split(":")[0].trim();
 
     if (series) {
       // Si series existe y no es 0
@@ -175,3 +155,66 @@ export function parseExercises(
     };
   });
 }
+
+/**
+ * Extrae el mensaje de error específico del servidor
+ * @param error El objeto de error HTTP
+ * @returns El mensaje de error más específico disponible
+ */
+export const extractServerErrorMessage = (error: any): string => {
+  // Intentar obtener el mensaje en diferentes estructuras comunes
+  if (error?.error?.message) {
+    return error.error.message;
+  }
+
+  if (error?.error?.data?.message) {
+    return error.error.data.message;
+  }
+
+  if (error?.error?.error) {
+    return error.error.error;
+  }
+
+  if (error?.message) {
+    return error.message;
+  }
+
+  if (error?.statusText) {
+    return error.statusText;
+  }
+
+  return "Error del servidor. Intente nuevamente.";
+};
+
+/**
+ * Obtiene un mensaje de error amigable basado en el código de estado HTTP
+ * @param error El objeto de error HTTP
+ * @param fallbackMessage Mensaje de respaldo si no se encuentra uno específico
+ * @returns Mensaje de error amigable para el usuario
+ */
+export const getFriendlyErrorMessage = (error: any, fallbackMessage?: string): string => {
+  const serverMessage = extractServerErrorMessage(error);
+
+  // Si hay un mensaje específico del servidor, usarlo
+  if (serverMessage && serverMessage !== "Error del servidor. Intente nuevamente.") {
+    return serverMessage;
+  }
+
+  // Si no, usar mensajes basados en el código de estado
+  switch (error?.status) {
+    case 400:
+      return "Datos inválidos. Verifique la información ingresada.";
+    case 401:
+      return "No autorizado. Por favor, inicie sesión nuevamente.";
+    case 403:
+      return "No tiene permisos para realizar esta acción.";
+    case 404:
+      return "Recurso no encontrado.";
+    case 500:
+      return fallbackMessage || "Error interno del servidor. Intente nuevamente.";
+    case 0:
+      return "No se pudo conectar al servidor. Verifique su conexión.";
+    default:
+      return fallbackMessage || serverMessage;
+  }
+};

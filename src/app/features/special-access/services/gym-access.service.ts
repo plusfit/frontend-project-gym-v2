@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
-import { GymAccessRequest, GymAccessResponse } from '../interfaces/special-access.interface';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
+import { environment } from "../../../../environments/environment";
+import { getFriendlyErrorMessage } from "@core/utilities/helpers";
+import { GymAccessRequest, GymAccessResponse } from "../interfaces/special-access.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class GymAccessService {
   private readonly apiUrl = `${environment.api}/gym-access`;
@@ -20,12 +21,11 @@ export class GymAccessService {
    */
   validateAccess(cedula: string): Observable<GymAccessResponse> {
     const request: GymAccessRequest = { cedula: cedula.trim() };
-    
-    return this.http.post<GymAccessResponse>(`${this.apiUrl}/validate`, request)
-      .pipe(
-        map(response => this.transformResponse(response)),
-        catchError(error => this.handleError(error))
-      );
+
+    return this.http.post<GymAccessResponse>(`${this.apiUrl}/validate`, request).pipe(
+      map((response) => this.transformResponse(response)),
+      catchError((error) => this.handleError(error)),
+    );
   }
 
   /**
@@ -44,7 +44,7 @@ export class GymAccessService {
    * @returns formatted cedula string
    */
   formatCedula(cedula: string): string {
-    const cleanCedula = cedula.replace(/\D/g, '');
+    const cleanCedula = cedula.replace(/\D/g, "");
     if (cleanCedula.length === 8) {
       return `${cleanCedula.substring(0, 1)}.${cleanCedula.substring(1, 4)}.${cleanCedula.substring(4, 7)}-${cleanCedula.substring(7)}`;
     }
@@ -60,15 +60,17 @@ export class GymAccessService {
     return {
       success: response.success,
       message: response.message,
-      client: response.client ? {
-        name: response.client.name || 'Cliente',
-        photo: response.client.photo,
-        plan: response.client.plan || 'Plan no especificado',
-        consecutiveDays: response.client.consecutiveDays || 0,
-        totalAccesses: response.client.totalAccesses || 0
-      } : undefined,
+      client: response.client
+        ? {
+            name: response.client.name || "Cliente",
+            photo: response.client.photo,
+            plan: response.client.plan || "Plan no especificado",
+            consecutiveDays: response.client.consecutiveDays || 0,
+            totalAccesses: response.client.totalAccesses || 0,
+          }
+        : undefined,
       reward: response.reward,
-      reason: response.reason
+      reason: response.reason,
     };
   }
 
@@ -78,36 +80,13 @@ export class GymAccessService {
    * @returns Observable error
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Error desconocido del sistema';
-    
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = 'Error de conexión. Verifique su conexión a internet.';
-    } else {
-      // Server-side error
-      switch (error.status) {
-        case 400:
-          errorMessage = error.error?.message || 'Datos inválidos. Verifique la cédula ingresada.';
-          break;
-        case 404:
-          errorMessage = 'Cliente no encontrado en el sistema.';
-          break;
-        case 500:
-          errorMessage = 'Error interno del servidor. Intente nuevamente.';
-          break;
-        case 0:
-          errorMessage = 'No se pudo conectar al servidor. Verifique la conexión.';
-          break;
-        default:
-          errorMessage = error.error?.message || 'Error del servidor. Intente nuevamente.';
-      }
-    }
+    const errorMessage = error.error?.data || getFriendlyErrorMessage(error, "Error de validación");
 
     // Return error response in the expected format
     const errorResponse: GymAccessResponse = {
       success: false,
-      message: 'Error de validación',
-      reason: errorMessage
+      message: "Error de validación",
+      reason: errorMessage,
     };
 
     return throwError(() => errorResponse);
