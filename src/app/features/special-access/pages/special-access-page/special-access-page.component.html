@@ -46,7 +46,7 @@
                   [attr.aria-describedby]="'cedula-help'">
                 
                 <div id="cedula-help" class="text-sm text-gray-500 mt-2">
-                  Ingrese su cédula de identidad (8 dígitos)
+                  Ingrese su cédula de identidad
                 </div>
               </div>
 
@@ -67,9 +67,7 @@
 
             <!-- Virtual Keypad -->
             <div class="mb-8" *ngIf="showKeypad">
-              <h3 class="text-lg font-semibold text-center mb-4 text-gray-700">
-                Teclado Virtual
-              </h3>
+           
               <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
                 <!-- Number buttons -->
                 <button 
@@ -103,15 +101,15 @@
             </div>
 
             <!-- Submit Button -->
-            <div class="text-center">
+            <div class="flex justify-center items-center">
               <button 
                 (click)="onSubmit()"
                 [disabled]="!formState.isValid || formState.isLoading"
-                class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold text-xl py-4 px-12 rounded-lg shadow-lg transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-green-300"
+                class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold text-xl py-4 px-12 rounded-lg shadow-lg transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-green-300 mx-auto"
                 aria-label="Validar acceso al gimnasio">
                 <span *ngIf="!formState.isLoading" class="flex items-center justify-center">
                   <i class="ph-check mr-2 text-2xl"></i>
-                  VALIDAR ACCESO
+                  ACCEDER
                 </span>
                 <span *ngIf="formState.isLoading" class="flex items-center justify-center">
                   <mat-spinner diameter="24" class="mr-2"></mat-spinner>
@@ -254,11 +252,8 @@
 
           <mat-card-content class="p-6">
             <!-- Instructions -->
-            <div class="mb-6">
-              <h3 class="text-lg font-semibold text-gray-800 mb-3">
-                <i class="ph-question text-blue-500 mr-2"></i>
-                ¿Cómo usar el sistema?
-              </h3>
+            <div class="mb-6 mt-2">
+          
               <ol class="text-sm text-gray-600 space-y-2 list-decimal list-inside">
                 <li>Ingrese su cédula de identidad (8 dígitos)</li>
                 <li>Use el teclado virtual o el teclado de la tablet</li>
