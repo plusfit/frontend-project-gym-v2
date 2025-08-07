@@ -145,31 +145,35 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
 
     try {
       const response = await this.gymAccessService.validateAccess(this.formState.cedula).toPromise();
+      console.log('Response received:', response); // Debug log
       this.formState.response = response;
       this.formState.showResult = true;
       
       // Play success/error sound (if available)
-      this.playAccessSound(response!.success);
-      
-      // Show snackbar with result
-      if (response!.success) {
-        this.snackbarService.showSuccess('Acceso autorizado', response!.message);
-      } else {
-        this.snackbarService.showError('Acceso denegado', response!.message);
+      if (response) {
+        this.playAccessSound(response.success);
+        
+        // Show snackbar with result
+        if (response.success) {
+          this.snackbarService.showSuccess('Acceso autorizado', response.message);
+        } else {
+          this.snackbarService.showError('Acceso denegado', response.message);
+        }
       }
       
       // Auto-reset after successful access or error
       this.scheduleAutoReset();
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle service errors
-      this.formState.response = error;
+      const errorResponse = error as GymAccessResponse;
+      this.formState.response = errorResponse;
       this.formState.showResult = true;
       
       this.playAccessSound(false);
       this.snackbarService.showError(
         'Error de acceso',
-        error.reason || 'Error de conexión'
+        errorResponse.reason || 'Error de conexión'
       );
       
       this.scheduleAutoReset();

@@ -4,7 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { environment } from "../../../../environments/environment";
 import { getFriendlyErrorMessage } from "@core/utilities/helpers";
-import { GymAccessRequest, GymAccessResponse } from "../interfaces/special-access.interface";
+import { GymAccessRequest, GymAccessResponse, ApiResponse } from "../interfaces/special-access.interface";
 
 @Injectable({
   providedIn: "root",
@@ -22,7 +22,7 @@ export class GymAccessService {
   validateAccess(cedula: string): Observable<GymAccessResponse> {
     const request: GymAccessRequest = { cedula: cedula.trim() };
 
-    return this.http.post<GymAccessResponse>(`${this.apiUrl}/validate`, request).pipe(
+    return this.http.post<ApiResponse>(`${this.apiUrl}/validate`, request).pipe(
       map((response) => this.transformResponse(response)),
       catchError((error) => this.handleError(error)),
     );
@@ -56,21 +56,31 @@ export class GymAccessService {
    * @param response - Raw API response
    * @returns Transformed response
    */
-  private transformResponse(response: GymAccessResponse): GymAccessResponse {
+  private transformResponse(response: ApiResponse): GymAccessResponse {
+    // Handle new API structure with 'data' wrapper
+    if (response.success && response.data) {
+      return {
+        success: response.success,
+        message: response.data.message || "Acceso procesado",
+        client: response.data.client
+          ? {
+              name: response.data.client.name || "Cliente",
+              photo: response.data.client.photo,
+              plan: response.data.client.plan,
+              consecutiveDays: response.data.client.consecutiveDays || 0,
+              totalAccesses: response.data.client.totalAccesses || 0,
+            }
+          : undefined,
+        reward: response.data.reward,
+        reason: response.data.reason,
+      };
+    }
+    
+    // Fallback for missing data
     return {
-      success: response.success,
-      message: response.message,
-      client: response.client
-        ? {
-            name: response.client.name || "Cliente",
-            photo: response.client.photo,
-            plan: response.client.plan || "Plan no especificado",
-            consecutiveDays: response.client.consecutiveDays || 0,
-            totalAccesses: response.client.totalAccesses || 0,
-          }
-        : undefined,
-      reward: response.reward,
-      reason: response.reason,
+      success: false,
+      message: "Error en la respuesta del servidor",
+      reason: "Formato de respuesta inesperado"
     };
   }
 

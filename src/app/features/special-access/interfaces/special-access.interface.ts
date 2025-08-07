@@ -48,6 +48,17 @@ export interface GymAccessResponse {
   reason?: string;
 }
 
+// Raw API Response Structure
+export interface ApiResponse {
+  success: boolean;
+  data?: {
+    message: string;
+    client?: ClientAccessInfo;
+    reward?: RewardInfo;
+    reason?: string;
+  };
+}
+
 export interface GymAccessFormState {
   cedula: string;
   isValid: boolean;
