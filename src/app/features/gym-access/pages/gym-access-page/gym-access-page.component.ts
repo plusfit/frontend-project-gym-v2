@@ -13,6 +13,7 @@ import { LoadingOverlayService } from "@core/services/loading-overlay.service";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { TitleComponent } from "@shared/components/title/title.component";
 import { AuthState } from "@features/auth/state/auth.state";
+import { SetMockAuth } from "@features/auth/state/auth.actions";
 import { environment } from "../../../../../environments/environment";
 
 import { AccessHistoryTableComponent } from "../../components/access-history-table/access-history-table.component";
@@ -20,6 +21,7 @@ import { GymAccessAdminService } from "../../services/gym-access-admin.service";
 import {
   GymAccessHistoryItem,
   AccessFilters,
+  AccessStats,
   GymAccessHistoryResponse,
 } from "../../interfaces/gym-access-admin.interface";
 
@@ -47,6 +49,11 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   pageSize = 10;
   hasError = false;
   errorMessage = "";
+  
+  // Statistics
+  stats: AccessStats | null = null;
+  statsLoading = false;
+  statsError = false;
 
   // Current filters
   filters: AccessFilters = {
@@ -118,19 +125,19 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     if (!isAuthenticated) {
       console.warn("=== AUTHENTICATION FAILED ===");
       console.warn(
-        "User is not authenticated - loading with mock data or allowing unauthenticated calls",
+        "User is not authenticated - setting mock auth token for testing",
       );
-      // Instead of redirecting, we'll try to load data anyway or use mock data
-      console.log("=== PROCEEDING WITH DATA LOADING (UNAUTHENTICATED) ===");
-      // Load mock data as fallback
-      this.loadMockData();
-      // Also try to load real data (backend might allow unauthenticated access)
-      this.loadAccessHistory();
+      // Set mock auth token for testing
+      this.setMockAuthToken();
       return;
     }
 
     console.log("=== PROCEEDING WITH DATA LOADING (AUTHENTICATED) ===");
     this.loadAccessHistory();
+    this.loadStats();
+    
+    // Make debug method globally accessible
+    (window as any).debugGymAccess = this;
   }
 
   ngOnDestroy(): void {
@@ -302,11 +309,52 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Load access statistics with current filters
+   */
+  private loadStats(): void {
+    this.statsLoading = true;
+    this.statsError = false;
+
+    // Use current filters for stats
+    const statsFilters = {
+      cedula: this.filters.cedula,
+      clientName: this.filters.clientName,
+      successful: this.filters.successful
+    };
+
+    this.gymAccessAdminService.getStats(statsFilters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          console.log("=== STATS SUCCESS ===");
+          console.log("Stats received:", stats);
+          console.log("Stats type:", typeof stats);
+          console.log("Stats keys:", stats ? Object.keys(stats) : 'null');
+          console.log("Applied filters:", statsFilters);
+          console.log("Setting stats to component...");
+          this.stats = stats;
+          this.statsLoading = false;
+          console.log("Component stats after assignment:", this.stats);
+          console.log("Component statsLoading:", this.statsLoading);
+          console.log("Component statsError:", this.statsError);
+        },
+        error: (error) => {
+          console.error("=== STATS ERROR ===");
+          console.error("Error loading stats:", error);
+          this.statsError = true;
+          this.statsLoading = false;
+          this.stats = null;
+        }
+      });
+  }
+
+  /**
    * Handle filter changes from the table component
    */
   onFiltersChange(newFilters: AccessFilters): void {
     this.filters = { ...newFilters };
     this.loadAccessHistory();
+    this.loadStats(); // Reload stats with new filters
   }
 
   /**
@@ -377,6 +425,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.hasError = false;
     this.errorMessage = "";
     this.loadAccessHistory();
+    this.loadStats();
     this.showSuccess("Datos actualizados");
   }
 
@@ -474,6 +523,41 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
       hasAccessToken: !!this.store.selectSnapshot(AuthState.accessToken),
       userId: this.store.selectSnapshot(AuthState.userId),
     };
+  }
+
+  /**
+   * Set mock authentication token for testing
+   */
+  setMockAuthToken(): void {
+    console.log("=== SETTING MOCK AUTH TOKEN ===");
+    // Use the generated JWT token from our backend test
+    const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzU0ODYxOTAzLCJleHAiOjE3NTQ5NDgzMDN9.PjjNzSife-QM0j1prpQYfDYZ_-r4KurcRHFyQfwQw1Q';
+    
+    this.store.dispatch(new SetMockAuth({ 
+      accessToken: mockToken,
+      refreshToken: 'mock-refresh-token'
+    }));
+    
+    console.log("Mock auth token set, reloading data...");
+    
+    // Now load the data with authentication
+    setTimeout(() => {
+      this.loadAccessHistory();
+      this.loadStats();
+    }, 100);
+  }
+
+  /**
+   * Debug method to force reload stats - can be called from browser console
+   */
+  debugReloadStats(): void {
+    console.log("=== DEBUG RELOAD STATS ===");
+    console.log("Current auth state:", this.store.selectSnapshot((state) => state.auth));
+    console.log("Current stats:", this.stats);
+    console.log("Current statsLoading:", this.statsLoading);
+    console.log("Current statsError:", this.statsError);
+    
+    this.loadStats();
   }
 
   /**

@@ -66,3 +66,17 @@ export interface AccessTableColumn {
   type: "text" | "date" | "badge" | "boolean" | "number";
   width?: string;
 }
+
+export interface AccessStats {
+  totalAccessesToday: number;
+  totalAccessesThisMonth: number;
+  averageAccessesPerDay: number;
+  totalAccesses: number;
+  successfulAccesses: number;
+  failedAccesses: number;
+  mostActiveClients: {
+    clientName: string;
+    cedula: string;
+    totalAccesses: number;
+  }[];
+}

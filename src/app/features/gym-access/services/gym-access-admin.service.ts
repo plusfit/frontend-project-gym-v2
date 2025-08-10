@@ -9,6 +9,7 @@ import {
   ClientAccessHistoryResponse,
   AccessFilters,
   ExportOptions,
+  AccessStats,
 } from "../interfaces/gym-access-admin.interface";
 
 @Injectable({
@@ -140,6 +141,40 @@ export class GymAccessAdminService {
     return this.http
       .get<ClientAccessHistoryResponse>(`${this.apiUrl}/client/${cedula}/history`)
       .pipe(catchError((error) => this.handleError(error)));
+  }
+
+  /**
+   * Get access statistics with optional filters
+   * @param filters - Optional filters to apply to statistics
+   * @returns Observable with access statistics
+   */
+  getStats(filters?: any): Observable<AccessStats> {
+    let params = new HttpParams();
+    
+    if (filters) {
+      if (filters.cedula) {
+        params = params.set('cedula', filters.cedula);
+      }
+      if (filters.clientName) {
+        params = params.set('clientName', filters.clientName);
+      }
+      if (filters.successful !== undefined) {
+        params = params.set('successful', filters.successful.toString());
+      }
+      if (filters.startDate) {
+        params = params.set('startDate', filters.startDate);
+      }
+      if (filters.endDate) {
+        params = params.set('endDate', filters.endDate);
+      }
+    }
+    
+    return this.http
+      .get<{ success: boolean; data: AccessStats }>(`${this.apiUrl}/stats`, { params })
+      .pipe(
+        map((response) => response.data),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   /**

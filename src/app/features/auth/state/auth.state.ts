@@ -6,7 +6,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { Observable, catchError, tap, throwError, exhaustMap } from "rxjs";
 import { AuthResponse, FirebaseAuthResponse, Profile, UserPreferences } from "../interfaces/auth";
 import { AuthService } from "../services/auth.service";
-import { ForgotPassword, GetNewToken, GetUserPreferences, Login, Logout } from "./auth.actions";
+import { ForgotPassword, GetNewToken, GetUserPreferences, Login, Logout, SetMockAuth } from "./auth.actions";
 import { AuthStateModel } from "./auth.model";
 import { UtilsService } from "@core/services/utils.service";
 import { SnackBarService } from "@core/services/snackbar.service";
@@ -189,5 +189,15 @@ export class AuthState {
         return throwError(() => err);
       }),
     );
+  }
+
+  @Action(SetMockAuth)
+  setMockAuth(ctx: StateContext<AuthStateModel>, action: SetMockAuth): void {
+    ctx.patchState({
+      auth: {
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken || '',
+      },
+    });
   }
 }
