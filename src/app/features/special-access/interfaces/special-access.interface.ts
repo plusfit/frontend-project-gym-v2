@@ -56,7 +56,7 @@ export interface ApiResponse {
     client?: ClientAccessInfo;
     reward?: RewardInfo;
     reason?: string;
-  };
+  } | string; // data can be an object or a string for errors
 }
 
 export interface GymAccessFormState {

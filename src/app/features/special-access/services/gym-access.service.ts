@@ -4,7 +4,11 @@ import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { environment } from "../../../../environments/environment";
 import { getFriendlyErrorMessage } from "@core/utilities/helpers";
-import { GymAccessRequest, GymAccessResponse, ApiResponse } from "../interfaces/special-access.interface";
+import {
+  GymAccessRequest,
+  GymAccessResponse,
+  ApiResponse,
+} from "../interfaces/special-access.interface";
 
 @Injectable({
   providedIn: "root",
@@ -57,8 +61,8 @@ export class GymAccessService {
    * @returns Transformed response
    */
   private transformResponse(response: ApiResponse): GymAccessResponse {
-    // Handle new API structure with 'data' wrapper
-    if (response.success && response.data) {
+    if (response.success && response.data && typeof response.data === 'object') {
+      // Success case with object data
       return {
         success: response.success,
         message: response.data.message || "Acceso procesado",
@@ -74,13 +78,22 @@ export class GymAccessService {
         reward: response.data.reward,
         reason: response.data.reason,
       };
-    }
+    } 
     
+    if (!response.success && response.data && typeof response.data === 'string') {
+      // Error case with string data
+      return {
+        success: false,
+        message: response.data,
+        reason: response.data
+      };
+    }
+
     // Fallback for missing data
     return {
       success: false,
       message: "Error en la respuesta del servidor",
-      reason: "Formato de respuesta inesperado"
+      reason: "Formato de respuesta inesperado",
     };
   }
 
