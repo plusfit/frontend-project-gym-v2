@@ -60,74 +60,10 @@
         class="text-gray-600 hover:text-gray-800">
         <mat-icon>refresh</mat-icon>
       </button>
-      
-      <!-- Stats Button -->
-      <button
-        mat-stroked-button
-        (click)="navigateToStats()"
-        class="flex items-center space-x-2">
-        <mat-icon>analytics</mat-icon>
-        <span>Ver Estadísticas</span>
-      </button>
     </div>
   </div>
 
-  <!-- Today's Quick Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <!-- Total Accesses Today -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Accesos Hoy</p>
-          <p class="text-2xl font-bold text-blue-600">{{ formatNumber(todayStats.totalAccesses) }}</p>
-        </div>
-        <div class="p-3 bg-blue-100 rounded-full">
-          <mat-icon class="text-blue-600">login</mat-icon>
-        </div>
-      </div>
-    </div>
 
-    <!-- Successful Accesses -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Accesos Exitosos</p>
-          <p class="text-2xl font-bold text-green-600">{{ formatNumber(todayStats.successfulAccesses) }}</p>
-        </div>
-        <div class="p-3 bg-green-100 rounded-full">
-          <mat-icon class="text-green-600">check_circle</mat-icon>
-        </div>
-      </div>
-    </div>
-
-    <!-- Unique Clients -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Clientes Únicos</p>
-          <p class="text-2xl font-bold text-indigo-600">{{ formatNumber(todayStats.uniqueClients) }}</p>
-        </div>
-        <div class="p-3 bg-indigo-100 rounded-full">
-          <mat-icon class="text-indigo-600">people</mat-icon>
-        </div>
-      </div>
-    </div>
-
-    <!-- Success Rate -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Tasa de Éxito</p>
-          <p class="text-2xl font-bold" [ngClass]="getSuccessRateColorClass()">
-            {{ formatPercentage(todayStats.successRate) }}
-          </p>
-        </div>
-        <div class="p-3 rounded-full" [ngClass]="getSuccessRateBgClass()">
-          <mat-icon [ngClass]="getSuccessRateColorClass()">trending_up</mat-icon>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Summary Information -->

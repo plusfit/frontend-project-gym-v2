@@ -6,11 +6,8 @@ import { environment } from "../../../../environments/environment";
 import {
   GymAccessHistoryResponse,
   WrappedGymAccessHistoryResponse,
-  GymAccessStatsResponse,
-  DirectGymAccessStatsResponse,
   ClientAccessHistoryResponse,
   AccessFilters,
-  StatsPeriod,
   ExportOptions,
 } from "../interfaces/gym-access-admin.interface";
 
@@ -135,31 +132,6 @@ export class GymAccessAdminService {
   }
 
   /**
-   * Get gym access statistics for the specified period
-   * @param period - The time period and date range for statistics
-   * @returns Observable with statistics response
-   */
-  getAccessStats(period?: StatsPeriod): Observable<GymAccessStatsResponse> {
-    let params = new HttpParams();
-
-    if (period) {
-      if (period.startDate) {
-        params = params.set("startDate", period.startDate);
-      }
-      if (period.endDate) {
-        params = params.set("endDate", period.endDate);
-      }
-      if (period.period) {
-        params = params.set("period", period.period);
-      }
-    }
-
-    return this.http
-      .get<GymAccessStatsResponse>(`${this.apiUrl}/stats`, { params })
-      .pipe(catchError((error) => this.handleError(error)));
-  }
-
-  /**
    * Get access history for a specific client
    * @param cedula - Client's cedula/ID number
    * @returns Observable with client access history
@@ -201,93 +173,12 @@ export class GymAccessAdminService {
       params = params.set("cedula", options.filters.cedula);
     }
 
-    if (options.includeStats) {
-      params = params.set("includeStats", "true");
-    }
-
     return this.http
       .get(`${this.apiUrl}/export`, {
         params,
         responseType: "blob",
       })
       .pipe(catchError((error) => this.handleError(error)));
-  }
-
-  /**
-   * Get today's access summary
-   * @returns Observable with today's statistics
-   */
-  getTodaysStats(): Observable<GymAccessStatsResponse> {
-    const url = `${this.apiUrl}/stats`;
-    console.log("=== STATS REQUEST DEBUG ===");
-    console.log("Stats URL:", url);
-
-    const requestStart = performance.now();
-
-    return this.http.get<GymAccessStatsResponse | DirectGymAccessStatsResponse>(url).pipe(
-      map((response) => {
-        console.log("=== RAW STATS RESPONSE ===");
-        console.log("Raw stats response:", JSON.stringify(response, null, 2));
-
-        // Handle wrapped response format with success field
-        if ((response as any).success !== undefined && (response as any).data) {
-          console.log("Detected wrapped stats response format");
-          return response as GymAccessStatsResponse;
-        }
-
-        // Handle direct stats response format
-        if ((response as any).overview || (response as any).dailyStats) {
-          console.log("Detected direct stats response format - wrapping in success object");
-          return {
-            success: true,
-            data: response as DirectGymAccessStatsResponse,
-            message: "Stats loaded successfully",
-          } as GymAccessStatsResponse;
-        }
-
-        // Handle unexpected format
-        console.warn("Unexpected stats response format:", response);
-        return {
-          success: false,
-          data: {
-            overview: {
-              totalAccessesToday: 0,
-              totalAccessesThisWeek: 0,
-              totalAccessesThisMonth: 0,
-              uniqueClientsToday: 0,
-              uniqueClientsThisMonth: 0,
-              averageSuccessRate: 0,
-              peakHour: 0,
-            },
-            dailyStats: [],
-            weeklyStats: [],
-            monthlyStats: [],
-            topClients: [],
-            popularTimes: [],
-            rewardStats: {
-              totalRewardsEarned: 0,
-              activeRewards: 0,
-              rewardsByType: [],
-              topRewardEarners: [],
-            },
-          },
-          message: "No stats data available",
-        } as GymAccessStatsResponse;
-      }),
-      tap((response) => {
-        const requestTime = performance.now() - requestStart;
-        console.log("=== STATS RESPONSE SUCCESS ===");
-        console.log("Request time:", `${requestTime.toFixed(2)}ms`);
-        console.log("Processed stats response:", JSON.stringify(response, null, 2));
-      }),
-      catchError((error) => {
-        const requestTime = performance.now() - requestStart;
-        console.error("=== STATS REQUEST FAILED ===");
-        console.error("Request time:", `${requestTime.toFixed(2)}ms`);
-        console.error("Stats error:", error);
-        return this.handleError(error);
-      }),
-    );
   }
 
   /**

@@ -132,31 +132,6 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Success rate colors */
-.success-rate-high {
-  color: #16a34a;
-}
-
-.success-rate-medium {
-  color: #ca8a04;
-}
-
-.success-rate-low {
-  color: #dc2626;
-}
-
-.success-rate-bg-high {
-  background-color: #f0fdf4;
-}
-
-.success-rate-bg-medium {
-  background-color: #fefce8;
-}
-
-.success-rate-bg-low {
-  background-color: #fef2f2;
-}
-
 /* Enhanced summary information */
 .summary-info {
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);

@@ -40,32 +40,21 @@
     </div>
   </div>
 
-  <!-- Success Rate Overview -->
+  <!-- Access Summary -->
   <div class="bg-white rounded-lg border border-gray-200 p-6" *ngIf="stats">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-900">Resumen de Rendimiento</h3>
-      <div class="flex items-center space-x-2">
-        <mat-icon [ngClass]="getSuccessRateColor(stats.overview.averageSuccessRate)">
-          {{ getSuccessRateIcon(stats.overview.averageSuccessRate) }}
-        </mat-icon>
-        <span [ngClass]="getSuccessRateColor(stats.overview.averageSuccessRate)" class="font-semibold">
-          {{ formatPercentage(stats.overview.averageSuccessRate) }}
-        </span>
-      </div>
+      <h3 class="text-lg font-semibold text-gray-900">Resumen de Accesos Hoy</h3>
+      <mat-icon class="text-gray-400">analytics</mat-icon>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="text-center p-4 bg-blue-50 rounded-lg">
-        <p class="text-sm text-gray-600">Accesos Totales (Mes)</p>
-        <p class="text-xl font-bold text-blue-600">{{ formatNumber(stats.overview.totalAccessesThisMonth) }}</p>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="text-center p-4 bg-green-50 rounded-lg">
-        <p class="text-sm text-gray-600">Clientes Únicos (Mes)</p>
-        <p class="text-xl font-bold text-green-600">{{ formatNumber(stats.overview.uniqueClientsThisMonth) }}</p>
+        <p class="text-sm text-gray-600">Accesos Exitosos</p>
+        <p class="text-xl font-bold text-green-600">{{ formatNumber(stats.overview.totalAccessesToday - stats.overview.failedAccessesToday) }}</p>
       </div>
-      <div class="text-center p-4 bg-yellow-50 rounded-lg">
-        <p class="text-sm text-gray-600">Hora de Mayor Actividad</p>
-        <p class="text-xl font-bold text-yellow-600">{{ formatHour(stats.overview.peakHour) }}</p>
+      <div class="text-center p-4 bg-red-50 rounded-lg">
+        <p class="text-sm text-gray-600">Accesos Fallidos</p>
+        <p class="text-xl font-bold text-red-600">{{ formatNumber(stats.overview.failedAccessesToday) }}</p>
       </div>
     </div>
   </div>

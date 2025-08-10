@@ -21,7 +21,6 @@ import {
   GymAccessHistoryItem,
   AccessFilters,
   GymAccessHistoryResponse,
-  GymAccessStatsResponse,
 } from "../../interfaces/gym-access-admin.interface";
 
 @Component({
@@ -53,14 +52,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   filters: AccessFilters = {
     page: 1,
     limit: 10,
-  };
-
-  // Quick stats for dashboard summary
-  todayStats = {
-    totalAccesses: 0,
-    successfulAccesses: 0,
-    uniqueClients: 0,
-    successRate: 0,
   };
 
   constructor(
@@ -135,13 +126,11 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
       this.loadMockData();
       // Also try to load real data (backend might allow unauthenticated access)
       this.loadAccessHistory();
-      this.loadTodayStats();
       return;
     }
 
     console.log("=== PROCEEDING WITH DATA LOADING (AUTHENTICATED) ===");
     this.loadAccessHistory();
-    this.loadTodayStats();
   }
 
   ngOnDestroy(): void {
@@ -313,67 +302,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load today's quick stats
-   */
-  loadTodayStats(): void {
-    console.log("=== LOADING TODAY STATS ===");
-    console.log("Stats request initiated at:", new Date().toISOString());
-
-    // Pre-request authentication check
-    const isStillAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
-    const currentToken = this.store.selectSnapshot(AuthState.accessToken);
-
-    console.log("Pre-stats auth check:", {
-      isAuthenticated: isStillAuthenticated,
-      hasToken: !!currentToken,
-    });
-
-    if (!isStillAuthenticated || !currentToken) {
-      console.warn("No authentication available for stats request - proceeding anyway");
-      console.log("This may result in 401 error for stats, but we'll try anyway");
-      // Don't return here - continue with the request
-    }
-
-    this.gymAccessAdminService
-      .getTodaysStats()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response: GymAccessStatsResponse) => {
-          console.log("=== STATS SUCCESS ===");
-          console.log("Stats response:", JSON.stringify(response, null, 2));
-          console.log("Stats response type:", typeof response);
-
-          if (response && response.success && response.data) {
-            this.todayStats = {
-              totalAccesses: response.data.overview?.totalAccessesToday || 0,
-              successfulAccesses: response.data.overview?.totalAccessesToday || 0, // Backend only tracks successful accesses
-              uniqueClients: response.data.overview?.uniqueClientsToday || 0,
-              successRate: response.data.overview?.averageSuccessRate || 100,
-            };
-
-            console.log("Today stats processed:", this.todayStats);
-          } else {
-            console.warn("No stats response received");
-            // Keep default values
-          }
-        },
-        error: (error) => {
-          console.error("=== STATS ERROR ===");
-          console.error("Stats error:", error);
-          console.error("Stats error type:", typeof error);
-
-          // Check auth status after stats error
-          const authAfterStatsError = {
-            isAuthenticated: this.store.selectSnapshot(AuthState.isAuthenticated),
-            hasToken: !!this.store.selectSnapshot(AuthState.accessToken),
-          };
-          console.error("Auth status after stats error:", authAfterStatsError);
-          // Keep default values, don't show error to user for stats as it's not critical
-        },
-      });
-  }
-
-  /**
    * Handle filter changes from the table component
    */
   onFiltersChange(newFilters: AccessFilters): void {
@@ -442,13 +370,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navigate to statistics page
-   */
-  navigateToStats(): void {
-    this.router.navigate(["/estadisticas-accesos"]);
-  }
-
-  /**
    * Refresh data
    */
   refreshData(): void {
@@ -456,28 +377,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.hasError = false;
     this.errorMessage = "";
     this.loadAccessHistory();
-    this.loadTodayStats();
     this.showSuccess("Datos actualizados");
-  }
-
-  /**
-   * Get success rate color class
-   */
-  getSuccessRateColorClass(): string {
-    const rate = this.todayStats.successRate;
-    if (rate >= 95) return "text-green-600";
-    if (rate >= 85) return "text-yellow-600";
-    return "text-red-600";
-  }
-
-  /**
-   * Get success rate background class
-   */
-  getSuccessRateBgClass(): string {
-    const rate = this.todayStats.successRate;
-    if (rate >= 95) return "bg-green-50";
-    if (rate >= 85) return "bg-yellow-50";
-    return "bg-red-50";
   }
 
   /**
@@ -626,14 +526,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.totalCount = 3;
     this.currentPage = 0;
     this.pageSize = 10;
-
-    // Mock today stats
-    this.todayStats = {
-      totalAccesses: 45,
-      successfulAccesses: 45,
-      uniqueClients: 32,
-      successRate: 100,
-    };
 
     console.log("Mock data loaded successfully");
   }
