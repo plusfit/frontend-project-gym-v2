@@ -61,7 +61,7 @@ export class GymAccessService {
    * @returns Transformed response
    */
   private transformResponse(response: ApiResponse): GymAccessResponse {
-    if (response.success && response.data && typeof response.data === 'object') {
+    if (response.success && response.data && typeof response.data === "object") {
       // Success case with object data
       return {
         success: response.success,
@@ -78,14 +78,14 @@ export class GymAccessService {
         reward: response.data.reward,
         reason: response.data.reason,
       };
-    } 
-    
-    if (!response.success && response.data && typeof response.data === 'string') {
+    }
+
+    if (!response.success && response.data && typeof response.data === "string") {
       // Error case with string data
       return {
         success: false,
         message: response.data,
-        reason: response.data
+        reason: response.data,
       };
     }
 

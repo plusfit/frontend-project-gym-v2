@@ -51,12 +51,14 @@ export interface GymAccessResponse {
 // Raw API Response Structure
 export interface ApiResponse {
   success: boolean;
-  data?: {
-    message: string;
-    client?: ClientAccessInfo;
-    reward?: RewardInfo;
-    reason?: string;
-  } | string; // data can be an object or a string for errors
+  data?:
+    | {
+        message: string;
+        client?: ClientAccessInfo;
+        reward?: RewardInfo;
+        reason?: string;
+      }
+    | string; // data can be an object or a string for errors
 }
 
 export interface GymAccessFormState {
