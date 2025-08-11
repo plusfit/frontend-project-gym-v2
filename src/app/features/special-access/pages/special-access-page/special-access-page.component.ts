@@ -247,19 +247,7 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
   }
 
   get denialMessage(): string {
-    switch (this.formState.response?.denialType) {
-      case 'client_not_found':
-        return 'No se encontró un cliente con esta cédula en el sistema';
-      case 'client_disabled':
-        return 'Su cuenta se encuentra deshabilitada. Contacte a recepción';
-      case 'already_accessed':
-        return 'Ya registró su acceso el día de hoy';
-      case 'outside_hours':
-        return 'El gimnasio está cerrado en este momento';
-      case 'system_error':
-      default:
-        return this.formState.response?.reason || 'Error interno del sistema';
-    }
+    return this.formState.response?.message || 'Error interno del sistema';
   }
 
   get denialIcon(): string {
