@@ -1,11 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { GetClients } from '@features/client/state/clients.actions';
-import { Actions, Store } from '@ngxs/store';
-import { environment } from '../../../../environments/environment';
 
 interface ValueSelect {
   value: string;
@@ -25,14 +22,12 @@ interface ValueSelect {
   templateUrl: './filter-select.component.html',
 })
 export class FilterSelectComponent {
-  pageSize = environment.config.pageSize;
-  withoutPlan = false;
-  disabled = false;
-
   @Input() control!: FormControl;
   @Input() options!: any[];
   @Input() placeholder!: string;
   @Input() value!: string;
+  
+  @Output() filterChange = new EventEmitter<{withoutPlan: boolean, disabled: boolean}>();
 
   filters: ValueSelect[] = [
     { value: 'all', viewValue: 'Todos' },
@@ -40,31 +35,17 @@ export class FilterSelectComponent {
     { value: 'disabled', viewValue: 'Deshabilitados' },
   ];
 
-  constructor(
-    private store: Store,
-    private actions: Actions,
-  ) {}
-
-  filterChange(event: any): void {
-    this.disabled = false;
-    this.withoutPlan = false;
-
+  onFilterChange(event: any): void {
     const selected = event.value;
+    let withoutPlan = false;
+    let disabled = false;
 
     if (selected === 'disabled') {
-      this.disabled = true;
+      disabled = true;
     } else if (selected === 'withoutPlan') {
-      this.withoutPlan = true;
+      withoutPlan = true;
     }
 
-    this.store.dispatch(
-      new GetClients({
-        page: 1,
-        pageSize: this.pageSize,
-        withoutPlan: this.withoutPlan,
-        disabled: this.disabled,
-        role: 'User',
-      }),
-    );
+    this.filterChange.emit({ withoutPlan, disabled });
   }
 }

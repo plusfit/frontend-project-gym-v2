@@ -67,7 +67,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize,
       searchQ: '',
       withoutPlan: false,
-      disable: false,
+      disabled: false,
+      role: 'User'
     };
     this.store.dispatch(new GetClients(this.filterValues));
   }
@@ -75,24 +76,35 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
-    const payload = {
+    
+    this.filterValues = {
+      ...this.filterValues,
       page: currentPage,
-      pageSize: currentPageSize,
-      searchQ: this.filterValues.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      pageSize: currentPageSize
     };
-    this.store.dispatch(new GetClients(payload));
+    
+    this.store.dispatch(new GetClients(this.filterValues));
   }
 
   onSearch(searchQuery: { searchQ: string }): void {
     this.filterValues = {
+      ...this.filterValues,
       page: 1,
-      pageSize: this.pageSize,
-      searchQ: searchQuery.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      searchQ: searchQuery.searchQ
     };
 
-    this.store.dispatch(new GetClients({ ...this.filterValues }));
+    this.store.dispatch(new GetClients(this.filterValues));
+  }
+
+  onFilterChange(filters: { withoutPlan: boolean, disabled: boolean }): void {
+    this.filterValues = {
+      ...this.filterValues,
+      page: 1,
+      withoutPlan: filters.withoutPlan,
+      disabled: filters.disabled
+    };
+
+    this.store.dispatch(new GetClients(this.filterValues));
   }
 
   createClient(): void {
