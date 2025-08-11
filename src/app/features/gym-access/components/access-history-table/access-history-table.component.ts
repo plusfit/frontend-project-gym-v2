@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
+import { TableComponent } from '@shared/components/table/table.component';
 import { EColorBadge } from '@shared/enums/badge-color.enum';
 
 import {
@@ -31,7 +31,6 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     MatInputModule,
@@ -45,7 +44,8 @@ import {
     MatNativeDateModule,
     MatProgressSpinnerModule,
     BadgeComponent,
-    LoaderComponent
+    LoaderComponent,
+    TableComponent
   ],
   templateUrl: './access-history-table.component.html',
   styleUrls: ['./access-history-table.component.css']
@@ -83,16 +83,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     'cedula',
     'successful',
     'reason',
-    'actions'
-  ];
-
-  columns: AccessTableColumn[] = [
-    { key: 'accessDate', label: 'Fecha y Hora', sortable: true, type: 'date' },
-    { key: 'clientName', label: 'Cliente', sortable: true, type: 'text' },
-    { key: 'cedula', label: 'Cédula', sortable: true, type: 'text' },
-    { key: 'successful', label: 'Estado', sortable: true, type: 'badge' },
-    { key: 'reason', label: 'Motivo', sortable: false, type: 'text' },
-    { key: 'actions', label: 'Acciones', sortable: false, type: 'text' }
+    'acciones'
   ];
 
   // Badge colors
@@ -192,24 +183,23 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Get badge color for access status
+   * Handle edit event from app-table (will be used for viewing client detail)
    */
-  getStatusBadgeColor(successful: boolean): EColorBadge {
-    // successful is now normalized to boolean in the service
-    return successful ? EColorBadge.SUCCESS : EColorBadge.ERROR;
+  handleEdit(id: string): void {
+    // id here will be either element.id, element._id, or element.cedula
+    // For gym access, we use cedula to view client details
+    this.onViewClientDetail(id);
   }
 
   /**
-   * Get status text
+   * Handle view detail event from app-table
    */
-  getStatusText(successful: boolean, reason?: string): string {
-    // successful is now normalized to boolean in the service
-    if (successful) {
-      return 'Exitoso';
-    } else {
-      return reason || 'Fallido';
-    }
+  handleViewDetail(id: string): void {
+    // id here will be either element.id, element._id, or element.cedula
+    // For gym access, we use cedula to view client details
+    this.onViewClientDetail(id);
   }
+
 
   /**
    * Parse date string to Date object
@@ -229,19 +219,6 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
 
-  /**
-   * Format date for display
-   */
-  formatDisplayDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleString('es-UY', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
 
   /**
    * Format date for API (YYYY-MM-DD)
@@ -282,36 +259,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
 
 
 
-  /**
-   * Format cedula for display
-   */
-  formatCedula(cedula: string): string {
-    if (cedula.length === 8) {
-      return `${cedula.substring(0, 1)}.${cedula.substring(1, 4)}.${cedula.substring(4, 7)}-${cedula.substring(7)}`;
-    }
-    return cedula;
-  }
 
-  /**
-   * Get photo URL or default placeholder
-   */
-  getClientPhotoUrl(photo?: string): string {
-    return photo || 'assets/defaults/user-placeholder.png';
-  }
-
-  /**
-   * Handle client photo error
-   */
-  onPhotoError(event: any): void {
-    event.target.src = 'assets/defaults/user-placeholder.png';
-  }
-
-  /**
-   * Debug helper to show value type in template
-   */
-  getDebugInfo(value: any): string {
-    return `${value} (${typeof value})`;
-  }
 
   /**
    * Set quick date range

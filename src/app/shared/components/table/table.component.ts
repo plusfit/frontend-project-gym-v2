@@ -132,7 +132,8 @@ export class TableComponent implements OnInit {
   }
 
   toggleSelection(element: any): void {
-    const index = this.selection.findIndex((item) => item._id === element._id);
+    const elementId = element.id || element._id;
+    const index = this.selection.findIndex((item) => (item.id || item._id) === elementId);
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
@@ -153,7 +154,7 @@ export class TableComponent implements OnInit {
   isAllSelected(): boolean {
     if (this.data) {
       return this.data?.every((item) =>
-        this.selection.some((selected) => selected._id === item._id),
+        this.selection.some((selected) => (selected.id || selected._id) === (item.id || item._id)),
       );
     } else {
       return false;
@@ -161,7 +162,7 @@ export class TableComponent implements OnInit {
   }
 
   isSelected(element: any): boolean {
-    return this.selection.some((item) => item._id === element._id);
+    return this.selection.some((item) => (item.id || item._id) === (element.id || element._id));
   }
 
   ngOnInit() {
@@ -227,5 +228,15 @@ export class TableComponent implements OnInit {
       unisex: EColorBadge.WARNING,
     };
     return sexTypeColors[sexType] || EColorBadge.NEUTRAL;
+  }
+
+  /**
+   * Format cedula for display
+   */
+  formatCedula(cedula: string): string {
+    if (cedula && cedula.length === 8) {
+      return `${cedula.substring(0, 1)}.${cedula.substring(1, 4)}.${cedula.substring(4, 7)}-${cedula.substring(7)}`;
+    }
+    return cedula || '';
   }
 }

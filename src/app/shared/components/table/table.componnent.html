@@ -93,9 +93,19 @@
             [textBadge]="getSexTypeLabel(element[column])"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "successful") {
+          <app-badge
+            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="element[column] ? 'Exitoso' : (element['reason'] || 'Fallido')"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "accessDate") {
+          <span class="text-gray-700">{{ element[column] | date: 'd/MM/y, h:mm a' }}</span>
+          } @if (column === "cedula") {
+          <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -119,7 +129,7 @@
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
                 <button
-                  (click)="emitSeeDetail(element._id)"
+                  (click)="emitSeeDetail(element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -134,7 +144,7 @@
                 </button>
                 }
                 <button
-                  (click)="emitEdit(element._id)"
+                  (click)="emitEdit(element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -167,7 +177,7 @@
                 </button>
                 } @if (showDisabled) {
                 <button
-                  (click)="emitDisabled(element._id, element.disabled)"
+                  (click)="emitDisabled(element.id || element._id, element.disabled)"
                   type="button"
                   class="group"
                   mat-menu-item

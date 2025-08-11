@@ -22,22 +22,6 @@
 
 <!-- Access Statistics -->
 <div class="mb-6" *ngIf="!statsError">
-  <!-- Stats Header -->
-  <div class="mb-3">
-    <h3 class="text-lg font-semibold text-gray-900">Estadísticas de Acceso</h3>
-    <p class="text-sm text-gray-600" *ngIf="filters.cedula || filters.clientName || filters.successful !== undefined">
-      <mat-icon class="text-sm mr-1">filter_list</mat-icon>
-      Filtros aplicados:
-      <span *ngIf="filters.cedula" class="ml-1 px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">Cédula: {{filters.cedula}}</span>
-      <span *ngIf="filters.clientName" class="ml-1 px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Cliente: {{filters.clientName}}</span>
-      <span *ngIf="filters.successful === true" class="ml-1 px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Solo exitosos</span>
-      <span *ngIf="filters.successful === false" class="ml-1 px-2 py-1 bg-red-100 text-red-800 rounded text-xs">Solo fallidos</span>
-    </p>
-    <p class="text-sm text-gray-600" *ngIf="!filters.cedula && !filters.clientName && filters.successful === undefined">
-      <mat-icon class="text-sm mr-1">today</mat-icon>
-      Mostrando estadísticas del día de hoy
-    </p>
-  </div>
   
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <!-- Total Accesses -->
@@ -109,18 +93,6 @@
   </div>
 </div>
 
-<!-- Summary Information -->
-<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="hasRecords()">
-  <div class="flex items-center space-x-2">
-    <mat-icon class="text-blue-600">info</mat-icon>
-    <div class="flex-1">
-      <p class="text-sm text-blue-800">
-        <span class="font-semibold">{{ getTotalRecordsText() }}</span> en el historial.
-        <span *ngIf="getCurrentPageInfo()" class="ml-2">{{ getCurrentPageInfo() }}</span>
-      </p>
-    </div>
-  </div>
-</div>
 
 <!-- Error State Information - Only show if there was actually an error, not just empty data -->
 <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" *ngIf="hasError">
@@ -171,26 +143,6 @@
   (viewClientDetail)="onViewClientDetail($event)">
 </app-access-history-table>
 
-<!-- Help Information -->
-<div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
-  <div class="flex items-start space-x-3">
-    <mat-icon class="text-gray-500 mt-1">help_outline</mat-icon>
-    <div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Información de Ayuda</h3>
-      <div class="text-sm text-gray-600 space-y-2">
-        <p><strong>Filtros:</strong> Use los filtros disponibles para encontrar registros específicos por fecha, cliente, cédula o estado de acceso.</p>
-        <p><strong>Exportación:</strong> Puede exportar los datos filtrados en formato CSV o Excel para análisis adicional.</p>
-        <p><strong>Estados de Acceso:</strong></p>
-        <ul class="list-disc list-inside ml-4 space-y-1">
-          <li><span class="font-medium text-green-600">Exitoso:</span> El cliente pudo acceder al gimnasio sin problemas.</li>
-          <li><span class="font-medium text-red-600">Fallido:</span> El acceso fue denegado (plan vencido, cliente inhabilitado, etc.).</li>
-        </ul>
-        <p><strong>Recompensas:</strong> Se muestran las recompensas ganadas por días consecutivos de asistencia.</p>
-        <p><strong>Acciones:</strong> Haga clic en el icono de usuario para ver el perfil completo del cliente.</p>
-      </div>
-    </div>
-  </div>
-</div>
 </section>
 
 

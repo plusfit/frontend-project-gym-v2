@@ -1,15 +1,15 @@
 <!-- Premium Filters Section -->
-<div class="bg-white rounded-xl shadow-lg border border-gray-200 mb-8 overflow-hidden">
-  <div class="p-8 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+<div class="bg-white rounded-xl shadow-lg border border-neutral-400 mb-8 overflow-hidden">
+  <div class="p-8 border-b border-neutral-400 bg-gradient-to-r from-neutral-200 to-neutral-100">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
           <mat-icon class="text-white" style="font-size: 20px;">filter_list</mat-icon>
         </div>
-        <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
+        <h3 class="text-xl font-bold text-neutral-900">Filtros de Búsqueda</h3>
       </div>
       <div class="flex items-center space-x-2">
-        <span class="text-sm text-gray-500" *ngIf="hasActiveFilters()">
+        <span class="text-sm text-neutral-700" *ngIf="hasActiveFilters()">
           {{ getActiveFiltersCount() }} filtro(s) activo(s)
         </span>
         <button
@@ -93,20 +93,20 @@
     </div>
 
     <!-- Enhanced Quick Date Filters -->
-    <div class="flex flex-wrap gap-3 mt-6 p-4 bg-white rounded-lg border border-gray-100">
-      <span class="text-sm font-semibold text-gray-700 mr-3 flex items-center gap-2">
+    <div class="flex flex-wrap gap-3 mt-6 p-4 bg-white rounded-lg border border-neutral-300">
+      <span class="text-sm font-semibold text-neutral-800 mr-3 flex items-center gap-2">
         <mat-icon style="font-size: 16px; width: 16px; height: 16px;">schedule</mat-icon>
         Filtros rápidos:
       </span>
-      <button mat-stroked-button (click)="setQuickDateRange('today')" class="text-xs hover:bg-blue-50 hover:border-blue-300 transition-all duration-200">
+      <button mat-stroked-button (click)="setQuickDateRange('today')" class="text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200">
         <mat-icon style="font-size: 14px;">today</mat-icon>
         Hoy
       </button>
-      <button mat-stroked-button (click)="setQuickDateRange('week')" class="text-xs hover:bg-blue-50 hover:border-blue-300 transition-all duration-200">
+      <button mat-stroked-button (click)="setQuickDateRange('week')" class="text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200">
         <mat-icon style="font-size: 14px;">date_range</mat-icon>
         Última Semana
       </button>
-      <button mat-stroked-button (click)="setQuickDateRange('month')" class="text-xs hover:bg-blue-50 hover:border-blue-300 transition-all duration-200">
+      <button mat-stroked-button (click)="setQuickDateRange('month')" class="text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200">
         <mat-icon style="font-size: 14px;">calendar_month</mat-icon>
         Último Mes
       </button>
@@ -115,9 +115,9 @@
 </div>
 
 <!-- Premium Table Section -->
-<div class="table-section bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+<div class="w-full overflow-hidden rounded-xl shadow-md border border-neutral-400">
   <!-- Enhanced Table Header -->
-  <div class="table-header p-8 border-b border-gray-200">
+  <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-8 border-b border-neutral-400">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -134,17 +134,17 @@
       
       <!-- Enhanced Export Menu -->
       <div class="flex items-center space-x-3">
-        <button mat-raised-button [matMenuTriggerFor]="exportMenu" class="text-sm bg-white text-purple-600 hover:bg-gray-50 font-semibold shadow-md">
+        <button mat-raised-button [matMenuTriggerFor]="exportMenu" class="text-sm bg-white text-primary-600 hover:bg-neutral-100 font-semibold shadow-md">
           <mat-icon>download</mat-icon>
           Exportar
         </button>
-        <mat-menu #exportMenu="matMenu" class="export-menu">
-          <button mat-menu-item (click)="onExportData('csv')" class="hover:bg-blue-50 transition-colors duration-200">
-            <mat-icon class="text-green-600">description</mat-icon>
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="onExportData('csv')" class="hover:bg-primary-50 transition-colors duration-200">
+            <mat-icon class="text-success-200">description</mat-icon>
             <span class="font-medium">Exportar CSV</span>
           </button>
-          <button mat-menu-item (click)="onExportData('excel')" class="hover:bg-blue-50 transition-colors duration-200">
-            <mat-icon class="text-green-600">table_chart</mat-icon>
+          <button mat-menu-item (click)="onExportData('excel')" class="hover:bg-primary-50 transition-colors duration-200">
+            <mat-icon class="text-success-200">table_chart</mat-icon>
             <span class="font-medium">Exportar Excel</span>
           </button>
         </mat-menu>
@@ -152,134 +152,27 @@
     </div>
   </div>
 
-  <!-- Enhanced Table Content -->
-  <div class="overflow-x-auto bg-white">
-    <!-- Enhanced Loading State -->
-    <div *ngIf="loading" class="flex flex-col justify-center items-center p-16">
-      <app-loader></app-loader>
-      <p class="text-gray-600 mt-4 font-medium">Cargando datos...</p>
+  <!-- Tabla usando app-table -->
+  <app-table
+    [displayedColumns]="displayedColumns"
+    [data]="data"
+    [loading]="loading"
+    [total]="totalCount"
+    (edit)="handleEdit($event)"
+    (seeDetail)="handleViewDetail($event)"
+    [showSeeDetail]="true"
+    [showDelete]="false">
+    
+    <!-- Paginación personalizada -->
+    <div class="border-t border-neutral-400 bg-neutral-100" *ngIf="!loading && data.length > 0">
+      <mat-paginator
+        [length]="totalCount"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
+        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
     </div>
-
-    <!-- Data Table -->
-    <table
-      mat-table
-      [dataSource]="data"
-      matSort
-      (matSortChange)="onSortChange($event)"
-      class="w-full"
-      *ngIf="!loading">
-      
-      <!-- Access Date Column -->
-      <ng-container matColumnDef="accessDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold">
-          Fecha y Hora
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm">
-          {{ formatDisplayDate(item.accessDate) }}
-        </td>
-      </ng-container>
-
-      <!-- Client Name Column -->
-      <ng-container matColumnDef="clientName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold">
-          Cliente
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm">
-          <span class="font-medium">{{ item.clientName }}</span>
-        </td>
-      </ng-container>
-
-      <!-- Cedula Column -->
-      <ng-container matColumnDef="cedula">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold">
-          Cédula
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm font-mono">
-          {{ formatCedula(item.cedula) }}
-        </td>
-      </ng-container>
-
-
-      <!-- Enhanced Success Status Column -->
-      <ng-container matColumnDef="successful">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold">
-          <mat-icon style="font-size: 14px; margin-right: 4px;">check_circle</mat-icon>
-          Estado
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm">
-          <app-badge
-            [textBadge]="getStatusText(item.successful, item.reason)"
-            [colorBadge]="getStatusBadgeColor(item.successful)">
-          </app-badge>
-        </td>
-      </ng-container>
-
-
-      <!-- Reason Column -->
-      <ng-container matColumnDef="reason">
-        <th mat-header-cell *matHeaderCellDef class="font-semibold">
-          <mat-icon style="font-size: 14px; margin-right: 4px;">info</mat-icon>
-          Motivo
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm">
-          <span *ngIf="item.reason" class="text-gray-600 font-medium">{{ item.reason }}</span>
-          <span *ngIf="!item.reason" class="text-gray-400 font-medium">-</span>
-        </td>
-      </ng-container>
-
-      <!-- Enhanced Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="font-semibold">
-          <mat-icon style="font-size: 14px; margin-right: 4px;">settings</mat-icon>
-          Acciones
-        </th>
-        <td mat-cell *matCellDef="let item" class="text-sm">
-          <button
-            mat-icon-button
-            (click)="onViewClientDetail(item.cedula)"
-            matTooltip="Ver perfil del cliente"
-            class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 transition-all duration-200">
-            <mat-icon>person</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <!-- Enhanced Table Header and Rows -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-          class="data-row"></tr>
-    </table>
-
-    <!-- Enhanced No Data State -->
-    <div *ngIf="!loading && data.length === 0" class="text-center py-20 px-8">
-      <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-        <mat-icon class="text-gray-400 text-4xl">inbox</mat-icon>
-      </div>
-      <h3 class="text-xl font-bold text-gray-900 mb-3">No hay datos disponibles</h3>
-      <p class="text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
-        {{ hasActiveFilters() ? 'No se encontraron resultados con los filtros aplicados. Intenta ajustar los criterios de búsqueda.' : 'No hay registros de acceso disponibles en este momento.' }}
-      </p>
-      <button
-        *ngIf="hasActiveFilters()"
-        mat-raised-button
-        color="primary"
-        (click)="clearFilters()"
-        class="mt-2">
-        <mat-icon>clear_all</mat-icon>
-        Limpiar Filtros
-      </button>
-    </div>
-  </div>
-
-  <!-- Enhanced Pagination -->
-  <div class="border-t border-gray-200" *ngIf="!loading && data.length > 0">
-    <mat-paginator
-      [length]="totalCount"
-      [pageSize]="pageSize"
-      [pageIndex]="currentPage"
-      [pageSizeOptions]="[5, 10, 25, 50, 100]"
-      (page)="onPageChange($event)"
-      showFirstLastButtons>
-    </mat-paginator>
-  </div>
+  </app-table>
 </div>
