@@ -315,11 +315,13 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.statsLoading = true;
     this.statsError = false;
 
-    // Use current filters for stats
-    const statsFilters = {
+    // Use current filters for stats (exclude pagination)
+    const statsFilters: Partial<AccessFilters> = {
       cedula: this.filters.cedula,
       clientName: this.filters.clientName,
-      successful: this.filters.successful
+      successful: this.filters.successful,
+      startDate: this.filters.startDate,
+      endDate: this.filters.endDate
     };
 
     this.gymAccessAdminService.getStats(statsFilters)
@@ -352,7 +354,17 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Handle filter changes from the table component
    */
   onFiltersChange(newFilters: AccessFilters): void {
+    console.log('=== FILTERS CHANGED ===');
+    console.log('Previous filters:', this.filters);
+    console.log('New filters:', newFilters);
+    
     this.filters = { ...newFilters };
+    
+    console.log('Applied filters:', this.filters);
+    
+    // Reset pagination to first page when filters change
+    this.currentPage = 0;
+    
     this.loadAccessHistory();
     this.loadStats(); // Reload stats with new filters
   }

@@ -72,7 +72,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     clientName: '',
     startDate: null as Date | null,
     endDate: null as Date | null,
-    successful: null as boolean | null,
+    successful: null as boolean | null, // null = all, true = successful, false = failed
     cedula: ''
   };
 
@@ -118,8 +118,8 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   private initializeLocalFilters(): void {
     this.localFilters = {
       clientName: this.filters.clientName || '',
-      startDate: this.filters.startDate ? new Date(this.filters.startDate) : null,
-      endDate: this.filters.endDate ? new Date(this.filters.endDate) : null,
+      startDate: this.filters.startDate ? this.parseDate(this.filters.startDate) : null,
+      endDate: this.filters.endDate ? this.parseDate(this.filters.endDate) : null,
       successful: this.filters.successful !== undefined ? this.filters.successful : null,
       cedula: this.filters.cedula || ''
     };
@@ -132,13 +132,14 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     const updatedFilters: AccessFilters = {
       ...this.filters,
       page: 1, // Reset to first page when applying filters
-      clientName: this.localFilters.clientName || undefined,
+      clientName: this.localFilters.clientName?.trim() || undefined,
       startDate: this.localFilters.startDate ? this.formatDateForApi(this.localFilters.startDate) : undefined,
       endDate: this.localFilters.endDate ? this.formatDateForApi(this.localFilters.endDate) : undefined,
       successful: this.localFilters.successful !== null ? this.localFilters.successful : undefined,
-      cedula: this.localFilters.cedula || undefined
+      cedula: this.localFilters.cedula?.trim() || undefined
     };
 
+    console.log('Applying filters:', updatedFilters);
     this.filtersChange.emit(updatedFilters);
   }
 
@@ -193,77 +194,38 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   /**
    * Get badge color for access status
    */
-  getStatusBadgeColor(successful: any): EColorBadge {
-    console.log('getStatusBadgeColor called with:', successful, typeof successful);
-    
-    // Use the same normalization logic
-    const isSuccessful = this.normalizeSuccessfulValue(successful);
-    
-    console.log('Badge color - normalized successful value:', isSuccessful);
-    
-    if (isSuccessful) {
-      console.log('Returning SUCCESS badge color');
-      return EColorBadge.SUCCESS;
-    } else {
-      console.log('Returning ERROR badge color');
-      return EColorBadge.ERROR;
-    }
+  getStatusBadgeColor(successful: boolean): EColorBadge {
+    // successful is now normalized to boolean in the service
+    return successful ? EColorBadge.SUCCESS : EColorBadge.ERROR;
   }
 
   /**
    * Get status text
    */
-  getStatusText(successful: any, reason?: string): string {
-    // Debug: Log the actual value and its type
-    console.log('getStatusText called with:', { 
-      successful, 
-      type: typeof successful, 
-      reason,
-      isStrictTrue: successful === true,
-      isLooseTrue: successful == true,
-      booleanValue: Boolean(successful)
-    });
-    
-    // Normalize the successful value to boolean
-    const isSuccessful = this.normalizeSuccessfulValue(successful);
-    
-    console.log('Normalized successful value:', isSuccessful);
-    
-    if (isSuccessful) {
-      console.log('Returning: Exitoso');
+  getStatusText(successful: boolean, reason?: string): string {
+    // successful is now normalized to boolean in the service
+    if (successful) {
       return 'Exitoso';
     } else {
-      console.log('Returning:', reason || 'Fallido');
       return reason || 'Fallido';
     }
   }
 
   /**
-   * Normalize successful value to boolean
+   * Parse date string to Date object
    */
-  private normalizeSuccessfulValue(successful: any): boolean {
-    // Handle null, undefined
-    if (successful === null || successful === undefined) {
-      return false;
+  private parseDate(dateString: string): Date {
+    return new Date(dateString);
+  }
+
+  /**
+   * Validate date range - ensure start date is before end date
+   */
+  private validateDateRange(): boolean {
+    if (this.localFilters.startDate && this.localFilters.endDate) {
+      return this.localFilters.startDate <= this.localFilters.endDate;
     }
-    
-    // Handle boolean
-    if (typeof successful === 'boolean') {
-      return successful;
-    }
-    
-    // Handle string
-    if (typeof successful === 'string') {
-      return successful.toLowerCase() === 'true';
-    }
-    
-    // Handle number
-    if (typeof successful === 'number') {
-      return successful === 1;
-    }
-    
-    // Default to boolean conversion
-    return Boolean(successful);
+    return true;
   }
 
 
@@ -282,10 +244,14 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Format date for API
+   * Format date for API (YYYY-MM-DD)
    */
   private formatDateForApi(date: Date): string {
-    return date.toISOString().split('T')[0];
+    // Ensure we get local date not UTC
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   /**
@@ -353,25 +319,40 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   setQuickDateRange(range: 'today' | 'week' | 'month'): void {
     const today = new Date();
     const endDate = new Date(today);
+    
+    // Set time to start/end of day for consistent filtering
+    endDate.setHours(23, 59, 59, 999);
 
     switch (range) {
       case 'today':
-        this.localFilters.startDate = new Date(today);
-        this.localFilters.endDate = new Date(today);
+        const startOfDay = new Date(today);
+        startOfDay.setHours(0, 0, 0, 0);
+        this.localFilters.startDate = startOfDay;
+        this.localFilters.endDate = endDate;
         break;
       case 'week':
         const weekAgo = new Date(today);
         weekAgo.setDate(today.getDate() - 7);
+        weekAgo.setHours(0, 0, 0, 0);
         this.localFilters.startDate = weekAgo;
         this.localFilters.endDate = endDate;
         break;
       case 'month':
         const monthAgo = new Date(today);
         monthAgo.setMonth(today.getMonth() - 1);
+        monthAgo.setHours(0, 0, 0, 0);
         this.localFilters.startDate = monthAgo;
         this.localFilters.endDate = endDate;
         break;
     }
+
+    console.log('Quick date range applied:', {
+      range,
+      startDate: this.localFilters.startDate,
+      endDate: this.localFilters.endDate,
+      formattedStart: this.formatDateForApi(this.localFilters.startDate!),
+      formattedEnd: this.formatDateForApi(this.localFilters.endDate!)
+    });
 
     this.applyFilters();
   }

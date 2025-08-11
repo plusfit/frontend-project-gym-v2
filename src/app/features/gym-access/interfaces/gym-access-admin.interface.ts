@@ -4,9 +4,9 @@ export interface GymAccessHistoryItem {
   cedula: string;
   clientName: string;
   clientPhoto?: string;
-  accessDate: string;
-  accessDay: string;
-  successful: boolean;
+  accessDate: string; // ISO string format
+  accessDay: string;  // YYYY-MM-DD format
+  successful: boolean; // Always normalized to boolean
   reason?: string;
   createdAt: string;
   updatedAt: string;
@@ -33,10 +33,10 @@ export interface WrappedGymAccessHistoryResponse {
 export interface AccessFilters {
   page: number;
   limit: number;
-  startDate?: string;
-  endDate?: string;
+  startDate?: string; // Format: YYYY-MM-DD
+  endDate?: string;   // Format: YYYY-MM-DD
   clientName?: string;
-  successful?: boolean;
+  successful?: boolean; // true for successful, false for failed, undefined for all
   cedula?: string;
 }
 

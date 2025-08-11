@@ -33,24 +33,28 @@ export class GymAccessAdminService {
       .set("page", filters.page.toString())
       .set("limit", filters.limit.toString());
 
+    // Ensure dates are in YYYY-MM-DD format for backend compatibility
     if (filters.startDate) {
-      params = params.set("startDate", filters.startDate);
+      const formattedStartDate = this.ensureDateFormat(filters.startDate);
+      params = params.set("startDate", formattedStartDate);
     }
 
     if (filters.endDate) {
-      params = params.set("endDate", filters.endDate);
+      const formattedEndDate = this.ensureDateFormat(filters.endDate);
+      params = params.set("endDate", formattedEndDate);
     }
 
-    if (filters.clientName) {
-      params = params.set("clientName", filters.clientName);
+    if (filters.clientName && filters.clientName.trim()) {
+      params = params.set("clientName", filters.clientName.trim());
     }
 
-    if (filters.successful !== undefined) {
+    // Ensure successful is sent as proper boolean string
+    if (filters.successful !== undefined && filters.successful !== null) {
       params = params.set("successful", filters.successful.toString());
     }
 
-    if (filters.cedula) {
-      params = params.set("cedula", filters.cedula);
+    if (filters.cedula && filters.cedula.trim()) {
+      params = params.set("cedula", filters.cedula.trim());
     }
 
     const url = `${this.apiUrl}/history`;
@@ -72,16 +76,32 @@ export class GymAccessAdminService {
           console.log("=== RAW BACKEND RESPONSE ===");
           console.log("Full raw response:", JSON.stringify(response, null, 2));
 
-          // Handle wrapped response format
+          // Handle wrapped response format first (most common from backend)
           if ((response as any).success !== undefined && (response as any).data) {
             console.log("Detected wrapped response format");
-            return (response as WrappedGymAccessHistoryResponse).data;
+            const wrappedData = (response as WrappedGymAccessHistoryResponse).data;
+            // Normalize successful field in history items
+            if (wrappedData.history) {
+              wrappedData.history = wrappedData.history.map(item => ({
+                ...item,
+                successful: this.normalizeSuccessfulField(item.successful)
+              }));
+            }
+            return wrappedData;
           }
 
           // Handle direct response format
           if ((response as any).history && (response as any).pagination) {
             console.log("Detected direct response format");
-            return response as GymAccessHistoryResponse;
+            const directResponse = response as GymAccessHistoryResponse;
+            // Normalize successful field in history items
+            if (directResponse.history) {
+              directResponse.history = directResponse.history.map(item => ({
+                ...item,
+                successful: this.normalizeSuccessfulField(item.successful)
+              }));
+            }
+            return directResponse;
           }
 
           // Handle unexpected format
@@ -148,24 +168,28 @@ export class GymAccessAdminService {
    * @param filters - Optional filters to apply to statistics
    * @returns Observable with access statistics
    */
-  getStats(filters?: any): Observable<AccessStats> {
+  getStats(filters?: Partial<AccessFilters>): Observable<AccessStats> {
     let params = new HttpParams();
     
     if (filters) {
-      if (filters.cedula) {
-        params = params.set('cedula', filters.cedula);
+      if (filters.cedula && filters.cedula.trim()) {
+        params = params.set('cedula', filters.cedula.trim());
       }
-      if (filters.clientName) {
-        params = params.set('clientName', filters.clientName);
+      if (filters.clientName && filters.clientName.trim()) {
+        params = params.set('clientName', filters.clientName.trim());
       }
-      if (filters.successful !== undefined) {
+      // Ensure successful is sent as proper boolean string
+      if (filters.successful !== undefined && filters.successful !== null) {
         params = params.set('successful', filters.successful.toString());
       }
+      // Ensure dates are in YYYY-MM-DD format for backend compatibility
       if (filters.startDate) {
-        params = params.set('startDate', filters.startDate);
+        const formattedStartDate = this.ensureDateFormat(filters.startDate);
+        params = params.set('startDate', formattedStartDate);
       }
       if (filters.endDate) {
-        params = params.set('endDate', filters.endDate);
+        const formattedEndDate = this.ensureDateFormat(filters.endDate);
+        params = params.set('endDate', formattedEndDate);
       }
     }
     
@@ -188,24 +212,28 @@ export class GymAccessAdminService {
       .set("page", options.filters.page.toString())
       .set("limit", options.filters.limit.toString());
 
+    // Ensure dates are in YYYY-MM-DD format for backend compatibility
     if (options.filters.startDate) {
-      params = params.set("startDate", options.filters.startDate);
+      const formattedStartDate = this.ensureDateFormat(options.filters.startDate);
+      params = params.set("startDate", formattedStartDate);
     }
 
     if (options.filters.endDate) {
-      params = params.set("endDate", options.filters.endDate);
+      const formattedEndDate = this.ensureDateFormat(options.filters.endDate);
+      params = params.set("endDate", formattedEndDate);
     }
 
-    if (options.filters.clientName) {
-      params = params.set("clientName", options.filters.clientName);
+    if (options.filters.clientName && options.filters.clientName.trim()) {
+      params = params.set("clientName", options.filters.clientName.trim());
     }
 
-    if (options.filters.successful !== undefined) {
+    // Ensure successful is sent as proper boolean string
+    if (options.filters.successful !== undefined && options.filters.successful !== null) {
       params = params.set("successful", options.filters.successful.toString());
     }
 
-    if (options.filters.cedula) {
-      params = params.set("cedula", options.filters.cedula);
+    if (options.filters.cedula && options.filters.cedula.trim()) {
+      params = params.set("cedula", options.filters.cedula.trim());
     }
 
     return this.http
@@ -391,6 +419,51 @@ export class GymAccessAdminService {
    */
   formatDateForApi(date: Date): string {
     return date.toISOString().split("T")[0];
+  }
+
+  /**
+   * Ensure date is in YYYY-MM-DD format
+   * @param dateInput - Date string or Date object
+   * @returns Formatted date string (YYYY-MM-DD)
+   */
+  private ensureDateFormat(dateInput: string | Date): string {
+    if (typeof dateInput === 'string') {
+      // If already in YYYY-MM-DD format, return as is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        return dateInput;
+      }
+      // Otherwise convert string to date and format
+      const date = new Date(dateInput);
+      return this.formatDateForApi(date);
+    }
+    // If it's a Date object, format it
+    return this.formatDateForApi(dateInput);
+  }
+
+  /**
+   * Normalize successful field to ensure consistent boolean values
+   * @param successful - Value from backend (could be boolean, string, or number)
+   * @returns Normalized boolean value
+   */
+  private normalizeSuccessfulField(successful: any): boolean {
+    if (successful === null || successful === undefined) {
+      return false;
+    }
+    
+    if (typeof successful === 'boolean') {
+      return successful;
+    }
+    
+    if (typeof successful === 'string') {
+      return successful.toLowerCase() === 'true' || successful === '1';
+    }
+    
+    if (typeof successful === 'number') {
+      return successful === 1;
+    }
+    
+    // Default to boolean conversion
+    return Boolean(successful);
   }
 
   /**
