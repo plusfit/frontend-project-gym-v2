@@ -147,16 +147,15 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
       const response = await this.gymAccessService
         .validateAccess(this.formState.cedula)
         .toPromise();
-      console.log("Response received:", response); // Debug log
       this.formState.response = response;
       this.formState.showResult = true;
 
       // Play success/error sound (if available)
       if (response) {
-        this.playAccessSound(response.success);
+        this.playAccessSound(response.authorize === true);
 
         // Show snackbar with result
-        if (response.success) {
+        if (response.authorize === true) {
           this.snackbarService.showSuccess("Acceso autorizado", response.message);
         } else {
           this.snackbarService.showError("Acceso denegado", response.message);
@@ -204,13 +203,13 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
-  private playAccessSound(success: boolean): void {
+  private playAccessSound(authorized: boolean): void {
     // Optional: Play different sounds for success/error
     // This could be implemented with Web Audio API or audio elements
     try {
       if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(
-          success ? "Acceso autorizado" : "Acceso denegado",
+          authorized ? "Acceso autorizado" : "Acceso denegado",
         );
         utterance.lang = "es-ES";
         utterance.rate = 0.8;
@@ -228,14 +227,81 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
   }
 
   get isSuccessResult(): boolean {
-    return this.formState.response?.success === true;
+    return this.formState.response?.success === true && this.formState.response?.authorize === true;
   }
 
   get isErrorResult(): boolean {
-    return this.formState.response?.success === false;
+    return this.formState.response?.success === false || this.formState.response?.authorize === false;
   }
 
   get hasReward(): boolean {
     return Boolean(this.formState.response?.reward);
+  }
+
+  get hasClientInfo(): boolean {
+    return Boolean(this.formState.response?.client);
+  }
+
+  get denialType(): string {
+    return this.formState.response?.denialType || 'system_error';
+  }
+
+  get denialMessage(): string {
+    switch (this.formState.response?.denialType) {
+      case 'client_not_found':
+        return 'No se encontró un cliente con esta cédula en el sistema';
+      case 'client_disabled':
+        return 'Su cuenta se encuentra deshabilitada. Contacte a recepción';
+      case 'already_accessed':
+        return 'Ya registró su acceso el día de hoy';
+      case 'outside_hours':
+        return 'El gimnasio está cerrado en este momento';
+      case 'system_error':
+      default:
+        return this.formState.response?.reason || 'Error interno del sistema';
+    }
+  }
+
+  get denialIcon(): string {
+    switch (this.formState.response?.denialType) {
+      case 'client_not_found':
+        return 'ph-user-x';
+      case 'client_disabled':
+        return 'ph-lock';
+      case 'already_accessed':
+        return 'ph-calendar-x';
+      case 'outside_hours':
+        return 'ph-clock-countdown';
+      case 'system_error':
+      default:
+        return 'ph-warning';
+    }
+  }
+
+  get denialColor(): string {
+    switch (this.formState.response?.denialType) {
+      case 'client_not_found':
+        return 'from-gray-500 to-gray-600';
+      case 'client_disabled':
+        return 'from-orange-500 to-red-500';
+      case 'already_accessed':
+        return 'from-yellow-500 to-orange-500';
+      case 'outside_hours':
+        return 'from-purple-500 to-indigo-500';
+      case 'system_error':
+      default:
+        return 'from-red-500 to-pink-500';
+    }
+  }
+
+  get isAuthorized(): boolean {
+    return this.formState.response?.authorize === true;
+  }
+
+  get authorizationStatus(): string {
+    if (this.formState.response?.authorize === undefined) {
+      return 'Sin información de autorización';
+    }
+    return this.formState.response.authorize ? 'Autorizado' : 'No autorizado';
   }
 }

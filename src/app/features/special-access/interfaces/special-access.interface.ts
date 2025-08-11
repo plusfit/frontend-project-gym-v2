@@ -43,9 +43,11 @@ export interface RewardInfo {
 export interface GymAccessResponse {
   success: boolean;
   message: string;
+  authorize?: boolean;
   client?: ClientAccessInfo;
   reward?: RewardInfo;
   reason?: string;
+  denialType?: 'client_not_found' | 'client_disabled' | 'already_accessed' | 'outside_hours' | 'system_error';
 }
 
 // Raw API Response Structure
@@ -54,6 +56,7 @@ export interface ApiResponse {
   data?:
     | {
         message: string;
+        authorize?: boolean;
         client?: ClientAccessInfo;
         reward?: RewardInfo;
         reason?: string;

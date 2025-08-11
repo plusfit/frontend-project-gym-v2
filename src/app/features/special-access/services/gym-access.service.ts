@@ -62,10 +62,10 @@ export class GymAccessService {
    */
   private transformResponse(response: ApiResponse): GymAccessResponse {
     if (response.success && response.data && typeof response.data === "object") {
-      // Success case with object data
       return {
         success: response.success,
         message: response.data.message || "Acceso procesado",
+        authorize: response.data.authorize,
         client: response.data.client
           ? {
               name: response.data.client.name || "Cliente",
@@ -75,17 +75,60 @@ export class GymAccessService {
               totalAccesses: response.data.client.totalAccesses || 0,
             }
           : undefined,
-        reward: response.data.reward,
-        reason: response.data.reason,
+      };
+    }
+
+    // Handle denial responses (backend returns success: false but with client data)
+    if (!response.success && response.data && typeof response.data === "object") {
+      const denialType = this.determineDenialType(response.data.message || "");
+      
+      return {
+        success: false,
+        message: response.data.message || "Acceso denegado",
+        authorize: response.data.authorize || false,
+        client: response.data.client
+          ? {
+              name: response.data.client.name || "Cliente",
+              photo: response.data.client.photo,
+              plan: response.data.client.plan,
+              consecutiveDays: response.data.client.consecutiveDays || 0,
+              totalAccesses: response.data.client.totalAccesses || 0,
+            }
+          : undefined,
+        denialType: denialType,
+      };
+    }
+
+    // Handle denial responses (backend returns success: true but authorize: false)
+    if (response.success && response.data && typeof response.data === "object" && response.data.authorize === false) {
+      const denialType = this.determineDenialType(response.data.message || "");
+      
+      return {
+        success: response.success,
+        message: response.data.message || "Acceso denegado",
+        authorize: response.data.authorize,
+        client: response.data.client
+          ? {
+              name: response.data.client.name || "Cliente",
+              photo: response.data.client.photo,
+              plan: response.data.client.plan,
+              consecutiveDays: response.data.client.consecutiveDays || 0,
+              totalAccesses: response.data.client.totalAccesses || 0,
+            }
+          : undefined,
+        denialType: denialType,
       };
     }
 
     if (!response.success && response.data && typeof response.data === "string") {
       // Error case with string data
+      const denialType = this.determineDenialType(response.data);
+      
       return {
         success: false,
         message: response.data,
-        reason: response.data,
+        authorize: false,
+        denialType: denialType,
       };
     }
 
@@ -93,8 +136,36 @@ export class GymAccessService {
     return {
       success: false,
       message: "Error en la respuesta del servidor",
-      reason: "Formato de respuesta inesperado",
+      authorize: false,
+      denialType: 'system_error',
     };
+  }
+
+  /**
+   * Determines the type of access denial based on the message
+   * @param message - The denial message from the backend
+   * @returns The type of denial
+   */
+  private determineDenialType(message: string): 'client_not_found' | 'client_disabled' | 'already_accessed' | 'outside_hours' | 'system_error' {
+    const msg = message.toLowerCase();
+    
+    if (msg.includes("cliente no encontrado") || msg.includes("not found")) {
+      return 'client_not_found';
+    }
+    
+    if (msg.includes("deshabilitado") || msg.includes("disabled")) {
+      return 'client_disabled';
+    }
+    
+    if (msg.includes("ya registró acceso") || msg.includes("already accessed")) {
+      return 'already_accessed';
+    }
+    
+    if (msg.includes("fuera del horario") || msg.includes("operating hours")) {
+      return 'outside_hours';
+    }
+    
+    return 'system_error';
   }
 
   /**
@@ -104,12 +175,14 @@ export class GymAccessService {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     const errorMessage = error.error?.data || getFriendlyErrorMessage(error, "Error de validación");
+    const denialType = this.determineDenialType(errorMessage);
 
     // Return error response in the expected format
     const errorResponse: GymAccessResponse = {
       success: false,
       message: "Error de validación",
-      reason: errorMessage,
+      authorize: false,
+      denialType: denialType,
     };
 
     return throwError(() => errorResponse);

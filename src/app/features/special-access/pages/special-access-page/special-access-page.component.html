@@ -167,6 +167,33 @@
                 </div>
               </div>
 
+              <!-- Authorization Status -->
+              <div class="rounded-lg p-4 mb-6 text-center" 
+                   [ngClass]="{
+                     'bg-green-50 border border-green-200': isAuthorized,
+                     'bg-red-50 border border-red-200': !isAuthorized
+                   }">
+                <div class="flex items-center justify-center mb-2">
+                  <i [class]="isAuthorized ? 'ph-shield-check text-green-600 text-2xl' : 'ph-shield-x text-red-600 text-2xl'"></i>
+                </div>
+                <div class="text-lg font-semibold" 
+                     [ngClass]="{
+                       'text-green-800': isAuthorized,
+                       'text-red-800': !isAuthorized
+                     }">
+                  Estado: {{ authorizationStatus }}
+                </div>
+                <div class="text-sm text-gray-600 mt-1">
+                  <span *ngIf="isAuthorized">Acceso permitido para el día de hoy</span>
+                  <span *ngIf="!isAuthorized && formState.response?.denialType === 'already_accessed'">
+                    Ya registró su acceso el día de hoy
+                  </span>
+                  <span *ngIf="!isAuthorized && formState.response?.denialType !== 'already_accessed'">
+                    Acceso no autorizado
+                  </span>
+                </div>
+              </div>
+
               <!-- Reward Notification -->
               <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-6 text-center text-white mb-6" 
                    *ngIf="hasReward">
@@ -185,31 +212,102 @@
 
           <!-- Error Result -->
           <div *ngIf="isErrorResult" class="text-center">
-            <mat-card-header class="bg-gradient-to-r from-red-500 to-pink-500 text-white p-6">
+            <mat-card-header class="bg-gradient-to-r text-white p-6" [ngClass]="denialColor">
               <mat-card-title class="text-2xl font-bold text-center w-full flex items-center justify-center">
-                <i class="ph-x-circle mr-2 text-3xl"></i>
+                <i [class]="denialIcon + ' mr-2 text-3xl'"></i>
                 ACCESO DENEGADO
               </mat-card-title>
             </mat-card-header>
 
             <mat-card-content class="p-8">
               <div class="text-center mb-6">
-                <div class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center mb-4">
-                  <i class="ph-warning text-4xl text-red-600"></i>
+                <!-- Client Photo/Avatar -->
+                <div *ngIf="hasClientInfo && formState.response?.client?.photo" class="mb-4">
+                  <img 
+                    [src]="formState.response?.client?.photo" 
+                    [alt]="'Foto de ' + (formState.response?.client?.name || 'Cliente')"
+                    class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 shadow-lg object-cover opacity-75">
                 </div>
                 
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <div *ngIf="!hasClientInfo || !formState.response?.client?.photo" class="mb-4">
+                  <div class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center">
+                    <i [class]="denialIcon + ' text-4xl text-red-600'"></i>
+                  </div>
+                </div>
+                
+                <!-- Client Name (if available) -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-2" *ngIf="hasClientInfo">
+                  {{ formState.response?.client?.name }}
+                </h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2" *ngIf="!hasClientInfo">
                   No se pudo autorizar el acceso
                 </h2>
                 
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-                  <p class="text-red-700 font-semibold">
-                    {{ formState.response?.reason || formState.response?.message }}
+                <!-- Denial Message -->
+                <div class="border-l-4 p-4 mb-6" 
+                     [ngClass]="{
+                       'bg-gray-50 border-gray-500': denialType === 'client_not_found',
+                       'bg-orange-50 border-orange-500': denialType === 'client_disabled',
+                       'bg-yellow-50 border-yellow-500': denialType === 'already_accessed',
+                       'bg-purple-50 border-purple-500': denialType === 'outside_hours',
+                       'bg-red-50 border-red-500': denialType === 'system_error'
+                     }">
+                  <p class="font-semibold text-lg"
+                     [ngClass]="{
+                       'text-gray-700': denialType === 'client_not_found',
+                       'text-orange-700': denialType === 'client_disabled',
+                       'text-yellow-700': denialType === 'already_accessed',
+                       'text-purple-700': denialType === 'outside_hours',
+                       'text-red-700': denialType === 'system_error'
+                     }">
+                    {{ denialMessage }}
                   </p>
                 </div>
 
+
+                <!-- Plan Info (if available) -->
+                <div class="bg-gray-50 rounded-lg p-3 mb-6 text-center" *ngIf="hasClientInfo && formState.response?.client?.plan">
+                  <i class="ph-crown text-yellow-600 text-xl mb-1"></i>
+                  <div class="text-md font-semibold text-gray-800">
+                    Plan: {{ formState.response?.client?.plan }}
+                  </div>
+                </div>
+
+                <!-- Authorization Status -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-6 text-center">
+                  <div class="flex items-center justify-center mb-2">
+                    <i class="ph-shield-x text-red-600 text-xl"></i>
+                  </div>
+                  <div class="text-md font-semibold text-red-800">
+                    Estado: {{ authorizationStatus }}
+                  </div>
+                  <div class="text-sm text-gray-600 mt-1">
+                    <span *ngIf="formState.response?.denialType === 'already_accessed'">
+                      Cliente ya accedió el día de hoy
+                    </span>
+                    <span *ngIf="formState.response?.denialType !== 'already_accessed'">
+                      Acceso denegado por el sistema
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Help Message -->
                 <p class="text-gray-600 mb-6">
-                  Por favor, verifique los datos o contacte con recepción para obtener ayuda.
+                  <span *ngIf="denialType === 'client_not_found'">
+                    Verifique que la cédula esté correcta o contacte con recepción.
+                  </span>
+                  <span *ngIf="denialType === 'client_disabled'">
+                    Contacte con recepción para reactivar su cuenta.
+                  </span>
+                  <span *ngIf="denialType === 'already_accessed'">
+                    Solo se permite un acceso por día por cliente.
+                  </span>
+                  <span *ngIf="denialType === 'outside_hours'">
+                    Consulte los horarios de atención en recepción.
+                  </span>
+                  <span *ngIf="denialType === 'system_error'">
+                    Contacte con recepción para obtener ayuda técnica.
+                  </span>
                 </p>
               </div>
             </mat-card-content>

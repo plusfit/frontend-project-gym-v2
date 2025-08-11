@@ -168,6 +168,75 @@ input:focus {
   }
 }
 
+/* Denial type specific styles */
+.denial-client-not-found {
+  --denial-primary: #6B7280;
+  --denial-secondary: #9CA3AF;
+  --denial-bg: #F9FAFB;
+}
+
+.denial-client-disabled {
+  --denial-primary: #EA580C;
+  --denial-secondary: #FB923C;
+  --denial-bg: #FFF7ED;
+}
+
+.denial-already-accessed {
+  --denial-primary: #D97706;
+  --denial-secondary: #F59E0B;
+  --denial-bg: #FFFBEB;
+}
+
+.denial-outside-hours {
+  --denial-primary: #7C3AED;
+  --denial-secondary: #8B5CF6;
+  --denial-bg: #F5F3FF;
+}
+
+.denial-system-error {
+  --denial-primary: #DC2626;
+  --denial-secondary: #EF4444;
+  --denial-bg: #FEF2F2;
+}
+
+/* Enhanced denial card styling */
+.denial-card {
+  border: 2px solid var(--denial-primary);
+  background: var(--denial-bg);
+}
+
+.denial-header {
+  background: linear-gradient(135deg, var(--denial-primary) 0%, var(--denial-secondary) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.denial-message-box {
+  border-left: 4px solid var(--denial-primary);
+  background: var(--denial-bg);
+  position: relative;
+}
+
+.denial-message-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--denial-primary) 0%, var(--denial-secondary) 100%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Pulsing animation for emphasis */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -178,6 +247,10 @@ input:focus {
   
   .keypad-button:hover:not(:disabled) {
     transform: none;
+  }
+  
+  .denial-message-box::before {
+    animation: none;
   }
 }
 
