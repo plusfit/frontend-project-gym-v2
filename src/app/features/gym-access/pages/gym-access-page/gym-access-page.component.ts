@@ -425,8 +425,26 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Handle view client detail requests
    */
   onViewClientDetail(cedula: string): void {
-    // Navigate to client detail page
-    this.router.navigate(["/clientes/detalle", cedula]);
+    if (!cedula || cedula.trim().length === 0) {
+      this.showError('No se puede navegar: cédula no válida');
+      return;
+    }
+
+    console.log('Navegando al detalle del cliente con cédula:', cedula);
+    
+    this.router.navigate(["/clientes/detalle", cedula])
+      .then(success => {
+        if (success) {
+          console.log('Navegación exitosa al detalle del cliente');
+        } else {
+          console.error('Fallo en la navegación al detalle del cliente');
+          this.showError('Error al navegar al detalle del cliente');
+        }
+      })
+      .catch(error => {
+        console.error('Error durante la navegación:', error);
+        this.showError('Error al navegar al detalle del cliente');
+      });
   }
 
   /**

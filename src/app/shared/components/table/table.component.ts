@@ -10,6 +10,19 @@ import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
 import { MatCheckbox } from "@angular/material/checkbox";
 
+interface AccessObject {
+    id: string;
+    clientId: string;
+    cedula: string;
+    accessDate: string;
+    accessDay: string;
+    successful: boolean;
+    reason: string;
+    clientName: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+
 /**
  * The TableComponent displays a table of data.
  */
@@ -102,10 +115,10 @@ export class TableComponent implements OnInit {
 
   /**
    * Emit identifier to seeDetail seats of an organization
-   * @param id Organization identifier
+   * @param element AccessObject
    */
-  emitSeeDetail(id: string): void {
-    this.seeDetail.emit(id);
+  emitSeeDetail(element: any): void {
+      this.seeDetail.emit(element);
   }
   /**
    * Emit identifier to edit seats of an organization

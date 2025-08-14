@@ -182,21 +182,11 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     this.viewClientDetail.emit(cedula);
   }
 
-  /**
-   * Handle edit event from app-table (will be used for viewing client detail)
-   */
-  handleEdit(id: string): void {
-    // id here will be either element.id, element._id, or element.cedula
-    // For gym access, we use cedula to view client details
-    this.onViewClientDetail(id);
-  }
 
   /**
    * Handle view detail event from app-table
    */
   handleViewDetail(id: string): void {
-    // id here will be either element.id, element._id, or element.cedula
-    // For gym access, we use cedula to view client details
     this.onViewClientDetail(id);
   }
 
@@ -208,15 +198,6 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     return new Date(dateString);
   }
 
-  /**
-   * Validate date range - ensure start date is before end date
-   */
-  private validateDateRange(): boolean {
-    if (this.localFilters.startDate && this.localFilters.endDate) {
-      return this.localFilters.startDate <= this.localFilters.endDate;
-    }
-    return true;
-  }
 
 
 
@@ -255,53 +236,5 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     if (this.localFilters.successful !== null) count++;
     if (this.localFilters.cedula) count++;
     return count;
-  }
-
-
-
-
-
-  /**
-   * Set quick date range
-   */
-  setQuickDateRange(range: 'today' | 'week' | 'month'): void {
-    const today = new Date();
-    const endDate = new Date(today);
-    
-    // Set time to start/end of day for consistent filtering
-    endDate.setHours(23, 59, 59, 999);
-
-    switch (range) {
-      case 'today':
-        const startOfDay = new Date(today);
-        startOfDay.setHours(0, 0, 0, 0);
-        this.localFilters.startDate = startOfDay;
-        this.localFilters.endDate = endDate;
-        break;
-      case 'week':
-        const weekAgo = new Date(today);
-        weekAgo.setDate(today.getDate() - 7);
-        weekAgo.setHours(0, 0, 0, 0);
-        this.localFilters.startDate = weekAgo;
-        this.localFilters.endDate = endDate;
-        break;
-      case 'month':
-        const monthAgo = new Date(today);
-        monthAgo.setMonth(today.getMonth() - 1);
-        monthAgo.setHours(0, 0, 0, 0);
-        this.localFilters.startDate = monthAgo;
-        this.localFilters.endDate = endDate;
-        break;
-    }
-
-    console.log('Quick date range applied:', {
-      range,
-      startDate: this.localFilters.startDate,
-      endDate: this.localFilters.endDate,
-      formattedStart: this.formatDateForApi(this.localFilters.startDate!),
-      formattedEnd: this.formatDateForApi(this.localFilters.endDate!)
-    });
-
-    this.applyFilters();
   }
 }

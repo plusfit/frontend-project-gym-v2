@@ -129,7 +129,7 @@
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
                 <button
-                  (click)="emitSeeDetail(element.id || element._id || element.cedula)"
+                  (click)="emitSeeDetail(element.clientId ? element.clientId : element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
