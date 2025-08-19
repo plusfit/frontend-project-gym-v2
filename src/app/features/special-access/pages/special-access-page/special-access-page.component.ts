@@ -188,10 +188,10 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
   }
 
   private scheduleAutoReset(): void {
-    // Auto-reset after 5 seconds for next client
+    // Auto-reset after 10 seconds for next client
     this.resetTimeout = setTimeout(() => {
       this.resetForm();
-    }, 5000);
+    }, 10000);
   }
 
   private playAccessSound(authorized: boolean): void {

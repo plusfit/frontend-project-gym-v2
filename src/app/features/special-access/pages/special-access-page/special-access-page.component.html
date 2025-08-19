@@ -225,9 +225,9 @@
                     class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 shadow-lg object-cover opacity-75">
                 </div>
                 
-                <div *ngIf="!hasClientInfo || !formState.response?.client?.photo" class="mb-4">
-                  <div class="w-24 h-24 mx-auto rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center">
-                    <i [class]="denialIcon + ' text-4xl text-red-600'"></i>
+                <div *ngIf="!hasClientInfo || !formState.response?.client?.photo" class="mb-4 flex justify-center">
+                  <div class="w-24 h-24 rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center">
+                    <i [class]="denialIcon + ' text-4xl text-red-600'" class="flex items-center justify-center"></i>
                   </div>
                 </div>
                 
@@ -310,7 +310,7 @@
           </div>
 
           <!-- Reset Button -->
-          <mat-card-actions class="p-6 bg-gray-800 text-center">
+          <mat-card-actions class="p-6 bg-gray-800 flex justify-center">
             <button 
               (click)="resetForm()"
               class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300">
