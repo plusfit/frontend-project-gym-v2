@@ -22,6 +22,7 @@ import { ClientService } from "../services/client.service";
 import {
   CreateClient,
   DeleteClient,
+  GetActiveClientsCount,
   GetClientById,
   GetClients,
   PlanClient,
@@ -41,6 +42,7 @@ import { ClientsStateModel } from "./clients.model";
     selectedClientPlan: undefined,
     registerClient: null,
     total: 0,
+    activeClientsCount: 0,
     loading: false,
     error: null,
     currentPage: 0,
@@ -60,6 +62,11 @@ export class ClientsState {
   @Selector()
   static getTotal(state: ClientsStateModel) {
     return state.total ?? 0;
+  }
+
+  @Selector()
+  static getActiveClientsCount(state: ClientsStateModel) {
+    return state.activeClientsCount ?? 0;
   }
 
   @Selector()
@@ -138,6 +145,26 @@ export class ClientsState {
           currentPage: page,
           pageSize,
           pageCount,
+          loading: false,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(GetActiveClientsCount, { cancelUncompleted: true })
+  getActiveClientsCount(
+    ctx: StateContext<ClientsStateModel>,
+  ): Observable<{ success: boolean; data: number }> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.getActiveClientsCount().pipe(
+      tap((response: { success: boolean; data: number }) => {
+        ctx.patchState({
+          activeClientsCount: response.data,
           loading: false,
         });
       }),
