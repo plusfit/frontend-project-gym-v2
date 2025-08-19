@@ -73,7 +73,7 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
 
   private updateTime(): void {
     const now = new Date();
-    this.currentTime = now.toLocaleString("es-ES", {
+    const timeString = now.toLocaleString("es-ES", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -82,18 +82,9 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
       minute: "2-digit",
       second: "2-digit",
     });
-  }
 
-  goToDashboard(): void {
-    this.router.navigate(["/"]);
-  }
-
-  goToClients(): void {
-    this.router.navigate(["/clientes"]);
-  }
-
-  goToRoutines(): void {
-    this.router.navigate(["/rutinas"]);
+    // Capitalizar la primera letra del día
+    this.currentTime = timeString.charAt(0).toUpperCase() + timeString.slice(1);
   }
 
   // Gym Access Methods
@@ -231,7 +222,9 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
   }
 
   get isErrorResult(): boolean {
-    return this.formState.response?.success === false || this.formState.response?.authorize === false;
+    return (
+      this.formState.response?.success === false || this.formState.response?.authorize === false
+    );
   }
 
   get hasReward(): boolean {
@@ -243,42 +236,42 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
   }
 
   get denialType(): string {
-    return this.formState.response?.denialType || 'system_error';
+    return this.formState.response?.denialType || "system_error";
   }
 
   get denialMessage(): string {
-    return this.formState.response?.message || 'Error interno del sistema';
+    return this.formState.response?.message || "Error interno del sistema";
   }
 
   get denialIcon(): string {
     switch (this.formState.response?.denialType) {
-      case 'client_not_found':
-        return 'ph-user-x';
-      case 'client_disabled':
-        return 'ph-lock';
-      case 'already_accessed':
-        return 'ph-calendar-x';
-      case 'outside_hours':
-        return 'ph-clock-countdown';
-      case 'system_error':
+      case "client_not_found":
+        return "ph-user-x";
+      case "client_disabled":
+        return "ph-lock";
+      case "already_accessed":
+        return "ph-calendar-x";
+      case "outside_hours":
+        return "ph-clock-countdown";
+      case "system_error":
       default:
-        return 'ph-warning';
+        return "ph-warning";
     }
   }
 
   get denialColor(): string {
     switch (this.formState.response?.denialType) {
-      case 'client_not_found':
-        return 'from-gray-500 to-gray-600';
-      case 'client_disabled':
-        return 'from-orange-500 to-red-500';
-      case 'already_accessed':
-        return 'from-yellow-500 to-orange-500';
-      case 'outside_hours':
-        return 'from-purple-500 to-indigo-500';
-      case 'system_error':
+      case "client_not_found":
+        return "from-gray-500 to-gray-600";
+      case "client_disabled":
+        return "from-orange-500 to-red-500";
+      case "already_accessed":
+        return "from-yellow-500 to-orange-500";
+      case "outside_hours":
+        return "from-purple-500 to-indigo-500";
+      case "system_error":
       default:
-        return 'from-red-500 to-pink-500';
+        return "from-red-500 to-pink-500";
     }
   }
 
@@ -288,8 +281,8 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
 
   get authorizationStatus(): string {
     if (this.formState.response?.authorize === undefined) {
-      return 'Sin información de autorización';
+      return "Sin información de autorización";
     }
-    return this.formState.response.authorize ? 'Autorizado' : 'No autorizado';
+    return this.formState.response.authorize ? "Autorizado" : "No autorizado";
   }
 }

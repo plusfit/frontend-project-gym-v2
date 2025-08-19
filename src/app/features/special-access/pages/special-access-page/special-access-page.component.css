@@ -1,10 +1,43 @@
 /* Tablet-optimized styles for gym access system */
 
-/* Ensure full height and smooth scrolling */
+/* Ensure full height and perfect centering */
 :host {
   display: block;
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Perfect centering container */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Card container with perfect centering */
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive card width */
+@media (min-width: 768px) {
+  .card-container {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-container {
+    max-width: 700px;
+  }
 }
 
 /* Large touch targets for tablets */
