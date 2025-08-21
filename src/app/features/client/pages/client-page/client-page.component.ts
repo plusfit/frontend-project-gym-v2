@@ -35,7 +35,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
-  displayedColumns: string[] = ["userInfo.name", "userInfo.CI", "email", "acciones"];
+  displayedColumns: string[] = ["userInfo.name", "userInfo.CI", "email", "lastAccess", "acciones"];
 
   private destroy = new Subject<void>();
 

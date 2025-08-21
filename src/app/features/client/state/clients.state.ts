@@ -203,6 +203,8 @@ export class ClientsState {
           CI: response.data.userInfo.CI,
           planId: response.data.planId,
           routineId: response.data.routineId,
+          lastAccess: response.data.lastAccess,
+          totalAccesses: response.data.totalAccesses,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),

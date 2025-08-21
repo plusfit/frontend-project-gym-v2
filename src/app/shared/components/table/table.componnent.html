@@ -103,9 +103,17 @@
           <span class="text-gray-700">{{ element[column] | date: 'd/MM/y, h:mm a' }}</span>
           } @if (column === "cedula") {
           <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
+          } @if (column === "lastAccess") {
+          <span class="text-gray-700">{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a') : 'Sin acceso' }}</span>
+          } @if (column === "totalAccesses") {
+          <app-badge
+            [colorBadge]="getTotalAccessesBadgeColor(element[column])"
+            [textBadge]="(element[column] || 0) + ' accesos'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container

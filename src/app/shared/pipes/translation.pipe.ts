@@ -64,6 +64,10 @@ export class TranslationPipe implements PipeTransform {
         return "Motivo";
       case "acciones":
         return "Acciones";
+      case "lastAccess":
+        return "Último Acceso";
+      case "totalAccesses":
+        return "Total Accesos";
 
       // Categorías del Plan
       case "weightLoss":
