@@ -96,7 +96,7 @@
           } @if (column === "successful") {
           <app-badge
             [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
-            [textBadge]="element[column] ? 'Exitoso' : (element['reason'] || 'Fallido')"
+            [textBadge]="element[column] ? 'Exitoso' : 'Fallido'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
           } @if (column === "accessDate") {
