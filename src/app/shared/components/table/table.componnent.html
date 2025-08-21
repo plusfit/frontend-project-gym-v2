@@ -14,7 +14,7 @@
         <th
           cdk-header-cell
           *cdkHeaderCellDef
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2 sticky top-0 z-10"
         >
           <mat-checkbox
             type="checkbox"
@@ -45,7 +45,7 @@
           cdk-header-cell
           *cdkHeaderCellDef
           [ngClass]="headerCssClass"
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4 sticky top-0 z-10"
         >
           {{ column | translation | camelToTitle }}
         </th>
