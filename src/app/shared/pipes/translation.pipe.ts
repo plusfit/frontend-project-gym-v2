@@ -59,7 +59,7 @@ export class TranslationPipe implements PipeTransform {
       case "cedula":
         return "Cédula";
       case "successful":
-        return "Exitoso";
+        return "Resultado Ingreso";
       case "reason":
         return "Motivo";
       case "acciones":
