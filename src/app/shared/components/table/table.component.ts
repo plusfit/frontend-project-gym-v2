@@ -252,4 +252,53 @@ export class TableComponent implements OnInit {
     }
     return cedula || '';
   }
+
+  /**
+   * Get image URL with fallback protection
+   */
+  getImageUrl(imageUrl: string): string {
+    if (!imageUrl || typeof imageUrl !== 'string') {
+      return this.getPlaceholderImage();
+    }
+    
+    try {
+      // Handle absolute URLs
+      if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+        return imageUrl;
+      }
+      
+      // Handle relative URLs - ensure they start with /
+      const cleanPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+      return `${window.location.origin}${cleanPath}`;
+    } catch (error) {
+      console.warn('Error processing image URL:', imageUrl, error);
+      return this.getPlaceholderImage();
+    }
+  }
+
+  /**
+   * Get a safe placeholder image that won't cause recursion
+   */
+  private getPlaceholderImage(): string {
+    // Return an inline SVG that will never fail to load
+    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyOGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHptMC0xMmMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+  }
+
+  /**
+   * Handle image error by setting fallback - prevents infinite loops
+   */
+  handleImageError(event: any): void {
+    const target = event.target;
+    
+    // Prevent infinite recursion by checking if we're already showing the fallback
+    if (target.src.includes('data:image/svg+xml') || target.dataset.errorHandled) {
+      return;
+    }
+    
+    // Mark as error handled to prevent recursion
+    target.dataset.errorHandled = 'true';
+    
+    // Use the same safe placeholder
+    target.src = this.getPlaceholderImage();
+  }
 }

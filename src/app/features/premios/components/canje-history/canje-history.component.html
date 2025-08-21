@@ -1,0 +1,165 @@
+<div class="canje-history-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1 class="page-title">Historial de Canjes</h1>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="exportToExcel()">
+        <mat-icon>download</mat-icon>
+        Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <div class="filters-grid">
+        <!-- Búsqueda -->
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar cliente o premio</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Nombre del cliente o premio">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Estado -->
+        <mat-form-field appearance="outline" class="status-field">
+          <mat-label>Estado</mat-label>
+          <mat-select [formControl]="statusFilter">
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Fecha Desde -->
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Fecha Desde</mat-label>
+          <input matInput [matDatepicker]="dateFromPicker" [formControl]="dateFromControl">
+          <mat-datepicker-toggle matSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateFromPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Fecha Hasta -->
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Fecha Hasta</mat-label>
+          <input matInput [matDatepicker]="dateToPicker" [formControl]="dateToControl">
+          <mat-datepicker-toggle matSuffix [for]="dateToPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateToPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Botón Limpiar -->
+        <button mat-stroked-button (click)="clearFilters()" class="clear-filters-btn">
+          <mat-icon>clear</mat-icon>
+          Limpiar Filtros
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla -->
+  <mat-card class="table-card">
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="canjes-table">
+        <!-- Columna Fecha -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="createdAt">
+            Fecha y Hora
+          </th>
+          <td mat-cell *matCellDef="let canje">
+            <div class="date-cell">
+              <span class="date-text">{{ formatDate(canje.createdAt) }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Cliente -->
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="clientName">
+            Cliente
+          </th>
+          <td mat-cell *matCellDef="let canje">
+            <div class="client-cell">
+              <div class="client-info">
+                <span class="client-name">{{ canje.clientName }}</span>
+                <span class="client-email">{{ canje.clientEmail }}</span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Premio -->
+        <ng-container matColumnDef="premio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="premioName">
+            Premio
+          </th>
+          <td mat-cell *matCellDef="let canje">
+            <div class="premio-cell">
+              <div class="premio-info">
+                <span class="premio-name">{{ canje.premioName }}</span>
+                <span class="premio-description" *ngIf="canje.premioDescription">
+                  {{ canje.premioDescription }}
+                </span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Puntos Utilizados -->
+        <ng-container matColumnDef="pointsUsed">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="pointsUsed">
+            Puntos
+          </th>
+          <td mat-cell *matCellDef="let canje">
+            <div class="points-cell">
+              <mat-chip color="primary">
+                <mat-icon>stars</mat-icon>
+                {{ canje.pointsUsed }}
+              </mat-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Estado -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="status">
+            Estado
+          </th>
+          <td mat-cell *matCellDef="let canje">
+            <div class="status-cell">
+              <mat-chip [color]="getStatusColor(canje.status)">
+                <mat-icon>{{ canje.status === 'completed' ? 'check_circle' : 
+                           canje.status === 'pending' ? 'schedule' : 'cancel' }}</mat-icon>
+                {{ getStatusText(canje.status) }}
+              </mat-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <!-- Loading Spinner -->
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando historial de canjes...</p>
+      </div>
+
+      <!-- No Data -->
+      <div class="no-data-container" *ngIf="!loading && dataSource.data.length === 0">
+        <mat-icon class="no-data-icon">history</mat-icon>
+        <h3>No hay canjes registrados</h3>
+        <p>No se encontraron canjes que coincidan con los filtros aplicados.</p>
+      </div>
+    </div>
+
+    <!-- Paginador -->
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [showFirstLastButtons]="true"
+      class="table-paginator">
+    </mat-paginator>
+  </mat-card>
+</div>

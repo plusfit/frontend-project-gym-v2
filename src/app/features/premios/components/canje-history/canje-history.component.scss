@@ -1,0 +1,273 @@
+// Main container with gradient background like other sections
+.canje-history-container {
+  @apply bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen py-10 px-4;
+
+  .content-wrapper {
+    @apply max-w-7xl mx-auto flex flex-col space-y-8;
+
+    .header-section {
+      @apply flex items-center justify-center mb-2;
+
+      .page-title {
+        @apply text-center text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 py-2;
+      }
+
+      .header-actions {
+        @apply flex space-x-3;
+
+        button {
+          @apply bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all flex items-center space-x-2;
+        }
+      }
+    }
+
+    .main-card {
+      @apply bg-white rounded-xl shadow-xl p-6;
+
+      .filters-section {
+        @apply mb-6;
+
+        .filters-grid {
+          @apply grid grid-cols-5 gap-4 items-end;
+
+          .search-field {
+            @apply col-span-2;
+          }
+
+          .status-field {
+            @apply col-span-1;
+          }
+
+          .date-field {
+            @apply col-span-1;
+          }
+
+          .clear-filters-btn {
+            @apply col-span-1 h-14 btn-secondary flex items-center justify-center space-x-2;
+          }
+        }
+      }
+
+      .table-container {
+        @apply rounded-xl overflow-hidden;
+        position: relative;
+        min-height: 400px;
+
+        .canjes-table {
+          width: 100%;
+
+          .date-cell {
+            .date-text {
+              @apply font-medium text-neutral-800;
+            }
+          }
+
+          .client-cell {
+            .client-info {
+              @apply flex flex-col space-y-1;
+
+              .client-name {
+                @apply font-medium text-neutral-800;
+              }
+
+              .client-email {
+                @apply text-body-sm text-neutral-600;
+              }
+            }
+          }
+
+          .premio-cell {
+            .premio-info {
+              @apply flex flex-col space-y-1;
+              min-width: 0;
+
+              .premio-name {
+                @apply font-medium text-neutral-800 whitespace-nowrap overflow-hidden text-ellipsis;
+              }
+
+              .premio-description {
+                @apply text-body-sm text-neutral-600 leading-relaxed;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+              }
+            }
+          }
+
+          .points-cell {
+            .mat-chip {
+              @apply flex items-center space-x-1 font-medium;
+            }
+          }
+
+          .status-cell {
+            .mat-chip {
+              @apply flex items-center space-x-1 font-medium;
+            }
+          }
+        }
+
+        .loading-container {
+          @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-4;
+
+          p {
+            @apply m-0 text-neutral-600;
+          }
+        }
+
+        .no-data-container {
+          @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-4 text-center;
+
+          .no-data-icon {
+            @apply text-6xl w-16 h-16 text-neutral-300;
+          }
+
+          h3 {
+            @apply m-0 text-neutral-600;
+          }
+
+          p {
+            @apply m-0 text-neutral-400;
+          }
+        }
+      }
+
+      .table-paginator {
+        @apply border-t border-gray-200;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .canje-history-container {
+    .filters-card {
+      .filters-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 16px;
+
+        .search-field {
+          grid-column: 1 / -1;
+        }
+
+        .status-field {
+          grid-column: 1;
+          grid-row: 2;
+        }
+
+        .date-field {
+          &:nth-of-type(3) {
+            grid-column: 2;
+            grid-row: 2;
+          }
+          &:nth-of-type(4) {
+            grid-column: 1;
+            grid-row: 3;
+          }
+        }
+
+        .clear-filters-btn {
+          grid-column: 2;
+          grid-row: 3;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .canje-history-container {
+    padding: 16px;
+
+    .header-section {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+
+      .page-title {
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+    }
+
+    .filters-card {
+      .filters-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5, auto);
+
+        .search-field,
+        .status-field,
+        .date-field,
+        .clear-filters-btn {
+          grid-column: 1;
+        }
+
+        .clear-filters-btn {
+          justify-self: stretch;
+        }
+      }
+    }
+
+    .table-card {
+      .table-container {
+        overflow-x: auto;
+
+        .canjes-table {
+          min-width: 800px;
+        }
+      }
+    }
+  }
+}
+
+// Material Theme Customizations
+::ng-deep {
+  .mat-chip.mat-accent {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  .mat-chip.mat-primary {
+    background-color: #1976d2;
+    color: white;
+  }
+
+  .mat-chip.mat-warn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: #e0e0e0;
+    }
+
+    &.mat-focused {
+      .mat-form-field-outline-thick {
+        color: #1976d2;
+      }
+    }
+  }
+
+  .mat-datepicker-toggle {
+    color: #666;
+  }
+
+  .mat-table {
+    .mat-header-cell {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .mat-row:hover {
+      background-color: #f5f5f5;
+    }
+  }
+}

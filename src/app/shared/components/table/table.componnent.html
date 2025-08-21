@@ -103,9 +103,36 @@
           <span class="text-gray-700">{{ element[column] | date: 'd/MM/y, h:mm a' }}</span>
           } @if (column === "cedula") {
           <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
+          } @if (column === "imageUrl") {
+          <div class="image-container flex justify-center">
+            <img [src]="getImageUrl(element[column])" 
+                 [alt]="element.name || 'Premio'" 
+                 class="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                 loading="lazy"
+                 decoding="async"
+                 (error)="handleImageError($event)">
+          </div>
+          } @if (column === "pointsRequired") {
+          <app-badge
+            [colorBadge]="EColorBadge.INFO"
+            [textBadge]="element[column] + ' pts'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "totalCanjes") {
+          <app-badge
+            [colorBadge]="element[column] > 0 ? EColorBadge.SUCCESS : EColorBadge.NEUTRAL"
+            [textBadge]="element[column].toString()"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "enabled") {
+          <app-badge
+            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="element[column] ? 'Habilitado' : 'Deshabilitado'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalCanjes" && column !== "enabled" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -177,7 +204,7 @@
                 </button>
                 } @if (showDisabled) {
                 <button
-                  (click)="emitDisabled(element.id || element._id, element.disabled)"
+                  (click)="emitDisabled(element.id || element._id, !element.enabled)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -187,7 +214,7 @@
                       class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
                     ></i>
                     <span class="text-error-100 group-hover:text-error-200"
-                      >{{ element.disabled ? "Habilitar" : "Deshabilitar"
+                      >{{ element.enabled ? "Deshabilitar" : "Habilitar"
                       }}</span
                     >
                   </div>
