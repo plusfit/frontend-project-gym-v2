@@ -51,6 +51,20 @@ export class TranslationPipe implements PipeTransform {
       case "cardio":
         return "Cardio";
 
+      // Gym Access History fields
+      case "accessDate":
+        return "Fecha de Acceso";
+      case "clientName":
+        return "Nombre del Cliente";
+      case "cedula":
+        return "Cédula";
+      case "successful":
+        return "Exitoso";
+      case "reason":
+        return "Motivo";
+      case "acciones":
+        return "Acciones";
+
       // Categorías del Plan
       case "weightLoss":
         return "Pérdida de peso";
