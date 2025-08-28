@@ -107,10 +107,10 @@
         <mat-card class="rounded-xl shadow-2xl overflow-hidden" style="background-color: #14273D;" *ngIf="formState.showResult">
           <!-- Success Result -->
           <div *ngIf="isSuccessResult" class="text-center">
-            <mat-card-header class="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6">
-              <mat-card-title class="text-2xl font-bold text-center w-full flex items-center justify-center">
-                <i class="ph-check-circle mr-2 text-3xl"></i>
-                ACCESO AUTORIZADO
+            <mat-card-header class="bg-gradient-to-r from-green-500 to-emerald-500 text-white flex items-center justify-center" style="min-height: 80px; padding: 1.5rem;">
+              <mat-card-title class="text-2xl font-bold text-center w-full flex items-center justify-center" style="line-height: 1; margin: 0;">
+                <i class="ph-check-circle mr-2 text-3xl" style="line-height: 1; vertical-align: middle;"></i>
+                <span style="line-height: 1; vertical-align: middle;">ACCESO AUTORIZADO</span>
               </mat-card-title>
             </mat-card-header>
 
@@ -124,7 +124,7 @@
                     class="w-24 h-24 mx-auto rounded-full border-4 border-green-500 shadow-lg object-cover">
                 </div>
                 <div *ngIf="!formState.response?.client?.photo" class="mb-4">
-                  <div class="w-24 h-24 mx-auto rounded-full border-4 border-green-500 bg-green-100 flex items-center justify-center">
+                  <div class="w-24 h-24 mt-10 mx-auto rounded-full border-4 border-green-500 bg-green-100 flex items-center justify-center">
                     <i class="ph-user text-4xl text-green-600"></i>
                   </div>
                 </div>
@@ -208,10 +208,10 @@
 
           <!-- Error Result -->
           <div *ngIf="isErrorResult" class="text-center">
-            <mat-card-header class="bg-gradient-to-r text-white p-6" [ngClass]="denialColor">
-              <mat-card-title class="text-2xl font-bold text-center w-full flex items-center justify-center">
-                <i [class]="denialIcon + ' mr-2 text-3xl'"></i>
-                ACCESO DENEGADO
+            <mat-card-header class="text-white bg-red-500 flex items-center justify-center" style="min-height: 80px; padding: 1.5rem;">
+              <mat-card-title class="text-2xl font-bold text-center w-full flex items-center justify-center" style="line-height: 1; margin: 0;">
+                <i [class]="denialIcon + ' mr-2 text-3xl'" style="line-height: 1; vertical-align: middle;"></i>
+                <span style="line-height: 1; vertical-align: middle;">ACCESO DENEGADO</span>
               </mat-card-title>
             </mat-card-header>
 
@@ -226,7 +226,7 @@
                 </div>
                 
                 <div *ngIf="!hasClientInfo || !formState.response?.client?.photo" class="mb-4 flex justify-center">
-                  <div class="w-24 h-24 rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center">
+                  <div class="w-24 h-24 mt-10 rounded-full border-4 border-red-500 bg-red-100 flex items-center justify-center">
                     <i [class]="denialIcon + ' text-4xl text-red-600'" class="flex items-center justify-center"></i>
                   </div>
                 </div>
