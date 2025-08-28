@@ -11,7 +11,6 @@ import { Store } from "@ngxs/store";
 
 import { LoadingOverlayService } from "@core/services/loading-overlay.service";
 import { SnackBarService } from "@core/services/snackbar.service";
-import { TitleComponent } from "@shared/components/title/title.component";
 import { AuthState } from "@features/auth/state/auth.state";
 import { SetMockAuth } from "@features/auth/state/auth.actions";
 import { environment } from "../../../../../environments/environment";
@@ -28,13 +27,7 @@ import {
 @Component({
   selector: "app-gym-access-page",
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    TitleComponent,
-    AccessHistoryTableComponent,
-  ],
+  imports: [CommonModule, MatButtonModule, MatIconModule, AccessHistoryTableComponent],
   templateUrl: "./gym-access-page.component.html",
   styleUrls: ["./gym-access-page.component.css"],
 })
@@ -49,7 +42,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   pageSize = 10;
   hasError = false;
   errorMessage = "";
-  
+
   // Statistics
   stats: AccessStats | null = null;
   statsLoading = false;
@@ -124,9 +117,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
 
     if (!isAuthenticated) {
       console.warn("=== AUTHENTICATION FAILED ===");
-      console.warn(
-        "User is not authenticated - setting mock auth token for testing",
-      );
+      console.warn("User is not authenticated - setting mock auth token for testing");
       // Set mock auth token for testing
       this.setMockAuthToken();
       return;
@@ -135,7 +126,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     console.log("=== PROCEEDING WITH DATA LOADING (AUTHENTICATED) ===");
     this.loadAccessHistory();
     this.loadStats();
-    
+
     // Make debug method globally accessible
     (window as any).debugGymAccess = this;
   }
@@ -321,17 +312,18 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
       clientName: this.filters.clientName,
       successful: this.filters.successful,
       startDate: this.filters.startDate,
-      endDate: this.filters.endDate
+      endDate: this.filters.endDate,
     };
 
-    this.gymAccessAdminService.getStats(statsFilters)
+    this.gymAccessAdminService
+      .getStats(statsFilters)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (stats) => {
           console.log("=== STATS SUCCESS ===");
           console.log("Stats received:", stats);
           console.log("Stats type:", typeof stats);
-          console.log("Stats keys:", stats ? Object.keys(stats) : 'null');
+          console.log("Stats keys:", stats ? Object.keys(stats) : "null");
           console.log("Applied filters:", statsFilters);
           console.log("Setting stats to component...");
           this.stats = stats;
@@ -346,7 +338,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
           this.statsError = true;
           this.statsLoading = false;
           this.stats = null;
-        }
+        },
       });
   }
 
@@ -354,17 +346,17 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Handle filter changes from the table component
    */
   onFiltersChange(newFilters: AccessFilters): void {
-    console.log('=== FILTERS CHANGED ===');
-    console.log('Previous filters:', this.filters);
-    console.log('New filters:', newFilters);
-    
+    console.log("=== FILTERS CHANGED ===");
+    console.log("Previous filters:", this.filters);
+    console.log("New filters:", newFilters);
+
     this.filters = { ...newFilters };
-    
-    console.log('Applied filters:', this.filters);
-    
+
+    console.log("Applied filters:", this.filters);
+
     // Reset pagination to first page when filters change
     this.currentPage = 0;
-    
+
     this.loadAccessHistory();
     this.loadStats(); // Reload stats with new filters
   }
@@ -470,20 +462,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get page title
-   */
-  getPageTitle(): string {
-    return "Historial de Accesos al Gimnasio";
-  }
-
-  /**
-   * Get page subtitle
-   */
-  getPageSubtitle(): string {
-    return "Gestión y seguimiento de accesos de clientes";
-  }
-
-  /**
    * Check if there are any records
    */
   hasRecords(): boolean {
@@ -543,15 +521,18 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   setMockAuthToken(): void {
     console.log("=== SETTING MOCK AUTH TOKEN ===");
     // Use the generated JWT token from our backend test
-    const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzU0ODYxOTAzLCJleHAiOjE3NTQ5NDgzMDN9.PjjNzSife-QM0j1prpQYfDYZ_-r4KurcRHFyQfwQw1Q';
-    
-    this.store.dispatch(new SetMockAuth({ 
-      accessToken: mockToken,
-      refreshToken: 'mock-refresh-token'
-    }));
-    
+    const mockToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzU0ODYxOTAzLCJleHAiOjE3NTQ5NDgzMDN9.PjjNzSife-QM0j1prpQYfDYZ_-r4KurcRHFyQfwQw1Q";
+
+    this.store.dispatch(
+      new SetMockAuth({
+        accessToken: mockToken,
+        refreshToken: "mock-refresh-token",
+      }),
+    );
+
     console.log("Mock auth token set, reloading data...");
-    
+
     // Now load the data with authentication
     setTimeout(() => {
       this.loadAccessHistory();
@@ -564,11 +545,14 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    */
   debugReloadStats(): void {
     console.log("=== DEBUG RELOAD STATS ===");
-    console.log("Current auth state:", this.store.selectSnapshot((state) => state.auth));
+    console.log(
+      "Current auth state:",
+      this.store.selectSnapshot((state) => state.auth),
+    );
     console.log("Current stats:", this.stats);
     console.log("Current statsLoading:", this.statsLoading);
     console.log("Current statsError:", this.statsError);
-    
+
     this.loadStats();
   }
 
