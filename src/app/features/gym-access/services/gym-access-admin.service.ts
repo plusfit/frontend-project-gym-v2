@@ -18,10 +18,7 @@ import {
 export class GymAccessAdminService {
   private readonly apiUrl = `${environment.api}/gym-access`;
 
-  constructor(private http: HttpClient) {
-    console.log("GymAccessAdminService initialized with API URL:", this.apiUrl);
-    console.log("Environment API URL:", environment.api);
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get paginated gym access history with filters
@@ -58,33 +55,18 @@ export class GymAccessAdminService {
     }
 
     const url = `${this.apiUrl}/history`;
-    console.log("=== ACCESS HISTORY REQUEST DEBUG ===");
-    console.log("Full URL:", url);
-    console.log("Query params:", params.toString());
-    console.log("Request filters:", JSON.stringify(filters, null, 2));
-    console.log("Environment config:", {
-      api: environment.api,
-      production: environment.production,
-    });
-
-    const requestStart = performance.now();
 
     return this.http
       .get<GymAccessHistoryResponse | WrappedGymAccessHistoryResponse>(url, { params })
       .pipe(
         map((response) => {
-          console.log("=== RAW BACKEND RESPONSE ===");
-          console.log("Full raw response:", JSON.stringify(response, null, 2));
-
           // Handle wrapped response format first (most common from backend)
           if ((response as any).success !== undefined && (response as any).data) {
-            console.log("Detected wrapped response format");
             const wrappedData = (response as WrappedGymAccessHistoryResponse).data;
-            // Normalize successful field in history items
             if (wrappedData.history) {
-              wrappedData.history = wrappedData.history.map(item => ({
+              wrappedData.history = wrappedData.history.map((item) => ({
                 ...item,
-                successful: this.normalizeSuccessfulField(item.successful)
+                successful: this.normalizeSuccessfulField(item.successful),
               }));
             }
             return wrappedData;
@@ -92,20 +74,18 @@ export class GymAccessAdminService {
 
           // Handle direct response format
           if ((response as any).history && (response as any).pagination) {
-            console.log("Detected direct response format");
             const directResponse = response as GymAccessHistoryResponse;
             // Normalize successful field in history items
             if (directResponse.history) {
-              directResponse.history = directResponse.history.map(item => ({
+              directResponse.history = directResponse.history.map((item) => ({
                 ...item,
-                successful: this.normalizeSuccessfulField(item.successful)
+                successful: this.normalizeSuccessfulField(item.successful),
               }));
             }
             return directResponse;
           }
 
           // Handle unexpected format
-          console.warn("Unexpected response format:", response);
           return {
             history: [],
             pagination: {
@@ -116,37 +96,8 @@ export class GymAccessAdminService {
             },
           } as GymAccessHistoryResponse;
         }),
-        tap((response) => {
-          const requestTime = performance.now() - requestStart;
-          console.log("=== ACCESS HISTORY RESPONSE SUCCESS ===");
-          console.log("Request time:", `${requestTime.toFixed(2)}ms`);
-          console.log("Processed response structure:", {
-            hasHistory: !!response?.history,
-            historyLength: response?.history?.length || 0,
-            hasPagination: !!response?.pagination,
-            totalCount: response?.pagination?.totalCount || 0,
-          });
-          console.log("Processed response:", JSON.stringify(response, null, 2));
-        }),
+
         catchError((error) => {
-          const requestTime = performance.now() - requestStart;
-          console.error("=== ACCESS HISTORY REQUEST FAILED ===");
-          console.error("Request time:", `${requestTime.toFixed(2)}ms`);
-          console.error("Error status:", error.status);
-          console.error("Error statusText:", error.statusText);
-          console.error("Error URL:", error.url);
-          console.error("Error headers:", error.headers?.keys());
-          console.error("Error body:", error.error);
-          console.error("Full error object:", error);
-
-          // Additional network diagnostics
-          if (error.status === 0) {
-            console.error("Network Error Details:");
-            console.error("- This usually indicates a CORS issue or network connectivity problem");
-            console.error("- Check if the backend server is running on:", environment.api);
-            console.error("- Verify CORS configuration on the backend");
-          }
-
           return this.handleError(error);
         }),
       );
@@ -170,34 +121,58 @@ export class GymAccessAdminService {
    */
   getStats(filters?: Partial<AccessFilters>): Observable<AccessStats> {
     let params = new HttpParams();
-    
+
     if (filters) {
       if (filters.cedula && filters.cedula.trim()) {
-        params = params.set('cedula', filters.cedula.trim());
+        params = params.set("cedula", filters.cedula.trim());
       }
       if (filters.clientName && filters.clientName.trim()) {
-        params = params.set('clientName', filters.clientName.trim());
+        params = params.set("clientName", filters.clientName.trim());
       }
       // Ensure successful is sent as proper boolean string
       if (filters.successful !== undefined && filters.successful !== null) {
-        params = params.set('successful', filters.successful.toString());
+        params = params.set("successful", filters.successful.toString());
       }
-      // Ensure dates are in YYYY-MM-DD format for backend compatibility
+      // Handle date formatting - dates can come as Date objects or strings
       if (filters.startDate) {
-        const formattedStartDate = this.ensureDateFormat(filters.startDate);
-        params = params.set('startDate', formattedStartDate);
+        let formattedStartDate: string;
+
+        // TypeScript doesn't know it can be Date, so we check using duck typing
+        if (typeof filters.startDate === "object" && "getFullYear" in filters.startDate) {
+          // It's a Date object
+          formattedStartDate = this.ensureDateFormat(filters.startDate as Date);
+        } else {
+          // It's already a string
+          formattedStartDate = this.ensureDateFormat(filters.startDate);
+        }
+
+        params = params.set("startDate", `${formattedStartDate}T00:00:00.000Z`);
       }
       if (filters.endDate) {
-        const formattedEndDate = this.ensureDateFormat(filters.endDate);
-        params = params.set('endDate', formattedEndDate);
+        let formattedEndDate: string;
+
+        // TypeScript doesn't know it can be Date, so we check using duck typing
+        if (typeof filters.endDate === "object" && "getFullYear" in filters.endDate) {
+          // It's a Date object
+          formattedEndDate = this.ensureDateFormat(filters.endDate as Date);
+        } else {
+          // It's already a string
+          formattedEndDate = this.ensureDateFormat(filters.endDate);
+        }
+
+        params = params.set("endDate", `${formattedEndDate}T23:59:59.999Z`);
       }
     }
-    
+
     return this.http
       .get<{ success: boolean; data: AccessStats }>(`${this.apiUrl}/stats`, { params })
       .pipe(
-        map((response) => response.data),
-        catchError((error) => this.handleError(error))
+        map((response) => {
+          return response.data;
+        }),
+        catchError((error) => {
+          return this.handleError(error);
+        }),
       );
   }
 
@@ -304,8 +279,6 @@ export class GymAccessAdminService {
    */
   testConnectivity(): Observable<any> {
     const testUrl = `${environment.api}/health`;
-    console.log("=== CONNECTIVITY TEST ===");
-    console.log("Testing connectivity to:", testUrl);
 
     const requestStart = performance.now();
 
@@ -317,11 +290,6 @@ export class GymAccessAdminService {
       .pipe(
         map((response) => {
           const requestTime = performance.now() - requestStart;
-          console.log("=== CONNECTIVITY TEST SUCCESS ===");
-          console.log("Response time:", `${requestTime.toFixed(2)}ms`);
-          console.log("Status:", response.status);
-          console.log("Headers:", response.headers.keys());
-          console.log("Body:", response.body);
 
           return {
             success: true,
@@ -332,9 +300,6 @@ export class GymAccessAdminService {
         }),
         catchError((error) => {
           const requestTime = performance.now() - requestStart;
-          console.error("=== CONNECTIVITY TEST FAILED ===");
-          console.error("Response time:", `${requestTime.toFixed(2)}ms`);
-          console.error("Error:", error);
 
           return throwError(() => ({
             success: false,
@@ -353,17 +318,12 @@ export class GymAccessAdminService {
    */
   testAuthentication(): Observable<any> {
     const testUrl = `${this.apiUrl}/stats`; // Use stats endpoint as auth test
-    console.log("=== AUTHENTICATION TEST ===");
-    console.log("Testing auth with:", testUrl);
 
     const requestStart = performance.now();
 
     return this.http.get(testUrl, { observe: "response" }).pipe(
       map((response) => {
         const requestTime = performance.now() - requestStart;
-        console.log("=== AUTHENTICATION TEST SUCCESS ===");
-        console.log("Response time:", `${requestTime.toFixed(2)}ms`);
-        console.log("Status:", response.status);
 
         return {
           success: true,
@@ -374,9 +334,6 @@ export class GymAccessAdminService {
       }),
       catchError((error) => {
         const requestTime = performance.now() - requestStart;
-        console.error("=== AUTHENTICATION TEST FAILED ===");
-        console.error("Response time:", `${requestTime.toFixed(2)}ms`);
-        console.error("Error:", error);
 
         return throwError(() => ({
           success: false,
@@ -427,7 +384,7 @@ export class GymAccessAdminService {
    * @returns Formatted date string (YYYY-MM-DD)
    */
   private ensureDateFormat(dateInput: string | Date): string {
-    if (typeof dateInput === 'string') {
+    if (typeof dateInput === "string") {
       // If already in YYYY-MM-DD format, return as is
       if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
         return dateInput;
@@ -449,19 +406,19 @@ export class GymAccessAdminService {
     if (successful === null || successful === undefined) {
       return false;
     }
-    
-    if (typeof successful === 'boolean') {
+
+    if (typeof successful === "boolean") {
       return successful;
     }
-    
-    if (typeof successful === 'string') {
-      return successful.toLowerCase() === 'true' || successful === '1';
+
+    if (typeof successful === "string") {
+      return successful.toLowerCase() === "true" || successful === "1";
     }
-    
-    if (typeof successful === 'number') {
+
+    if (typeof successful === "number") {
       return successful === 1;
     }
-    
+
     // Default to boolean conversion
     return Boolean(successful);
   }

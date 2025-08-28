@@ -84,6 +84,9 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     cedula: "",
   };
 
+  // Quick filter tracking
+  activeQuickFilter: "today" | "week" | "month" | null = "today"; // Default to today
+
   // Table configuration
   displayedColumns: string[] = [
     "accessDate",
@@ -142,7 +145,6 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
       cedula: this.localFilters.cedula?.trim() || undefined,
     };
 
-    console.log("Applying filters:", updatedFilters);
     this.filtersChange.emit(updatedFilters);
   }
 
@@ -270,6 +272,8 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
    * Set quick date range
    */
   setQuickDateRange(range: "today" | "week" | "month"): void {
+    this.activeQuickFilter = range; // Track active filter
+
     const today = new Date();
     const endDate = new Date(today);
 
@@ -277,35 +281,30 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     endDate.setHours(23, 59, 59, 999);
 
     switch (range) {
-      case "today":
+      case "today": {
         const startOfDay = new Date(today);
         startOfDay.setHours(0, 0, 0, 0);
         this.localFilters.startDate = startOfDay;
         this.localFilters.endDate = endDate;
         break;
-      case "week":
+      }
+      case "week": {
         const weekAgo = new Date(today);
         weekAgo.setDate(today.getDate() - 7);
         weekAgo.setHours(0, 0, 0, 0);
         this.localFilters.startDate = weekAgo;
         this.localFilters.endDate = endDate;
         break;
-      case "month":
+      }
+      case "month": {
         const monthAgo = new Date(today);
         monthAgo.setMonth(today.getMonth() - 1);
         monthAgo.setHours(0, 0, 0, 0);
         this.localFilters.startDate = monthAgo;
         this.localFilters.endDate = endDate;
         break;
+      }
     }
-
-    console.log("Quick date range applied:", {
-      range,
-      startDate: this.localFilters.startDate,
-      endDate: this.localFilters.endDate,
-      formattedStart: this.formatDateForApi(this.localFilters.startDate!),
-      formattedEnd: this.formatDateForApi(this.localFilters.endDate!),
-    });
 
     this.applyFilters();
   }

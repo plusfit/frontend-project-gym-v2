@@ -48,7 +48,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   statsLoading = false;
   statsError = false;
 
-  // Current filters
+  // Current filters - Will be initialized with today's date
   filters: AccessFilters = {
     page: 1,
     limit: 10,
@@ -63,8 +63,8 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log("=== GYM ACCESS PAGE INITIALIZATION ===");
-    console.log("Component initialized at:", new Date().toISOString());
+    // Initialize default filter to today's date
+    this.initializeTodayFilter();
 
     // Comprehensive authentication debugging
     const authState = this.store.selectSnapshot((state) => state.auth);
@@ -74,56 +74,29 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     const userId = this.store.selectSnapshot(AuthState.userId);
     const userData = this.store.selectSnapshot(AuthState.userData);
 
-    console.log("=== AUTHENTICATION DEBUG ===");
-    console.log("Full auth state:", JSON.stringify(authState, null, 2));
-    console.log("Is authenticated:", isAuthenticated);
-    console.log("Has access token:", !!accessToken);
-    console.log("Has refresh token:", !!refreshToken);
-    console.log("User ID:", userId);
-    console.log("User data:", userData);
-
     if (accessToken) {
-      console.log(
-        "Access token preview:",
-        `${accessToken.substring(0, 15)}...${accessToken.substring(accessToken.length - 10)}`,
-      );
-      console.log("Access token length:", accessToken.length);
-
       // JWT token validation
       try {
         const tokenParts = accessToken.split(".");
-        console.log("JWT parts count:", tokenParts.length);
 
         if (tokenParts.length === 3) {
           // Decode JWT payload (without verification)
           const payload = JSON.parse(atob(tokenParts[1]));
-          console.log("JWT payload:", payload);
-          console.log("Token expiration:", new Date(payload.exp * 1000).toISOString());
-          console.log("Token is expired:", Date.now() > payload.exp * 1000);
-        } else {
-          console.error("Invalid JWT format - expected 3 parts, got:", tokenParts.length);
         }
       } catch (error) {
         console.error("Error parsing JWT token:", error);
       }
-    } else {
-      console.warn("No access token available");
     }
 
     // Check local storage for session persistence
-    console.log("=== SESSION STORAGE DEBUG ===");
-    console.log("SessionStorage auth:", sessionStorage.getItem("auth"));
-    console.log("LocalStorage auth:", localStorage.getItem("auth"));
 
     if (!isAuthenticated) {
-      console.warn("=== AUTHENTICATION FAILED ===");
       console.warn("User is not authenticated - setting mock auth token for testing");
       // Set mock auth token for testing
       this.setMockAuthToken();
       return;
     }
 
-    console.log("=== PROCEEDING WITH DATA LOADING (AUTHENTICATED) ===");
     this.loadAccessHistory();
     this.loadStats();
 
@@ -144,22 +117,12 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.hasError = false;
     this.errorMessage = "";
 
-    console.log("=== LOADING ACCESS HISTORY ===");
-    console.log("Current filters:", JSON.stringify(this.filters, null, 2));
-    console.log("Loading state set to true at:", new Date().toISOString());
-
     // Pre-request authentication check
     const isStillAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
     const currentToken = this.store.selectSnapshot(AuthState.accessToken);
 
-    console.log("Pre-request auth check:", {
-      isAuthenticated: isStillAuthenticated,
-      hasToken: !!currentToken,
-    });
-
     if (!isStillAuthenticated || !currentToken) {
       console.warn("No authentication available - proceeding with unauthenticated request");
-      console.log("This may result in 401 error, but we'll try anyway");
       // Don't return here - continue with the request
     }
 
@@ -169,36 +132,12 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         finalize(() => {
           this.loading = false;
-          console.log("Loading finished. Current state:", {
-            accessHistory: this.accessHistory,
-            totalCount: this.totalCount,
-            loading: this.loading,
-          });
+          // After loading history, also load stats to ensure they're in sync
+          this.loadStats();
         }),
       )
       .subscribe({
         next: (response: GymAccessHistoryResponse) => {
-          console.log("=== ACCESS HISTORY SUCCESS ===");
-          console.log("Raw response received:", JSON.stringify(response, null, 2));
-          console.log("Response type:", typeof response);
-          console.log("Response constructor:", response?.constructor?.name);
-
-          // Debug: Log the raw response and inspect data types
-          if (response && response.history && response.history.length > 0) {
-            console.log(
-              "Sample record from response:",
-              JSON.stringify(response.history[0], null, 2),
-            );
-            console.log("Successful field details:", {
-              value: response.history[0].successful,
-              type: typeof response.history[0].successful,
-              isBoolean:
-                response.history[0].successful === true || response.history[0].successful === false,
-              isString: typeof response.history[0].successful === "string",
-              stringValue: String(response.history[0].successful),
-            });
-          }
-
           if (response) {
             // Handle backend response structure
             this.accessHistory = response.history || [];
@@ -212,14 +151,8 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
               this.currentPage = 0;
             }
 
-            console.log("Data processed successfully:", {
-              historyCount: this.accessHistory.length,
-              totalCount: this.totalCount,
-              currentPage: this.currentPage,
-            });
-
             if (this.accessHistory.length === 0 && this.totalCount === 0) {
-              console.log("No access history data found");
+              // No data found - this is normal, not an error
             }
           } else {
             // Handle null/undefined response - this IS an error
@@ -233,18 +166,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
           }
         },
         error: (error) => {
-          console.error("=== ACCESS HISTORY ERROR ===");
-          console.error("Error object:", error);
-          console.error("Error type:", typeof error);
-          console.error("Error constructor:", error?.constructor?.name);
-          console.error("Error stack:", error?.stack);
-
-          // Check if authentication is still valid after error
-          const authAfterError = {
-            isAuthenticated: this.store.selectSnapshot(AuthState.isAuthenticated),
-            hasToken: !!this.store.selectSnapshot(AuthState.accessToken),
-          };
-          console.error("Auth status after error:", authAfterError);
+          console.error("Error loading access history:", error);
 
           // More detailed error handling with specific actions
           let errorMessage = "Error al cargar el historial de accesos";
@@ -262,9 +184,7 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
               error.error?.message ||
               "Servicio no encontrado. Verifique la configuración del servidor.";
           } else if (error.status === 0) {
-            errorMessage =
-              "No se pudo conectar al servidor. Verifique que el backend esté ejecutándose en: " +
-              environment.api;
+            errorMessage = `No se pudo conectar al servidor. Verifique que el backend esté ejecutándose en: ${environment.api}`;
           } else if (error.status >= 500) {
             errorMessage =
               error.error?.message ||
@@ -279,15 +199,12 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
             errorMessage = "Error del servidor. Intente nuevamente.";
           }
 
-          console.error("Final error message:", errorMessage);
-
           // Set error state
           this.hasError = true;
           this.errorMessage = errorMessage;
 
           // Handle authentication errors
           if (shouldRedirectToLogin) {
-            console.log("Redirecting to login due to auth error");
             this.router.navigate(["/auth/login"]);
             return;
           }
@@ -320,20 +237,21 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (stats) => {
-          console.log("=== STATS SUCCESS ===");
-          console.log("Stats received:", stats);
-          console.log("Stats type:", typeof stats);
-          console.log("Stats keys:", stats ? Object.keys(stats) : "null");
-          console.log("Applied filters:", statsFilters);
-          console.log("Setting stats to component...");
-          this.stats = stats;
+          // Check if backend stats are returning 0 but we have data in the current table
+          const hasHistoryData = this.accessHistory && this.accessHistory.length > 0;
+          const backendStatsEmpty = stats.totalAccesses === 0 && stats.successfulAccesses === 0;
+
+          if (hasHistoryData && backendStatsEmpty) {
+            // Calculate stats from current history data as fallback
+            const calculatedStats = this.calculateStatsFromHistory();
+            this.stats = calculatedStats;
+          } else {
+            this.stats = stats;
+          }
+
           this.statsLoading = false;
-          console.log("Component stats after assignment:", this.stats);
-          console.log("Component statsLoading:", this.statsLoading);
-          console.log("Component statsError:", this.statsError);
         },
         error: (error) => {
-          console.error("=== STATS ERROR ===");
           console.error("Error loading stats:", error);
           this.statsError = true;
           this.statsLoading = false;
@@ -343,22 +261,49 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Calculate statistics from current history data (fallback when backend stats are buggy)
+   */
+  private calculateStatsFromHistory(): AccessStats {
+    if (!this.accessHistory || this.accessHistory.length === 0) {
+      return {
+        totalAccesses: 0,
+        successfulAccesses: 0,
+        failedAccesses: 0,
+        totalAccessesToday: 0,
+        totalAccessesThisMonth: 0,
+        averageAccessesPerDay: 0,
+        mostActiveClients: [],
+      };
+    }
+
+    const totalAccesses = this.accessHistory.length;
+    const successfulAccesses = this.accessHistory.filter((item) => item.successful === true).length;
+    const failedAccesses = this.accessHistory.filter((item) => item.successful === false).length;
+
+    // For filtered data, we can't calculate daily averages accurately without all data
+    // So we'll use the current count as total and set others to 0
+    return {
+      totalAccesses: totalAccesses,
+      successfulAccesses: successfulAccesses,
+      failedAccesses: failedAccesses,
+      totalAccessesToday: 0, // Can't calculate this from filtered data
+      totalAccessesThisMonth: totalAccesses, // Use current filtered total
+      averageAccessesPerDay: 0, // Can't calculate this from filtered data
+      mostActiveClients: [], // Can't calculate this from paginated data
+    };
+  }
+
+  /**
    * Handle filter changes from the table component
    */
   onFiltersChange(newFilters: AccessFilters): void {
-    console.log("=== FILTERS CHANGED ===");
-    console.log("Previous filters:", this.filters);
-    console.log("New filters:", newFilters);
-
     this.filters = { ...newFilters };
-
-    console.log("Applied filters:", this.filters);
 
     // Reset pagination to first page when filters change
     this.currentPage = 0;
 
     this.loadAccessHistory();
-    this.loadStats(); // Reload stats with new filters
+    // loadStats is now called automatically after loadAccessHistory completes
   }
 
   /**
@@ -425,7 +370,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Refresh data
    */
   refreshData(): void {
-    console.log("=== REFRESHING DATA ===");
     this.hasError = false;
     this.errorMessage = "";
     this.loadAccessHistory();
@@ -459,6 +403,20 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    */
   private showError(message: string): void {
     this.snackbarService.showError("Error", message);
+  }
+
+  /**
+   * Initialize filter with today's date
+   */
+  private initializeTodayFilter(): void {
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+    this.filters = {
+      ...this.filters,
+      startDate: todayString,
+      endDate: todayString,
+    };
   }
 
   /**
@@ -519,7 +477,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Set mock authentication token for testing
    */
   setMockAuthToken(): void {
-    console.log("=== SETTING MOCK AUTH TOKEN ===");
     // Use the generated JWT token from our backend test
     const mockToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzU0ODYxOTAzLCJleHAiOjE3NTQ5NDgzMDN9.PjjNzSife-QM0j1prpQYfDYZ_-r4KurcRHFyQfwQw1Q";
@@ -530,8 +487,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
         refreshToken: "mock-refresh-token",
       }),
     );
-
-    console.log("Mock auth token set, reloading data...");
 
     // Now load the data with authentication
     setTimeout(() => {
@@ -544,15 +499,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Debug method to force reload stats - can be called from browser console
    */
   debugReloadStats(): void {
-    console.log("=== DEBUG RELOAD STATS ===");
-    console.log(
-      "Current auth state:",
-      this.store.selectSnapshot((state) => state.auth),
-    );
-    console.log("Current stats:", this.stats);
-    console.log("Current statsLoading:", this.statsLoading);
-    console.log("Current statsError:", this.statsError);
-
     this.loadStats();
   }
 
@@ -560,8 +506,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Load mock data for testing purposes
    */
   loadMockData(): void {
-    console.log("Loading mock data for testing...");
-
     // Mock access history data
     this.accessHistory = [
       {
@@ -606,8 +550,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
     this.totalCount = 3;
     this.currentPage = 0;
     this.pageSize = 10;
-
-    console.log("Mock data loaded successfully");
   }
 
   /**
@@ -622,11 +564,8 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Test backend connectivity
    */
   testBackendConnectivity(): void {
-    console.log("=== TESTING BACKEND CONNECTIVITY ===");
-
     this.gymAccessAdminService.testConnectivity().subscribe({
       next: (result) => {
-        console.log("Connectivity test result:", result);
         this.showSuccess(`Conectividad exitosa: ${result.responseTime.toFixed(2)}ms`);
       },
       error: (error) => {
@@ -640,11 +579,8 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    * Test authentication
    */
   testAuthentication(): void {
-    console.log("=== TESTING AUTHENTICATION ===");
-
     this.gymAccessAdminService.testAuthentication().subscribe({
       next: (result) => {
-        console.log("Authentication test result:", result);
         this.showSuccess(`Autenticación exitosa: ${result.responseTime.toFixed(2)}ms`);
       },
       error: (error) => {
@@ -652,42 +588,5 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
         this.showError(`Fallo de autenticación: ${error.message}`);
       },
     });
-  }
-
-  /**
-   * Run comprehensive diagnostics
-   */
-  runDiagnostics(): void {
-    console.log("=== RUNNING COMPREHENSIVE DIAGNOSTICS ===");
-
-    const diagnosticResults: any[] = [];
-
-    // 1. Check environment configuration
-    console.log("1. Environment Configuration:");
-    console.log("  - API URL:", environment.api);
-    console.log("  - Production mode:", environment.production);
-
-    // 2. Check authentication state
-    console.log("2. Authentication State:");
-    const authState = this.getAuthStatus();
-    console.log("  - Auth state:", authState);
-
-    // 3. Test connectivity
-    console.log("3. Testing Backend Connectivity...");
-    this.testBackendConnectivity();
-
-    // 4. Test authentication if authenticated
-    if (authState.isAuthenticated) {
-      console.log("4. Testing Authentication...");
-      this.testAuthentication();
-    } else {
-      console.log("4. Skipping authentication test - not authenticated");
-    }
-
-    // 5. Test actual data loading
-    console.log("5. Testing Data Loading...");
-    this.loadAccessHistory();
-
-    this.showSuccess("Diagnósticos ejecutados - revise la consola para detalles");
   }
 }
