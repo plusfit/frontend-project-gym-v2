@@ -88,7 +88,7 @@
         </span>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
           <div
-            class="p-5 bg-green-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-green-100 flex flex-col"
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
           >
             <span class="text-gray-500 text-sm mb-1">Último Acceso</span>
             <span class="text-lg font-medium text-gray-800">
@@ -96,18 +96,13 @@
             </span>
           </div>
           <div
-            class="p-5 bg-cyan-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-cyan-100 flex flex-col"
+            class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
           >
             <span class="text-gray-500 text-sm mb-1">Total de Accesos</span>
             <div class="flex items-center space-x-3">
               <span class="text-lg font-medium text-gray-800">
                 {{ clientInfo.totalAccesses || 0 }}
               </span>
-              <app-badge
-                [colorBadge]="getTotalAccessesBadgeColor(clientInfo.totalAccesses)"
-                [textBadge]="getActivityLevel(clientInfo.totalAccesses)"
-                class="transform hover:scale-105 transition-transform"
-              ></app-badge>
             </div>
           </div>
         </div>
