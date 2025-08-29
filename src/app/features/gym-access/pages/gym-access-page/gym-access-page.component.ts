@@ -379,16 +379,19 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
    */
   private initializeTodayFilter(): void {
     const today = new Date();
-    const todayString = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+    // Use local date formatting to avoid timezone issues
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const todayString = `${year}-${month}-${day}`; // Format: YYYY-MM-DD
 
     this.filters = {
       ...this.filters,
       startDate: todayString,
       endDate: todayString,
     };
-  }
-
-  /**
+  } /**
    * Check if there are any records
    */
   hasRecords(): boolean {

@@ -109,10 +109,31 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initializeLocalFilters();
+
+    // Solo inicializar fechas "today" si el componente padre NO ha proporcionado fechas
+    if (!this.filters.startDate && !this.filters.endDate) {
+      this.activeQuickFilter = "today";
+
+      const today = new Date();
+      const startOfDay = new Date(today);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(today);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      this.localFilters.startDate = startOfDay;
+      this.localFilters.endDate = endOfDay;
+
+      // Emitir los filtros para cargar datos inmediatamente
+      this.applyFilters();
+    } else {
+      // Si el padre ya proporcionó fechas, determinar qué filtro rápido está activo
+      this.determineActiveQuickFilter();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["filters"] && changes["filters"].currentValue) {
+    if (changes["filters"]?.currentValue) {
       this.initializeLocalFilters();
     }
   }
@@ -125,9 +146,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
       successful: this.filters.successful !== undefined ? this.filters.successful : null,
       cedula: this.filters.cedula || "",
     };
-  }
-
-  /**
+  } /**
    * Apply filters to the table
    */
   applyFilters(): void {
@@ -208,9 +227,17 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Parse date string to Date object
+   * Parse date string to Date object (handling timezone issues)
    */
   private parseDate(dateString: string): Date {
+    // Parse YYYY-MM-DD as local date to avoid timezone issues
+    const parts = dateString.split("-");
+    if (parts.length === 3) {
+      const year = Number.parseInt(parts[0], 10);
+      const month = Number.parseInt(parts[1], 10) - 1; // Month is 0-indexed
+      const day = Number.parseInt(parts[2], 10);
+      return new Date(year, month, day);
+    }
     return new Date(dateString);
   }
 
@@ -262,6 +289,72 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
   /**
+   * Determine which quick filter is active based on current date range
+   */
+  private determineActiveQuickFilter(): void {
+    if (!this.localFilters.startDate || !this.localFilters.endDate) {
+      this.activeQuickFilter = null;
+      return;
+    }
+
+    const today = new Date();
+    const startOfToday = new Date(today);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date(today);
+    endOfToday.setHours(23, 59, 59, 999);
+
+    // Check if it matches "today" filter
+    if (
+      this.isSameDay(this.localFilters.startDate, startOfToday) &&
+      this.isSameDay(this.localFilters.endDate, endOfToday)
+    ) {
+      this.activeQuickFilter = "today";
+      return;
+    }
+
+    // Check if it matches "week" filter (7 days ago to today)
+    const weekAgo = new Date(today);
+    weekAgo.setDate(today.getDate() - 7);
+    weekAgo.setHours(0, 0, 0, 0);
+
+    if (
+      this.isSameDay(this.localFilters.startDate, weekAgo) &&
+      this.isSameDay(this.localFilters.endDate, endOfToday)
+    ) {
+      this.activeQuickFilter = "week";
+      return;
+    }
+
+    // Check if it matches "month" filter (30 days ago to today)
+    const monthAgo = new Date(today);
+    monthAgo.setMonth(today.getMonth() - 1);
+    monthAgo.setHours(0, 0, 0, 0);
+
+    if (
+      this.isSameDay(this.localFilters.startDate, monthAgo) &&
+      this.isSameDay(this.localFilters.endDate, endOfToday)
+    ) {
+      this.activeQuickFilter = "month";
+      return;
+    }
+
+    // No quick filter matches
+    this.activeQuickFilter = null;
+  }
+
+  /**
+   * Check if two dates are the same day
+   */
+  private isSameDay(date1: Date, date2: Date): boolean {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
+  /**
    * Set quick date range
    */
   setQuickDateRange(range: "today" | "week" | "month"): void {
@@ -299,6 +392,7 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
       }
     }
 
+    // Force change detection and apply filters
     this.applyFilters();
   }
 
