@@ -183,13 +183,6 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Export data in specified format
-   */
-  onExportData(format: string): void {
-    this.exportData.emit(format);
-  }
-
-  /**
    * View client details
    */
   onViewClientDetail(cedula: string): void {

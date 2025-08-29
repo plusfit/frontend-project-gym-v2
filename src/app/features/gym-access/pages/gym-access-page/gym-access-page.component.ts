@@ -328,37 +328,6 @@ export class GymAccessPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handle export data requests
-   */
-  onExportData(format: string): void {
-    this.loadingOverlayService.show();
-
-    const exportOptions = {
-      format: format as "csv" | "excel",
-      filters: this.filters,
-      includeStats: true,
-    };
-
-    this.gymAccessAdminService
-      .exportAccessHistory(exportOptions)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.loadingOverlayService.hide()),
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          const filename = this.gymAccessAdminService.generateExportFilename(format, this.filters);
-          this.gymAccessAdminService.downloadFile(blob, filename);
-          this.showSuccess(`Archivo ${format.toUpperCase()} descargado exitosamente`);
-        },
-        error: (error) => {
-          console.error("Error exporting data:", error);
-          this.showError("Error al exportar los datos");
-        },
-      });
-  }
-
-  /**
    * Handle view client detail requests
    */
   onViewClientDetail(cedula: string): void {
