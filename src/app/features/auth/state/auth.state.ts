@@ -1,12 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
-import { pickProperties } from "@core/utilities/helpers";
+import { pickProperties, getFriendlyErrorMessage } from "@core/utilities/helpers";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { Observable, catchError, tap, throwError, exhaustMap } from "rxjs";
 import { AuthResponse, FirebaseAuthResponse, Profile, UserPreferences } from "../interfaces/auth";
 import { AuthService } from "../services/auth.service";
-import { ForgotPassword, GetNewToken, GetUserPreferences, Login, Logout } from "./auth.actions";
+import { ForgotPassword, GetNewToken, GetUserPreferences, Login, Logout, SetMockAuth } from "./auth.actions";
 import { AuthStateModel } from "./auth.model";
 import { UtilsService } from "@core/services/utils.service";
 import { SnackBarService } from "@core/services/snackbar.service";
@@ -53,6 +53,9 @@ export class AuthState {
 
   @Selector()
   static userData(state: AuthStateModel): Profile | undefined {
+    if (!state.preferences) {
+      return undefined;
+    }
     return pickProperties(state.preferences, "firstName", "lastName", "email", "role.name");
   }
 
@@ -86,8 +89,8 @@ export class AuthState {
       }),
       catchError((err: HttpErrorResponse) => {
         ctx.patchState({ loading: false });
-        //TODO: convertir los mensajes
-        this.snackbar.showError("Login Erroneo", err.error?.data?.message ?? err.message);
+        const errorMessage = getFriendlyErrorMessage(err, "Error al iniciar sesión");
+        this.snackbar.showError("Login Erróneo", errorMessage);
         return throwError(() => err);
       }),
     );
@@ -186,5 +189,15 @@ export class AuthState {
         return throwError(() => err);
       }),
     );
+  }
+
+  @Action(SetMockAuth)
+  setMockAuth(ctx: StateContext<AuthStateModel>, action: SetMockAuth): void {
+    ctx.patchState({
+      auth: {
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken || '',
+      },
+    });
   }
 }

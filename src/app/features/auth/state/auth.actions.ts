@@ -33,3 +33,8 @@ export class GetNewToken {
   static readonly type = '[Auth] Get New Token';
   constructor(public readonly payload: RefreshTokenPayload) {}
 }
+
+export class SetMockAuth {
+  static readonly type = '[Auth] Set Mock Auth';
+  constructor(public readonly payload: { accessToken: string; refreshToken?: string }) {}
+}

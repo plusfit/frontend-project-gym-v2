@@ -1,0 +1,170 @@
+<!-- Page Header -->
+<div class="flex flex-col space-y-4 mb-8">
+  <div class="flex items-center justify-between">
+    <app-title 
+      [title]="getPageTitle()" 
+      [subtitle]="getPageSubtitle()">
+    </app-title>
+    
+    <div class="flex items-center space-x-3">
+      <!-- Back to History Button -->
+      <button
+        mat-stroked-button
+        (click)="navigateToHistory()"
+        class="flex items-center space-x-2">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Historial</span>
+      </button>
+      
+      <!-- Refresh Button -->
+      <button
+        mat-icon-button
+        (click)="refreshData()"
+        matTooltip="Actualizar estadísticas"
+        class="text-gray-600 hover:text-gray-800">
+        <mat-icon>refresh</mat-icon>
+      </button>
+         
+    </div>
+  </div>
+</div>
+
+<!-- Period Selection -->
+<div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold text-gray-900">Selección de Período</h3>
+    <div class="text-sm text-gray-600" *ngIf="isPeriodValid()">
+      {{ getPeriodDescription() }}
+    </div>
+  </div>
+  
+  <!-- Period Controls -->
+  <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 items-end">
+    <!-- Start Date -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha Desde</mat-label>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [(ngModel)]="localStartDate"
+        (dateChange)="onStartDateChange()"
+        [max]="getMaxDate()"
+        readonly>
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- End Date -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha Hasta</mat-label>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [(ngModel)]="localEndDate"
+        (dateChange)="onEndDateChange()"
+        [max]="getMaxDate()"
+        readonly>
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Period Type -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Agrupación</mat-label>
+      <mat-select [(ngModel)]="selectedPeriod" (selectionChange)="onPeriodChange()">
+        <mat-option *ngFor="let option of periodOptions" [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Apply Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="applyPeriod()"
+      [disabled]="!isPeriodValid()"
+      class="flex items-center space-x-2">
+      <mat-icon>analytics</mat-icon>
+      <span>Analizar</span>
+    </button>
+
+    <!-- Quick Periods (spans remaining columns) -->
+    <div class="md:col-span-2 lg:col-span-2">
+      <div class="flex flex-wrap gap-2">
+        <span class="text-sm text-gray-600 mr-2 flex items-center">Períodos rápidos:</span>
+        <button
+          *ngFor="let quick of quickPeriods"
+          mat-stroked-button
+          (click)="setQuickPeriod(quick.days)"
+          class="text-xs py-1 px-3">
+          {{ quick.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Period Summary -->
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="isPeriodValid()">
+  <div class="flex items-center space-x-2">
+    <mat-icon class="text-blue-600">info</mat-icon>
+    <div>
+      <p class="text-sm text-blue-800">
+        <span class="font-semibold">Período de análisis:</span> {{ getPeriodDescription() }}
+      </p>
+      <p class="text-xs text-blue-700 mt-1" *ngIf="selectedPeriod">
+        Datos agrupados por: {{ getSelectedPeriodLabel() }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Dashboard -->
+<app-access-stats-dashboard
+  [stats]="stats"
+  [loading]="loading"
+  [period]="period">
+</app-access-stats-dashboard>
+
+<!-- Additional Information -->
+<div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
+  <div class="flex items-start space-x-3">
+    <mat-icon class="text-gray-500 mt-1">lightbulb</mat-icon>
+    <div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Guía de Interpretación</h3>
+      <div class="text-sm text-gray-600 space-y-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-semibold text-gray-800 mb-2">Métricas Principales</h4>
+            <ul class="space-y-1">
+              <li><strong>Accesos Totales:</strong> Número total de intentos de acceso al gimnasio.</li>
+              <li><strong>Accesos Fallidos:</strong> Intentos de acceso que no fueron exitosos.</li>
+              <li><strong>Hora Pico:</strong> Hora del día con mayor número de accesos.</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-gray-800 mb-2">Análisis Avanzado</h4>
+            <ul class="space-y-1">
+              <li><strong>Días Consecutivos:</strong> Racha actual de días de asistencia de cada cliente.</li>
+              <li><strong>Recompensas:</strong> Logros obtenidos por cumplir metas de asistencia.</li>
+              <li><strong>Tendencias:</strong> Patrones de uso a lo largo del tiempo seleccionado.</li>
+              <li><strong>Clientes Top:</strong> Los usuarios más activos del período.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h4 class="font-semibold text-yellow-800 mb-2">Consejos de Uso</h4>
+          <ul class="text-yellow-700 space-y-1 text-sm">
+            <li>• Use períodos más cortos (diarios) para análisis detallados recientes.</li>
+            <li>• Use períodos más largos (mensuales) para identificar tendencias a largo plazo.</li>
+            <li>• Compare diferentes períodos para evaluar el crecimiento o cambios.</li>
+            <li>• Exporte los datos para análisis más profundos en herramientas externas.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

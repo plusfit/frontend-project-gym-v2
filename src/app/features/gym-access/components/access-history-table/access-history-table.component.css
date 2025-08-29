@@ -1,0 +1,70 @@
+/* Minimal CSS - Only essential Angular Material overrides that cannot be handled with Tailwind */
+
+/* Remove default Material table styling for cleaner Tailwind integration */
+.mat-mdc-table {
+  background: transparent;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+
+/* Hide default Material header/row backgrounds to allow Tailwind classes */
+.mat-mdc-header-row {
+  background: transparent !important;
+}
+
+.mat-mdc-row {
+  background: transparent !important;
+  border: none !important;
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  border: none !important;
+}
+
+/* Ensure Material form fields work well with Tailwind */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+/* Remove Material button default styling to allow Tailwind classes */
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button,
+.mat-mdc-icon-button {
+  border-radius: 0.5rem;
+}
+
+/* Ensure menu styling remains clean */
+.mat-mdc-menu-panel {
+  border-radius: 8px;
+}
+
+/* Remove default paginator styling to work with Tailwind */
+.mat-mdc-paginator {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Basic responsive adjustments for very small screens */
+@media (max-width: 640px) {
+  .mat-mdc-table {
+    font-size: 12px;
+  }
+  
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding: 0.5rem 0.75rem;
+    min-width: 100px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .mat-mdc-table {
+    border: 1px solid #000;
+  }
+  
+  .mat-icon-button {
+    display: none !important;
+  }
+}

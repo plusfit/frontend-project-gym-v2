@@ -61,6 +61,84 @@
         <i class="ph-clipboard text-white text-xl"></i>
         <span> Planes</span>
       </a>
+
+      <!-- Submenú de Acceso -->
+      <div class="space-y-1">
+        <!-- Toggle del submenú -->
+        <div 
+          (click)="toggleSubmenu('acceso')"
+          [class]="'submenu-toggle ' + (submenuStates.acceso ? 'submenu-toggle-active' : '')"
+        >
+          <i class="ph-key text-white text-xl"></i>
+          <span class="flex-1">Acceso</span>
+          <i 
+            class="ph-caret-right text-white text-sm submenu-arrow"
+            [class.submenu-arrow-expanded]="submenuStates.acceso"
+          ></i>
+        </div>
+        
+        <!-- Submenú items -->
+        <div 
+          class="submenu-container"
+          [style.max-height]="submenuStates.acceso ? '100px' : '0'"
+        >
+          <a
+            routerLink="/acceso-especial"
+            routerLinkActive="submenu-item-selected"
+            class="submenu-item"
+          >
+            <i class="ph-lock-simple text-gray-300 text-lg"></i>
+            <span>Acceso</span>
+          </a>
+          <a
+            routerLink="/historial-accesos"
+            routerLinkActive="submenu-item-selected"
+            class="submenu-item"
+          >
+            <i class="ph-clock-clockwise text-gray-300 text-lg"></i>
+            <span>Historial de Accesos</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Submenú de Premios -->
+      <div class="space-y-1">
+        <!-- Toggle del submenú -->
+        <div 
+          (click)="toggleSubmenu('premios')"
+          [class]="'submenu-toggle ' + (submenuStates.premios ? 'submenu-toggle-active' : '')"
+        >
+          <i class="ph-trophy text-white text-xl"></i>
+          <span class="flex-1">Premios</span>
+          <i 
+            class="ph-caret-right text-white text-sm submenu-arrow"
+            [class.submenu-arrow-expanded]="submenuStates.premios"
+          ></i>
+        </div>
+        
+        <!-- Submenú items -->
+        <div 
+          class="submenu-container"
+          [style.max-height]="submenuStates.premios ? '100px' : '0'"
+        >
+          <a
+            href="#"
+            class="submenu-item cursor-not-allowed opacity-50"
+            title="Próximamente"
+          >
+            <i class="ph-gift text-gray-300 text-lg"></i>
+            <span>Premios</span>
+          </a>
+          <a
+            href="#"
+            class="submenu-item cursor-not-allowed opacity-50"
+            title="Próximamente"
+          >
+            <i class="ph-list-checks text-gray-300 text-lg"></i>
+            <span>Listado de canjes</span>
+          </a>
+        </div>
+      </div>
       <a
         routerLink="/pantalla"
         routerLinkActive="nav-item-selected"

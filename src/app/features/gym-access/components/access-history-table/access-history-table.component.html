@@ -1,0 +1,152 @@
+<!-- Premium Filters Section -->
+<div class="bg-white rounded-xl shadow-lg border border-neutral-400 mb-8 overflow-hidden">
+  <div class="p-4 border-b border-neutral-400 bg-gradient-to-r from-neutral-200 to-neutral-100">
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+          <mat-icon class="text-white" style="font-size: 20px;">filter_list</mat-icon>
+        </div>
+        <h3 class="text-xl font-bold text-neutral-900">Filtros de Búsqueda</h3>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-sm text-neutral-700" *ngIf="hasActiveFilters()">
+          {{ getActiveFiltersCount() }} filtro(s) activo(s)
+        </span>
+        <button
+          mat-button
+          color="warn"
+          (click)="clearFilters()"
+          *ngIf="hasActiveFilters()"
+          class="text-sm">
+          <mat-icon>clear</mat-icon>
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Enhanced Filter Controls -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      <!-- Client Name Filter -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nombre del Cliente</mat-label>
+        <input
+          matInput
+          [(ngModel)]="localFilters.clientName"
+          placeholder="Buscar por nombre..."
+          (keyup.enter)="applyFilters()">
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <!-- Cedula Filter -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Cédula</mat-label>
+        <input
+          matInput
+          [(ngModel)]="localFilters.cedula"
+          placeholder="12345678"
+          (keyup.enter)="applyFilters()"
+          maxlength="8">
+        <mat-icon matSuffix>badge</mat-icon>
+      </mat-form-field>
+
+      <!-- Start Date Filter -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Fecha Desde</mat-label>
+        <input
+          matInput
+          [matDatepicker]="startPicker"
+          [(ngModel)]="localFilters.startDate"
+          readonly>
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- End Date Filter -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Fecha Hasta</mat-label>
+        <input
+          matInput
+          [matDatepicker]="endPicker"
+          [(ngModel)]="localFilters.endDate"
+          readonly>
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Success Filter -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Estado</mat-label>
+        <mat-select [(ngModel)]="localFilters.successful">
+          <mat-option *ngFor="let option of successOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Filter Actions -->
+      <div class="w-full flex items-end pb-2">
+        <button mat-raised-button color="primary" (click)="applyFilters()" class="w-full" style="height: 40px; margin-bottom: 1.25em;">
+          <mat-icon>search</mat-icon>
+          Buscar
+        </button>
+      </div>
+    </div>
+
+    <!-- Enhanced Quick Date Filters -->
+    <div class="flex flex-wrap gap-3 mt-6 p-4 bg-white rounded-lg border border-neutral-300">
+      <span class="text-sm font-semibold text-neutral-800 mr-3 flex items-center gap-2">
+        <mat-icon style="font-size: 16px; width: 16px; height: 16px;">schedule</mat-icon>
+        Filtros rápidos:
+      </span>
+      <button 
+        mat-stroked-button 
+        (click)="setQuickDateRange('today')" 
+        [class]="activeQuickFilter === 'today' ? 'text-xs bg-primary-100 border-primary-500 text-primary-700 font-semibold' : 'text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200'">
+        <mat-icon style="font-size: 14px;">today</mat-icon>
+        Hoy
+      </button>
+      <button 
+        mat-stroked-button 
+        (click)="setQuickDateRange('week')" 
+        [class]="activeQuickFilter === 'week' ? 'text-xs bg-primary-100 border-primary-500 text-primary-700 font-semibold' : 'text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200'">
+        <mat-icon style="font-size: 14px;">date_range</mat-icon>
+        Última Semana
+      </button>
+      <button 
+        mat-stroked-button 
+        (click)="setQuickDateRange('month')" 
+        [class]="activeQuickFilter === 'month' ? 'text-xs bg-primary-100 border-primary-500 text-primary-700 font-semibold' : 'text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200'">
+        <mat-icon style="font-size: 14px;">calendar_month</mat-icon>
+        Último Mes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Premium Table Section -->
+<div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200">
+
+  <!-- Tabla usando app-table -->
+  <app-table
+    [displayedColumns]="displayedColumns"
+    [data]="data"
+    [loading]="loading"
+    [total]="totalCount"
+    (edit)="handleEdit($event)"
+    (seeDetail)="handleViewDetail($event)"
+    [showSeeDetail]="true"
+    [showDelete]="false">
+    
+    <!-- Paginación personalizada -->
+    <div class="border-t border-neutral-400 bg-neutral-100" *ngIf="!loading && data.length > 0">
+      <mat-paginator
+        [length]="totalCount"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
+        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </app-table>
+</div>
