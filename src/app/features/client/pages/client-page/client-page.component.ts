@@ -148,17 +148,18 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       width: '500px',
       data: {
         title: 'Eliminar cliente',
-        contentMessage: '¿Estás seguro que desea eliminar cliente?',
+        contentMessage: '¿Estás seguro que deseas eliminar este cliente?',
       },
     });
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
-      this.store.dispatch(new DeleteClient(event));
+      const id = event?._id || event?.id || event; // pass only the id
+      this.store.dispatch(new DeleteClient(id));
       this.actions
         .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('Exito', 'Cliente eliminado correctamente');
+          this.snackbar.showSuccess('Éxito', 'Cliente eliminado');
         });
     });
   }
