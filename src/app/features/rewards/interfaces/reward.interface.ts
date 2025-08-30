@@ -1,4 +1,4 @@
-export interface Premio {
+export interface Reward {
   id: string;
   name: string;
   description?: string;
@@ -9,18 +9,18 @@ export interface Premio {
   updatedAt: Date;
 }
 
-export interface PremioFilters {
+export interface RewardFilters {
   search?: string;
   enabled?: boolean;
   page?: number;
   limit?: number;
 }
 
-export interface PremioResponse {
+export interface RewardResponse {
   success: boolean;
   data: {
     success: boolean;
-    data: Premio[];
+    data: Reward[];
     pagination: {
       currentPage: number;
       totalPages: number;
@@ -30,22 +30,22 @@ export interface PremioResponse {
   };
 }
 
-export interface CreatePremioRequest {
+export interface CreateRewardRequest {
   name: string;
   description?: string;
   pointsRequired: number;
   enabled?: boolean;
 }
 
-export interface UpdatePremioRequest {
+export interface UpdateRewardRequest {
   name?: string;
   description?: string;
   pointsRequired?: number;
   enabled?: boolean;
 }
 
-export interface PremioApiResponse {
+export interface RewardApiResponse {
   success: boolean;
   message: string;
-  data?: Premio;
+  data?: Reward;
 }

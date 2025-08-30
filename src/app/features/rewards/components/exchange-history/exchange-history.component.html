@@ -1,0 +1,180 @@
+<div class="min-h-screen py-8 px-4 bg-gradient-to-br from-blue-50 to-blue-100">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="mb-6 p-8 rounded-2xl text-white flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xl">
+      <h1 class="text-3xl font-bold mb-4 sm:mb-0">
+        Exchange History <i class="ph-clock-clockwise text-yellow-300 text-3xl align-middle ml-2"></i>
+      </h1>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="exportToExcel()"
+        class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+      >
+        <mat-icon>download</mat-icon>
+        <span>Export Excel</span>
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="bg-white rounded-xl p-6 shadow-xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <!-- Búsqueda -->
+        <mat-form-field appearance="outline" class="col-span-1 md:col-span-2">
+          <mat-label>Search client or reward</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Client or reward name" class="text-gray-700">
+          <mat-icon matSuffix class="text-gray-400">search</mat-icon>
+        </mat-form-field>
+
+        <!-- Estado -->
+        <mat-form-field appearance="outline" class="col-span-1">
+          <mat-label>Estado</mat-label>
+          <mat-select [formControl]="statusFilter">
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Fecha Desde -->
+        <mat-form-field appearance="outline" class="col-span-1">
+          <mat-label>Fecha Desde</mat-label>
+          <input matInput [matDatepicker]="dateFromPicker" [formControl]="dateFromControl" class="text-gray-700">
+          <mat-datepicker-toggle matSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateFromPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Fecha Hasta -->
+        <mat-form-field appearance="outline" class="col-span-1">
+          <mat-label>Fecha Hasta</mat-label>
+          <input matInput [matDatepicker]="dateToPicker" [formControl]="dateToControl" class="text-gray-700">
+          <mat-datepicker-toggle matSuffix [for]="dateToPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateToPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Botón Limpiar -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-1">
+          <button 
+            mat-stroked-button 
+            (click)="clearFilters()" 
+            class="w-full h-14 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+          >
+            <mat-icon>clear</mat-icon>
+            <span>Clear Filters</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <!-- Loading Spinner -->
+        <div class="flex items-center justify-center py-16" *ngIf="loading">
+          <div class="flex flex-col items-center space-y-4">
+            <mat-spinner diameter="50" class="text-blue-600"></mat-spinner>
+            <p class="text-gray-600 font-medium">Loading exchange history...</p>
+          </div>
+        </div>
+
+        <!-- No Data -->
+        <div class="flex flex-col items-center justify-center py-16 space-y-4" *ngIf="!loading && dataSource.data.length === 0">
+          <mat-icon class="text-6xl text-gray-300">history</mat-icon>
+          <h3 class="text-xl font-semibold text-gray-600 mb-0">No exchanges recorded</h3>
+          <p class="text-gray-400 mb-0">No exchanges found that match the applied filters.</p>
+        </div>
+
+        <!-- Data Table -->
+        <table mat-table [dataSource]="dataSource" matSort class="w-full" *ngIf="!loading && dataSource.data.length > 0">
+          <!-- Columna Fecha -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="createdAt" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+              Date & Time
+            </th>
+            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
+              <span class="font-medium text-gray-900">{{ formatDate(exchange.createdAt) }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Columna Cliente -->
+          <ng-container matColumnDef="client">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="clientName" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+              Cliente
+            </th>
+            <td mat-cell *matCellDef="let exchange" class="px-6 py-4">
+              <div class="flex flex-col space-y-1">
+                <span class="font-medium text-gray-900">{{ exchange.clientName }}</span>
+                <span class="text-sm text-gray-500">{{ exchange.clientEmail }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Columna Premio -->
+          <ng-container matColumnDef="reward">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="rewardName" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+              Reward
+            </th>
+            <td mat-cell *matCellDef="let exchange" class="px-6 py-4">
+              <div class="flex flex-col space-y-1">
+                <span class="font-medium text-gray-900 truncate">{{ exchange.rewardName }}</span>
+                <span class="text-sm text-gray-500 line-clamp-2" *ngIf="exchange.rewardDescription">
+                  {{ exchange.rewardDescription }}
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Columna Puntos Utilizados -->
+          <ng-container matColumnDef="pointsUsed">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="pointsUsed" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+              Puntos
+            </th>
+            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                <mat-icon class="mr-1 text-sm">stars</mat-icon>
+                {{ exchange.pointsUsed }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Columna Estado -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="status" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
+              Estado
+            </th>
+            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
+              <span 
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': exchange.status === 'completed',
+                  'bg-yellow-100 text-yellow-800': exchange.status === 'pending',
+                  'bg-red-100 text-red-800': exchange.status === 'cancelled'
+                }"
+              >
+                <mat-icon class="mr-1 text-sm">
+                  {{ exchange.status === 'completed' ? 'check_circle' : 
+                     exchange.status === 'pending' ? 'schedule' : 'cancel' }}
+                </mat-icon>
+                {{ getStatusText(exchange.status) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors duration-150"></tr>
+        </table>
+      </div>
+
+      <!-- Paginador -->
+      <div class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6" *ngIf="!loading && dataSource.data.length > 0">
+        <mat-paginator
+          [length]="totalItems"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [showFirstLastButtons]="true"
+          class="border-none bg-transparent">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

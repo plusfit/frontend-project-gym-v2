@@ -1,0 +1,74 @@
+<section class="min-h-screen py-8 px-4 bg-gradient-to-br from-blue-50 to-cyan-100">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="mb-6 p-8 rounded-2xl text-white flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xl">
+      <span class="text-3xl font-bold mb-4 sm:mb-0">
+        REWARDS <i class="ph-gift text-yellow-300 text-4xl align-middle ml-2"></i>
+      </span>
+      
+      <!-- Add Button -->
+      <button 
+        (click)="openCreateDialog()" 
+        class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+      >
+        <i class="ph-plus text-white text-lg"></i>
+        <span>Add Reward</span>
+      </button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl p-6 shadow-xl">
+      <!-- Toolbar Section -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+        <!-- Filters Section -->
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start sm:items-center w-full lg:w-auto">
+          <mat-form-field appearance="outline" class="w-full sm:w-80">
+            <mat-label>Buscar por nombre...</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Search rewards" class="text-gray-700">
+            <i class="ph-magnifying-glass text-gray-400" matSuffix></i>
+          </mat-form-field>
+
+          <mat-slide-toggle 
+            [formControl]="showEnabledOnly" 
+            color="primary"
+            class="flex-shrink-0"
+          >
+            <span class="text-gray-700 font-medium">Show enabled only</span>
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="rounded-xl overflow-hidden relative bg-white border border-gray-200">
+        <app-table
+          [displayedColumns]="displayedColumns"
+          [data]="rewards"
+          [total]="totalCount"
+          [loading]="loading"
+          [filteredData]="filteredData"
+          [showDelete]="true"
+          [showDisabled]="true"
+          (edit)="openEditDialog($event)"
+          (delete)="deleteReward($event)"
+          (disabled)="toggleEnabled($event)"
+          class="w-full"
+        >
+        </app-table>
+
+        <!-- Paginator -->
+        <div *ngIf="!loading && rewards.length > 0" class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+          <mat-paginator 
+            [length]="totalCount"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            [pageIndex]="currentPage"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="border-none bg-transparent"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

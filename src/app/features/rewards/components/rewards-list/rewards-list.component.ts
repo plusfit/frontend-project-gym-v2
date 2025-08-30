@@ -13,16 +13,15 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Premio, PremioFilters } from '../../interfaces/premio.interface';
-import { PremiosService } from '../../services/premios.service';
-import { PremioFormComponent } from '../premio-form/premio-form.component';
+import { Reward, RewardFilters } from '../../interfaces/reward.interface';
+import { RewardsService } from '../../services/rewards.service';
+import { RewardFormComponent } from '../reward-form/reward-form.component';
 import { TableComponent } from '@shared/components/table/table.component';
 import { EColorBadge } from '@shared/enums/badge-color.enum';
 
 @Component({
-  selector: 'app-premios-list',
-  templateUrl: './premios-list.component.html',
-  styleUrls: ['./premios-list.component.scss'],
+  selector: 'app-rewards-list',
+  templateUrl: './rewards-list.component.html',
   standalone: true,
   imports: [
     CommonModule,
@@ -37,7 +36,7 @@ import { EColorBadge } from '@shared/enums/badge-color.enum';
     TableComponent
   ]
 })
-export class PremiosListComponent implements OnInit {
+export class RewardsListComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'pointsRequired',
@@ -47,7 +46,7 @@ export class PremiosListComponent implements OnInit {
     'acciones'
   ];
 
-  premios: Premio[] = [];
+  rewards: Reward[] = [];
   loading = false;
   totalCount = 0;
   pageSize = 10;
@@ -59,14 +58,14 @@ export class PremiosListComponent implements OnInit {
   showEnabledOnly = new FormControl(true);
 
   constructor(
-    private premiosService: PremiosService,
+    private rewardsService: RewardsService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
     this.setupFilters();
-    this.loadPremios();
+    this.loadRewards();
   }
 
   private setupFilters(): void {
@@ -78,40 +77,40 @@ export class PremiosListComponent implements OnInit {
       )
       .subscribe(() => {
         this.currentPage = 0;
-        this.loadPremios();
+        this.loadRewards();
       });
 
     // Filtro de habilitados
     this.showEnabledOnly.valueChanges.subscribe(() => {
       this.currentPage = 0;
-      this.loadPremios();
+      this.loadRewards();
     });
   }
 
-  loadPremios(): void {
+  loadRewards(): void {
     this.loading = true;
 
-    const filters: PremioFilters = {
+    const filters: RewardFilters = {
       search: this.searchControl.value || undefined,
       enabled: this.showEnabledOnly.value || undefined,
       page: this.currentPage + 1,
       limit: this.pageSize
     };
 
-    this.premiosService.getPremios(filters).subscribe({
+    this.rewardsService.getRewards(filters).subscribe({
       next: (response) => {
-        console.log('Premios API Response:', response);
+        console.log('Rewards API Response:', response);
         if (response && response.success && response.data) {
           // La respuesta tiene estructura anidada: response.data.data contiene los premios
-          const premiosData = response.data.data || [];
+          const rewardsData = response.data.data || [];
           const paginationData = response.data.pagination || {};
           
-          this.premios = premiosData;
+          this.rewards = rewardsData;
           this.totalCount = paginationData.totalCount || 0;
           this.filteredData = !!(filters.search || filters.enabled !== undefined);
         } else {
           console.warn('Invalid response structure:', response);
-          this.premios = [];
+          this.rewards = [];
           this.totalCount = 0;
           this.filteredData = false;
           this.showSnackBar('Respuesta inválida del servidor');
@@ -119,9 +118,9 @@ export class PremiosListComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading premios:', error);
+        console.error('Error loading rewards:', error);
         this.showSnackBar('Error al cargar los premios. Verifique que el backend esté funcionando.');
-        this.premios = [];
+        this.rewards = [];
         this.totalCount = 0;
         this.filteredData = false;
         this.loading = false;
@@ -132,34 +131,34 @@ export class PremiosListComponent implements OnInit {
   onPageChange(event: any): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadPremios();
+    this.loadRewards();
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(PremioFormComponent, {
+    const dialogRef = this.dialog.open(RewardFormComponent, {
       width: '600px',
       data: { mode: 'create' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadPremios();
+        this.loadRewards();
         this.showSnackBar('Premio creado exitosamente');
       }
     });
   }
 
-  openEditDialog(premioId: string): void {
-    const premio = this.premios.find(p => p.id === premioId);
-    if (premio) {
-      const dialogRef = this.dialog.open(PremioFormComponent, {
+  openEditDialog(rewardId: string): void {
+    const reward = this.rewards.find(r => r.id === rewardId);
+    if (reward) {
+      const dialogRef = this.dialog.open(RewardFormComponent, {
         width: '600px',
-        data: { mode: 'edit', premio }
+        data: { mode: 'edit', reward }
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.loadPremios();
+          this.loadRewards();
           this.showSnackBar('Premio actualizado exitosamente');
         }
       });
@@ -167,32 +166,32 @@ export class PremiosListComponent implements OnInit {
   }
 
   toggleEnabled(data: { id: string; disabled: boolean }): void {
-    this.premiosService.togglePremioEnabled(data.id).subscribe({
+    this.rewardsService.toggleRewardEnabled(data.id).subscribe({
       next: (response) => {
         if (response.success) {
-          this.loadPremios();
+          this.loadRewards();
           const status = data.disabled ? 'habilitado' : 'deshabilitado';
           this.showSnackBar(`Premio ${status} exitosamente`);
         }
       },
       error: (error) => {
-        console.error('Error toggling premio:', error);
+        console.error('Error toggling reward:', error);
         this.showSnackBar('Error al cambiar el estado del premio');
       }
     });
   }
 
-  deletePremio(premio: Premio): void {
-    if (confirm(`¿Estás seguro de que deseas eliminar el premio "${premio.name}"? Esta acción no se puede deshacer.`)) {
-      this.premiosService.deletePremio(premio.id).subscribe({
+  deleteReward(reward: Reward): void {
+    if (confirm(`¿Estás seguro de que deseas eliminar el premio "${reward.name}"? Esta acción no se puede deshacer.`)) {
+      this.rewardsService.deleteReward(reward.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.loadPremios();
+            this.loadRewards();
             this.showSnackBar('Premio eliminado exitosamente');
           }
         },
         error: (error) => {
-          console.error('Error deleting premio:', error);
+          console.error('Error deleting reward:', error);
           const message = error.error?.message || 'Error al eliminar el premio';
           this.showSnackBar(message);
         }

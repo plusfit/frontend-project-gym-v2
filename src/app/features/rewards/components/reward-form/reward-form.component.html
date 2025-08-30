@@ -1,0 +1,116 @@
+<div class="w-full max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+  <!-- Header -->
+  <div class="p-6 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-cyan-600">
+    <h2 mat-dialog-title class="text-xl font-bold m-0">
+      {{ isEditMode ? 'Edit Reward' : 'Create New Reward' }}
+      <i class="ph-gift text-yellow-300 text-2xl align-middle ml-2"></i>
+    </h2>
+    <button mat-icon-button mat-dialog-close class="p-2 rounded-lg transition-colors bg-white bg-opacity-20 hover:bg-opacity-30 border-none">
+      <i class="ph-x text-xl text-white"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <mat-dialog-content class="p-6 space-y-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+      <!-- Información Básica -->
+      <div class="space-y-4">
+        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Basic Information</label>
+        
+        <div class="grid grid-cols-1 gap-6">
+          <!-- Nombre -->
+          <div class="h-[80px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Reward Name</mat-label>
+              <input matInput formControlName="name" placeholder="E.g: Premium Protein" class="text-gray-700">
+              <mat-error *ngIf="nameError">{{ nameError }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Descripción -->
+          <div class="h-[100px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Descripción</mat-label>
+              <textarea 
+                matInput 
+                formControlName="description" 
+                rows="3"
+                placeholder="Describe the reward and its benefits..."
+                class="text-gray-700"
+              ></textarea>
+              <mat-hint align="end" class="text-gray-500">
+                {{ form.get('description')?.value?.length || 0 }}/500
+              </mat-hint>
+              <mat-error *ngIf="descriptionError">{{ descriptionError }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Required Points -->
+          <div class="h-[80px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Required Points</mat-label>
+              <input 
+                matInput 
+                type="number" 
+                formControlName="pointsRequired" 
+                placeholder="0"
+                min="1"
+                class="text-gray-700"
+              >
+              <i class="ph-star text-yellow-500" matSuffix></i>
+              <mat-error *ngIf="pointsError">{{ pointsError }}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration -->
+      <div class="space-y-4">
+        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Configuration</label>
+        
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div class="flex flex-col space-y-2">
+            <mat-slide-toggle formControlName="enabled" color="primary" class="flex items-center">
+              <span class="flex items-center space-x-2 font-medium text-gray-800">
+                <i class="ph-{{ form.get('enabled')?.value ? 'eye' : 'eye-slash' }} text-lg"></i>
+                <span>{{ form.get('enabled')?.value ? 'Reward Enabled' : 'Reward Disabled' }}</span>
+              </span>
+            </mat-slide-toggle>
+            <p class="text-sm text-gray-600 ml-12 mt-2 mb-0">
+              {{ form.get('enabled')?.value 
+                ? 'Clients can see and redeem this reward' 
+                : 'This reward will not be visible to clients' 
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions class="flex justify-end space-x-3 pt-6 border-t border-gray-200 px-6 pb-6">
+    <button 
+      type="button" 
+      (click)="onCancel()"
+      [disabled]="loading"
+      class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <i class="ph-x text-lg"></i>
+      <span>Cancel</span>
+    </button>
+    
+    <button 
+      type="submit"
+      (click)="onSubmit()"
+      [disabled]="loading || form.invalid"
+      class="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+    >
+      <mat-spinner diameter="20" *ngIf="loading" class="text-white"></mat-spinner>
+      <span *ngIf="!loading" class="flex items-center space-x-2">
+        <i class="ph-{{ isEditMode ? 'floppy-disk' : 'plus' }} text-lg"></i>
+        <span>{{ isEditMode ? 'Update' : 'Create Reward' }}</span>
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

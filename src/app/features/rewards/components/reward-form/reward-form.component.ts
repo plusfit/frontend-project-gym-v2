@@ -3,38 +3,37 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Premio } from '../../interfaces/premio.interface';
-import { PremiosService } from '../../services/premios.service';
+import { Reward } from '../../interfaces/reward.interface';
+import { RewardsService } from '../../services/rewards.service';
 
-export interface PremioFormData {
+export interface RewardFormData {
   mode: 'create' | 'edit';
-  premio?: Premio;
+  reward?: Reward;
 }
 
 @Component({
-  selector: 'app-premio-form',
-  templateUrl: './premio-form.component.html',
-  styleUrls: ['./premio-form.component.scss']
+  selector: 'app-reward-form',
+  templateUrl: './reward-form.component.html'
 })
-export class PremioFormComponent implements OnInit {
+export class RewardFormComponent implements OnInit {
   form: FormGroup;
   loading = false;
   isEditMode: boolean;
 
   constructor(
     private fb: FormBuilder,
-    private premiosService: PremiosService,
+    private rewardsService: RewardsService,
     private snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<PremioFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: PremioFormData
+    public dialogRef: MatDialogRef<RewardFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: RewardFormData
   ) {
     this.isEditMode = data.mode === 'edit';
     this.form = this.createForm();
   }
 
   ngOnInit(): void {
-    if (this.isEditMode && this.data.premio) {
-      this.loadPremioData(this.data.premio);
+    if (this.isEditMode && this.data.reward) {
+      this.loadRewardData(this.data.reward);
     }
   }
 
@@ -47,12 +46,12 @@ export class PremioFormComponent implements OnInit {
     });
   }
 
-  private loadPremioData(premio: Premio): void {
+  private loadRewardData(reward: Reward): void {
     this.form.patchValue({
-      name: premio.name,
-      description: premio.description || '',
-      pointsRequired: premio.pointsRequired,
-      enabled: premio.enabled
+      name: reward.name,
+      description: reward.description || '',
+      pointsRequired: reward.pointsRequired,
+      enabled: reward.enabled
     });
   }
 
@@ -68,14 +67,14 @@ export class PremioFormComponent implements OnInit {
     const formData = this.form.value;
 
     if (this.isEditMode) {
-      this.updatePremio(formData);
+      this.updateReward(formData);
     } else {
-      this.createPremio(formData);
+      this.createReward(formData);
     }
   }
 
-  private createPremio(formData: any): void {
-    this.premiosService.createPremio(formData).subscribe({
+  private createReward(formData: any): void {
+    this.rewardsService.createReward(formData).subscribe({
       next: (response) => {
         if (response.success) {
           this.dialogRef.close(true);
@@ -93,8 +92,8 @@ export class PremioFormComponent implements OnInit {
     });
   }
 
-  private updatePremio(formData: any): void {
-    this.premiosService.updatePremio(this.data.premio!.id, formData).subscribe({
+  private updateReward(formData: any): void {
+    this.rewardsService.updateReward(this.data.reward!.id, formData).subscribe({
       next: (response) => {
         if (response.success) {
           this.dialogRef.close(true);

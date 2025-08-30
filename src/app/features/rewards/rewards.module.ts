@@ -24,27 +24,27 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 
 // Components
-import { PremioFormComponent } from './components/premio-form/premio-form.component';
-import { CanjeHistoryComponent } from './components/canje-history/canje-history.component';
+import { RewardFormComponent } from './components/reward-form/reward-form.component';
+import { ExchangeHistoryComponent } from './components/exchange-history/exchange-history.component';
 
 // Services
-import { PremiosService } from './services/premios.service';
-import { CanjesService } from './services/canjes.service';
+import { RewardsService } from './services/rewards.service';
+import { ExchangesService } from './services/exchanges.service';
 
 // Routing
-import { PremiosRoutingModule } from './premios-routing.module';
+import { RewardsRoutingModule } from './rewards-routing.module';
 
 @NgModule({
   declarations: [
-    PremioFormComponent,
-    CanjeHistoryComponent,
+    RewardFormComponent,
+    ExchangeHistoryComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-    PremiosRoutingModule,
+    RewardsRoutingModule,
     
     // Angular Material
     MatTableModule,
@@ -67,8 +67,8 @@ import { PremiosRoutingModule } from './premios-routing.module';
     MatDividerModule,
   ],
   providers: [
-    PremiosService,
-    CanjesService,
+    RewardsService,
+    ExchangesService,
   ],
 })
-export class PremiosModule { }
+export class RewardsModule { }

@@ -1,35 +1,35 @@
-export interface Canje {
+export interface Exchange {
   id: string;
-  premioId: string;
-  premioName: string;
-  clienteId: string;
-  clienteName: string;
-  clienteEmail: string;
+  rewardId: string;
+  rewardName: string;
+  clientId: string;
+  clientName: string;
+  clientEmail: string;
   adminId?: string;
   adminName?: string;
   pointsUsed: number;
-  canjeDate: Date;
+  exchangeDate: Date;
   status: 'completed' | 'pending' | 'cancelled';
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface CanjeFilters {
+export interface ExchangeFilters {
   page?: number;
   limit?: number;
   search?: string;
   status?: 'completed' | 'pending' | 'cancelled' | 'all';
   clientId?: string;
-  premioId?: string;
+  rewardId?: string;
   dateFrom?: Date;
   dateTo?: Date;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface CanjeResponse {
+export interface ExchangeResponse {
   success: boolean;
-  data: Canje[];
+  data: Exchange[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -38,17 +38,17 @@ export interface CanjeResponse {
   };
 }
 
-export interface CreateCanjeRequest {
-  premioId: string;
-  clienteId: string;
+export interface CreateExchangeRequest {
+  rewardId: string;
+  clientId: string;
   adminId?: string;
 }
 
-export interface CanjeResult {
+export interface ExchangeResult {
   success: boolean;
   message: string;
   data?: {
-    canje: Canje;
-    puntosRestantes: number;
+    exchange: Exchange;
+    remainingPoints: number;
   };
 }

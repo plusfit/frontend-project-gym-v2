@@ -4,23 +4,23 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 import {
-  Canje,
-  CanjeFilters,
-  CanjeResponse,
-  CreateCanjeRequest,
-  CanjeResult
-} from '../interfaces/canje.interface';
+  Exchange,
+  ExchangeFilters,
+  ExchangeResponse,
+  CreateExchangeRequest,
+  ExchangeResult
+} from '../interfaces/exchange.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CanjesService {
-  private readonly apiUrl = `${environment.api}/canjes`;
+export class ExchangesService {
+  private readonly baseUrl = `${environment.api}/rewards`;
 
   constructor(private http: HttpClient) { }
 
   // Obtener historial de canjes con filtros
-  getCanjes(filters: CanjeFilters): Observable<CanjeResponse> {
+  getExchanges(filters: ExchangeFilters): Observable<ExchangeResponse> {
     let params = new HttpParams();
     
     if (filters.page) {
@@ -48,32 +48,32 @@ export class CanjesService {
       params = params.set('sortOrder', filters.sortOrder);
     }
 
-    return this.http.get<CanjeResponse>(`${this.apiUrl}`, { params });
+    return this.http.get<ExchangeResponse>(`${this.baseUrl}/exchanges/history`, { params });
   }
 
   // Alias para compatibilidad
-  getCanjeHistory(filters: CanjeFilters): Observable<CanjeResponse> {
-    return this.getCanjes(filters);
+  getExchangeHistory(filters: ExchangeFilters): Observable<ExchangeResponse> {
+    return this.getExchanges(filters);
   }
 
   /**
    * Obtener un canje por ID
    */
-  getCanjeById(id: string): Observable<{ success: boolean; data: Canje }> {
-    return this.http.get<{ success: boolean; data: Canje }>(`${this.apiUrl}/canjes/${id}`);
+  getExchangeById(id: string): Observable<{ success: boolean; data: Exchange }> {
+    return this.http.get<{ success: boolean; data: Exchange }>(`${this.baseUrl}/exchanges/${id}`);
   }
 
   /**
    * Realizar un canje de premio
    */
-  realizarCanje(canje: CreateCanjeRequest): Observable<CanjeResult> {
-    return this.http.post<CanjeResult>(`${this.apiUrl}/canje`, canje);
+  createExchange(exchange: CreateExchangeRequest): Observable<ExchangeResult> {
+    return this.http.post<ExchangeResult>(`${this.baseUrl}/exchange`, exchange);
   }
 
   /**
    * Obtener canjes de un cliente específico
    */
-  getCanjesCliente(clienteId: string): Observable<{ success: boolean; data: Canje[] }> {
-    return this.http.get<{ success: boolean; data: Canje[] }>(`${this.apiUrl}/canjes/cliente/${clienteId}`);
+  getClientExchanges(clientId: string): Observable<{ success: boolean; data: Exchange[] }> {
+    return this.http.get<{ success: boolean; data: Exchange[] }>(`${this.baseUrl}/exchanges/client/${clientId}`);
   }
 }

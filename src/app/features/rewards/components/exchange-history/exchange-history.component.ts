@@ -6,27 +6,26 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Canje, CanjeFilters } from '../../interfaces/canje.interface';
-import { CanjesService } from '../../services/canjes.service';
+import { Exchange, ExchangeFilters } from '../../interfaces/exchange.interface';
+import { ExchangesService } from '../../services/exchanges.service';
 
 @Component({
-  selector: 'app-canje-history',
-  templateUrl: './canje-history.component.html',
-  styleUrls: ['./canje-history.component.scss']
+  selector: 'app-exchange-history',
+  templateUrl: './exchange-history.component.html'
 })
-export class CanjeHistoryComponent implements OnInit {
+export class ExchangeHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns: string[] = [
     'date',
     'client',
-    'premio',
+    'reward',
     'pointsUsed',
     'status'
   ];
 
-  dataSource = new MatTableDataSource<Canje>([]);
+  dataSource = new MatTableDataSource<Exchange>([]);
   loading = false;
   totalItems = 0;
   pageSize = 10;
@@ -46,13 +45,13 @@ export class CanjeHistoryComponent implements OnInit {
   ];
 
   constructor(
-    private canjesService: CanjesService,
+    private exchangesService: ExchangesService,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.setupFilters();
-    this.loadCanjes();
+    this.loadExchanges();
   }
 
   ngAfterViewInit(): void {
@@ -63,14 +62,14 @@ export class CanjeHistoryComponent implements OnInit {
     this.paginator.page.subscribe(() => {
       this.currentPage = this.paginator.pageIndex;
       this.pageSize = this.paginator.pageSize;
-      this.loadCanjes();
+      this.loadExchanges();
     });
 
     // Configurar ordenamiento
     this.sort.sortChange.subscribe(() => {
       this.paginator.pageIndex = 0;
       this.currentPage = 0;
-      this.loadCanjes();
+      this.loadExchanges();
     });
   }
 
@@ -83,24 +82,24 @@ export class CanjeHistoryComponent implements OnInit {
       )
       .subscribe(() => {
         this.resetPagination();
-        this.loadCanjes();
+        this.loadExchanges();
       });
 
     // Filtro de estado
     this.statusFilter.valueChanges.subscribe(() => {
       this.resetPagination();
-      this.loadCanjes();
+      this.loadExchanges();
     });
 
     // Filtros de fecha
     this.dateFromControl.valueChanges.subscribe(() => {
       this.resetPagination();
-      this.loadCanjes();
+      this.loadExchanges();
     });
 
     this.dateToControl.valueChanges.subscribe(() => {
       this.resetPagination();
-      this.loadCanjes();
+      this.loadExchanges();
     });
   }
 
@@ -111,10 +110,10 @@ export class CanjeHistoryComponent implements OnInit {
     }
   }
 
-  loadCanjes(): void {
+  loadExchanges(): void {
     this.loading = true;
 
-    const filters: CanjeFilters = {
+    const filters: ExchangeFilters = {
       page: this.currentPage + 1,
       limit: this.pageSize
     };
@@ -144,18 +143,18 @@ export class CanjeHistoryComponent implements OnInit {
       filters.sortOrder = this.sort.direction;
     }
 
-    this.canjesService.getCanjeHistory(filters).subscribe({
+    this.exchangesService.getExchangeHistory(filters).subscribe({
       next: (response: any) => {
         if (response.success) {
-          this.dataSource.data = response.data.canjes;
-          this.totalItems = response.data.total;
+          this.dataSource.data = response.data;
+          this.totalItems = response.pagination.totalCount;
         } else {
           this.showSnackBar('Error al cargar el historial de canjes');
         }
         this.loading = false;
       },
       error: (error: any) => {
-        console.error('Error loading canjes:', error);
+        console.error('Error loading exchanges:', error);
         this.showSnackBar('Error al cargar el historial de canjes');
         this.loading = false;
       }
@@ -168,7 +167,7 @@ export class CanjeHistoryComponent implements OnInit {
     this.dateFromControl.setValue(null);
     this.dateToControl.setValue(null);
     this.resetPagination();
-    this.loadCanjes();
+    this.loadExchanges();
   }
 
   exportToExcel(): void {

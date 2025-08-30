@@ -104,8 +104,8 @@ export const routes: Routes = [
         component: GymAccessPageComponent,
       },
       {
-        path: "premios",
-        loadChildren: () => import('./features/premios/premios.module').then(m => m.PremiosModule)
+        path: "rewards",
+        loadChildren: () => import('./features/rewards/rewards.module').then(m => m.RewardsModule)
       },
     ],
   },

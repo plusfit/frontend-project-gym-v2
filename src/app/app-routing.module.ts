@@ -3,17 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'premios',
-    loadChildren: () => import('./features/premios/premios.module').then(m => m.PremiosModule)
+    path: 'rewards',
+    loadChildren: () => import('./features/rewards/rewards.module').then(m => m.RewardsModule)
   },
   {
     path: '',
-    redirectTo: '/premios',
+    redirectTo: '/rewards',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: '/premios'
+    redirectTo: '/rewards'
   }
 ];
 
