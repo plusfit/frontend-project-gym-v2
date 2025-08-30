@@ -106,7 +106,21 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onKeypadClick(number: string): void {
+  trackByNumber(index: number, item: string): string {
+    return item;
+  }
+
+  onKeypadClick(number: string, event?: Event): void {
+    console.log("Botón presionado:", number);
+    console.log("Evento:", event);
+    console.log("Target:", event?.target);
+
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }
+
     if (this.formState.cedula.length < 8 && !this.formState.isLoading) {
       this.formState.cedula += number;
       this.onCedulaChange();

@@ -100,7 +100,7 @@
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
           } @if (column === "accessDate") {
-          <span class="text-gray-700">{{ element[column] | date: 'd/MM/y, h:mm a' }}</span>
+          <span class="text-gray-700">{{ element[column] | utcDate }}</span>
           } @if (column === "cedula") {
           <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
           } @if (column === "lastAccess") {
