@@ -1,6 +1,6 @@
-import { ScreenRoutine } from '../interfaces/screenRoutine.interface';
+import { Routine } from '@features/routines/interfaces/routine.interface';
 
 export class ScreenRoutineStateModel {
   loading?: boolean;
-  screenRoutines?: ScreenRoutine[] = [];
+  screenRoutines?: Routine[] = [];
 }
