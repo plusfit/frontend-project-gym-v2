@@ -61,7 +61,7 @@ export class SnackBarService {
   showBackendError(
     error: any, 
     title: string = 'Error', 
-    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general'
+    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate'
   ): void {
     const translatedMessage = this.errorTranslationService.extractAndTranslateError(error, context);
     this.showError(title, translatedMessage);
@@ -76,7 +76,7 @@ export class SnackBarService {
   showTranslatedError(
     errorMessage: string, 
     title: string = 'Error',
-    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general'
+    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate'
   ): void {
     const translatedMessage = this.errorTranslationService.translateError(errorMessage, context);
     this.showError(title, translatedMessage);

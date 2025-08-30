@@ -23,7 +23,7 @@ export class ErrorHandlerService {
    */
   handleHttpError(
     error: any, 
-    operation: 'create' | 'update' | 'delete' | 'fetch' | 'general' = 'general',
+    operation: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate' = 'general',
     entityName?: string
   ): void {
     const title = this.getErrorTitle(operation, entityName);
@@ -91,7 +91,7 @@ export class ErrorHandlerService {
    * @returns Localized error title
    */
   private getErrorTitle(
-    operation: 'create' | 'update' | 'delete' | 'fetch' | 'general',
+    operation: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate',
     entityName?: string
   ): string {
     const entityPart = entityName ? ` ${entityName}` : '';
@@ -105,6 +105,8 @@ export class ErrorHandlerService {
         return `Error al eliminar${entityPart}`;
       case 'fetch':
         return `Error al cargar${entityPart}`;
+      case 'validate':
+        return `Error de validación${entityPart}`;
       default:
         return 'Error';
     }
