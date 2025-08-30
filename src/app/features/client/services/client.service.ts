@@ -1,11 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { Client } from '../interface/clients.interface';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { environment } from "../../../../environments/environment";
+import { Client } from "../interface/clients.interface";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClientService {
   constructor(private http: HttpClient) {}
@@ -29,32 +29,30 @@ export class ClientService {
     withoutPlan?: boolean,
     disabled?: boolean,
   ): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
+    let params = new HttpParams().set("page", page.toString()).set("limit", limit.toString());
 
     if (withoutPlan) {
-      params = params.set('withoutPlan', withoutPlan);
+      params = params.set("withoutPlan", withoutPlan);
     }
 
     if (CI) {
-      params = params.set('CI', CI);
+      params = params.set("CI", CI);
     }
 
     if (role) {
-      params = params.set('role', role);
+      params = params.set("role", role);
     }
 
     if (name) {
-      params = params.set('name', name);
+      params = params.set("name", name);
     }
 
     if (email) {
-      params = params.set('email', email);
+      params = params.set("email", email);
     }
 
     if (disabled !== undefined) {
-      params = params.set('disabled', disabled);
+      params = params.set("disabled", disabled);
     }
 
     return this.http.get<any>(`${environment.api}/clients`, {
@@ -82,5 +80,11 @@ export class ClientService {
     return this.http.patch<any>(`${environment.api}/clients/${id}/disabled`, {
       disabled,
     });
+  }
+
+  getActiveClientsCount(): Observable<{ success: boolean; data: number }> {
+    return this.http.get<{ success: boolean; data: number }>(
+      `${environment.api}/clients/count/active`,
+    );
   }
 }

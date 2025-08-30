@@ -1,52 +1,41 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { Router } from "@angular/router";
 import {
   DeleteClient,
   GetClients,
   ToggleDisabledClient,
-} from '@features/client/state/clients.actions';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { environment } from '../../../../../environments/environment';
-import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
-import { TableComponent } from '../../../../shared/components/table/table.component';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { Client } from '@features/client/interface/clients.interface';
-import { AsyncPipe } from '@angular/common';
-import { ClientsState } from '@features/client/state/clients.state';
-import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { FilterSelectComponent } from '../../../../shared/components/filter-select/filter-select.component';
-import { FormControl } from '@angular/forms';
+} from "@features/client/state/clients.actions";
+import { Actions, ofActionSuccessful, Store } from "@ngxs/store";
+import { environment } from "../../../../../environments/environment";
+import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
+import { TableComponent } from "../../../../shared/components/table/table.component";
+import { Observable, Subject, takeUntil } from "rxjs";
+import { Client } from "@features/client/interface/clients.interface";
+import { AsyncPipe } from "@angular/common";
+import { ClientsState } from "@features/client/state/clients.state";
+import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
+import { FormControl } from "@angular/forms";
 
 @Component({
-  selector: 'app-client-page',
+  selector: "app-client-page",
   standalone: true,
-  imports: [
-    FiltersBarComponent,
-    TableComponent,
-    MatPaginator,
-    AsyncPipe,
-    FilterSelectComponent,
-  ],
-  templateUrl: './client-page.component.html',
-  styleUrl: './client-page.component.css',
+  imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe, FilterSelectComponent],
+  templateUrl: "./client-page.component.html",
+  styleUrl: "./client-page.component.css",
 })
 export class ClientPageComponent implements OnInit, OnDestroy {
   clients!: Observable<Client[] | null>;
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
-  filterControl = new FormControl('all');
+  filterControl = new FormControl("all");
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
-  displayedColumns: string[] = [
-    'userInfo.name',
-    'userInfo.CI',
-    'email',
-    'acciones',
-  ];
+  displayedColumns: string[] = ["userInfo.name", "userInfo.CI", "email", "lastAccess", "acciones"];
 
   private destroy = new Subject<void>();
 
@@ -65,9 +54,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.filterValues = {
       page: 1,
       pageSize: this.pageSize,
-      searchQ: '',
+      searchQ: "",
       withoutPlan: false,
-      disable: false,
+      disabled: false,
+      role: "User",
     };
     this.store.dispatch(new GetClients(this.filterValues));
   }
@@ -75,28 +65,43 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
-    const payload = {
+
+    this.filterValues = {
+      ...this.filterValues,
       page: currentPage,
       pageSize: currentPageSize,
       searchQ: this.filterValues.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      withoutPlan: this.filterControl.value === "true" ? true : false,
     };
-    this.store.dispatch(new GetClients(payload));
+
+    this.store.dispatch(new GetClients(this.filterValues));
   }
 
   onSearch(searchQuery: { searchQ: string }): void {
     this.filterValues = {
+      ...this.filterValues,
       page: 1,
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
-      withoutPlan: this.filterControl.value === 'true' ? true : false,
+      withoutPlan: this.filterControl.value === "true" ? true : false,
     };
 
-    this.store.dispatch(new GetClients({ ...this.filterValues }));
+    this.store.dispatch(new GetClients(this.filterValues));
+  }
+
+  onFilterChange(filters: { withoutPlan: boolean; disabled: boolean }): void {
+    this.filterValues = {
+      ...this.filterValues,
+      page: 1,
+      withoutPlan: filters.withoutPlan,
+      disabled: filters.disabled,
+    };
+
+    this.store.dispatch(new GetClients(this.filterValues));
   }
 
   createClient(): void {
-    this.router.navigate(['/clientes/crear']);
+    this.router.navigate(["/clientes/crear"]);
   }
 
   editClient(id: string): void {
@@ -109,10 +114,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   toggleDisabledClient(event: any, disabled: boolean): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
+      width: "500px",
       data: {
-        title: `${disabled ? 'Habilitar' : 'Deshabilitar'} cliente`,
-        contentMessage: `¿Estás seguro que desea ${disabled ? 'habilitar' : 'deshabilitar'} cliente?`,
+        title: `${disabled ? "Habilitar" : "Deshabilitar"} cliente`,
+        contentMessage: `¿Estás seguro que desea ${disabled ? "habilitar" : "deshabilitar"} cliente?`,
       },
     });
 
@@ -124,8 +129,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
         .pipe(ofActionSuccessful(ToggleDisabledClient), takeUntil(this.destroy))
         .subscribe(() => {
           this.snackbar.showSuccess(
-            'Exito',
-            `Cliente ${disabled ? 'hablitado' : 'deshabilitado'} correctamente`,
+            "Exito",
+            `Cliente ${disabled ? "hablitado" : "deshabilitado"} correctamente`,
           );
         });
     });
@@ -133,26 +138,48 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   deleteClient(event: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
+      width: "500px",
       data: {
-        title: 'Eliminar cliente',
-        contentMessage: '¿Estás seguro que desea eliminar cliente?',
+        title: "Eliminar cliente",
+        contentMessage: "¿Estás seguro que desea eliminar cliente?",
       },
     });
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
       this.store.dispatch(new DeleteClient(event));
-      this.actions
-        .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
-        .subscribe(() => {
-          this.snackbar.showSuccess('Exito', 'Cliente eliminado correctamente');
-        });
+      this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {
+        this.snackbar.showSuccess("Exito", "Cliente eliminado correctamente");
+      });
     });
   }
 
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  /**
+   * Get the count of active clients
+   */
+  getActiveClientsCount(): number {
+    // Por ahora retornamos un valor fijo, puedes implementar lógica específica
+    return 45; // Placeholder - implementar lógica real según tu estructura de datos
+  }
+
+  /**
+   * Get the count of inactive clients
+   */
+  getInactiveClientsCount(): number {
+    // Por ahora retornamos un valor fijo
+    return 12; // Placeholder - implementar lógica real según tu estructura de datos
+  }
+
+  /**
+   * Get the total count of clients
+   */
+  getTotalClientsCount(): number {
+    // Por ahora retornamos un valor fijo
+    return 57; // Placeholder - implementar lógica real según tu estructura de datos
   }
 }

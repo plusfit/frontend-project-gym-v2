@@ -1,8 +1,5 @@
-import { Client } from '../interface/clients.interface';
-import {
-  FiltersClient,
-  PageClient,
-} from '../interface/filters.clients.interface';
+import { Client } from "../interface/clients.interface";
+import { FiltersClient, PageClient } from "../interface/filters.clients.interface";
 
 export class ClientsStateModel {
   loading?: boolean;
@@ -15,6 +12,7 @@ export class ClientsStateModel {
   selectedClientRoutine?: any;
   selectedClientPlan?: any;
   total?: number;
+  activeClientsCount?: number;
   error?: any;
   currentPage?: number;
   pageSize?: number;

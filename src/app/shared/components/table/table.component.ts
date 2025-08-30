@@ -244,13 +244,29 @@ export class TableComponent implements OnInit {
   }
 
   /**
+   * Get badge color based on total accesses count
+   */
+  getTotalAccessesBadgeColor(totalAccesses: number): EColorBadge {
+    if (!totalAccesses || totalAccesses === 0) {
+      return EColorBadge.NEUTRAL;
+    }
+    if (totalAccesses <= 5) {
+      return EColorBadge.WARNING;
+    }
+    if (totalAccesses <= 15) {
+      return EColorBadge.INFO;
+    }
+    return EColorBadge.SUCCESS;
+  }
+
+  /**
    * Format cedula for display
    */
   formatCedula(cedula: string): string {
     if (cedula && cedula.length === 8) {
       return `${cedula.substring(0, 1)}.${cedula.substring(1, 4)}.${cedula.substring(4, 7)}-${cedula.substring(7)}`;
     }
-    return cedula || '';
+    return cedula || "";
   }
 
   /**

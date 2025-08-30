@@ -49,10 +49,52 @@ export class GymAccessService {
    */
   formatCedula(cedula: string): string {
     const cleanCedula = cedula.replace(/\D/g, "");
-    if (cleanCedula.length === 8) {
-      return `${cleanCedula.substring(0, 1)}.${cleanCedula.substring(1, 4)}.${cleanCedula.substring(4, 7)}-${cleanCedula.substring(7)}`;
+
+    if (cleanCedula.length === 0) {
+      return "_.___.___ -_";
     }
-    return cleanCedula;
+
+    let formatted = "";
+
+    // First digit
+    if (cleanCedula.length >= 1) {
+      formatted += cleanCedula[0];
+    } else {
+      formatted += "_";
+    }
+
+    formatted += ".";
+
+    // Next 3 digits
+    for (let i = 1; i <= 3; i++) {
+      if (cleanCedula.length > i) {
+        formatted += cleanCedula[i];
+      } else {
+        formatted += "_";
+      }
+    }
+
+    formatted += ".";
+
+    // Next 3 digits
+    for (let i = 4; i <= 6; i++) {
+      if (cleanCedula.length > i) {
+        formatted += cleanCedula[i];
+      } else {
+        formatted += "_";
+      }
+    }
+
+    formatted += " -";
+
+    // Last digit
+    if (cleanCedula.length >= 8) {
+      formatted += cleanCedula[7];
+    } else {
+      formatted += "_";
+    }
+
+    return formatted;
   }
 
   /**
@@ -81,7 +123,7 @@ export class GymAccessService {
     // Handle denial responses (backend returns success: false but with client data)
     if (!response.success && response.data && typeof response.data === "object") {
       const denialType = this.determineDenialType(response.data.message || "");
-      
+
       return {
         success: false,
         message: response.data.message || "Acceso denegado",
@@ -100,9 +142,14 @@ export class GymAccessService {
     }
 
     // Handle denial responses (backend returns success: true but authorize: false)
-    if (response.success && response.data && typeof response.data === "object" && response.data.authorize === false) {
+    if (
+      response.success &&
+      response.data &&
+      typeof response.data === "object" &&
+      response.data.authorize === false
+    ) {
       const denialType = this.determineDenialType(response.data.message || "");
-      
+
       return {
         success: response.success,
         message: response.data.message || "Acceso denegado",
@@ -123,7 +170,7 @@ export class GymAccessService {
     if (!response.success && response.data && typeof response.data === "string") {
       // Error case with string data
       const denialType = this.determineDenialType(response.data);
-      
+
       return {
         success: false,
         message: response.data,
@@ -137,7 +184,7 @@ export class GymAccessService {
       success: false,
       message: "Error en la respuesta del servidor",
       authorize: false,
-      denialType: 'system_error',
+      denialType: "system_error",
     };
   }
 
@@ -146,26 +193,33 @@ export class GymAccessService {
    * @param message - The denial message from the backend
    * @returns The type of denial
    */
-  private determineDenialType(message: string): 'client_not_found' | 'client_disabled' | 'already_accessed' | 'outside_hours' | 'system_error' {
+  private determineDenialType(
+    message: string,
+  ):
+    | "client_not_found"
+    | "client_disabled"
+    | "already_accessed"
+    | "outside_hours"
+    | "system_error" {
     const msg = message.toLowerCase();
-    
+
     if (msg.includes("cliente no encontrado") || msg.includes("not found")) {
-      return 'client_not_found';
+      return "client_not_found";
     }
-    
+
     if (msg.includes("deshabilitado") || msg.includes("disabled")) {
-      return 'client_disabled';
+      return "client_disabled";
     }
-    
+
     if (msg.includes("ya registró acceso") || msg.includes("already accessed")) {
-      return 'already_accessed';
+      return "already_accessed";
     }
-    
+
     if (msg.includes("fuera del horario") || msg.includes("operating hours")) {
-      return 'outside_hours';
+      return "outside_hours";
     }
-    
-    return 'system_error';
+
+    return "system_error";
   }
 
   /**
