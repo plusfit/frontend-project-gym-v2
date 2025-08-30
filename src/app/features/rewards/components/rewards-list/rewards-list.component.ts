@@ -40,7 +40,7 @@ export class RewardsListComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'pointsRequired',
-    'totalCanjes',
+    'totalExchanges',
     'createdAt',
     'enabled',
     'acciones'
@@ -55,7 +55,7 @@ export class RewardsListComponent implements OnInit {
 
   // Filtros
   searchControl = new FormControl('');
-  showEnabledOnly = new FormControl(true);
+  showEnabledOnly = new FormControl(false);
 
   constructor(
     private rewardsService: RewardsService,
@@ -92,7 +92,7 @@ export class RewardsListComponent implements OnInit {
 
     const filters: RewardFilters = {
       search: this.searchControl.value || undefined,
-      enabled: this.showEnabledOnly.value || undefined,
+      enabled: this.showEnabledOnly.value ? true : undefined,
       page: this.currentPage + 1,
       limit: this.pageSize
     };
@@ -101,13 +101,13 @@ export class RewardsListComponent implements OnInit {
       next: (response) => {
         console.log('Rewards API Response:', response);
         if (response && response.success && response.data) {
-          // La respuesta tiene estructura anidada: response.data.data contiene los premios
+          // La respuesta tiene estructura anidada: response.data contiene success, data y pagination
           const rewardsData = response.data.data || [];
           const paginationData = response.data.pagination || {};
           
           this.rewards = rewardsData;
           this.totalCount = paginationData.totalCount || 0;
-          this.filteredData = !!(filters.search || filters.enabled !== undefined);
+          this.filteredData = !!(filters.search || filters.enabled === true);
         } else {
           console.warn('Invalid response structure:', response);
           this.rewards = [];

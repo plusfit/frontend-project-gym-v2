@@ -13,12 +13,12 @@ const routes: Routes = [
   {
     path: 'list',
     component: RewardsListComponent,
-    data: { title: 'Rewards Catalog' }
+    data: { title: 'Premios' }
   },
   {
     path: 'history',
     component: ExchangeHistoryComponent,
-    data: { title: 'Exchange History' }
+    data: { title: 'Historial de Canjes' }
   }
 ];
 

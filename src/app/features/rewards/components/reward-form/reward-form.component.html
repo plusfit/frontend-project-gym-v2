@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="p-6 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-cyan-600">
     <h2 mat-dialog-title class="text-xl font-bold m-0">
-      {{ isEditMode ? 'Edit Reward' : 'Create New Reward' }}
+      {{ isEditMode ? 'Editar Premio' : 'Crear Nuevo Premio' }}
       <i class="ph-gift text-yellow-300 text-2xl align-middle ml-2"></i>
     </h2>
     <button mat-icon-button mat-dialog-close class="p-2 rounded-lg transition-colors bg-white bg-opacity-20 hover:bg-opacity-30 border-none">
@@ -15,14 +15,14 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
       <!-- Información Básica -->
       <div class="space-y-4">
-        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Basic Information</label>
+        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Información Básica</label>
         
         <div class="grid grid-cols-1 gap-6">
           <!-- Nombre -->
           <div class="h-[80px]">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Reward Name</mat-label>
-              <input matInput formControlName="name" placeholder="E.g: Premium Protein" class="text-gray-700">
+              <mat-label>Nombre del Premio</mat-label>
+              <input matInput formControlName="name" placeholder="Ej: Proteína Premium" class="text-gray-700">
               <mat-error *ngIf="nameError">{{ nameError }}</mat-error>
             </mat-form-field>
           </div>
@@ -35,7 +35,7 @@
                 matInput 
                 formControlName="description" 
                 rows="3"
-                placeholder="Describe the reward and its benefits..."
+                placeholder="Describe el premio y sus beneficios..."
                 class="text-gray-700"
               ></textarea>
               <mat-hint align="end" class="text-gray-500">
@@ -48,7 +48,7 @@
           <!-- Required Points -->
           <div class="h-[80px]">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Required Points</mat-label>
+              <mat-label>Puntos Requeridos</mat-label>
               <input 
                 matInput 
                 type="number" 
@@ -66,20 +66,20 @@
 
       <!-- Configuration -->
       <div class="space-y-4">
-        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Configuration</label>
+        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Configuración</label>
         
         <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <div class="flex flex-col space-y-2">
             <mat-slide-toggle formControlName="enabled" color="primary" class="flex items-center">
               <span class="flex items-center space-x-2 font-medium text-gray-800">
                 <i class="ph-{{ form.get('enabled')?.value ? 'eye' : 'eye-slash' }} text-lg"></i>
-                <span>{{ form.get('enabled')?.value ? 'Reward Enabled' : 'Reward Disabled' }}</span>
+                <span>{{ form.get('enabled')?.value ? 'Premio Habilitado' : 'Premio Deshabilitado' }}</span>
               </span>
             </mat-slide-toggle>
             <p class="text-sm text-gray-600 ml-12 mt-2 mb-0">
               {{ form.get('enabled')?.value 
-                ? 'Clients can see and redeem this reward' 
-                : 'This reward will not be visible to clients' 
+                ? 'Los clientes pueden ver y canjear este premio' 
+                : 'Este premio no será visible para los clientes' 
               }}
             </p>
           </div>
@@ -97,7 +97,7 @@
       class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <i class="ph-x text-lg"></i>
-      <span>Cancel</span>
+      <span>Cancelar</span>
     </button>
     
     <button 
@@ -109,7 +109,7 @@
       <mat-spinner diameter="20" *ngIf="loading" class="text-white"></mat-spinner>
       <span *ngIf="!loading" class="flex items-center space-x-2">
         <i class="ph-{{ isEditMode ? 'floppy-disk' : 'plus' }} text-lg"></i>
-        <span>{{ isEditMode ? 'Update' : 'Create Reward' }}</span>
+        <span>{{ isEditMode ? 'Actualizar' : 'Crear Premio' }}</span>
       </span>
     </button>
   </mat-dialog-actions>

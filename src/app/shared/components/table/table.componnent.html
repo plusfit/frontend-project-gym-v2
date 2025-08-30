@@ -118,10 +118,10 @@
             [textBadge]="element[column] + ' pts'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
-          } @if (column === "totalCanjes") {
+          } @if (column === "totalExchanges") {
           <app-badge
             [colorBadge]="element[column] > 0 ? EColorBadge.SUCCESS : EColorBadge.NEUTRAL"
-            [textBadge]="element[column].toString()"
+            [textBadge]="(element[column] ?? 0).toString()"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
           } @if (column === "enabled") {
@@ -132,7 +132,7 @@
           ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalCanjes" && column !== "enabled" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container

@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Reward } from '../../interfaces/reward.interface';
 import { RewardsService } from '../../services/rewards.service';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { ErrorHandlerService } from '@core/services/error-handler.service';
 
 export interface RewardFormData {
   mode: 'create' | 'edit';
@@ -23,7 +24,8 @@ export class RewardFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private rewardsService: RewardsService,
-    private snackBar: MatSnackBar,
+    private snackBarService: SnackBarService,
+    private errorHandler: ErrorHandlerService,
     public dialogRef: MatDialogRef<RewardFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RewardFormData
   ) {
@@ -77,16 +79,21 @@ export class RewardFormComponent implements OnInit {
     this.rewardsService.createReward(formData).subscribe({
       next: (response) => {
         if (response.success) {
+          this.errorHandler.handleSuccess('create', 'premio');
           this.dialogRef.close(true);
         } else {
-          this.showSnackBar('Error al crear el premio');
+          this.snackBarService.showError('Error', 'Error al crear el premio');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error creating premio:', error);
-        const message = error.error?.message || 'Error al crear el premio';
-        this.showSnackBar(message);
+        // Option 1: Using ErrorHandlerService (recommended)
+        this.errorHandler.handleHttpError(error, 'create', 'premio');
+        
+        // Option 2: Using SnackBarService directly (alternative)
+        // this.snackBarService.showBackendError(error, 'Error al crear premio', 'create');
+        
         this.loading = false;
       }
     });
@@ -96,16 +103,16 @@ export class RewardFormComponent implements OnInit {
     this.rewardsService.updateReward(this.data.reward!.id, formData).subscribe({
       next: (response) => {
         if (response.success) {
+          this.errorHandler.handleSuccess('update', 'premio');
           this.dialogRef.close(true);
         } else {
-          this.showSnackBar('Error al actualizar el premio');
+          this.snackBarService.showError('Error', 'Error al actualizar el premio');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error updating premio:', error);
-        const message = error.error?.message || 'Error al actualizar el premio';
-        this.showSnackBar(message);
+        this.errorHandler.handleHttpError(error, 'update', 'premio');
         this.loading = false;
       }
     });
@@ -123,13 +130,6 @@ export class RewardFormComponent implements OnInit {
   }
 
 
-  private showSnackBar(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top'
-    });
-  }
 
   // Getters para validaciones en el template
   get nameError(): string {
