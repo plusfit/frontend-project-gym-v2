@@ -193,7 +193,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         }
       });
 
-    // Hacer la primera llamada después de un breve retraso para asegurar que la inicialización esté completa
     setTimeout(() => {
       this.isInitializing = false;
       this.updateActiveScreenRoutinesCount();
