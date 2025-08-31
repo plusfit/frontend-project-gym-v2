@@ -77,6 +77,26 @@ export class TranslationPipe implements PipeTransform {
       case "enabled":
         return "Habilitado";
 
+      // Exchange History fields
+      case "date":
+        return "Fecha";
+      case "client":
+        return "Cliente";
+      case "reward":
+        return "Premio";
+      case "rewardName":
+        return "Premio";
+      case "pointsUsed":
+        return "Puntos Utilizados";
+      case "status":
+        return "Estado";
+      case "exchangeDate":
+        return "Fecha de Canje";
+      case "clientEmail":
+        return "Email Cliente";
+      case "rewardDescription":
+        return "Descripción Premio";
+
       // Categorías del Plan
       case "weightLoss":
         return "Pérdida de peso";

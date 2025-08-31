@@ -218,34 +218,38 @@ body {
 /* Snackbar specific enhancements for better visibility */
 .mat-mdc-snack-bar-container .alert-info {
   @apply !bg-info-100 !text-white !border-none !ring-0 !outline-none;
-  backdrop-filter: blur(8px);
-  background: rgba(59, 130, 246, 0.95) !important;
-  border: none !important;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.96), rgba(37, 99, 235, 0.96)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3), 0 3px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mat-mdc-snack-bar-container .alert-success {
   @apply !bg-success-100 !text-white !border-none !ring-0 !outline-none;
-  backdrop-filter: blur(8px);
-  background: rgba(34, 197, 94, 0.95) !important;
-  border: none !important;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.96), rgba(22, 163, 74, 0.96)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3), 0 3px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mat-mdc-snack-bar-container .alert-warning {
   @apply !bg-warning-100 !text-white !border-none !ring-0 !outline-none;
-  backdrop-filter: blur(8px);
-  background: rgba(245, 158, 11, 0.95) !important;
-  border: none !important;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.96), rgba(217, 119, 6, 0.96)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3), 0 3px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mat-mdc-snack-bar-container .alert-error {
   @apply !bg-error-100 !text-white !border-none !ring-0 !outline-none;
-  backdrop-filter: blur(8px);
-  background: rgba(239, 68, 68, 0.95) !important;
-  border: none !important;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.96), rgba(220, 38, 38, 0.96)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3), 0 3px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mat-mdc-snack-bar-container {
@@ -257,27 +261,51 @@ body {
 }
 
 .mat-mdc-snack-bar-container .mdc-snackbar__surface {
-  min-width: 400px !important;
+  min-width: 420px !important;
+  max-width: 600px !important;
   background: transparent !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  border-radius: 12px !important;
 }
 
-/* Additional Material Design overrides to remove any default borders */
+/* Additional Material Design overrides with enhanced styling */
 .mat-mdc-snack-bar-container button,
 .mat-mdc-snack-bar-container i,
 .mat-mdc-snack-bar-container p,
 .mat-mdc-snack-bar-container span {
   border: none !important;
   outline: none !important;
+  color: white !important;
+}
+
+/* Enhanced text styling for all snackbar content */
+.mat-mdc-snack-bar-container p,
+.mat-mdc-snack-bar-container span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  font-weight: 500 !important;
 }
 
 .mat-mdc-snack-bar-container .mdc-snackbar__action:focus,
 .mat-mdc-snack-bar-container .mdc-snackbar__dismiss:focus {
   border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+  outline: 2px solid rgba(255, 255, 255, 0.6) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Enhanced button accessibility and visual feedback */
+.mat-mdc-snack-bar-container button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Better hover states for all snackbar buttons */
+.mat-mdc-snack-bar-container button:hover {
+  transform: scale(1.05) !important;
+  transition: all 0.2s ease !important;
 }
 
 /* Radio */

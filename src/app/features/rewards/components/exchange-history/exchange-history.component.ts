@@ -1,7 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -14,22 +11,23 @@ import { ExchangesService } from '../../services/exchanges.service';
   templateUrl: './exchange-history.component.html'
 })
 export class ExchangeHistoryComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
   displayedColumns: string[] = [
     'date',
-    'client',
+    'client', 
     'reward',
     'pointsUsed',
     'status'
   ];
 
-  dataSource = new MatTableDataSource<Exchange>([]);
+  data: Exchange[] = [];
   loading = false;
   totalItems = 0;
   pageSize = 10;
   currentPage = 0;
+  filteredData = false;
+
+  // Expose Math to template
+  Math = Math;
 
   // Filtros
   searchControl = new FormControl('');
@@ -54,24 +52,6 @@ export class ExchangeHistoryComponent implements OnInit {
     this.loadExchanges();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-
-    // Configurar paginación
-    this.paginator.page.subscribe(() => {
-      this.currentPage = this.paginator.pageIndex;
-      this.pageSize = this.paginator.pageSize;
-      this.loadExchanges();
-    });
-
-    // Configurar ordenamiento
-    this.sort.sortChange.subscribe(() => {
-      this.paginator.pageIndex = 0;
-      this.currentPage = 0;
-      this.loadExchanges();
-    });
-  }
 
   private setupFilters(): void {
     // Filtro de búsqueda con debounce
@@ -105,9 +85,6 @@ export class ExchangeHistoryComponent implements OnInit {
 
   private resetPagination(): void {
     this.currentPage = 0;
-    if (this.paginator) {
-      this.paginator.pageIndex = 0;
-    }
   }
 
   loadExchanges(): void {
@@ -137,25 +114,35 @@ export class ExchangeHistoryComponent implements OnInit {
       filters.dateTo = this.dateToControl.value;
     }
 
-    // Aplicar ordenamiento
-    if (this.sort?.active && this.sort?.direction) {
-      filters.sortBy = this.sort.active;
-      filters.sortOrder = this.sort.direction;
-    }
+    // Apply any additional filters based on current sorting requirements
+    // Sorting will be handled by backend if needed
 
     this.exchangesService.getExchangeHistory(filters).subscribe({
       next: (response: any) => {
-        if (response.success) {
-          this.dataSource.data = response.data;
-          this.totalItems = response.pagination.totalCount;
+        console.log('Exchange History API Response:', response);
+        if (response && response.success && response.data) {
+          // La respuesta tiene estructura anidada: response.data contiene success, data y pagination
+          const exchangesData = response.data.data || [];
+          const paginationData = response.data.pagination || {};
+          
+          this.data = exchangesData;
+          this.totalItems = paginationData.totalCount || 0;
+          this.filteredData = !!(searchValue || (statusValue && statusValue !== 'all') || this.dateFromControl.value || this.dateToControl.value);
         } else {
-          this.showSnackBar('Error al cargar el historial de canjes');
+          console.warn('Invalid response structure:', response);
+          this.data = [];
+          this.totalItems = 0;
+          this.filteredData = false;
+          this.showSnackBar('Respuesta inválida del servidor', 'warning');
         }
         this.loading = false;
       },
       error: (error: any) => {
         console.error('Error loading exchanges:', error);
-        this.showSnackBar('Error al cargar el historial de canjes');
+        this.showSnackBar('Error al cargar el historial de canjes. Verifique que el backend esté funcionando.');
+        this.data = [];
+        this.totalItems = 0;
+        this.filteredData = false;
         this.loading = false;
       }
     });
@@ -172,7 +159,7 @@ export class ExchangeHistoryComponent implements OnInit {
 
   exportToExcel(): void {
     // Implementar exportación a Excel
-    this.showSnackBar('Funcionalidad de exportación en desarrollo');
+    this.showSnackBar('Funcionalidad de exportación en desarrollo', 'warning');
   }
 
   getStatusColor(status: string): string {
@@ -202,7 +189,14 @@ export class ExchangeHistoryComponent implements OnInit {
   }
 
   formatDate(date: string | Date): string {
+    if (!date) return '';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    // Verificar si la fecha es válida
+    if (isNaN(dateObj.getTime())) {
+      return 'Fecha inválida';
+    }
+    
     return dateObj.toLocaleDateString('es-ES', {
       year: 'numeric',
       month: '2-digit',
@@ -212,11 +206,23 @@ export class ExchangeHistoryComponent implements OnInit {
     });
   }
 
-  private showSnackBar(message: string): void {
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadExchanges();
+  }
+
+  onPageSizeChange(pageSize: number): void {
+    this.pageSize = pageSize;
+    this.currentPage = 0;
+    this.loadExchanges();
+  }
+
+  private showSnackBar(message: string, type: 'success' | 'error' | 'warning' = 'error'): void {
     this.snackBar.open(message, 'Cerrar', {
       duration: 3000,
       horizontalPosition: 'end',
-      verticalPosition: 'top'
+      verticalPosition: 'top',
+      panelClass: [`${type}-snackbar`]
     });
   }
 }

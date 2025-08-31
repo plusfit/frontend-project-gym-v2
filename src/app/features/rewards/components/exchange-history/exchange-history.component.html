@@ -66,115 +66,40 @@
       </div>
     </div>
 
-    <!-- Tabla -->
+    <!-- Tabla Reutilizable -->
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-      <div class="overflow-x-auto">
-        <!-- Loading Spinner -->
-        <div class="flex items-center justify-center py-16" *ngIf="loading">
-          <div class="flex flex-col items-center space-y-4">
-            <mat-spinner diameter="50" class="text-blue-600"></mat-spinner>
-            <p class="text-gray-600 font-medium">Cargando historial de canjes...</p>
-          </div>
-        </div>
+      <app-table
+        [data]="data"
+        [displayedColumns]="displayedColumns"
+        [loading]="loading"
+        [total]="totalItems"
+        [filteredData]="filteredData"
+        [showDelete]="false"
+        [showSeeDetail]="false"
+        [showDisabled]="false">
+      </app-table>
 
-        <!-- No Data -->
-        <div class="flex flex-col items-center justify-center py-16 space-y-4" *ngIf="!loading && dataSource.data.length === 0">
-          <mat-icon class="text-6xl text-gray-300">history</mat-icon>
-          <h3 class="text-xl font-semibold text-gray-600 mb-0">No hay canjes registrados</h3>
-          <p class="text-gray-400 mb-0">No se encontraron canjes que coincidan con los filtros aplicados.</p>
-        </div>
-
-        <!-- Data Table -->
-        <table mat-table [dataSource]="dataSource" matSort class="w-full" *ngIf="!loading && dataSource.data.length > 0">
-          <!-- Columna Fecha -->
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="createdAt" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
-              Fecha y Hora
-            </th>
-            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
-              <span class="font-medium text-gray-900">{{ formatDate(exchange.createdAt) }}</span>
-            </td>
-          </ng-container>
-
-          <!-- Columna Cliente -->
-          <ng-container matColumnDef="client">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="clientName" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
-              Cliente
-            </th>
-            <td mat-cell *matCellDef="let exchange" class="px-6 py-4">
-              <div class="flex flex-col space-y-1">
-                <span class="font-medium text-gray-900">{{ exchange.clientName }}</span>
-                <span class="text-sm text-gray-500">{{ exchange.clientEmail }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Columna Premio -->
-          <ng-container matColumnDef="reward">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="rewardName" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
-              Premio
-            </th>
-            <td mat-cell *matCellDef="let exchange" class="px-6 py-4">
-              <div class="flex flex-col space-y-1">
-                <span class="font-medium text-gray-900 truncate">{{ exchange.rewardName }}</span>
-                <span class="text-sm text-gray-500 line-clamp-2" *ngIf="exchange.rewardDescription">
-                  {{ exchange.rewardDescription }}
-                </span>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Columna Puntos Utilizados -->
-          <ng-container matColumnDef="pointsUsed">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="pointsUsed" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
-              Puntos
-            </th>
-            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                <mat-icon class="mr-1 text-sm">stars</mat-icon>
-                {{ exchange.pointsUsed }}
-              </span>
-            </td>
-          </ng-container>
-
-          <!-- Columna Estado -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="status" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
-              Estado
-            </th>
-            <td mat-cell *matCellDef="let exchange" class="px-6 py-4 whitespace-nowrap">
-              <span 
-                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': exchange.status === 'completed',
-                  'bg-yellow-100 text-yellow-800': exchange.status === 'pending',
-                  'bg-red-100 text-red-800': exchange.status === 'cancelled'
-                }"
-              >
-                <mat-icon class="mr-1 text-sm">
-                  {{ exchange.status === 'completed' ? 'check_circle' : 
-                     exchange.status === 'pending' ? 'schedule' : 'cancel' }}
-                </mat-icon>
-                {{ getStatusText(exchange.status) }}
-              </span>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors duration-150"></tr>
-        </table>
-      </div>
-
-      <!-- Paginador -->
-      <div class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6" *ngIf="!loading && dataSource.data.length > 0">
+      <!-- Paginador Externo -->
+      <div class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6" *ngIf="!loading && data.length > 0">
         <mat-paginator
           [length]="totalItems"
           [pageSize]="pageSize"
           [pageSizeOptions]="[5, 10, 25, 50]"
+          [pageIndex]="currentPage"
           [showFirstLastButtons]="true"
+          (page)="onPageChange($event.pageIndex); onPageSizeChange($event.pageSize)"
           class="border-none bg-transparent">
         </mat-paginator>
       </div>
+    </div>
+
+    <!-- Info de Resultados -->
+    <div class="text-center text-gray-600" *ngIf="!loading && totalItems > 0">
+      <p class="text-sm">
+        Mostrando {{ (currentPage * pageSize) + 1 }} - {{ Math.min((currentPage + 1) * pageSize, totalItems) }} 
+        de {{ totalItems }} canjes
+        <span *ngIf="filteredData" class="font-medium text-blue-600">(filtrados)</span>
+      </p>
     </div>
   </div>
 </div>

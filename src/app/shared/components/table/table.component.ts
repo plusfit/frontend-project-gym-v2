@@ -317,4 +317,57 @@ export class TableComponent implements OnInit {
     // Use the same safe placeholder
     target.src = this.getPlaceholderImage();
   }
+
+  /**
+   * Format exchange date for display
+   */
+  formatExchangeDate(date: string | Date): string {
+    if (!date) return '';
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    // Verificar si la fecha es válida
+    if (isNaN(dateObj.getTime())) {
+      return 'Fecha inválida';
+    }
+    
+    return dateObj.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  /**
+   * Get exchange status badge color
+   */
+  getExchangeStatusBadgeColor(status: string): EColorBadge {
+    switch (status) {
+      case 'completed':
+        return EColorBadge.SUCCESS;
+      case 'pending':
+        return EColorBadge.WARNING;
+      case 'cancelled':
+        return EColorBadge.ERROR;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
+  }
+
+  /**
+   * Get exchange status text
+   */
+  getExchangeStatusText(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'Completado';
+      case 'pending':
+        return 'Pendiente';
+      case 'cancelled':
+        return 'Cancelado';
+      default:
+        return status;
+    }
+  }
 }

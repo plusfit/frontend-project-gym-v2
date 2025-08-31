@@ -138,9 +138,35 @@
             [textBadge]="(element[column] || 0) + ' accesos'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "date") {
+          <span class="font-medium text-gray-900">{{ formatExchangeDate(element.exchangeDate || element.createdAt) }}</span>
+          } @if (column === "client") {
+          <div class="flex flex-col space-y-1">
+            <span class="font-medium text-gray-900">{{ element.clientName }}</span>
+            <span class="text-sm text-gray-500">{{ element.clientEmail }}</span>
+          </div>
+          } @if (column === "reward") {
+          <div class="flex flex-col space-y-1">
+            <span class="font-medium text-gray-900 truncate">{{ element.rewardName }}</span>
+            <span class="text-sm text-gray-500 line-clamp-2" *ngIf="element.rewardDescription">
+              {{ element.rewardDescription }}
+            </span>
+          </div>
+          } @if (column === "pointsUsed") {
+          <app-badge
+            [colorBadge]="EColorBadge.INFO"
+            [textBadge]="element[column] + ' pts'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "status" && (element.status === 'completed' || element.status === 'pending' || element.status === 'cancelled')) {
+          <app-badge
+            [colorBadge]="getExchangeStatusBadgeColor(element[column])"
+            [textBadge]="getExchangeStatusText(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container

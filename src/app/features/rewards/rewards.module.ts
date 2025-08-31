@@ -27,6 +27,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RewardFormComponent } from './components/reward-form/reward-form.component';
 import { ExchangeHistoryComponent } from './components/exchange-history/exchange-history.component';
 
+// Shared Components
+import { TableComponent } from '@shared/components/table/table.component';
+
 // Services
 import { RewardsService } from './services/rewards.service';
 import { ExchangesService } from './services/exchanges.service';
@@ -45,6 +48,9 @@ import { RewardsRoutingModule } from './rewards-routing.module';
     FormsModule,
     RouterModule,
     RewardsRoutingModule,
+    
+    // Shared Components
+    TableComponent,
     
     // Angular Material
     MatTableModule,
