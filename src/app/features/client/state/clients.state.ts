@@ -7,15 +7,13 @@ import { PlansService } from "@features/plans/services/plan.service";
 import { RoutineService } from "@features/routines/services/routine.service";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import {
+  Observable,
   catchError,
   exhaustMap,
-  forkJoin,
-  map,
-  Observable,
   of,
   switchMap,
   tap,
-  throwError,
+  throwError
 } from "rxjs";
 import { Client, ClientApiResponse, RegisterResponse } from "../interface/clients.interface";
 import { ClientService } from "../services/client.service";
@@ -389,31 +387,14 @@ export class ClientsState {
             return of(response); // Si no hay subrutinas, devolvemos la respuesta tal cual.
           }
 
-          // Creamos un array de observables para obtener los ejercicios
-          const subroutineRequests = subroutines.map((subroutine: any) => {
-            return forkJoin(
-              subroutine.exercises.map((exercise: any) =>
-                this.exerciseService
-                  .getExerciseById(exercise._id)
-                  .pipe(map((exercise) => exercise.data)),
-              ),
-            ).pipe(
-              map((exercises) => ({
-                ...subroutine,
-                exercises, // Ahora exercises es un array con la información de cada ejercicio
-              })),
-            );
-          });
 
-          return forkJoin(subroutineRequests).pipe(
-            map((updatedSubroutines) => ({
-              ...response,
-              data: {
-                ...response.data,
-                subRoutines: updatedSubroutines, // Actualizamos con la información completa
-              },
-            })),
-          );
+          return of({
+            ...response,
+            data: {
+              ...response.data,
+              subRoutines: subroutines,
+            },
+          });
         }),
         tap((updatedResponse) => {
           ctx.patchState({

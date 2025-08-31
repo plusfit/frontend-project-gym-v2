@@ -88,6 +88,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   pathClient = false;
   activeScreenRoutines = 0;
   private isInitializing = true;
+  private readonly maxScreenRoutines = 3;
 
   days = Object.values(EDays);
 
@@ -186,9 +187,9 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         distinctUntilChanged(),
         takeUntil(this.destroy)
       )
-      .subscribe(() => {
+      .subscribe((newValue: boolean) => {
         if (!this.isInitializing) {
-          this.updateActiveScreenRoutinesCount();
+          this.validateShowOnScreenLimit(newValue);
         }
       });
 
@@ -286,22 +287,37 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
               this.idClient,
             ),
           )
-          .subscribe(() => {
-            this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
-            this.location.back();
+          .subscribe({
+            next: () => {
+              this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
+              this.location.back();
+            },
+            error: (error) => {
+              this.handleSaveError(error);
+            }
           });
         return;
       }
       this.store
         .dispatch(new UpdateRoutine(this.id(), payload))
-        .subscribe(() => {
-          this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
-          this.location.back();
+        .subscribe({
+          next: () => {
+            this.snackBarService.showSuccess('Éxito!', 'Rutina actualizada');
+            this.location.back();
+          },
+          error: (error) => {
+            this.handleSaveError(error);
+          }
         });
     } else {
-      this.store.dispatch(new CreateRoutine(payload)).subscribe(() => {
-        this.snackBarService.showSuccess('Éxito!', 'Rutina creada');
-        this.location.back();
+      this.store.dispatch(new CreateRoutine(payload)).subscribe({
+        next: () => {
+          this.snackBarService.showSuccess('Éxito!', 'Rutina creada');
+          this.location.back();
+        },
+        error: (error) => {
+          this.handleSaveError(error);
+        }
       });
     }
   }
@@ -338,5 +354,46 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
       const screenRoutines = this.store.selectSnapshot(RoutineState.routines);
       this.activeScreenRoutines = screenRoutines.length;
     });
+  }
+
+  private validateShowOnScreenLimit(newValue: boolean): void {
+    if (!newValue) {
+      this.updateActiveScreenRoutinesCount();
+      return;
+    }
+
+    this.store.dispatch(new GetRoutinesByPage({
+      page: 1,
+      showOnScreen: true
+    })).subscribe(() => {
+      const screenRoutines = this.store.selectSnapshot(RoutineState.routines);
+      let currentActiveCount = screenRoutines.length;
+
+      if (this.isEdit()) {
+        const currentRoutine = this.store.selectSnapshot(RoutineState.selectedRoutine);
+        const currentRoutineHadShowOnScreen = currentRoutine?.showOnScreen === true;
+        
+        if (currentRoutineHadShowOnScreen) {
+          currentActiveCount -= 1;
+        }
+      }
+
+      if (currentActiveCount >= this.maxScreenRoutines) {
+        this.routineForm.get('showOnScreen')?.setValue(false, { emitEvent: false });
+        
+        this.snackBarService.showError(
+          'Límite alcanzado',
+          `Solo se pueden tener máximo ${this.maxScreenRoutines} rutinas visibles en pantalla`
+        );
+      }
+
+      this.activeScreenRoutines = screenRoutines.length;
+    });
+  }
+
+  private handleSaveError(error: any): void {
+    const errorMessage = error?.error?.data || 'Error al guardar la rutina';
+    
+    this.snackBarService.showError('Error', errorMessage);
   }
 }
