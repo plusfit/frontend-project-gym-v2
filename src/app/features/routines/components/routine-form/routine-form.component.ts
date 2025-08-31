@@ -18,7 +18,7 @@ import {
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { Location } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -87,6 +87,7 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
   routine!: Routine | null;
   pathClient = false;
   activeScreenRoutines = 0;
+  private isInitializing = true;
 
   days = Object.values(EDays);
 
@@ -123,8 +124,6 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
     this.loading$ = this.store.select(SubRoutinesState.isLoading);
 
-    this.updateActiveScreenRoutinesCount();
-
     if (!this.id.length && this.idClient) {
       this.store.dispatch(new RoutineClient()).subscribe(
         () => {
@@ -156,7 +155,13 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
 
     this.routineForm
       .get('isGeneral')
-      ?.valueChanges.subscribe((isGeneral: boolean) => {
+      ?.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy)
+      )
+      .subscribe((isGeneral: boolean) => {
         const typeControl = this.routineForm.get('type');
 
         if (isGeneral) {
@@ -168,14 +173,30 @@ export class RoutineFormComponent implements OnInit, OnDestroy, OnChanges {
         }
         typeControl?.updateValueAndValidity();
 
-        this.updateActiveScreenRoutinesCount();
+        if (!this.isInitializing) {
+          this.updateActiveScreenRoutinesCount();
+        }
       });
 
     this.routineForm
       .get('showOnScreen')
-      ?.valueChanges.subscribe(() => {
-        this.updateActiveScreenRoutinesCount();
+      ?.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy)
+      )
+      .subscribe(() => {
+        if (!this.isInitializing) {
+          this.updateActiveScreenRoutinesCount();
+        }
       });
+
+    // Hacer la primera llamada después de un breve retraso para asegurar que la inicialización esté completa
+    setTimeout(() => {
+      this.isInitializing = false;
+      this.updateActiveScreenRoutinesCount();
+    }, 500);
   }
 
   ngOnChanges(): void {
