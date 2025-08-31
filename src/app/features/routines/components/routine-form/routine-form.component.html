@@ -61,6 +61,24 @@
                 >
               </div>
             </div>
+            <div
+              *ngIf="isGeneralControl"
+              class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"
+            >
+              <div class="h-[80px] flex items-center justify-between">
+                <mat-checkbox
+                  formControlName="showOnScreen"
+                  class="text-blue-700 font-medium"
+                  >¿Mostrar en pantalla?</mat-checkbox
+                >
+                <div class="text-sm text-gray-600 ml-4">
+                  <span class="font-medium">Rutinas activas: </span>
+                  <span class="text-blue-600"
+                    >{{ activeScreenRoutines }}/3</span
+                  >
+                </div>
+              </div>
+            </div>
             <div *ngIf="isGeneralControl" class="mt-4">
               <div class="h-[80px] w-full md:w-1/2">
                 <mat-form-field appearance="outline" class="w-full">

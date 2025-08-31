@@ -45,16 +45,16 @@
             }
           </div>
         </div>
-          <div>
-            @for (routine of womenRoutines; track $index) {
-              <app-card-routine
-                [routine]="routine"
-                [animationDelay]="10 * 1000"
-                class=" max-h-60"
-                [backgroundColor]="'#18a29b'"
-              ></app-card-routine>
-            }
-          </div>
+        <div>
+          @for (routine of womenRoutines; track $index) {
+            <app-card-routine
+              [routine]="routine"
+              [animationDelay]="10 * 1000"
+              class="max-h-60"
+              [backgroundColor]="'#18a29b'"
+            ></app-card-routine>
+          }
+        </div>
       </div>
 
       <!-- Rutinas de Cardio -->

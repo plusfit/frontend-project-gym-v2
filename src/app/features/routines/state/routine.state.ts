@@ -2,28 +2,28 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
 import { environment } from '../../../../environments/environment.prod';
 import {
-  Routine,
-  RoutineApiResponse,
-  RoutinesApiResponse,
-  RoutinesBySubRoutineApiResponse,
+    Routine,
+    RoutineApiResponse,
+    RoutinesApiResponse,
+    RoutinesBySubRoutineApiResponse,
 } from '../interfaces/routine.interface';
 import { RoutineService } from '../services/routine.service';
 import {
-  ClearSubRoutines,
-  CreateRoutine,
-  DeleteRoutine,
-  GetRoutineById,
-  GetRoutinesByName,
-  GetRoutinesByPage,
-  GetRoutinesBySubRoutine,
-  SetLimitPerPage,
-  UpdateRoutine,
-  UpdateSubRoutines,
+    ClearSubRoutines,
+    CreateRoutine,
+    DeleteRoutine,
+    GetRoutineById,
+    GetRoutinesByName,
+    GetRoutinesByPage,
+    GetRoutinesBySubRoutine,
+    SetLimitPerPage,
+    UpdateRoutine,
+    UpdateSubRoutines,
 } from './routine.actions';
 import { RoutineStateModel } from './routine.model';
 
@@ -87,7 +87,11 @@ export class RoutineState {
   ): Observable<RoutinesApiResponse> {
     ctx.patchState({ loading: true, routines: [], totalRoutines: 0 });
     return this.routineService
-      .getRoutinesByPage(action.payload.page, ctx.getState().limit)
+      .getRoutinesByPage(
+        action.payload.page,
+        action.payload.limit || ctx.getState().limit,
+        action.payload.showOnScreen
+      )
       .pipe(
         tap((response) => {
           const routines = response.data.data;
@@ -136,10 +140,10 @@ export class RoutineState {
   createRoutine(
     ctx: StateContext<RoutineStateModel>,
     action: CreateRoutine,
-  ): Observable<Routine> {
+  ): Observable<RoutineApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService.createRoutine(action.payload).pipe(
-      tap(() => {
+      tap((response: RoutineApiResponse) => {
         ctx.patchState({ loading: false, selectedRoutine: null });
       }),
       catchError((error: HttpErrorResponse) => {
@@ -187,12 +191,12 @@ export class RoutineState {
   updateRoutine(
     ctx: StateContext<RoutineStateModel>,
     action: UpdateRoutine,
-  ): Observable<Routine> {
+  ): Observable<RoutineApiResponse> {
     ctx.patchState({ loading: true });
     return this.routineService
       .updateRoutine(action.payload, action.id, action.idClient ?? '')
       .pipe(
-        tap(() => {
+        tap((response: RoutineApiResponse) => {
           ctx.patchState({ loading: false, selectedRoutine: null });
         }),
         catchError((error: HttpErrorResponse) => {
