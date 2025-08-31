@@ -61,21 +61,52 @@
                 >
               </div>
             </div>
-            <div
-              *ngIf="isGeneralControl"
-              class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"
-            >
-              <div class="h-[80px] flex items-center justify-between">
-                <mat-checkbox
-                  formControlName="showOnScreen"
-                  class="text-blue-700 font-medium"
-                  >¿Mostrar en pantalla?</mat-checkbox
-                >
-                <div class="text-sm text-gray-600 ml-4">
-                  <span class="font-medium">Rutinas activas: </span>
-                  <span class="text-blue-600"
-                    >{{ activeScreenRoutines }}/3</span
+            <div *ngIf="isGeneralControl" class="mt-4">
+              <div
+                class="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <mat-checkbox
+                      formControlName="showOnScreen"
+                      class="text-blue-700 font-medium"
+                      >¿Mostrar en pantalla?</mat-checkbox
+                    >
+                    <div class="hidden sm:block">
+                      <i class="ph-monitor text-blue-500 text-lg"></i>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span
+                      class="text-sm text-gray-600 font-medium hidden sm:inline"
+                      >Rutinas activas:</span
+                    >
+                    <div
+                      class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold"
+                      [class.bg-green-100]="activeScreenRoutines < 3"
+                      [class.text-green-700]="activeScreenRoutines < 3"
+                      [class.bg-red-100]="activeScreenRoutines === 3"
+                      [class.text-red-700]="activeScreenRoutines === 3"
+                    >
+                      <span class="text-lg font-bold">{{
+                        activeScreenRoutines
+                      }}</span>
+                      <span class="mx-1">/</span>
+                      <span class="text-lg font-bold">3</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-500 pl-8">
+                  <span *ngIf="activeScreenRoutines < 3">
+                    Puedes agregar {{ 3 - activeScreenRoutines }} rutina(s) más
+                    en pantalla
+                  </span>
+                  <span
+                    *ngIf="activeScreenRoutines === 3"
+                    class="text-orange-600 font-medium"
                   >
+                    ⚠️ Límite máximo alcanzado
+                  </span>
                 </div>
               </div>
             </div>
