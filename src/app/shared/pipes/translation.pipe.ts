@@ -69,6 +69,14 @@ export class TranslationPipe implements PipeTransform {
       case "totalAccesses":
         return "Total Accesos";
 
+      // Rewards fields
+      case "pointsRequired":
+        return "Puntos Requeridos";
+      case "totalExchanges":
+        return "Total Canjes";
+      case "enabled":
+        return "Habilitado";
+
       // Categorías del Plan
       case "weightLoss":
         return "Pérdida de peso";
