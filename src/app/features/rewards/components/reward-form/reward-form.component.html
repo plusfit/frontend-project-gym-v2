@@ -1,28 +1,55 @@
-<div class="w-full max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+<div
+  class="w-full p-2 max-w-2xl mx-auto bg-white rounded-xl overflow-hidden shadow-xl"
+>
   <!-- Header -->
-  <div class="p-6 flex justify-between items-center text-white bg-gradient-to-r from-blue-600 to-cyan-600">
-    <h2 mat-dialog-title class="text-xl font-bold m-0">
-      {{ isEditMode ? 'Editar Premio' : 'Crear Nuevo Premio' }}
-      <i class="ph-gift text-yellow-300 text-2xl align-middle ml-2"></i>
-    </h2>
-    <button mat-icon-button mat-dialog-close class="p-2 rounded-lg transition-colors bg-white bg-opacity-20 hover:bg-opacity-30 border-none">
-      <i class="ph-x text-xl text-white"></i>
+  <div class="p-6 flex justify-between items-center border-b border-gray-200">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-blue-100 rounded-lg">
+        <i class="ph-gift text-blue-600 text-2xl"></i>
+      </div>
+      <div>
+        <h2 mat-dialog-title class="text-xl font-bold text-gray-800 m-0">
+          {{ isEditMode ? "Editar Premio" : "Crear Nuevo Premio" }}
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">
+          {{
+            isEditMode
+              ? "Modifica los datos del premio"
+              : "Configura un nuevo premio para tus clientes"
+          }}
+        </p>
+      </div>
+    </div>
+    <button
+      mat-icon-button
+      mat-dialog-close
+      class="text-gray-400 hover:text-gray-600 transition-colors"
+    >
+      <i class="ph-x text-xl"></i>
     </button>
   </div>
 
   <!-- Content -->
-  <mat-dialog-content class="p-6 space-y-6">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+  <mat-dialog-content class="p-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Información Básica -->
       <div class="space-y-4">
-        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Información Básica</label>
-        
-        <div class="grid grid-cols-1 gap-6">
+        <h3
+          class="text-lg font-semibold text-blue-600 border-b-2 border-blue-600 pb-2"
+        >
+          Información Básica
+        </h3>
+
+        <div class="space-y-4">
           <!-- Nombre -->
           <div class="h-[80px]">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Nombre del Premio</mat-label>
-              <input matInput formControlName="name" placeholder="Ej: Proteína Premium" class="text-gray-700">
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Ej: Proteína Premium, Entrada VIP..."
+              />
               <mat-error *ngIf="nameError">{{ nameError }}</mat-error>
             </mat-form-field>
           </div>
@@ -31,57 +58,74 @@
           <div class="h-[100px]">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Descripción</mat-label>
-              <textarea 
-                matInput 
-                formControlName="description" 
+              <textarea
+                matInput
+                formControlName="description"
                 rows="3"
                 placeholder="Describe el premio y sus beneficios..."
-                class="text-gray-700"
               ></textarea>
-              <mat-hint align="end" class="text-gray-500">
-                {{ form.get('description')?.value?.length || 0 }}/500
+              <mat-hint align="end">
+                {{ form.get("description")?.value?.length || 0 }}/500
               </mat-hint>
-              <mat-error *ngIf="descriptionError">{{ descriptionError }}</mat-error>
+              <mat-error *ngIf="descriptionError">{{
+                descriptionError
+              }}</mat-error>
             </mat-form-field>
           </div>
 
-          <!-- Required Points -->
+          <!-- Puntos Requeridos -->
           <div class="h-[80px]">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Puntos Requeridos</mat-label>
-              <input 
-                matInput 
-                type="number" 
-                formControlName="pointsRequired" 
-                placeholder="0"
+              <input
+                matInput
+                type="number"
+                formControlName="pointsRequired"
+                placeholder="100"
                 min="1"
-                class="text-gray-700"
-              >
-              <i class="ph-star text-yellow-500" matSuffix></i>
+              />
+              <span matSuffix>pts</span>
               <mat-error *ngIf="pointsError">{{ pointsError }}</mat-error>
             </mat-form-field>
           </div>
         </div>
       </div>
 
-      <!-- Configuration -->
+      <!-- Configuración -->
       <div class="space-y-4">
-        <label class="text-lg font-semibold mb-4 pb-2 text-blue-600 border-b-2 border-blue-600 block">Configuración</label>
-        
+        <h3
+          class="text-lg font-semibold text-blue-600 border-b-2 border-blue-600 pb-2"
+        >
+          Configuración
+        </h3>
+
         <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-          <div class="flex flex-col space-y-2">
-            <mat-slide-toggle formControlName="enabled" color="primary" class="flex items-center">
-              <span class="flex items-center space-x-2 font-medium text-gray-800">
-                <i class="ph-{{ form.get('enabled')?.value ? 'eye' : 'eye-slash' }} text-lg"></i>
-                <span>{{ form.get('enabled')?.value ? 'Premio Habilitado' : 'Premio Deshabilitado' }}</span>
-              </span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <i
+                class="ph-{{
+                  form.get('enabled')?.value ? 'eye' : 'eye-slash'
+                }} text-blue-600 text-xl"
+              ></i>
+              <div>
+                <span class="font-medium text-gray-800">
+                  {{
+                    form.get("enabled")?.value
+                      ? "Premio Habilitado"
+                      : "Premio Deshabilitado"
+                  }}
+                </span>
+                <p class="text-sm text-gray-600 mt-1">
+                  {{
+                    form.get("enabled")?.value
+                      ? "Los clientes pueden ver y canjear este premio"
+                      : "Este premio no será visible para los clientes"
+                  }}
+                </p>
+              </div>
+            </div>
+            <mat-slide-toggle formControlName="enabled" color="primary">
             </mat-slide-toggle>
-            <p class="text-sm text-gray-600 ml-12 mt-2 mb-0">
-              {{ form.get('enabled')?.value 
-                ? 'Los clientes pueden ver y canjear este premio' 
-                : 'Este premio no será visible para los clientes' 
-              }}
-            </p>
           </div>
         </div>
       </div>
@@ -89,28 +133,33 @@
   </mat-dialog-content>
 
   <!-- Actions -->
-  <mat-dialog-actions class="flex justify-end space-x-3 pt-6 border-t border-gray-200 px-6 pb-6">
-    <button 
-      type="button" 
+  <mat-dialog-actions
+    class="flex justify-end space-x-3 px-6 py-4 border-t border-gray-200"
+  >
+    <button
+      type="button"
       (click)="onCancel()"
       [disabled]="loading"
-      class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <i class="ph-x text-lg"></i>
-      <span>Cancelar</span>
+      Volver
     </button>
-    
-    <button 
+
+    <button
       type="submit"
       (click)="onSubmit()"
       [disabled]="loading || form.invalid"
-      class="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+      class="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
     >
-      <mat-spinner diameter="20" *ngIf="loading" class="text-white"></mat-spinner>
-      <span *ngIf="!loading" class="flex items-center space-x-2">
-        <i class="ph-{{ isEditMode ? 'floppy-disk' : 'plus' }} text-lg"></i>
-        <span>{{ isEditMode ? 'Actualizar' : 'Crear Premio' }}</span>
-      </span>
+      <mat-spinner
+        diameter="16"
+        *ngIf="loading"
+        class="text-white"
+      ></mat-spinner>
+      <span *ngIf="!loading">{{ isEditMode ? "Actualizar" : "Crear" }}</span>
+      <span *ngIf="loading">{{
+        isEditMode ? "Actualizando..." : "Creando..."
+      }}</span>
     </button>
   </mat-dialog-actions>
 </div>

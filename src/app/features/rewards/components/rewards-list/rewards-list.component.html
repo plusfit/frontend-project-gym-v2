@@ -1,45 +1,100 @@
-<section class="min-h-screen py-8 px-4 bg-gradient-to-br from-blue-50 to-cyan-100">
-  <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Header -->
-    <div class="mb-6 p-8 rounded-2xl text-white flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xl">
-      <span class="text-3xl font-bold mb-4 sm:mb-0">
-        PREMIOS <i class="ph-gift text-yellow-300 text-4xl align-middle ml-2"></i>
-      </span>
-      
-      <!-- Add Button -->
-      <button 
-        (click)="openCreateDialog()" 
-        class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+<section
+  class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4"
+>
+  <div class="max-w-7xl mx-auto flex flex-col space-y-6">
+    <!-- Premium Header Section -->
+    <div
+      class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200"
+    >
+      <!-- Enhanced Header with animated gradient -->
+      <div
+        class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden"
       >
-        <i class="ph-plus text-white text-lg"></i>
-        <span>Agregar Premio</span>
-      </button>
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Icon with pulse animation -->
+            <div
+              class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse"
+            >
+              <i class="ph-gift text-white" style="font-size: 40px"></i>
+            </div>
+
+            <div class="flex flex-col">
+              <div class="flex items-center space-x-3 mb-2">
+                <h3
+                  class="font-bold text-white tracking-tight"
+                  style="font-size: 2.5rem; line-height: 1.2"
+                >
+                  Gestión de Premios
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced Add Reward Button -->
+          <div class="flex items-center space-x-3">
+            <button
+              class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white border-white border-opacity-30 shadow-lg transition-all duration-300 hover:scale-105 font-bold py-3 px-6 rounded-lg flex items-center space-x-2"
+              (click)="openCreateDialog()"
+            >
+              <i class="ph-plus text-white text-lg"></i>
+              <span>Crear Premio</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl p-6 shadow-xl">
-      <!-- Toolbar Section -->
-      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
-        <!-- Filters Section -->
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start sm:items-center w-full lg:w-auto">
-          <mat-form-field appearance="outline" class="w-full sm:w-80">
-            <mat-label>Buscar por nombre...</mat-label>
-            <input matInput [formControl]="searchControl" placeholder="Buscar premios" class="text-gray-700">
-            <i class="ph-magnifying-glass text-gray-400" matSuffix></i>
-          </mat-form-field>
-
-          <mat-slide-toggle 
-            [formControl]="showEnabledOnly" 
-            color="primary"
-            class="flex-shrink-0"
+    <!-- Enhanced Filter and Table Section -->
+    <div
+      class="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
+    >
+      <!-- Filter Bar Section -->
+      <div
+        class="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center"
           >
-            <span class="text-gray-700 font-medium">Solo mostrar habilitados</span>
-          </mat-slide-toggle>
+            <i class="ph-funnel text-white" style="font-size: 20px"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
+        </div>
+
+        <div
+          class="flex flex-col lg:flex-row justify-between items-start lg:items-center"
+        >
+          <!-- Filters Section -->
+          <div
+            class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start sm:items-center w-full lg:w-auto"
+          >
+            <mat-form-field appearance="outline" class="w-full sm:w-80">
+              <mat-label>Buscar por nombre...</mat-label>
+              <input
+                matInput
+                [formControl]="searchControl"
+                placeholder="Buscar premios"
+                class="text-gray-700"
+              />
+              <i class="ph-magnifying-glass text-gray-400" matSuffix></i>
+            </mat-form-field>
+
+            <mat-slide-toggle
+              [formControl]="showEnabledOnly"
+              color="primary"
+              class="flex-shrink-0"
+            >
+              <span class="text-gray-700 font-medium"
+                >Solo mostrar habilitados</span
+              >
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
 
-      <!-- Table Container -->
-      <div class="rounded-xl overflow-hidden relative bg-white border border-gray-200">
+      <!-- Table Section -->
+      <div class="overflow-hidden">
         <app-table
           [displayedColumns]="displayedColumns"
           [data]="rewards"
@@ -56,8 +111,11 @@
         </app-table>
 
         <!-- Paginator -->
-        <div *ngIf="!loading && rewards.length > 0" class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-          <mat-paginator 
+        <div
+          *ngIf="!loading && rewards.length > 0"
+          class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+        >
+          <mat-paginator
             [length]="totalCount"
             [pageSize]="pageSize"
             [pageSizeOptions]="[5, 10, 20, 50]"

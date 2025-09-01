@@ -1,105 +1,187 @@
-<div class="min-h-screen py-8 px-4 bg-gradient-to-br from-blue-50 to-blue-100">
-  <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Header -->
-    <div class="mb-6 p-8 rounded-2xl text-white flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xl">
-      <h1 class="text-3xl font-bold mb-4 sm:mb-0">
-        Historial de Canjes <i class="ph-clock-clockwise text-yellow-300 text-3xl align-middle ml-2"></i>
-      </h1>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        (click)="exportToExcel()"
-        class="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+<section
+  class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4"
+>
+  <div class="max-w-7xl mx-auto flex flex-col space-y-6">
+    <!-- Premium Header Section -->
+    <div
+      class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200"
+    >
+      <!-- Enhanced Header with animated gradient -->
+      <div
+        class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden"
       >
-        <mat-icon>download</mat-icon>
-        <span>Exportar Excel</span>
-      </button>
-    </div>
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Icon with pulse animation -->
+            <div
+              class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse"
+            >
+              <i
+                class="ph-clock-clockwise text-white"
+                style="font-size: 40px"
+              ></i>
+            </div>
 
-    <!-- Filtros -->
-    <div class="bg-white rounded-xl p-6 shadow-xl">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-        <!-- Búsqueda -->
-        <mat-form-field appearance="outline" class="col-span-1 md:col-span-2">
-          <mat-label>Buscar cliente o premio</mat-label>
-          <input matInput [formControl]="searchControl" placeholder="Nombre de cliente o premio" class="text-gray-700">
-          <mat-icon matSuffix class="text-gray-400">search</mat-icon>
-        </mat-form-field>
+            <div class="flex flex-col">
+              <div class="flex items-center space-x-3 mb-2">
+                <h3
+                  class="font-bold text-white tracking-tight"
+                  style="font-size: 2.5rem; line-height: 1.2"
+                >
+                  Historial de Canjes
+                </h3>
+              </div>
+            </div>
+          </div>
 
-        <!-- Estado -->
-        <mat-form-field appearance="outline" class="col-span-1">
-          <mat-label>Estado</mat-label>
-          <mat-select [formControl]="statusFilter">
-            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
-              {{ status.label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Fecha Desde -->
-        <mat-form-field appearance="outline" class="col-span-1">
-          <mat-label>Fecha Desde</mat-label>
-          <input matInput [matDatepicker]="dateFromPicker" [formControl]="dateFromControl" class="text-gray-700">
-          <mat-datepicker-toggle matSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
-          <mat-datepicker #dateFromPicker></mat-datepicker>
-        </mat-form-field>
-
-        <!-- Fecha Hasta -->
-        <mat-form-field appearance="outline" class="col-span-1">
-          <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="dateToPicker" [formControl]="dateToControl" class="text-gray-700">
-          <mat-datepicker-toggle matSuffix [for]="dateToPicker"></mat-datepicker-toggle>
-          <mat-datepicker #dateToPicker></mat-datepicker>
-        </mat-form-field>
-
-        <!-- Botón Limpiar -->
-        <div class="col-span-1 md:col-span-2 lg:col-span-1">
-          <button 
-            mat-stroked-button 
-            (click)="clearFilters()" 
-            class="w-full h-14 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-          >
-            <mat-icon>clear</mat-icon>
-            <span>Limpiar Filtros</span>
-          </button>
+          <!-- Enhanced Export Button -->
+          <div class="flex items-center space-x-3">
+            <button
+              class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white border-white border-opacity-30 shadow-lg transition-all duration-300 hover:scale-105 font-bold py-3 px-6 rounded-lg flex items-center space-x-2"
+              (click)="exportToExcel()"
+            >
+              <i class="ph-download text-white text-lg"></i>
+              <span>Exportar Excel</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Tabla Reutilizable -->
-    <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-      <app-table
-        [data]="data"
-        [displayedColumns]="displayedColumns"
-        [loading]="loading"
-        [total]="totalItems"
-        [filteredData]="filteredData"
-        [showDelete]="false"
-        [showSeeDetail]="false"
-        [showDisabled]="false">
-      </app-table>
+    <!-- Enhanced Filter and Table Section -->
+    <div
+      class="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
+    >
+      <!-- Filter Bar Section -->
+      <div
+        class="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center"
+          >
+            <i class="ph-funnel text-white" style="font-size: 20px"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
+        </div>
 
-      <!-- Paginador Externo -->
-      <div class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6" *ngIf="!loading && data.length > 0">
-        <mat-paginator
-          [length]="totalItems"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[5, 10, 25, 50]"
-          [pageIndex]="currentPage"
-          [showFirstLastButtons]="true"
-          (page)="onPageChange($event.pageIndex); onPageSizeChange($event.pageSize)"
-          class="border-none bg-transparent">
-        </mat-paginator>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end"
+        >
+          <!-- Búsqueda -->
+          <mat-form-field appearance="outline" class="col-span-1 md:col-span-2">
+            <mat-label>Buscar cliente o premio</mat-label>
+            <input
+              matInput
+              [formControl]="searchControl"
+              placeholder="Nombre de cliente o premio"
+              class="text-gray-700"
+            />
+            <mat-icon matSuffix class="text-gray-400">search</mat-icon>
+          </mat-form-field>
+
+          <!-- Estado -->
+          <mat-form-field appearance="outline" class="col-span-1">
+            <mat-label>Estado</mat-label>
+            <mat-select [formControl]="statusFilter">
+              <mat-option
+                *ngFor="let status of statusOptions"
+                [value]="status.value"
+              >
+                {{ status.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Fecha Desde -->
+          <mat-form-field appearance="outline" class="col-span-1">
+            <mat-label>Fecha Desde</mat-label>
+            <input
+              matInput
+              [matDatepicker]="dateFromPicker"
+              [formControl]="dateFromControl"
+              class="text-gray-700"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="dateFromPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #dateFromPicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Fecha Hasta -->
+          <mat-form-field appearance="outline" class="col-span-1">
+            <mat-label>Fecha Hasta</mat-label>
+            <input
+              matInput
+              [matDatepicker]="dateToPicker"
+              [formControl]="dateToControl"
+              class="text-gray-700"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="dateToPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #dateToPicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Botón Limpiar -->
+          <div class="col-span-1 md:col-span-2 lg:col-span-1">
+            <button
+              mat-stroked-button
+              (click)="clearFilters()"
+              class="w-full h-14 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+            >
+              <mat-icon>clear</mat-icon>
+              <span>Limpiar Filtros</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="overflow-hidden">
+        <app-table
+          [data]="data"
+          [displayedColumns]="displayedColumns"
+          [loading]="loading"
+          [total]="totalItems"
+          [filteredData]="filteredData"
+          [showDelete]="false"
+          [showSeeDetail]="false"
+          [showDisabled]="false"
+        >
+        </app-table>
+
+        <!-- Paginador Externo -->
+        <div
+          class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+          *ngIf="!loading && data.length > 0"
+        >
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            [pageIndex]="currentPage"
+            [showFirstLastButtons]="true"
+            (page)="onPageEvent($event)"
+            class="border-none bg-transparent"
+          >
+          </mat-paginator>
+        </div>
       </div>
     </div>
 
     <!-- Info de Resultados -->
     <div class="text-center text-gray-600" *ngIf="!loading && totalItems > 0">
       <p class="text-sm">
-        Mostrando {{ (currentPage * pageSize) + 1 }} - {{ Math.min((currentPage + 1) * pageSize, totalItems) }} 
-        de {{ totalItems }} canjes
-        <span *ngIf="filteredData" class="font-medium text-blue-600">(filtrados)</span>
+        Mostrando {{ currentPage * pageSize + 1 }} -
+        {{ Math.min((currentPage + 1) * pageSize, totalItems) }} de
+        {{ totalItems }} canjes
+        <span *ngIf="filteredData" class="font-medium text-blue-600"
+          >(filtrados)</span
+        >
       </p>
     </div>
   </div>
-</div>
+</section>

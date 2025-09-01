@@ -29,12 +29,15 @@ export interface ExchangeFilters {
 
 export interface ExchangeResponse {
   success: boolean;
-  data: Exchange[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
-    limit: number;
+  data: {
+    success: boolean;
+    data: Exchange[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalCount: number;
+      limit: number;
+    };
   };
 }
 

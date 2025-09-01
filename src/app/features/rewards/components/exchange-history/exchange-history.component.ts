@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
+import { SnackBarService } from '@core/services/snackbar.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Exchange, ExchangeFilters } from '../../interfaces/exchange.interface';
+import { Exchange, ExchangeFilters, ExchangeResponse } from '../../interfaces/exchange.interface';
 import { ExchangesService } from '../../services/exchanges.service';
 
 @Component({
@@ -26,10 +27,8 @@ export class ExchangeHistoryComponent implements OnInit {
   currentPage = 0;
   filteredData = false;
 
-  // Expose Math to template
   Math = Math;
 
-  // Filtros
   searchControl = new FormControl('');
   statusFilter = new FormControl('all');
   dateFromControl = new FormControl();
@@ -44,7 +43,7 @@ export class ExchangeHistoryComponent implements OnInit {
 
   constructor(
     private exchangesService: ExchangesService,
-    private snackBar: MatSnackBar
+    private snackBarService: SnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +53,6 @@ export class ExchangeHistoryComponent implements OnInit {
 
 
   private setupFilters(): void {
-    // Filtro de búsqueda con debounce
     this.searchControl.valueChanges
       .pipe(
         debounceTime(300),
@@ -65,13 +63,11 @@ export class ExchangeHistoryComponent implements OnInit {
         this.loadExchanges();
       });
 
-    // Filtro de estado
     this.statusFilter.valueChanges.subscribe(() => {
       this.resetPagination();
       this.loadExchanges();
     });
 
-    // Filtros de fecha
     this.dateFromControl.valueChanges.subscribe(() => {
       this.resetPagination();
       this.loadExchanges();
@@ -114,32 +110,26 @@ export class ExchangeHistoryComponent implements OnInit {
       filters.dateTo = this.dateToControl.value;
     }
 
-    // Apply any additional filters based on current sorting requirements
-    // Sorting will be handled by backend if needed
-
     this.exchangesService.getExchangeHistory(filters).subscribe({
-      next: (response: any) => {
-        console.log('Exchange History API Response:', response);
-        if (response && response.success && response.data) {
-          // La respuesta tiene estructura anidada: response.data contiene success, data y pagination
-          const exchangesData = response.data.data || [];
-          const paginationData = response.data.pagination || {};
+      next: (response) => {
+        if (response?.success && response?.data && typeof response.data === 'object' && 'data' in response.data && 'pagination' in response.data) {
+          const innerData = response.data as ExchangeResponse['data'];
+          const exchangesData = innerData.data || [];
+          const paginationData = innerData.pagination || {};
           
           this.data = exchangesData;
           this.totalItems = paginationData.totalCount || 0;
           this.filteredData = !!(searchValue || (statusValue && statusValue !== 'all') || this.dateFromControl.value || this.dateToControl.value);
         } else {
-          console.warn('Invalid response structure:', response);
           this.data = [];
           this.totalItems = 0;
           this.filteredData = false;
-          this.showSnackBar('Respuesta inválida del servidor', 'warning');
+          this.showSnackBar('Advertencia', 'Respuesta inválida del servidor', 'warning');
         }
         this.loading = false;
       },
-      error: (error: any) => {
-        console.error('Error loading exchanges:', error);
-        this.showSnackBar('Error al cargar el historial de canjes. Verifique que el backend esté funcionando.');
+      error: (error) => {
+        this.showSnackBar('Error', 'Error al cargar el historial de canjes. Verifique que el backend esté funcionando.', 'error');
         this.data = [];
         this.totalItems = 0;
         this.filteredData = false;
@@ -158,8 +148,7 @@ export class ExchangeHistoryComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    // Implementar exportación a Excel
-    this.showSnackBar('Funcionalidad de exportación en desarrollo', 'warning');
+    this.showSnackBar('Información', 'Funcionalidad de exportación en desarrollo', 'warning');
   }
 
   getStatusColor(status: string): string {
@@ -192,8 +181,7 @@ export class ExchangeHistoryComponent implements OnInit {
     if (!date) return '';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     
-    // Verificar si la fecha es válida
-    if (isNaN(dateObj.getTime())) {
+    if (Number.isNaN(dateObj.getTime())) {
       return 'Fecha inválida';
     }
     
@@ -204,6 +192,16 @@ export class ExchangeHistoryComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  onPageEvent(event: PageEvent): void {
+    if (event.pageSize !== this.pageSize) {
+      this.currentPage = 0;
+      this.pageSize = event.pageSize;
+    } else {
+      this.currentPage = event.pageIndex;
+    }
+    this.loadExchanges();
   }
 
   onPageChange(page: number): void {
@@ -217,12 +215,17 @@ export class ExchangeHistoryComponent implements OnInit {
     this.loadExchanges();
   }
 
-  private showSnackBar(message: string, type: 'success' | 'error' | 'warning' = 'error'): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: [`${type}-snackbar`]
-    });
+  private showSnackBar(title: string, message: string, type: 'success' | 'error' | 'warning' = 'error'): void {
+    switch (type) {
+      case 'success':
+        this.snackBarService.showSuccess(title, message);
+        break;
+      case 'error':
+        this.snackBarService.showError(title, message);
+        break;
+      case 'warning':
+        this.snackBarService.showWarning(title, message);
+        break;
+    }
   }
 }

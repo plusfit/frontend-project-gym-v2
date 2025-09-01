@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { SnackBarService } from '@core/services/snackbar.service';
+import { TableComponent } from '@shared/components/table/table.component';
 import { Reward, RewardFilters } from '../../interfaces/reward.interface';
 import { RewardsService } from '../../services/rewards.service';
 import { RewardFormComponent } from '../reward-form/reward-form.component';
-import { TableComponent } from '@shared/components/table/table.component';
-import { EColorBadge } from '@shared/enums/badge-color.enum';
 
 @Component({
   selector: 'app-rewards-list',
@@ -60,7 +58,7 @@ export class RewardsListComponent implements OnInit {
   constructor(
     private rewardsService: RewardsService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBarService: SnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -100,7 +98,7 @@ export class RewardsListComponent implements OnInit {
     this.rewardsService.getRewards(filters).subscribe({
       next: (response) => {
         console.log('Rewards API Response:', response);
-        if (response && response.success && response.data) {
+        if (response?.success && response?.data) {
           // La respuesta tiene estructura anidada: response.data contiene success, data y pagination
           const rewardsData = response.data.data || [];
           const paginationData = response.data.pagination || {};
@@ -113,13 +111,13 @@ export class RewardsListComponent implements OnInit {
           this.rewards = [];
           this.totalCount = 0;
           this.filteredData = false;
-          this.showSnackBar('Respuesta inválida del servidor');
+          this.snackBarService.showError('Error', 'Respuesta inválida del servidor');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading rewards:', error);
-        this.showSnackBar('Error al cargar los premios. Verifique que el backend esté funcionando.');
+        this.snackBarService.showError('Error', 'Error al cargar los premios. Verifique que el backend esté funcionando.');
         this.rewards = [];
         this.totalCount = 0;
         this.filteredData = false;
@@ -128,7 +126,7 @@ export class RewardsListComponent implements OnInit {
     });
   }
 
-  onPageChange(event: any): void {
+  onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadRewards();
@@ -143,7 +141,7 @@ export class RewardsListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadRewards();
-        this.showSnackBar('Premio creado exitosamente');
+        this.snackBarService.showSuccess('Éxito', 'Premio creado exitosamente');
       }
     });
   }
@@ -159,7 +157,7 @@ export class RewardsListComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.loadRewards();
-          this.showSnackBar('Premio actualizado exitosamente');
+          this.snackBarService.showSuccess('Éxito', 'Premio actualizado exitosamente');
         }
       });
     }
@@ -171,12 +169,12 @@ export class RewardsListComponent implements OnInit {
         if (response.success) {
           this.loadRewards();
           const status = data.disabled ? 'habilitado' : 'deshabilitado';
-          this.showSnackBar(`Premio ${status} exitosamente`);
+          this.snackBarService.showSuccess('Éxito', `Premio ${status} exitosamente`);
         }
       },
       error: (error) => {
         console.error('Error toggling reward:', error);
-        this.showSnackBar('Error al cambiar el estado del premio');
+        this.snackBarService.showError('Error', 'Error al cambiar el estado del premio');
       }
     });
   }
@@ -187,23 +185,17 @@ export class RewardsListComponent implements OnInit {
         next: (response) => {
           if (response.success) {
             this.loadRewards();
-            this.showSnackBar('Premio eliminado exitosamente');
+            this.snackBarService.showSuccess('Éxito', 'Premio eliminado exitosamente');
           }
         },
         error: (error) => {
           console.error('Error deleting reward:', error);
           const message = error.error?.message || 'Error al eliminar el premio';
-          this.showSnackBar(message);
+          this.snackBarService.showError('Error', message);
         }
       });
     }
   }
 
-  private showSnackBar(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top'
-    });
-  }
+
 }
