@@ -93,8 +93,8 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   editSubRoutine(id: string): void {
     this.router.navigate([`/subrutinas/${id}`]);
   }
-  deleteSubRoutine(event: string): void {
-    this.store.dispatch(new GetRoutinesBySubRoutine(event));
+  deleteSubRoutine(event: any): void {
+    this.store.dispatch(new GetRoutinesBySubRoutine(event._id));
     this.actions
       .pipe(ofActionSuccessful(GetRoutinesBySubRoutine), take(1))
       .subscribe(
@@ -113,7 +113,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
         },
       );
   }
-  openDialog(id: string, routineList?: Routine[]): void {
+  openDialog(routine: any, routineList?: Routine[]): void {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
@@ -129,7 +129,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeleteSubRoutine(id));
+      this.store.dispatch(new DeleteSubRoutine(routine._id));
       this.actions
         .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
         .subscribe(() => {
