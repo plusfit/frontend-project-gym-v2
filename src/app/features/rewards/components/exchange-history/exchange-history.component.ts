@@ -147,9 +147,7 @@ export class ExchangeHistoryComponent implements OnInit {
     this.loadExchanges();
   }
 
-  exportToExcel(): void {
-    this.showSnackBar('Información', 'Funcionalidad de exportación en desarrollo', 'warning');
-  }
+
 
   getStatusColor(status: string): string {
     switch (status) {

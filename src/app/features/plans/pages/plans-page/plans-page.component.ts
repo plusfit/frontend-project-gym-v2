@@ -1,19 +1,19 @@
-import { Component, ViewChild, OnInit, OnDestroy } from "@angular/core";
-import { FiltersBarComponent } from "@shared/components/filter-bar/filter-bar.component";
-import { Router } from "@angular/router";
-import { Actions, ofActionSuccessful, Store } from "@ngxs/store";
-import { environment } from "../../../../../environments/environment";
-import { Observable, Subject, take, takeUntil } from "rxjs";
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { Plan } from "@features/plans/interfaces/plan.interface";
-import { PlansState } from "@features/plans/state/plan.state";
-import { DeletePlan, GetClientsByPlanId, GetPlans } from "@features/plans/state/plan.actions";
-import { TableComponent } from "@shared/components/table/table.component";
 import { AsyncPipe } from "@angular/common";
-import { SnackBarService } from "@core/services/snackbar.service";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { Router } from "@angular/router";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { Plan } from "@features/plans/interfaces/plan.interface";
+import { DeletePlan, GetClientsByPlanId, GetPlans } from "@features/plans/state/plan.actions";
+import { PlansState } from "@features/plans/state/plan.state";
+import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
+import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { FiltersBarComponent } from "@shared/components/filter-bar/filter-bar.component";
+import { TableComponent } from "@shared/components/table/table.component";
 import { FilterValues } from "@shared/interfaces/filters.interface";
+import { Observable, Subject, take, takeUntil } from "rxjs";
+import { environment } from "../../../../../environments/environment";
 
 @Component({
   selector: "app-plan-page",

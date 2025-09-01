@@ -3,8 +3,7 @@ import {
   Component,
   Inject,
   inject,
-  input,
-  output,
+  output
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -13,6 +12,7 @@ import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
+  MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
@@ -27,7 +27,6 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
   standalone: true,
   imports: [
     MatButtonModule,
-    MatButtonModule,
     MatDialogActions,
     MatDialogClose,
     MatDialogTitle,
@@ -39,8 +38,9 @@ import { BtnDirective } from '@shared/directives/btn/btn.directive';
 export class ConfirmDialogComponent {
   readonly dialog = inject(MatDialog);
   constructor(
+    private dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { title: string; contentMessage: string },
+    public data: { title: string; contentMessage: string; icon?: string; iconColor?: string; confirmButtonText?: string },
   ) {}
 
   // contentMessage = input<string>();
@@ -49,8 +49,11 @@ export class ConfirmDialogComponent {
 
   handleConfirm() {
     this.confirm.emit(true);
+    this.dialogRef.close();
   }
+
   handleCancel() {
     this.confirm.emit(false);
+    this.dialogRef.close();
   }
 }

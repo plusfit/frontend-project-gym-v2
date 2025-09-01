@@ -1,35 +1,35 @@
+import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
-  OnDestroy,
+    AfterViewInit,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
 } from '@angular/core';
-import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExerciseState } from '@features/exercises/state/exercise.state';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
-  MatPaginator,
-  MatPaginatorModule,
-  PageEvent,
+    MatPaginator,
+    MatPaginatorModule,
+    PageEvent,
 } from '@angular/material/paginator';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { MatTableDataSource } from '@angular/material/table';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
 import { Exercise } from '@features/exercises/interfaces/exercise.interface';
 import {
-  DeleteExercise,
-  GetExercisesByName,
-  GetExercisesByPage,
-  SetLimitPerPage,
+    DeleteExercise,
+    GetExercisesByName,
+    GetExercisesByPage,
+    SetLimitPerPage,
 } from '@features/exercises/state/exercise.actions';
-import { CommonModule } from '@angular/common';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
-import { environment } from '../../../../../environments/environment';
+import { ExerciseState } from '@features/exercises/state/exercise.state';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { SnackBarService } from '@core/services/snackbar.service';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
+import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
 
 @Component({
   selector: 'app-exercise',

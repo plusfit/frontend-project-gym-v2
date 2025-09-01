@@ -1,24 +1,24 @@
+import { AsyncPipe } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { Client } from "@features/client/interface/clients.interface";
 import {
-  DeleteClient,
-  GetClients,
-  ToggleDisabledClient,
+    DeleteClient,
+    GetClients,
+    ToggleDisabledClient,
 } from "@features/client/state/clients.actions";
-import { Actions, ofActionSuccessful, Store } from "@ngxs/store";
+import { ClientsState } from "@features/client/state/clients.state";
+import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
+import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { Observable, Subject, takeUntil } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
-import { TableComponent } from "../../../../shared/components/table/table.component";
-import { Observable, Subject, takeUntil } from "rxjs";
-import { Client } from "@features/client/interface/clients.interface";
-import { AsyncPipe } from "@angular/common";
-import { ClientsState } from "@features/client/state/clients.state";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
-import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
-import { FormControl } from "@angular/forms";
+import { TableComponent } from "../../../../shared/components/table/table.component";
 
 @Component({
   selector: "app-client-page",

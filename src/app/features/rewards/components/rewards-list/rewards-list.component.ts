@@ -12,6 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { SnackBarService } from '@core/services/snackbar.service';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { TableComponent } from '@shared/components/table/table.component';
 import { Reward, RewardFilters } from '../../interfaces/reward.interface';
 import { RewardsService } from '../../services/rewards.service';
@@ -31,7 +32,8 @@ import { RewardFormComponent } from '../reward-form/reward-form.component';
     MatInputModule,
     MatSlideToggleModule,
     MatPaginatorModule,
-    TableComponent
+    TableComponent,
+    ConfirmDialogComponent
   ]
 })
 export class RewardsListComponent implements OnInit {
@@ -180,21 +182,33 @@ export class RewardsListComponent implements OnInit {
   }
 
   deleteReward(reward: Reward): void {
-    if (confirm(`¿Estás seguro de que deseas eliminar el premio "${reward.name}"? Esta acción no se puede deshacer.`)) {
-      this.rewardsService.deleteReward(reward.id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.loadRewards();
-            this.snackBarService.showSuccess('Éxito', 'Premio eliminado exitosamente');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: {
+        title: 'Eliminar Premio',
+        contentMessage: `¿Estás seguro de que deseas eliminar el premio "${reward.name}"? Esta acción no se puede deshacer.`,
+        icon: 'ph-gift',
+        iconColor: 'bg-red-100',
+        confirmButtonText: 'Eliminar'
+      }
+    });
+
+    dialogRef.componentInstance.confirm.subscribe((result: boolean) => {
+      if (result) {
+        this.rewardsService.deleteReward(reward.id).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.loadRewards();
+              this.snackBarService.showSuccess('Éxito', 'Premio eliminado exitosamente');
+            }
+          },
+          error: (error) => {
+            const message = error.error?.data.message || 'Error al eliminar el premio';
+            this.snackBarService.showError('Error', message);
           }
-        },
-        error: (error) => {
-          console.error('Error deleting reward:', error);
-          const message = error.error?.message || 'Error al eliminar el premio';
-          this.snackBarService.showError('Error', message);
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
 

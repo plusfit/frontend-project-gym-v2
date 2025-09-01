@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { EColorBadge } from "../../enums/badge-color.enum";
 import { CdkTableModule } from "@angular/cdk/table";
 import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { MatCheckbox } from "@angular/material/checkbox";
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatNoDataRow } from "@angular/material/table";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { LoaderComponent } from "@shared/components/loader/loader.component";
-import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
-import { MatCheckbox } from "@angular/material/checkbox";
+import { TranslationPipe } from "@shared/pipes/translation.pipe";
+import { EColorBadge } from "../../enums/badge-color.enum";
 
 interface AccessObject {
     id: string;

@@ -1,25 +1,25 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { FiltersBarComponent } from '@shared/components/filter-bar/filter-bar.component';
-import { Router } from '@angular/router';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { environment } from '../../../../../environments/environment';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { Routine } from '@features/routines/interfaces/routine.interface';
+import { GetRoutinesBySubRoutine } from '@features/routines/state/routine.actions';
+import { RoutineState } from '@features/routines/state/routine.state';
 import { SubRoutine } from '@features/sub-routines/interfaces/sub-routine.interface';
-import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
 import {
   DeleteSubRoutine,
   GetSubRoutines,
 } from '@features/sub-routines/state/sub-routine.actions';
-import { TableComponent } from '@shared/components/table/table.component';
-import { AsyncPipe } from '@angular/common';
-import { SnackBarService } from '@core/services/snackbar.service';
+import { SubRoutinesState } from '@features/sub-routines/state/sub-routine.state';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FiltersBarComponent } from '@shared/components/filter-bar/filter-bar.component';
+import { TableComponent } from '@shared/components/table/table.component';
 import { FilterValues } from '@shared/interfaces/filters.interface';
-import { GetRoutinesBySubRoutine } from '@features/routines/state/routine.actions';
-import { RoutineState } from '@features/routines/state/routine.state';
-import { Routine } from '@features/routines/interfaces/routine.interface';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-sub-routine-page',
@@ -93,8 +93,9 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   editSubRoutine(id: string): void {
     this.router.navigate([`/subrutinas/${id}`]);
   }
-  deleteSubRoutine(event: string): void {
-    this.store.dispatch(new GetRoutinesBySubRoutine(event));
+  deleteSubRoutine(event: SubRoutine): void {
+    if(!event._id) return;
+    this.store.dispatch(new GetRoutinesBySubRoutine(event._id));
     this.actions
       .pipe(ofActionSuccessful(GetRoutinesBySubRoutine), take(1))
       .subscribe(
@@ -113,7 +114,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
         },
       );
   }
-  openDialog(id: string, routineList?: Routine[]): void {
+  openDialog(subRoutine: SubRoutine, routineList?: Routine[]): void {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
@@ -123,13 +124,18 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
           contentMessage: routineList
             ? this.parseRoutineListToString(routineList)
             : '¿Estás seguro de que deseas eliminar la Subrutina?',
+          icon: 'ph-list-bullets-light',
+          iconColor: 'bg-indigo-100',
+          confirmButtonText: 'Eliminar'
         },
       },
     );
 
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
-      this.store.dispatch(new DeleteSubRoutine(id));
+      if (subRoutine._id) {
+        this.store.dispatch(new DeleteSubRoutine(subRoutine._id));
+      }
       this.actions
         .pipe(ofActionSuccessful(DeleteSubRoutine), takeUntil(this.destroy))
         .subscribe(() => {
@@ -142,10 +148,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
   }
 
   parseRoutineListToString(routineList: Routine[]): string {
-    return (
-      'La Subrutina esta asignada en las siguientes Rutinas: ' +
-      routineList.map((routine) => routine.name).join(', ')
-    );
+    return `La Subrutina esta asignada en las siguientes Rutinas: ${routineList.map((routine) => routine.name).join(', ')}`;
   }
 
   ngOnDestroy(): void {
