@@ -86,4 +86,33 @@ export class ScheduleService {
   deleteHour(id: string) {
     return this.http.delete<any>(`${environment.api}/schedules/${id}`);
   }
+
+  // Métodos para manejar días deshabilitados
+  getDisabledDays(): Observable<any> {
+    // Por ahora usamos localStorage como persistencia temporal
+    // En producción esto debería ser una llamada al backend
+    const disabledDays = JSON.parse(localStorage.getItem('disabledDays') || '[]');
+    return new Observable(observer => {
+      observer.next({ data: { disabledDays } });
+      observer.complete();
+    });
+  }
+
+  updateDisabledDays(disabledDays: string[]): Observable<any> {
+    // Por ahora guardamos en localStorage hasta que el backend tenga endpoint para días completos
+    // El endpoint actual toggle-schedule/:id es para horarios específicos, no días completos
+    localStorage.setItem('disabledDays', JSON.stringify(disabledDays));
+    return new Observable(observer => {
+      observer.next({ data: { disabledDays } });
+      observer.complete();
+    });
+  }
+
+  // Método para toggle individual de horarios (usando el endpoint del backend)
+  toggleScheduleDisabled(scheduleId: string, disabled: boolean): Observable<any> {
+    return this.http.patch<any>(
+      `${environment.api}/schedules/toggle-schedule/${scheduleId}`,
+      { disabled }
+    );
+  }
 }

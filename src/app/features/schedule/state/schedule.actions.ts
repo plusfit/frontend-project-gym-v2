@@ -83,3 +83,33 @@ export class SelectedClient {
 export class ClearSelectedClient {
   static readonly type = '[Schedule] Clear Selected Client';
 }
+
+export class GetDisabledDays {
+  static readonly type = '[Schedule] Get Disabled Days';
+}
+
+export class SetDisabledDays {
+  static readonly type = '[Schedule] Set Disabled Days';
+  constructor(public readonly disabledDays: string[]) {}
+}
+
+export class ToggleDayStatus {
+  static readonly type = '[Schedule] Toggle Day Status';
+  constructor(public readonly day: string) {}
+}
+
+export class ToggleScheduleDisabled {
+  static readonly type = '[Schedule] Toggle Schedule Disabled';
+  constructor(
+    public readonly scheduleId: string, 
+    public readonly disabled: boolean
+  ) {}
+}
+
+export class ToggleAllDaySchedules {
+  static readonly type = '[Schedule] Toggle All Day Schedules';
+  constructor(
+    public readonly day: string,
+    public readonly disabled: boolean
+  ) {}
+}

@@ -15,7 +15,7 @@ export const environment = {
   /**
    * The URL of the API for the application.
    */
-  api: 'https://backend-project-gym-production-9fcf.up.railway.app',
+  api: 'http://localhost:3000',
   _api: 'http://localhost:3000',
   /**
    * The configuration settings for the application.

@@ -353,3 +353,27 @@ div.mat-mdc-paginator-container {
 .mat-mdc-radio-group {
   @apply inline-flex !space-x-2;
 }
+
+/* Estilos para el diálogo de configuraciones */
+.settings-dialog .mat-mdc-dialog-container {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.settings-dialog .mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+}
+
+/* Estilos para el diálogo de confirmación de deshabilitar día */
+.disable-day-dialog .mat-mdc-dialog-container {
+  padding: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.disable-day-dialog .mat-mdc-dialog-surface {
+  border-radius: 16px !important;
+  padding: 0 !important;
+}

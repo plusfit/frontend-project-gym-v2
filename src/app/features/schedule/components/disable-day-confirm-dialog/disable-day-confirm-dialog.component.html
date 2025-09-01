@@ -1,0 +1,132 @@
+<div class="confirmation-dialog">
+  <!-- Header -->
+  <div class="dialog-header p-6 border-b border-gray-200">
+    <div class="flex items-center gap-4">
+      <div 
+        class="w-12 h-12 rounded-full flex items-center justify-center"
+        [class.bg-red-100]="data.isDisabling"
+        [class.bg-green-100]="!data.isDisabling"
+      >
+        <i 
+          [class]="iconClass"
+          [class.text-red-500]="data.isDisabling"
+          [class.text-green-500]="!data.isDisabling"
+          style="font-size: 24px;"
+        ></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 mb-1">
+          {{ titleText }}
+        </h2>
+        <p class="text-gray-600">
+          Confirma esta acción para continuar
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content p-6">
+    <div class="mb-4">
+      <div 
+        class="p-4 rounded-lg border-l-4"
+        [class.bg-red-50]="data.isDisabling"
+        [class.border-red-400]="data.isDisabling"
+        [class.bg-green-50]="!data.isDisabling"
+        [class.border-green-400]="!data.isDisabling"
+      >
+        <div class="flex items-start gap-3">
+          <i 
+            class="mt-0.5"
+            [class.ph-warning]="data.isDisabling"
+            [class.ph-info]="!data.isDisabling"
+            [class.text-red-600]="data.isDisabling"
+            [class.text-green-600]="!data.isDisabling"
+            style="font-size: 20px;"
+          ></i>
+          <div>
+            <h3 
+              class="font-semibold mb-2"
+              [class.text-red-800]="data.isDisabling"
+              [class.text-green-800]="!data.isDisabling"
+            >
+              {{ data.isDisabling ? 'Atención' : 'Información' }}
+            </h3>
+            <p 
+              class="text-sm"
+              [class.text-red-700]="data.isDisabling"
+              [class.text-green-700]="!data.isDisabling"
+            >
+              {{ warningText }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day Info -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+            <i class="ph-calendar text-blue-600" style="font-size: 16px;"></i>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900">{{ data.day }}</h4>
+            <p class="text-sm text-gray-600">
+              {{ data.hoursCount }} horario(s) configurado(s)
+            </p>
+          </div>
+        </div>
+        <div 
+          class="px-3 py-1 rounded-full text-sm font-medium"
+          [class.bg-red-100]="data.isDisabling"
+          [class.text-red-800]="data.isDisabling"
+          [class.bg-green-100]="!data.isDisabling"
+          [class.text-green-800]="!data.isDisabling"
+        >
+          {{ data.isDisabling ? 'Se deshabilitará' : 'Se habilitará' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional info for disabling -->
+    @if (data.isDisabling && data.hoursCount > 0) {
+      <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4">
+        <div class="flex items-start gap-3">
+          <i class="ph-clock text-amber-600 mt-0.5" style="font-size: 20px;"></i>
+          <div>
+            <h4 class="font-semibold text-amber-800 mb-1">¿Qué pasará con los horarios existentes?</h4>
+            <ul class="text-sm text-amber-700 space-y-1">
+              <li>• Los horarios configurados se mantendrán</li>
+              <li>• No serán visibles para los clientes</li>
+              <li>• Se podrán reactivar al habilitar el día nuevamente</li>
+              <li>• Las citas ya agendadas no se verán afectadas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions p-6 border-t border-gray-200">
+    <div class="flex gap-3 justify-end">
+      <button
+        mat-button
+        (click)="onCancel()"
+        class="px-6 py-2"
+      >
+        Cancelar
+      </button>
+      <button
+        mat-raised-button
+        [color]="buttonColor"
+        (click)="onConfirm()"
+        class="px-6 py-2"
+      >
+        {{ buttonText }}
+      </button>
+    </div>
+  </div>
+</div>
