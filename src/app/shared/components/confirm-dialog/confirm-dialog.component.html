@@ -2,9 +2,17 @@
   <!-- Icon Section -->
   <div class="flex justify-center">
     <div
-      class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center"
+      class="w-16 h-16 rounded-full flex items-center justify-center"
+      [ngClass]="getIconBackgroundClass()"
     >
-      <i class="{{ data.icon || 'ph-question' }} text-white text-3xl"></i>
+      <mat-icon
+        class="text-white text-4xl"
+        [style.font-size]="'2rem'"
+        [style.width]="'2rem'"
+        [style.height]="'2rem'"
+      >
+        {{ data.icon || "help" }}
+      </mat-icon>
     </div>
   </div>
 
@@ -30,7 +38,8 @@
     </button>
     <button
       appBtn
-      class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 min-w-[100px]"
+      [ngClass]="getConfirmButtonClass()"
+      class="text-white px-6 py-2 min-w-[100px]"
       (click)="handleConfirm()"
     >
       {{ data.confirmButtonText || "Aceptar" }}

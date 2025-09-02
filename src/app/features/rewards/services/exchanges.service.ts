@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 import {
+  CreateExchangeRequest,
   Exchange,
   ExchangeFilters,
   ExchangeResponse,
-  CreateExchangeRequest,
   ExchangeResult
 } from '../interfaces/exchange.interface';
 
@@ -75,5 +75,12 @@ export class ExchangesService {
    */
   getClientExchanges(clientId: string): Observable<{ success: boolean; data: Exchange[] }> {
     return this.http.get<{ success: boolean; data: Exchange[] }>(`${this.baseUrl}/exchanges/client/${clientId}`);
+  }
+
+  /**
+   * Actualizar estado de un canje
+   */
+  updateExchangeStatus(exchangeId: string, status: 'completed' | 'pending' | 'cancelled'): Observable<{ success: boolean; message: string; data: Exchange }> {
+    return this.http.patch<{ success: boolean; message: string; data: Exchange }>(`${this.baseUrl}/exchanges/${exchangeId}/status`, { status });
   }
 }

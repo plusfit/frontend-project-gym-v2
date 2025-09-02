@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { SnackBarService } from '@core/services/snackbar.service';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Exchange, ExchangeFilters, ExchangeResponse } from '../../interfaces/exchange.interface';
@@ -17,7 +19,8 @@ export class ExchangeHistoryComponent implements OnInit {
     'client', 
     'reward',
     'pointsUsed',
-    'status'
+    'status',
+    'acciones'
   ];
 
   data: Exchange[] = [];
@@ -43,7 +46,8 @@ export class ExchangeHistoryComponent implements OnInit {
 
   constructor(
     private exchangesService: ExchangesService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -224,6 +228,97 @@ export class ExchangeHistoryComponent implements OnInit {
       case 'warning':
         this.snackBarService.showWarning(title, message);
         break;
+    }
+  }
+
+  // ========== MÉTODOS PARA CAMBIO DE ESTADO ==========
+
+  onChangeStatus(exchange: Exchange): void {
+    const availableStatuses = this.getAvailableStatusTransitions(exchange.status);
+    
+    if (availableStatuses.length === 0) {
+      this.showSnackBar('Información', 'No hay cambios de estado disponibles para este canje', 'warning');
+      return;
+    }
+
+    // Si hay solo un estado disponible, usar directamente
+    if (availableStatuses.length === 1) {
+      this.confirmStatusChange(exchange, availableStatuses[0]);
+      return;
+    }
+
+    // Si hay múltiples estados, mostrar opciones
+    // Por simplicidad, usaremos el primer estado disponible
+    // En una implementación más compleja, podrías mostrar un dialog con opciones
+    this.confirmStatusChange(exchange, availableStatuses[0]);
+  }
+
+  private getAvailableStatusTransitions(currentStatus: string): Array<{ value: 'completed' | 'pending' | 'cancelled', label: string }> {
+    switch (currentStatus) {
+      case 'pending':
+        return [
+          { value: 'completed', label: 'Completar' },
+          { value: 'cancelled', label: 'Cancelar' }
+        ];
+      case 'completed':
+        return [
+          { value: 'cancelled', label: 'Cancelar' }
+        ];
+      case 'cancelled':
+        return []; // No se puede cambiar desde cancelado
+      default:
+        return [];
+    }
+  }
+
+  private confirmStatusChange(exchange: Exchange, newStatus: { value: 'completed' | 'pending' | 'cancelled', label: string }): void {
+    const currentStatusText = this.getStatusText(exchange.status);
+    const newStatusText = newStatus.label;
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirmar Cambio de Estado',
+        contentMessage: `¿Está seguro que desea cambiar el estado del canje de "${currentStatusText}" a "${newStatusText}"?`,
+        icon: 'swap_horiz',
+        iconColor: 'blue',
+        confirmButtonText: 'Confirmar Cambio'
+      }
+    });
+
+    dialogRef.componentInstance.confirm.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.updateExchangeStatus(exchange.id, newStatus.value);
+      }
+    });
+  }
+
+  private updateExchangeStatus(exchangeId: string, newStatus: 'completed' | 'pending' | 'cancelled'): void {
+    this.loading = true;
+
+    this.exchangesService.updateExchangeStatus(exchangeId, newStatus).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.showSnackBar('Éxito', response.message, 'success');
+          this.loadExchanges(); // Recargar la lista
+        } else {
+          this.showSnackBar('Error', 'No se pudo actualizar el estado del canje', 'error');
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error updating exchange status:', error);
+        const errorMessage = error?.error?.message || 'Error al actualizar el estado del canje';
+        this.showSnackBar('Error', errorMessage, 'error');
+        this.loading = false;
+      }
+    });
+  }
+
+  // Método para que el componente table pueda usar para mostrar los cambios de estado
+  onEdit(exchangeId: string): void {
+    const exchange = this.data.find(ex => ex.id === exchangeId);
+    if (exchange) {
+      this.onChangeStatus(exchange);
     }
   }
 }
