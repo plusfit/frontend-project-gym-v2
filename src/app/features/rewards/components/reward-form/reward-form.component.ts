@@ -1,11 +1,18 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import { Storage } from '@angular/fire/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Reward } from '../../interfaces/reward.interface';
-import { RewardsService } from '../../services/rewards.service';
-import { SnackBarService } from '@core/services/snackbar.service';
 import { ErrorHandlerService } from '@core/services/error-handler.service';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { CreateRewardRequest, Reward } from '../../interfaces/reward.interface';
+import { RewardsService } from '../../services/rewards.service';
 
 export interface RewardFormData {
   mode: 'create' | 'edit';
@@ -20,14 +27,27 @@ export class RewardFormComponent implements OnInit {
   form: FormGroup;
   loading = false;
   isEditMode: boolean;
+  selectedFile: File | null = null;
+  filePreview: string | ArrayBuffer | null = null;
+  dragging = false;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  private readonly allowedFileTypes = [
+    'image/gif',
+    'image/jpeg',
+    'image/jpg',
+    'image/png'
+  ];
 
   constructor(
     private fb: FormBuilder,
     private rewardsService: RewardsService,
     private snackBarService: SnackBarService,
     private errorHandler: ErrorHandlerService,
+    private storage: Storage,
     public dialogRef: MatDialogRef<RewardFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RewardFormData
+    @Inject(MAT_DIALOG_DATA)
+    public data: RewardFormData
   ) {
     this.isEditMode = data.mode === 'edit';
     this.form = this.createForm();
@@ -55,8 +75,10 @@ export class RewardFormComponent implements OnInit {
       pointsRequired: reward.pointsRequired,
       enabled: reward.enabled
     });
+    if (reward.imageUrl) {
+      this.filePreview = reward.imageUrl;
+    }
   }
-
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -75,47 +97,134 @@ export class RewardFormComponent implements OnInit {
     }
   }
 
-  private createReward(formData: any): void {
-    this.rewardsService.createReward(formData).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.errorHandler.handleSuccess('create', 'premio');
-          this.dialogRef.close(true);
-        } else {
-          this.snackBarService.showError('Error', 'Error al crear el premio');
+  private createReward(formData: CreateRewardRequest): void {
+    if (this.selectedFile) {
+      this.rewardsService.uploadRewardImage(this.selectedFile).subscribe({
+        next: (uploadResult) => {
+          this.rewardsService.getFileUrl(uploadResult.ref).subscribe({
+            next: (url) => {
+              const dataWithImage = {
+                ...formData,
+                imageUrl: url,
+                imagePath: uploadResult.ref.fullPath,
+                mediaType: 'image' as const
+              };
+
+              this.rewardsService.createReward(dataWithImage).subscribe({
+                next: (response) => {
+                  if (response.success) {
+                    this.errorHandler.handleSuccess('create', 'premio');
+                    this.dialogRef.close(true);
+                  } else {
+                    this.snackBarService.showError('Error', 'Error al crear el premio');
+                  }
+                  this.loading = false;
+                },
+                error: (error) => {
+                  console.error('Error creating premio:', error);
+                  this.errorHandler.handleHttpError(error, 'create', 'premio');
+                  this.loading = false;
+                }
+              });
+            },
+            error: (error) => {
+              console.error('Error getting file URL:', error);
+              this.snackBarService.showError('Error', 'Error al obtener URL del archivo');
+              this.loading = false;
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error uploading file:', error);
+          this.snackBarService.showError('Error', 'Error al subir la imagen');
+          this.loading = false;
         }
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error creating premio:', error);
-        // Option 1: Using ErrorHandlerService (recommended)
-        this.errorHandler.handleHttpError(error, 'create', 'premio');
-        
-        // Option 2: Using SnackBarService directly (alternative)
-        // this.snackBarService.showBackendError(error, 'Error al crear premio', 'create');
-        
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      this.rewardsService.createReward(formData).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.errorHandler.handleSuccess('create', 'premio');
+            this.dialogRef.close(true);
+          } else {
+            this.snackBarService.showError('Error', 'Error al crear el premio');
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error creating premio:', error);
+          this.errorHandler.handleHttpError(error, 'create', 'premio');
+          this.loading = false;
+        }
+      });
+    }
   }
 
-  private updateReward(formData: any): void {
-    this.rewardsService.updateReward(this.data.reward!.id, formData).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.errorHandler.handleSuccess('update', 'premio');
-          this.dialogRef.close(true);
-        } else {
-          this.snackBarService.showError('Error', 'Error al actualizar el premio');
+  private updateReward(formData: Partial<CreateRewardRequest>): void {
+    if (this.selectedFile) {
+      this.rewardsService.uploadRewardImage(this.selectedFile).subscribe({
+        next: (uploadResult) => {
+          this.rewardsService.getFileUrl(uploadResult.ref).subscribe({
+            next: (url) => {
+              const dataWithImage = {
+                ...formData,
+                imageUrl: url,
+                imagePath: uploadResult.ref.fullPath,
+                mediaType: 'image' as const
+              };
+
+              if (this.data.reward) {
+                this.rewardsService.updateReward(this.data.reward.id, dataWithImage).subscribe({
+                  next: (response) => {
+                    if (response.success) {
+                      this.errorHandler.handleSuccess('update', 'premio');
+                      this.dialogRef.close(true);
+                    } else {
+                      this.snackBarService.showError('Error', 'Error al actualizar el premio');
+                    }
+                    this.loading = false;
+                  },
+                  error: (error) => {
+                    console.error('Error updating premio:', error);
+                    this.errorHandler.handleHttpError(error, 'update', 'premio');
+                    this.loading = false;
+                  }
+                });
+              }
+            },
+            error: (error) => {
+              console.error('Error getting file URL:', error);
+              this.snackBarService.showError('Error', 'Error al obtener URL del archivo');
+              this.loading = false;
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error uploading file:', error);
+          this.snackBarService.showError('Error', 'Error al subir la imagen');
+          this.loading = false;
         }
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error updating premio:', error);
-        this.errorHandler.handleHttpError(error, 'update', 'premio');
-        this.loading = false;
+      });
+    } else {
+      if (this.data.reward) {
+        this.rewardsService.updateReward(this.data.reward.id, formData).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.errorHandler.handleSuccess('update', 'premio');
+              this.dialogRef.close(true);
+            } else {
+              this.snackBarService.showError('Error', 'Error al actualizar el premio');
+            }
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error updating premio:', error);
+            this.errorHandler.handleHttpError(error, 'update', 'premio');
+            this.loading = false;
+          }
+        });
       }
-    });
+    }
   }
 
   onCancel(): void {
@@ -123,15 +232,80 @@ export class RewardFormComponent implements OnInit {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.form.controls).forEach(key => {
+    for (const key of Object.keys(this.form.controls)) {
       const control = this.form.get(key);
       control?.markAsTouched();
-    });
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.[0]) {
+      const file = input.files[0];
+
+      if (!this.allowedFileTypes.includes(file.type)) {
+        this.snackBarService.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG');
+        input.value = '';
+        return;
+      }
+
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64File = e.target?.result as string;
+        this.filePreview = base64File;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeFile(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.filePreview = null;
+    this.selectedFile = null;
+
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.dragging = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.dragging = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.dragging = false;
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.processFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  processFile(file: File): void {
+    if (this.allowedFileTypes.includes(file.type)) {
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.filePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+
+      console.log('Archivo seleccionado:', file.name);
+    } else {
+      this.snackBarService.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG');
+    }
   }
 
 
-
-  // Getters para validaciones en el template
   get nameError(): string {
     const control = this.form.get('name');
     if (control?.hasError('required') && control?.touched) {

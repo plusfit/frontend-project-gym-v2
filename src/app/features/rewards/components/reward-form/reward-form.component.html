@@ -73,6 +73,76 @@
             </mat-form-field>
           </div>
 
+          <!-- Imagen del Premio -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700"
+              >Imagen del Premio</label
+            >
+            <div
+              class="mt-2 mb-6 border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition relative flex flex-col items-center justify-center"
+              [class.border-indigo-500]="dragging"
+              [class.bg-indigo-50]="dragging"
+              tabindex="0"
+              role="button"
+              (click)="fileInput.click()"
+              (keydown.enter)="fileInput.click()"
+              (keyup.space)="fileInput.click()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+            >
+              <input
+                #fileInput
+                type="file"
+                accept=".gif,.jpg,.jpeg,.png,image/gif,image/jpeg,image/jpg,image/png"
+                (change)="onFileSelected($event)"
+                hidden
+              />
+
+              <ng-container *ngIf="!filePreview">
+                <svg
+                  class="w-12 h-12 text-gray-400 mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7 16V8a4 4 0 118 0m-6 8h6m-6 0a2 2 0 110-4m6 4a2 2 0 110-4"
+                  ></path>
+                </svg>
+                <p class="text-sm text-gray-600">
+                  Arrastra y suelta aquí o
+                  <span class="text-indigo-500 font-medium"
+                    >haz clic para subir</span
+                  >
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                  Solo archivos GIF, JPG, JPEG y PNG
+                </p>
+              </ng-container>
+
+              <ng-container *ngIf="filePreview">
+                <img
+                  [src]="filePreview"
+                  class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+                  alt="Preview del premio"
+                />
+                <button
+                  type="button"
+                  class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
+                  (click)="removeFile($event)"
+                >
+                  ✕
+                </button>
+              </ng-container>
+            </div>
+          </div>
+
           <!-- Puntos Requeridos -->
           <div class="h-[80px]">
             <mat-form-field appearance="outline" class="w-full">

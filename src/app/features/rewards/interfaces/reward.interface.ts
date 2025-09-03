@@ -5,6 +5,9 @@ export interface Reward {
   pointsRequired: number;
   enabled: boolean;
   totalCanjes: number;
+  imageUrl?: string;
+  imagePath?: string;
+  mediaType?: 'image' | 'video';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +38,9 @@ export interface CreateRewardRequest {
   description?: string;
   pointsRequired: number;
   enabled?: boolean;
+  imageUrl?: string;
+  imagePath?: string;
+  mediaType?: 'image' | 'video';
 }
 
 export interface UpdateRewardRequest {
@@ -42,6 +48,9 @@ export interface UpdateRewardRequest {
   description?: string;
   pointsRequired?: number;
   enabled?: boolean;
+  imageUrl?: string;
+  imagePath?: string;
+  mediaType?: 'image' | 'video';
 }
 
 export interface RewardApiResponse {
