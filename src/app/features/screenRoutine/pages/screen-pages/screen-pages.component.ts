@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { GetScreenRoutinesByPage } from '@features/screenRoutine/state/screenRoutine.actions';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { ScreenComponent } from '../../components/screen/screen.component';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { ScreenComponent } from '../../components/screen/screen.component';
 
 @Component({
   selector: 'app-screen-pages',
