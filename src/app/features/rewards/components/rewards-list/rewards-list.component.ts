@@ -38,6 +38,7 @@ import { RewardFormComponent } from '../reward-form/reward-form.component';
 })
 export class RewardsListComponent implements OnInit {
   displayedColumns: string[] = [
+    'image',
     'name',
     'pointsRequired',
     'totalExchanges',

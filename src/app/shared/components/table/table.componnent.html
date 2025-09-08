@@ -108,6 +108,27 @@
           <span class="text-gray-700 font-mono"
             >{{ formatCedula(element[column]) }}</span
           >
+          } @if (column === "image") {
+          <div class="image-container flex justify-center">
+            @if (element.rewardImageUrl || element.imageUrl) {
+            <img
+              [src]="element.rewardImageUrl || element.imageUrl"
+              [alt]="element.rewardName || element.name || 'Imagen'"
+              class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event)"
+            />
+            } @else {
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg border border-gray-300 flex items-center justify-center shadow-sm"
+            >
+              <mat-icon class="text-gray-500" style="font-size: 20px"
+                >image</mat-icon
+              >
+            </div>
+            }
+          </div>
           } @if (column === "imageUrl") {
           <div class="image-container flex justify-center">
             <img

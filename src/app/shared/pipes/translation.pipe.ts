@@ -5,14 +5,13 @@ import { Pipe, PipeTransform } from "@angular/core";
   standalone: true,
 })
 export class TranslationPipe implements PipeTransform {
-  constructor() {}
-
   transform(value: string): string {
-    if (value && value.includes(".")) {
-      value = value.split(".")[1];
+    let key = value;
+    if (key?.includes(".")) {
+      key = key.split(".")[1];
     }
 
-    switch (value) {
+    switch (key) {
       // Standard fields
       case "name":
         return "Nombre";
@@ -40,6 +39,8 @@ export class TranslationPipe implements PipeTransform {
         return "Categoría";
       case "isCustom":
         return "Personalizada";
+      case "image":
+        return "Imagen";
       case "days":
         return "Días";
       case "day":
@@ -145,7 +146,7 @@ export class TranslationPipe implements PipeTransform {
       case "other":
         return "Otros";
       default:
-        return value;
+        return key;
     }
   }
 }

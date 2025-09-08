@@ -15,8 +15,9 @@ import { ExchangesService } from '../../services/exchanges.service';
 })
 export class ExchangeHistoryComponent implements OnInit {
   displayedColumns: string[] = [
+    'image',
     'date',
-    'client', 
+    'client',
     'reward',
     'pointsUsed',
     'status',

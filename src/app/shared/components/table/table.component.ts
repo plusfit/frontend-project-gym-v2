@@ -2,6 +2,7 @@ import { CdkTableModule } from "@angular/cdk/table";
 import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatCheckbox } from "@angular/material/checkbox";
+import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatNoDataRow } from "@angular/material/table";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
@@ -46,6 +47,7 @@ interface AccessObject {
     CamelToTitlePipe,
     DatePipe,
     MatCheckbox,
+    MatIcon,
   ],
 })
 export class TableComponent implements OnInit {
