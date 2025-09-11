@@ -1,0 +1,67 @@
+<div class="day-settings-container p-6 bg-white rounded-xl shadow-lg">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+      <i class="ph-gear text-blue-600" style="font-size: 24px;"></i>
+      Configuración de Días
+    </h2>
+    <p class="text-gray-600">
+      Habilita o deshabilita días de la semana para el agendamiento de clientes
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    @for (day of allDays; track day) {
+      <mat-card 
+        class="day-card p-4 transition-all duration-300 hover:shadow-md"
+        [class.disabled]="(disabledDays$ | async)?.includes(day)"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div 
+              class="w-10 h-10 rounded-full flex items-center justify-center"
+              [class.bg-green-100]="!(disabledDays$ | async)?.includes(day)"
+              [class.bg-red-100]="(disabledDays$ | async)?.includes(day)"
+            >
+              <i 
+                [class]="'ph-' + getDayIcon(day)"
+                [class.text-green-600]="!(disabledDays$ | async)?.includes(day)"
+                [class.text-red-600]="(disabledDays$ | async)?.includes(day)"
+                style="font-size: 20px;"
+              ></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900">{{ day }}</h3>
+              <p 
+                class="text-sm"
+                [class.text-green-600]="!(disabledDays$ | async)?.includes(day)"
+                [class.text-red-600]="(disabledDays$ | async)?.includes(day)"
+              >
+                {{ (disabledDays$ | async)?.includes(day) ? 'Deshabilitado' : 'Habilitado' }}
+              </p>
+            </div>
+          </div>
+
+          <mat-slide-toggle
+            [checked]="!(disabledDays$ | async)?.includes(day)"
+            (toggleChange)="toggleDay(day)"
+            [color]="'primary'"
+            class="day-toggle"
+          ></mat-slide-toggle>
+        </div>
+      </mat-card>
+    }
+  </div>
+
+  <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+    <div class="flex items-start gap-3">
+      <i class="ph-info text-blue-600 mt-1" style="font-size: 20px;"></i>
+      <div>
+        <h4 class="font-semibold text-blue-900 mb-1">Información importante</h4>
+        <p class="text-blue-800 text-sm">
+          Los días deshabilitados no aparecerán en el calendario de agendamiento y los clientes no podrán reservar citas en esos días.
+          Los horarios existentes en días deshabilitados se mantendrán pero no serán visibles hasta que el día sea habilitado nuevamente.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

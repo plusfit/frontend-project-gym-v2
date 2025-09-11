@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ScheduleStateModel } from './schedule.model';
 import { ScheduleService } from '../services/schedule.service';
-import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, Observable, switchMap, tap, throwError } from 'rxjs';
 import {
   AssignClient,
   ClearClients,
@@ -16,7 +16,13 @@ import {
   GetSchedule,
   SelectedClient,
   ClearSelectedClient,
+  GetDisabledDays,
+  SetDisabledDays,
+  ToggleDayStatus,
+  ToggleScheduleDisabled,
+  ToggleAllDaySchedules,
 } from './schedule.actions';
+import { EDay } from '@core/enums/day.enum';
 
 @State<ScheduleStateModel>({
   name: 'schedule',
@@ -29,6 +35,7 @@ import {
     loadingAssignable: false,
     loadingHour: false,
     loading: false,
+    disabledDays: [],
   },
 })
 @Injectable({ providedIn: 'root' })
@@ -85,6 +92,21 @@ export class ScheduleState {
     return state?.selectedClient;
   }
 
+  @Selector()
+  static disabledDays(state: ScheduleStateModel): string[] {
+    return state?.disabledDays || [];
+  }
+
+  @Selector()
+  static enabledSchedule(state: ScheduleStateModel): any {
+    const schedule = state?.schedule;
+    const disabledDays = state?.disabledDays || [];
+    
+    if (!schedule) return null;
+    
+    return schedule.filter((day: any) => !disabledDays.includes(day.day));
+  }
+
   obtenerElementosRepetidos(array: string[]): string[] {
     const conteo: Record<string, number> = {};
     const repetidos: string[] = [];
@@ -108,11 +130,13 @@ export class ScheduleState {
   getSchedule(ctx: StateContext<ScheduleStateModel>) {
     ctx.patchState({ loading: true });
     return this.scheduleService.getSchedule().pipe(
-      tap((schedule: any) => {
+      switchMap((schedule: any) => {
+        // Primero cargamos el schedule
         // Agrupamos los horarios por día y ordenamos los resultados
         const sortSchedule = schedule.data.reduce((acc: any[], hour: any) => {
           // Buscamos si ya existe una entrada para el día actual
           let dayEntry = acc.find((d: any) => d.day === hour.day);
+       
 
           if (!dayEntry) {
             // Si no existe, la creamos
@@ -138,16 +162,43 @@ export class ScheduleState {
           return acc;
         }, []);
 
-        //no es necesario ordenar los dias
+        const daysOrder = [
+          'Lunes',
+          'Martes',
+          'Miércoles',
+          'Jueves',
+          'Viernes',
+          'Sábado',
+          'Domingo',
+        ];
 
-        // sortSchedule.sort((a: any, b: any) => {
-        //   const dayA = daysOrder.indexOf(a.day);
-        //   const dayB = daysOrder.indexOf(b.day);
-        //   return dayA - dayB;
-        // });
+        // Ordenar los días según el orden definido
+        sortSchedule.sort((a: any, b: any) => {
+          const dayA = daysOrder.indexOf(a.day);
+          const dayB = daysOrder.indexOf(b.day);
+          return dayA - dayB;
+        });
 
-        ctx.patchState({ schedule: sortSchedule, loading: false });
+        ctx.patchState({ schedule: sortSchedule });
+
+        // Ahora cargamos los días deshabilitados
+        return this.scheduleService.getDisabledDays().pipe(
+          tap((response: any) => {
+            const disabledDays = response?.data?.disabledDays || [];
+            ctx.patchState({ disabledDays, loading: false });
+          }),
+          catchError((error) => {
+            // Si falla la carga de días deshabilitados, solo continuamos con schedule cargado
+            console.warn('Error loading disabled days:', error);
+            ctx.patchState({ loading: false });
+            return throwError(() => error);
+          })
+        );
       }),
+      catchError((error) => {
+        ctx.patchState({ loading: false });
+        return throwError(() => error);
+      })
     );
   }
 
@@ -426,5 +477,152 @@ export class ScheduleState {
   @Action(ClearSelectedClient)
   clearSelectedClient(ctx: StateContext<ScheduleStateModel>) {
     ctx.patchState({ selectedClient: null });
+  }
+
+  @Action(GetDisabledDays)
+  getDisabledDays(ctx: StateContext<ScheduleStateModel>) {
+    return this.scheduleService.getDisabledDays().pipe(
+      tap((response: any) => {
+        const disabledDays = response?.data?.disabledDays || [];
+        ctx.patchState({ disabledDays });
+      }),
+      catchError((error) => {
+        console.error('Error loading disabled days:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(SetDisabledDays)
+  setDisabledDays(ctx: StateContext<ScheduleStateModel>, action: SetDisabledDays) {
+    return this.scheduleService.updateDisabledDays(action.disabledDays).pipe(
+      tap(() => {
+        ctx.patchState({ disabledDays: action.disabledDays });
+      }),
+      catchError((error) => {
+        console.error('Error updating disabled days:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(ToggleDayStatus)
+  toggleDayStatus(ctx: StateContext<ScheduleStateModel>, action: ToggleDayStatus) {
+    const state = ctx.getState();
+    const disabledDays = state.disabledDays || [];
+    
+    let updatedDisabledDays: string[];
+    
+    if (disabledDays.includes(action.day)) {
+      // Si el día está deshabilitado, lo habilitamos
+      updatedDisabledDays = disabledDays.filter(day => day !== action.day);
+    } else {
+      // Si el día está habilitado, lo deshabilitamos
+      updatedDisabledDays = [...disabledDays, action.day];
+    }
+
+    return this.scheduleService.updateDisabledDays(updatedDisabledDays, action.reason).pipe(
+      tap(() => {
+        ctx.patchState({ disabledDays: updatedDisabledDays });
+      }),
+      catchError((error) => {
+        console.error('Error toggling day status:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(ToggleScheduleDisabled)
+  toggleScheduleDisabled(ctx: StateContext<ScheduleStateModel>, action: ToggleScheduleDisabled) {
+    return this.scheduleService.toggleScheduleDisabled(action.scheduleId, action.disabled).pipe(
+      tap(() => {
+        const state = ctx.getState();
+        const schedule = state.schedule?.map((day: any) => {
+          return {
+            ...day,
+            hours: day.hours.map((hour: any) => {
+              if (hour._id === action.scheduleId) {
+                return {
+                  ...hour,
+                  disabled: action.disabled,
+                };
+              }
+              return hour;
+            }),
+          };
+        });
+        ctx.patchState({ schedule });
+      }),
+      catchError((error) => {
+        console.error('Error toggling schedule disabled:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(ToggleAllDaySchedules)
+  toggleAllDaySchedules(ctx: StateContext<ScheduleStateModel>, action: ToggleAllDaySchedules) {
+    const state = ctx.getState();
+    const schedule = state.schedule;
+    
+    if (!schedule) return;
+
+    // Encontrar todos los horarios del día específico
+    const daySchedule = schedule.find((day: any) => day.day === action.day);
+    
+    if (!daySchedule || !daySchedule.hours || daySchedule.hours.length === 0) {
+      // Si no hay horarios, solo actualizar el estado local
+      return this.toggleDayStatus(ctx, new ToggleDayStatus(action.day, action.reason));
+    }
+
+    // Crear observables para toggle de todos los horarios del día
+    const toggleRequests = daySchedule.hours.map((hour: any) => 
+      this.scheduleService.toggleScheduleDisabled(hour._id, action.disabled, action.reason)
+    );
+
+    // Ejecutar todas las peticiones en paralelo
+    return forkJoin(toggleRequests).pipe(
+      tap(() => {
+        // Actualizar el estado local después de que todas las peticiones sean exitosas
+        const updatedSchedule = schedule.map((day: any) => {
+          if (day.day === action.day) {
+            return {
+              ...day,
+              hours: day.hours.map((hour: any) => ({
+                ...hour,
+                disabled: action.disabled
+              }))
+            };
+          }
+          return day;
+        });
+
+        // También actualizar los días deshabilitados
+        const disabledDays = state.disabledDays || [];
+        let updatedDisabledDays: string[];
+        
+        if (action.disabled) {
+          // Agregar el día a la lista de deshabilitados si no está
+          updatedDisabledDays = disabledDays.includes(action.day) 
+            ? disabledDays 
+            : [...disabledDays, action.day];
+        } else {
+          // Remover el día de la lista de deshabilitados
+          updatedDisabledDays = disabledDays.filter(day => day !== action.day);
+        }
+
+        ctx.patchState({ 
+          schedule: updatedSchedule,
+          disabledDays: updatedDisabledDays 
+        });
+
+        // Guardar también en localStorage para persistencia
+        localStorage.setItem('disabledDays', JSON.stringify(updatedDisabledDays));
+      }),
+      catchError((error) => {
+        console.error('Error toggling all day schedules:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

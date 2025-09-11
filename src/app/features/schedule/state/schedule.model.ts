@@ -13,4 +13,5 @@ export class ScheduleStateModel {
   pageCount?: number | null;
   pageSize?: number | null;
   error?: any | null;
+  disabledDays?: string[];
 }
