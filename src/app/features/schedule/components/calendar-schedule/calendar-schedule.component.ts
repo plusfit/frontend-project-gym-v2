@@ -29,7 +29,7 @@ import { EDays } from '@shared/enums/days-enum';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { CardScheduleComponent } from '../card-schedule/card-schedule.component';
 import { ScheduleFormComponent } from '../schedule-form/schedule-form.component';
-import { DisableDayConfirmDialogComponent } from '../disable-day-confirm-dialog/disable-day-confirm-dialog.component';
+import { DisableDayConfirmDialogComponent, DisableDayDialogResult } from '../disable-day-confirm-dialog/disable-day-confirm-dialog.component';
 
 @Component({
   selector: 'app-calendar-schedule',
@@ -59,7 +59,7 @@ export class CalendarScheduleComponent implements AfterViewInit, OnChanges {
   allDaysSchedule: any[] = [];
 
   // Configuración para usar backend o localStorage
-  private useBackendForToggle = true; // Cambiar a false para usar localStorage
+  private useBackendForToggle = false; // Usar localStorage para mostrar todos los horarios
 
   scheduleUpdated = output<any>({
     alias: 'scheduleUpdated',
@@ -168,19 +168,16 @@ export class CalendarScheduleComponent implements AfterViewInit, OnChanges {
       panelClass: 'disable-day-dialog'
     });
 
-    dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed) {
+    console.log('Dialog data:', { day, isDisabling, hoursCount }); // Debug log
+
+    dialogRef.afterClosed().subscribe((result: DisableDayDialogResult) => {
+      if (result?.confirmed) {
         // Elegir qué acción usar basado en la configuración
         let actionObservable;
         
-        if (this.useBackendForToggle && hoursCount > 0) {
           // Usar el endpoint del backend para deshabilitar horarios individuales
-          actionObservable = this.store.dispatch(new ToggleAllDaySchedules(day, isDisabling));
-        } else {
-          // Usar localStorage para manejar días completos
-          actionObservable = this.store.dispatch(new ToggleDayStatus(day));
-        }
-
+          actionObservable = this.store.dispatch(new ToggleAllDaySchedules(day, isDisabling, result.reason));
+  
         actionObservable.subscribe({
           next: () => {
             const actionText = isDisabling ? 'deshabilitado' : 'habilitado';

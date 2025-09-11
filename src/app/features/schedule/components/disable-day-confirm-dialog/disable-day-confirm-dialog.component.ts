@@ -3,11 +3,19 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 export interface DisableDayDialogData {
   day: string;
   isDisabling: boolean;
   hoursCount: number;
+}
+
+export interface DisableDayDialogResult {
+  confirmed: boolean;
+  reason?: string;
 }
 
 @Component({
@@ -17,23 +25,45 @@ export interface DisableDayDialogData {
     CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   templateUrl: './disable-day-confirm-dialog.component.html',
   styleUrls: ['./disable-day-confirm-dialog.component.css']
 })
 export class DisableDayConfirmDialogComponent {
+  reasonControl = new FormControl('');
+
   constructor(
     public dialogRef: MatDialogRef<DisableDayConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DisableDayDialogData
-  ) {}
+  ) {
+    console.log('DisableDayConfirmDialog data:', this.data); // Debug log
+    
+    // Solo cuando estamos deshabilitando, hacer la razón obligatoria
+    if (this.data.isDisabling) {
+      this.reasonControl.setValidators([Validators.required, Validators.minLength(3)]);
+      this.reasonControl.updateValueAndValidity();
+    }
+  }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close({ confirmed: false });
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true);
+    // Si estamos deshabilitando y el campo de razón es inválido, marcar como touched y no continuar
+    if (this.data.isDisabling && this.reasonControl.invalid) {
+      this.reasonControl.markAsTouched();
+      return;
+    }
+
+    this.dialogRef.close({
+      confirmed: true,
+      reason: this.data.isDisabling ? this.reasonControl.value : undefined
+    });
   }
 
   get actionText(): string {

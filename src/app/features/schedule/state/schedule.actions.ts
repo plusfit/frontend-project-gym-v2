@@ -95,7 +95,10 @@ export class SetDisabledDays {
 
 export class ToggleDayStatus {
   static readonly type = '[Schedule] Toggle Day Status';
-  constructor(public readonly day: string) {}
+  constructor(
+    public readonly day: string,
+    public readonly reason?: string
+  ) {}
 }
 
 export class ToggleScheduleDisabled {
@@ -110,6 +113,7 @@ export class ToggleAllDaySchedules {
   static readonly type = '[Schedule] Toggle All Day Schedules';
   constructor(
     public readonly day: string,
-    public readonly disabled: boolean
+    public readonly disabled: boolean,
+    public readonly reason?: string
   ) {}
 }

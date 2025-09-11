@@ -521,7 +521,7 @@ export class ScheduleState {
       updatedDisabledDays = [...disabledDays, action.day];
     }
 
-    return this.scheduleService.updateDisabledDays(updatedDisabledDays).pipe(
+    return this.scheduleService.updateDisabledDays(updatedDisabledDays, action.reason).pipe(
       tap(() => {
         ctx.patchState({ disabledDays: updatedDisabledDays });
       }),
@@ -572,12 +572,12 @@ export class ScheduleState {
     
     if (!daySchedule || !daySchedule.hours || daySchedule.hours.length === 0) {
       // Si no hay horarios, solo actualizar el estado local
-      return this.toggleDayStatus(ctx, new ToggleDayStatus(action.day));
+      return this.toggleDayStatus(ctx, new ToggleDayStatus(action.day, action.reason));
     }
 
     // Crear observables para toggle de todos los horarios del día
     const toggleRequests = daySchedule.hours.map((hour: any) => 
-      this.scheduleService.toggleScheduleDisabled(hour._id, action.disabled)
+      this.scheduleService.toggleScheduleDisabled(hour._id, action.disabled, action.reason)
     );
 
     // Ejecutar todas las peticiones en paralelo
