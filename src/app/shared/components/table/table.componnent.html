@@ -14,7 +14,7 @@
         <th
           cdk-header-cell
           *cdkHeaderCellDef
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2 sticky top-0 z-10"
         >
           <mat-checkbox
             type="checkbox"
@@ -45,7 +45,7 @@
           cdk-header-cell
           *cdkHeaderCellDef
           [ngClass]="headerCssClass"
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4"
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4 sticky top-0 z-10"
         >
           {{ column | translation | camelToTitle }}
         </th>
@@ -93,9 +93,27 @@
             [textBadge]="getSexTypeLabel(element[column])"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "successful") {
+          <app-badge
+            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="element[column] ? 'Exitoso' : 'Fallido'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "accessDate") {
+          <span class="text-gray-700">{{ element[column] | utcDate }}</span>
+          } @if (column === "cedula") {
+          <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
+          } @if (column === "lastAccess") {
+          <span class="text-gray-700">{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a') : 'Sin acceso' }}</span>
+          } @if (column === "totalAccesses") {
+          <app-badge
+            [colorBadge]="getTotalAccessesBadgeColor(element[column])"
+            [textBadge]="(element[column] || 0) + ' accesos'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -119,7 +137,7 @@
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
                 <button
-                  (click)="emitSeeDetail(element._id)"
+                  (click)="emitSeeDetail(element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -134,7 +152,7 @@
                 </button>
                 }
                 <button
-                  (click)="emitEdit(element._id)"
+                  (click)="emitEdit(element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -167,7 +185,7 @@
                 </button>
                 } @if (showDisabled) {
                 <button
-                  (click)="emitDisabled(element._id, element.disabled)"
+                  (click)="emitDisabled(element.id || element._id, element.disabled)"
                   type="button"
                   class="group"
                   mat-menu-item

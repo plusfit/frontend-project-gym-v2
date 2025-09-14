@@ -34,6 +34,10 @@ export interface ClientInfo {
     respiratoryHistory: string;
     respiratoryHistoryInput: string;
   };
+  email: string;
+  disabled: boolean;
+  lastAccess?: string;
+  totalAccesses?: number;
 }
 
 export interface clientApiResponseClientById {

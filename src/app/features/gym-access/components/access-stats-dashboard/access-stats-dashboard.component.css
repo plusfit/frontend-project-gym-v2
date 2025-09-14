@@ -197,19 +197,6 @@
   margin: 2px 0 0 0;
 }
 
-/* Success rate indicators */
-.success-rate-high {
-  color: #10b981;
-}
-
-.success-rate-medium {
-  color: #f59e0b;
-}
-
-.success-rate-low {
-  color: #ef4444;
-}
-
 /* Empty state */
 .empty-state {
   text-align: center;

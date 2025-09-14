@@ -22,6 +22,7 @@ import { ClientService } from "../services/client.service";
 import {
   CreateClient,
   DeleteClient,
+  GetActiveClientsCount,
   GetClientById,
   GetClients,
   PlanClient,
@@ -41,6 +42,7 @@ import { ClientsStateModel } from "./clients.model";
     selectedClientPlan: undefined,
     registerClient: null,
     total: 0,
+    activeClientsCount: 0,
     loading: false,
     error: null,
     currentPage: 0,
@@ -60,6 +62,11 @@ export class ClientsState {
   @Selector()
   static getTotal(state: ClientsStateModel) {
     return state.total ?? 0;
+  }
+
+  @Selector()
+  static getActiveClientsCount(state: ClientsStateModel) {
+    return state.activeClientsCount ?? 0;
   }
 
   @Selector()
@@ -148,6 +155,26 @@ export class ClientsState {
     );
   }
 
+  @Action(GetActiveClientsCount, { cancelUncompleted: true })
+  getActiveClientsCount(
+    ctx: StateContext<ClientsStateModel>,
+  ): Observable<{ success: boolean; data: number }> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.getActiveClientsCount().pipe(
+      tap((response: { success: boolean; data: number }) => {
+        ctx.patchState({
+          activeClientsCount: response.data,
+          loading: false,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
   @Action(GetClientById, { cancelUncompleted: true })
   getClientById(
     ctx: StateContext<ClientsStateModel>,
@@ -176,6 +203,8 @@ export class ClientsState {
           CI: response.data.userInfo.CI,
           planId: response.data.planId,
           routineId: response.data.routineId,
+          lastAccess: response.data.lastAccess,
+          totalAccesses: response.data.totalAccesses,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),
@@ -192,10 +221,10 @@ export class ClientsState {
     action: RegisterClient,
   ): Observable<RegisterResponse> {
     ctx.patchState({ loading: true });
-    const { identifier, password } = action.payload;
+  const { identifier, password, recaptchaToken } = action.payload as any;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-        return this.authService.register(firebaseResponse.user.email).pipe(
+    return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
           tap((res: RegisterResponse) => {
             ctx.patchState({
               registerClient: {
@@ -301,16 +330,45 @@ export class ClientsState {
   deleteClient(
     ctx: StateContext<ClientsStateModel>,
     { id }: DeleteClient,
-  ): Observable<ClientApiResponse[]> {
+  ): Observable<any> {
     ctx.patchState({ loading: true, error: null });
 
-    return forkJoin([this.clientService.deleteClient(id)]).pipe(
+    // Primero obtener los datos del cliente para tener email y password
+    return this.clientService.getClientById(id).pipe(
+      switchMap((clientResponse: any) => {
+        const clientData = clientResponse.data;
+        const email = clientData.email || clientData.identifier;
+        const password = clientData.userInfo?.password;
+
+        if (!email || !password) {
+          throw new Error('No se pueden obtener las credenciales del cliente para eliminarlo de Firebase');
+        }
+
+        // Eliminar de Firebase Auth primero
+        return this.authService.deleteFirebaseUser(email, password).pipe(
+          switchMap(() => {
+            // Después eliminar de MongoDB
+            return this.clientService.deleteClientFromMongoDB(id);
+          }),
+          catchError((firebaseError) => {
+            console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
+            // Si falla Firebase, al menos eliminar de MongoDB
+            return this.clientService.deleteClientFromMongoDB(id);
+          })
+        );
+      }),
       tap(() => {
-        const clients = ctx.getState().clients?.filter((client) => client._id !== id);
-        ctx.patchState({ clients, loading: false });
+        const state = ctx.getState();
+        const clients = state.clients?.filter((client) => client._id !== id) ?? [];
+        const total = Math.max((state.total ?? 0) - 1, 0);
+        ctx.patchState({ clients, total, loading: false });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
+        this.snackBarService.showError(
+          "Error",
+          "No se pudo eliminar el cliente de Firebase y MongoDB. Intenta nuevamente",
+        );
         return throwError(() => error);
       }),
     );
@@ -425,6 +483,14 @@ export class ClientsState {
         return "El email ya existe";
       case "auth/operation-not-allowed":
         return "La operación no está permitida";
+      case "auth/invalid-email":
+        return "El email no es válido";
+      case "auth/invalid-api-key":
+        return "API Key inválida o restringida";
+      case "auth/network-request-failed":
+        return "Fallo de red. Verifica tu conexión";
+      case "auth/weak-password":
+        return "La contraseña es demasiado débil (mínimo 6 caracteres)";
       case "auth/too-many-requests":
         return "Demasiados intentos. Inténtalo más tarde";
       case "auth/invalid-password":
@@ -437,9 +503,34 @@ export class ClientsState {
   }
 
   private getFriendlyErrorMessage(err: any): string {
-    if (err.code) {
-      return this.mapFirebaseError(err.code);
-    }
+    const code = this.normalizeFirebaseErrorCode(err);
+    if (code) return this.mapFirebaseError(code);
     return "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo";
+  }
+
+  private normalizeFirebaseErrorCode(err: any): string | null {
+    // AngularFire FirebaseError: { code: 'auth/...' }
+    if (err?.code && typeof err.code === "string") return err.code;
+    // REST response via fetch/XHR: { error: { message: 'EMAIL_EXISTS' | 'OPERATION_NOT_ALLOWED' | 'INVALID_EMAIL' | 'WEAK_PASSWORD' | 'INVALID_API_KEY' } }
+    const msg = err?.error?.error?.message || err?.message;
+    if (!msg || typeof msg !== "string") return null;
+    const m = msg.toUpperCase();
+    switch (m) {
+      case "EMAIL_EXISTS":
+        return "auth/email-already-in-use";
+      case "OPERATION_NOT_ALLOWED":
+        return "auth/operation-not-allowed";
+      case "INVALID_EMAIL":
+        return "auth/invalid-email";
+      case "WEAK_PASSWORD":
+      case "PASSWORD_LOGIN_DISABLED":
+        return "auth/weak-password";
+      case "INVALID_API_KEY":
+        return "auth/invalid-api-key";
+      case "NETWORK_REQUEST_FAILED":
+        return "auth/network-request-failed";
+      default:
+        return null;
+    }
   }
 }

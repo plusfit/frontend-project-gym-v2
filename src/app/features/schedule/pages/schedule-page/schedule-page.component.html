@@ -1,4 +1,49 @@
-<app-calendar-schedule
-  [schedule]="schedule | async"
-  (scheduleUpdated)="actualizarSchedule($event)"
-></app-calendar-schedule>
+<section class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4">
+  <div class="max-w-7xl mx-auto flex flex-col space-y-6">
+    
+    <!-- Premium Header Section -->
+    <div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200">
+      <!-- Enhanced Header with animated gradient -->
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden">
+        
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Icon with pulse animation -->
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
+              <i class="ph-clock text-white" style="font-size: 40px;"></i>
+            </div>
+            
+            <div class="flex flex-col">
+              <div class="flex items-center space-x-3 mb-2">
+                <h3 class="font-bold text-white tracking-tight" style="font-size: 2.5rem; line-height: 1.2;">
+                  Gestión de Horarios
+                </h3>
+               
+              </div>
+              
+         
+            </div>
+          </div>
+          
+          <!-- Enhanced Actions Button -->
+          <div class="flex items-center space-x-3">
+            <button
+              class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white border-white border-opacity-30 shadow-lg transition-all duration-300 hover:scale-105 font-bold py-3 px-6 rounded-lg flex items-center space-x-2"
+              (click)="refreshSchedule()"
+            >
+              <i class="ph-arrows-clockwise text-white text-lg"></i>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Component -->
+    <app-calendar-schedule
+      [schedule]="schedule | async"
+      (scheduleUpdated)="actualizarSchedule($event)"
+    ></app-calendar-schedule>
+    
+  </div>
+</section>

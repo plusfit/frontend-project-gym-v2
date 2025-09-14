@@ -1,112 +1,43 @@
 export interface GymAccessHistoryItem {
-  _id: string;
+  id: string;
+  clientId: string;
   cedula: string;
   clientName: string;
   clientPhoto?: string;
-  planName: string;
-  success: boolean;
+  accessDate: string; // ISO string format
+  accessDay: string;  // YYYY-MM-DD format
+  successful: boolean; // Always normalized to boolean
   reason?: string;
-  accessDate: string;
-  rewardEarned?: {
-    name: string;
-    description: string;
-    type: string;
-  };
-  consecutiveDays?: number;
-  totalAccesses?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// Backend response format - matches exactly what backend returns
 export interface GymAccessHistoryResponse {
-  success: boolean;
-  data: {
-    history: GymAccessHistoryItem[];
-    pagination: {
-      currentPage: number;
-      totalPages: number;
-      totalCount: number;
-      limit: number;
-    };
+  history: GymAccessHistoryItem[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    limit: number;
   };
+}
+
+// Alternative interface for wrapped responses (if backend uses success wrapper)
+export interface WrappedGymAccessHistoryResponse {
+  success: boolean;
+  data: GymAccessHistoryResponse;
   message?: string;
 }
 
 export interface AccessFilters {
   page: number;
   limit: number;
-  startDate?: string;
-  endDate?: string;
+  startDate?: string; // Format: YYYY-MM-DD
+  endDate?: string;   // Format: YYYY-MM-DD
   clientName?: string;
-  successful?: boolean;
+  successful?: boolean; // true for successful, false for failed, undefined for all
   cedula?: string;
-}
-
-export interface GymAccessStats {
-  dailyStats: {
-    date: string;
-    totalAccesses: number;
-    uniqueClients: number;
-    successfulAccesses: number;
-    failedAccesses: number;
-    successRate: number;
-  }[];
-  weeklyStats: {
-    week: string;
-    totalAccesses: number;
-    uniqueClients: number;
-    averageDailyAccesses: number;
-  }[];
-  monthlyStats: {
-    month: string;
-    totalAccesses: number;
-    uniqueClients: number;
-    averageDailyAccesses: number;
-  }[];
-  popularTimes: {
-    hour: number;
-    accessCount: number;
-    percentage: number;
-  }[];
-  topClients: {
-    clientName: string;
-    cedula: string;
-    totalAccesses: number;
-    consecutiveDays: number;
-    lastAccess: string;
-  }[];
-  rewardStats: {
-    totalRewardsEarned: number;
-    rewardsByType: {
-      type: string;
-      count: number;
-    }[];
-    topRewardEarners: {
-      clientName: string;
-      cedula: string;
-      rewardsEarned: number;
-    }[];
-  };
-  overview: {
-    totalAccessesToday: number;
-    totalAccessesThisWeek: number;
-    totalAccessesThisMonth: number;
-    uniqueClientsToday: number;
-    uniqueClientsThisWeek: number;
-    uniqueClientsThisMonth: number;
-    averageSuccessRate: number;
-    peakHour: number;
-  };
-}
-
-export interface GymAccessStatsResponse {
-  success: boolean;
-  data: GymAccessStats;
-  message?: string;
-}
-
-export interface StatsPeriod {
-  startDate: string;
-  endDate: string;
-  period: 'daily' | 'weekly' | 'monthly';
 }
 
 export interface ClientAccessHistoryResponse {
@@ -119,52 +50,33 @@ export interface ClientAccessHistoryResponse {
       photo?: string;
     };
     history: GymAccessHistoryItem[];
-    stats: {
-      totalAccesses: number;
-      consecutiveDays: number;
-      lastAccess?: string;
-      firstAccess?: string;
-      averageAccessesPerWeek: number;
-      rewardsEarned: number;
-    };
   };
   message?: string;
 }
 
 export interface ExportOptions {
-  format: 'csv' | 'excel';
+  format: "csv" | "excel";
   filters: AccessFilters;
-  includeStats?: boolean;
 }
 
 export interface AccessTableColumn {
   key: string;
   label: string;
   sortable: boolean;
-  type: 'text' | 'date' | 'badge' | 'boolean' | 'number';
+  type: "text" | "date" | "badge" | "boolean" | "number";
   width?: string;
 }
 
-export interface ChartData {
-  labels: string[];
-  datasets: {
-    label: string;
-    data: number[];
-    backgroundColor?: string | string[];
-    borderColor?: string | string[];
-    borderWidth?: number;
-    tension?: number;
+export interface AccessStats {
+  totalAccessesToday: number;
+  totalAccessesThisMonth: number;
+  averageAccessesPerDay: number;
+  totalAccesses: number;
+  successfulAccesses: number;
+  failedAccesses: number;
+  mostActiveClients: {
+    clientName: string;
+    cedula: string;
+    totalAccesses: number;
   }[];
-}
-
-export interface StatCard {
-  title: string;
-  value: string | number;
-  icon: string;
-  color: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  trend?: {
-    value: number;
-    direction: 'up' | 'down';
-    period: string;
-  };
 }

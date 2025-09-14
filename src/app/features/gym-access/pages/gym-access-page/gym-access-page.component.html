@@ -1,98 +1,150 @@
-<!-- Page Header -->
-<div class="flex flex-col space-y-4 mb-8">
-  <div class="flex items-center justify-between">
-    <app-title 
-      [title]="getPageTitle()" 
-      [subtitle]="getPageSubtitle()">
-    </app-title>
+<section
+  class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4"
+>
+  <div class="max-w-7xl mx-auto flex flex-col space-y-6">
     
-    <div class="flex items-center space-x-3">
-      <!-- Refresh Button -->
-      <button
-        mat-icon-button
-        (click)="refreshData()"
-        matTooltip="Actualizar datos"
-        class="text-gray-600 hover:text-gray-800">
-        <mat-icon>refresh</mat-icon>
-      </button>
-      
-      <!-- Stats Button -->
-      <button
-        mat-stroked-button
-        (click)="navigateToStats()"
-        class="flex items-center space-x-2">
-        <mat-icon>analytics</mat-icon>
-        <span>Ver Estadísticas</span>
-      </button>
+    <!-- Premium Header Section -->
+    <div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200">
+      <!-- Enhanced Header with animated gradient -->
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden">
+        
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Icon with pulse animation -->
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
+              <i class="ph-clock-clockwise text-white" style="font-size: 40px;"></i>
+            </div>
+            
+            <div class="flex flex-col">
+              <div class="flex items-center space-x-3 mb-2">
+                <h3 class="font-bold text-white tracking-tight" style="font-size: 2.5rem; line-height: 1.2;">
+                  Historial de Accesos
+                </h3>
+             
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          <!-- Refresh Button -->
+          <div class="flex items-center space-x-3">
+            <button
+              class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white border-white border-opacity-30 shadow-lg transition-all duration-300 hover:scale-105 font-bold py-3 px-6 rounded-lg flex items-center space-x-2"
+              (click)="refreshData()"
+            >
+              <i class="ph-arrow-clockwise text-white text-lg"></i>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+<!-- Access Statistics -->
+<div class="mb-6" *ngIf="!statsError">
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Total Accesses -->
+    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">Total de Accesos</p>
+          <p class="text-2xl font-bold text-gray-900" *ngIf="!statsLoading && stats">
+            {{ formatNumber(stats.totalAccesses) }}
+          </p>
+          <div class="animate-pulse" *ngIf="statsLoading">
+            <div class="h-8 bg-gray-200 rounded w-16"></div>
+          </div>
+        </div>
+        <div class="p-3 bg-blue-100 rounded-full">
+          <mat-icon class="text-blue-600">assessment</mat-icon>
+        </div>
+      </div>
+    </div>
+
+  <!-- Successful Accesses -->
+  <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Accesos Exitosos</p>
+        <p class="text-2xl font-bold text-green-600" *ngIf="!statsLoading && stats">
+          {{ formatNumber(stats.successfulAccesses) }}
+        </p>
+        <div class="animate-pulse" *ngIf="statsLoading">
+          <div class="h-8 bg-gray-200 rounded w-16"></div>
+        </div>
+      </div>
+      <div class="p-3 bg-green-100 rounded-full">
+        <mat-icon class="text-green-600">check_circle</mat-icon>
+      </div>
     </div>
   </div>
 
-  <!-- Today's Quick Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <!-- Total Accesses Today -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Accesos Hoy</p>
-          <p class="text-2xl font-bold text-blue-600">{{ formatNumber(todayStats.totalAccesses) }}</p>
-        </div>
-        <div class="p-3 bg-blue-100 rounded-full">
-          <mat-icon class="text-blue-600">login</mat-icon>
-        </div>
-      </div>
-    </div>
-
-    <!-- Successful Accesses -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Accesos Exitosos</p>
-          <p class="text-2xl font-bold text-green-600">{{ formatNumber(todayStats.successfulAccesses) }}</p>
-        </div>
-        <div class="p-3 bg-green-100 rounded-full">
-          <mat-icon class="text-green-600">check_circle</mat-icon>
+  <!-- Failed Accesses -->
+  <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">Accesos Fallidos</p>
+        <p class="text-2xl font-bold text-red-600" *ngIf="!statsLoading && stats">
+          {{ formatNumber(stats.failedAccesses) }}
+        </p>
+        <div class="animate-pulse" *ngIf="statsLoading">
+          <div class="h-8 bg-gray-200 rounded w-16"></div>
         </div>
       </div>
-    </div>
-
-    <!-- Unique Clients -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Clientes Únicos</p>
-          <p class="text-2xl font-bold text-indigo-600">{{ formatNumber(todayStats.uniqueClients) }}</p>
-        </div>
-        <div class="p-3 bg-indigo-100 rounded-full">
-          <mat-icon class="text-indigo-600">people</mat-icon>
-        </div>
-      </div>
-    </div>
-
-    <!-- Success Rate -->
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Tasa de Éxito</p>
-          <p class="text-2xl font-bold" [ngClass]="getSuccessRateColorClass()">
-            {{ formatPercentage(todayStats.successRate) }}
-          </p>
-        </div>
-        <div class="p-3 rounded-full" [ngClass]="getSuccessRateBgClass()">
-          <mat-icon [ngClass]="getSuccessRateColorClass()">trending_up</mat-icon>
-        </div>
+      <div class="p-3 bg-red-100 rounded-full">
+        <mat-icon class="text-red-600">cancel</mat-icon>
       </div>
     </div>
   </div>
 </div>
+</div>
 
-<!-- Summary Information -->
-<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="hasRecords()">
+<!-- Stats Error State -->
+<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6" *ngIf="statsError">
+  <div class="flex items-center space-x-2">
+    <mat-icon class="text-yellow-600">warning</mat-icon>
+    <div class="flex-1">
+      <p class="text-sm text-yellow-800">
+        <span class="font-semibold">No se pudieron cargar las estadísticas.</span>
+        Los datos del historial están disponibles más abajo.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- Error State Information - Only show if there was actually an error, not just empty data -->
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" *ngIf="hasError">
+  <div class="flex items-center space-x-2">
+    <mat-icon class="text-red-600">warning</mat-icon>
+    <div class="flex-1">
+      <p class="text-sm text-red-800">
+        <span class="font-semibold">{{ errorMessage || 'No se pudieron cargar los datos.' }}</span>
+        <span *ngIf="!errorMessage">Verifique su conexión a internet y que esté autenticado correctamente.</span>
+      </p>
+      <button 
+        mat-button 
+        color="primary" 
+        (click)="refreshData()" 
+        class="mt-2 text-sm">
+        <mat-icon>refresh</mat-icon>
+        Intentar de nuevo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Empty State Information - Show when data loaded successfully but is empty -->
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="!loading && !hasError && !hasRecords() && totalCount === 0">
   <div class="flex items-center space-x-2">
     <mat-icon class="text-blue-600">info</mat-icon>
     <div class="flex-1">
       <p class="text-sm text-blue-800">
-        <span class="font-semibold">{{ getTotalRecordsText() }}</span> en el historial.
-        <span *ngIf="getCurrentPageInfo()" class="ml-2">{{ getCurrentPageInfo() }}</span>
+        <span class="font-semibold">No hay registros de acceso disponibles.</span>
+        Los registros aparecerán aquí una vez que los clientes comiencen a usar el sistema de acceso.
       </p>
     </div>
   </div>
@@ -109,27 +161,10 @@
   (filtersChange)="onFiltersChange($event)"
   (pageChange)="onPageChange($event)"
   (sortChange)="onSortChange($event)"
-  (exportData)="onExportData($event)"
   (viewClientDetail)="onViewClientDetail($event)">
 </app-access-history-table>
 
-<!-- Help Information -->
-<div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
-  <div class="flex items-start space-x-3">
-    <mat-icon class="text-gray-500 mt-1">help_outline</mat-icon>
-    <div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Información de Ayuda</h3>
-      <div class="text-sm text-gray-600 space-y-2">
-        <p><strong>Filtros:</strong> Use los filtros disponibles para encontrar registros específicos por fecha, cliente, cédula o estado de acceso.</p>
-        <p><strong>Exportación:</strong> Puede exportar los datos filtrados en formato CSV o Excel para análisis adicional.</p>
-        <p><strong>Estados de Acceso:</strong></p>
-        <ul class="list-disc list-inside ml-4 space-y-1">
-          <li><span class="font-medium text-green-600">Exitoso:</span> El cliente pudo acceder al gimnasio sin problemas.</li>
-          <li><span class="font-medium text-red-600">Fallido:</span> El acceso fue denegado (plan vencido, cliente inhabilitado, etc.).</li>
-        </ul>
-        <p><strong>Recompensas:</strong> Se muestran las recompensas ganadas por días consecutivos de asistencia.</p>
-        <p><strong>Acciones:</strong> Haga clic en el icono de usuario para ver el perfil completo del cliente.</p>
-      </div>
-    </div>
   </div>
-</div>
+</section>
+
+

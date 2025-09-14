@@ -1,29 +1,29 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { FormsModule } from '@angular/forms';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatSelectModule } from "@angular/material/select";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { FormsModule } from "@angular/forms";
 
-import { LoaderComponent } from '@shared/components/loader/loader.component';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { EColorBadge } from '@shared/enums/badge-color.enum';
+import { LoaderComponent } from "@shared/components/loader/loader.component";
+import { BadgeComponent } from "@shared/components/badge/badge.component";
+import { EColorBadge } from "@shared/enums/badge-color.enum";
 
 import {
   GymAccessStats,
   StatCard,
   ChartData,
-  StatsPeriod
-} from '../../interfaces/gym-access-admin.interface';
+  StatsPeriod,
+} from "../../interfaces/gym-access-admin.interface";
 
 @Component({
-  selector: 'app-access-stats-dashboard',
+  selector: "app-access-stats-dashboard",
   standalone: true,
   imports: [
     CommonModule,
@@ -38,32 +38,32 @@ import {
     MatProgressSpinnerModule,
     MatTooltipModule,
     LoaderComponent,
-    BadgeComponent
+    BadgeComponent,
   ],
-  templateUrl: './access-stats-dashboard.component.html',
-  styleUrls: ['./access-stats-dashboard.component.css']
+  templateUrl: "./access-stats-dashboard.component.html",
+  styleUrls: ["./access-stats-dashboard.component.css"],
 })
 export class AccessStatsDashboardComponent implements OnInit, OnChanges {
   @Input() stats: GymAccessStats | null = null;
   @Input() loading = false;
   @Input() period: StatsPeriod = {
-    startDate: '',
-    endDate: '',
-    period: 'daily'
+    startDate: "",
+    endDate: "",
+    period: "daily",
   };
 
   // Component state
   statCards: StatCard[] = [];
   chartData: { [key: string]: ChartData } = {};
-  
+
   // Badge colors
   EColorBadge = EColorBadge;
 
   // Period options
   periodOptions = [
-    { value: 'daily', label: 'Diario' },
-    { value: 'weekly', label: 'Semanal' },
-    { value: 'monthly', label: 'Mensual' }
+    { value: "daily", label: "Diario" },
+    { value: "weekly", label: "Semanal" },
+    { value: "monthly", label: "Mensual" },
   ];
 
   ngOnInit(): void {
@@ -71,7 +71,7 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['stats'] && this.stats) {
+    if (changes["stats"] && this.stats) {
       this.updateDashboard();
     }
   }
@@ -88,53 +88,53 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
 
     this.statCards = [
       {
-        title: 'Accesos Hoy',
+        title: "Accesos Hoy",
         value: this.stats.overview.totalAccessesToday,
-        icon: 'login',
-        color: 'primary'
+        icon: "login",
+        color: "primary",
       },
       {
-        title: 'Clientes Únicos Hoy',
-        value: this.stats.overview.uniqueClientsToday,
-        icon: 'people',
-        color: 'success'
+        title: "Accesos Fallidos Hoy",
+        value: this.stats.overview.failedAccessesToday,
+        icon: "block",
+        color: "danger",
       },
       {
-        title: 'Tasa de Éxito',
-        value: `${this.stats.overview.averageSuccessRate.toFixed(1)}%`,
-        icon: 'check_circle',
-        color: this.stats.overview.averageSuccessRate >= 90 ? 'success' : 'warning'
-      },
-      {
-        title: 'Hora Pico',
+        title: "Hora Pico",
         value: this.formatHour(this.stats.overview.peakHour),
-        icon: 'schedule',
-        color: 'info'
+        icon: "schedule",
+        color: "info",
       },
       {
-        title: 'Accesos Esta Semana',
+        title: "Accesos Esta Semana",
         value: this.stats.overview.totalAccessesThisWeek,
-        icon: 'calendar_view_week',
-        color: 'primary'
+        icon: "calendar_view_week",
+        color: "primary",
       },
       {
-        title: 'Accesos Este Mes',
+        title: "Accesos Fallidos (Semana)",
+        value: this.stats.overview.failedAccessesThisWeek,
+        icon: "error_outline",
+        color: "danger",
+      },
+      {
+        title: "Accesos Este Mes",
         value: this.stats.overview.totalAccessesThisMonth,
-        icon: 'calendar_month',
-        color: 'primary'
+        icon: "calendar_month",
+        color: "primary",
       },
       {
-        title: 'Recompensas Otorgadas',
+        title: "Accesos Fallidos (Mes)",
+        value: this.stats.overview.failedAccessesThisMonth,
+        icon: "warning",
+        color: "danger",
+      },
+      {
+        title: "Recompensas Otorgadas",
         value: this.stats.rewardStats.totalRewardsEarned,
-        icon: 'emoji_events',
-        color: 'warning'
+        icon: "emoji_events",
+        color: "warning",
       },
-      {
-        title: 'Clientes Únicos (Mes)',
-        value: this.stats.overview.uniqueClientsThisMonth,
-        icon: 'person_add',
-        color: 'success'
-      }
     ];
   }
 
@@ -142,66 +142,66 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
     if (!this.stats) return;
 
     // Daily access chart
-    this.chartData['dailyAccesses'] = {
-      labels: this.stats.dailyStats.map(stat => this.formatDate(stat.date)),
+    this.chartData["dailyAccesses"] = {
+      labels: this.stats.dailyStats.map((stat: any) => this.formatDate(stat.date)),
       datasets: [
         {
-          label: 'Accesos Exitosos',
-          data: this.stats.dailyStats.map(stat => stat.successfulAccesses),
-          backgroundColor: '#10b981',
-          borderColor: '#059669',
-          tension: 0.4
+          label: "Accesos Exitosos",
+          data: this.stats.dailyStats.map((stat: any) => stat.successfulAccesses),
+          backgroundColor: "#10b981",
+          borderColor: "#059669",
+          tension: 0.4,
         },
         {
-          label: 'Accesos Fallidos',
-          data: this.stats.dailyStats.map(stat => stat.failedAccesses),
-          backgroundColor: '#ef4444',
-          borderColor: '#dc2626',
-          tension: 0.4
-        }
-      ]
+          label: "Accesos Fallidos",
+          data: this.stats.dailyStats.map((stat: any) => stat.failedAccesses),
+          backgroundColor: "#ef4444",
+          borderColor: "#dc2626",
+          tension: 0.4,
+        },
+      ],
     };
 
     // Popular times chart
-    this.chartData['popularTimes'] = {
-      labels: this.stats.popularTimes.map(time => this.formatHour(time.hour)),
+    this.chartData["popularTimes"] = {
+      labels: this.stats.popularTimes.map((time: any) => this.formatHour(time.hour)),
       datasets: [
         {
-          label: 'Accesos por Hora',
-          data: this.stats.popularTimes.map(time => time.accessCount),
-          backgroundColor: '#3b82f6',
-          borderColor: '#2563eb'
-        }
-      ]
+          label: "Accesos por Hora",
+          data: this.stats.popularTimes.map((time: any) => time.accessCount),
+          backgroundColor: "#3b82f6",
+          borderColor: "#2563eb",
+        },
+      ],
     };
 
     // Weekly stats chart (if available)
     if (this.stats.weeklyStats.length > 0) {
-      this.chartData['weeklyStats'] = {
-        labels: this.stats.weeklyStats.map(stat => stat.week),
+      this.chartData["weeklyStats"] = {
+        labels: this.stats.weeklyStats.map((stat: any) => stat.week),
         datasets: [
           {
-            label: 'Accesos Semanales',
-            data: this.stats.weeklyStats.map(stat => stat.totalAccesses),
-            backgroundColor: '#8b5cf6',
-            borderColor: '#7c3aed'
-          }
-        ]
+            label: "Accesos Semanales",
+            data: this.stats.weeklyStats.map((stat: any) => stat.totalAccesses),
+            backgroundColor: "#8b5cf6",
+            borderColor: "#7c3aed",
+          },
+        ],
       };
     }
 
     // Monthly stats chart (if available)
     if (this.stats.monthlyStats.length > 0) {
-      this.chartData['monthlyStats'] = {
-        labels: this.stats.monthlyStats.map(stat => stat.month),
+      this.chartData["monthlyStats"] = {
+        labels: this.stats.monthlyStats.map((stat: any) => stat.month),
         datasets: [
           {
-            label: 'Accesos Mensuales',
-            data: this.stats.monthlyStats.map(stat => stat.totalAccesses),
-            backgroundColor: '#f59e0b',
-            borderColor: '#d97706'
-          }
-        ]
+            label: "Accesos Mensuales",
+            data: this.stats.monthlyStats.map((stat: any) => stat.totalAccesses),
+            backgroundColor: "#f59e0b",
+            borderColor: "#d97706",
+          },
+        ],
       };
     }
   }
@@ -211,13 +211,13 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    */
   getStatCardIcon(color: string): string {
     const iconMap: { [key: string]: string } = {
-      'primary': 'analytics',
-      'success': 'trending_up',
-      'warning': 'warning',
-      'danger': 'error',
-      'info': 'info'
+      primary: "analytics",
+      success: "trending_up",
+      warning: "warning",
+      danger: "error",
+      info: "info",
     };
-    return iconMap[color] || 'analytics';
+    return iconMap[color] || "analytics";
   }
 
   /**
@@ -225,13 +225,13 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    */
   getStatCardColorClass(color: string): string {
     const colorMap: { [key: string]: string } = {
-      'primary': 'text-blue-600 bg-blue-100',
-      'success': 'text-green-600 bg-green-100',
-      'warning': 'text-yellow-600 bg-yellow-100',
-      'danger': 'text-red-600 bg-red-100',
-      'info': 'text-indigo-600 bg-indigo-100'
+      primary: "text-blue-600 bg-blue-100",
+      success: "text-green-600 bg-green-100",
+      warning: "text-yellow-600 bg-yellow-100",
+      danger: "text-red-600 bg-red-100",
+      info: "text-indigo-600 bg-indigo-100",
     };
-    return colorMap[color] || 'text-gray-600 bg-gray-100';
+    return colorMap[color] || "text-gray-600 bg-gray-100";
   }
 
   /**
@@ -239,22 +239,22 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    */
   getStatValueBgColor(color: string): string {
     const bgMap: { [key: string]: string } = {
-      'primary': 'bg-blue-50',
-      'success': 'bg-green-50',
-      'warning': 'bg-yellow-50',
-      'danger': 'bg-red-50',
-      'info': 'bg-indigo-50'
+      primary: "bg-blue-50",
+      success: "bg-green-50",
+      warning: "bg-yellow-50",
+      danger: "bg-red-50",
+      info: "bg-indigo-50",
     };
-    return bgMap[color] || 'bg-gray-50';
+    return bgMap[color] || "bg-gray-50";
   }
 
   /**
    * Format hour for display
    */
   formatHour(hour: number): string {
-    if (hour === 0) return '12:00 AM';
+    if (hour === 0) return "12:00 AM";
     if (hour < 12) return `${hour}:00 AM`;
-    if (hour === 12) return '12:00 PM';
+    if (hour === 12) return "12:00 PM";
     return `${hour - 12}:00 PM`;
   }
 
@@ -263,9 +263,9 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    */
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-UY', {
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("es-UY", {
+      month: "short",
+      day: "numeric",
     });
   }
 
@@ -284,10 +284,10 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    */
   getRewardTypeText(type: string): string {
     const typeMap: { [key: string]: string } = {
-      'consecutive': 'Días Consecutivos',
-      'milestone': 'Hito de Accesos',
-      'monthly': 'Meta Mensual',
-      'special': 'Evento Especial'
+      consecutive: "Días Consecutivos",
+      milestone: "Hito de Accesos",
+      monthly: "Meta Mensual",
+      special: "Evento Especial",
     };
     return typeMap[type] || type;
   }
@@ -313,24 +313,6 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Get success rate color
-   */
-  getSuccessRateColor(rate: number): string {
-    if (rate >= 95) return 'text-green-600';
-    if (rate >= 85) return 'text-yellow-600';
-    return 'text-red-600';
-  }
-
-  /**
-   * Get success rate icon
-   */
-  getSuccessRateIcon(rate: number): string {
-    if (rate >= 95) return 'trending_up';
-    if (rate >= 85) return 'trending_flat';
-    return 'trending_down';
-  }
-
-  /**
    * Check if chart data exists
    */
   hasChartData(chartType: string): boolean {
@@ -341,25 +323,26 @@ export class AccessStatsDashboardComponent implements OnInit, OnChanges {
    * Get chart container classes
    */
   getChartContainerClasses(): string {
-    return 'bg-white rounded-lg border border-gray-200 p-6';
+    return "bg-white rounded-lg border border-gray-200 p-6";
   }
 
   /**
    * Get empty state message
    */
   getEmptyStateMessage(): string {
-    return 'No hay datos estadísticos disponibles para el período seleccionado.';
+    return "No hay datos estadísticos disponibles para el período seleccionado.";
   }
 
   /**
    * Check if stats have data
    */
   hasStatsData(): boolean {
-    return !!(this.stats && (
-      this.stats.dailyStats.length > 0 ||
-      this.stats.weeklyStats.length > 0 ||
-      this.stats.monthlyStats.length > 0 ||
-      this.stats.topClients.length > 0
-    ));
+    return !!(
+      this.stats &&
+      (this.stats.dailyStats.length > 0 ||
+        this.stats.weeklyStats.length > 0 ||
+        this.stats.monthlyStats.length > 0 ||
+        this.stats.topClients.length > 0)
+    );
   }
 }

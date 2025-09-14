@@ -1,13 +1,9 @@
-import {
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandlerFn,
-  HttpRequest,
-} from '@angular/common/http';
-import { inject } from '@angular/core';
-import { ErrorMessages, SnackBarHeaders } from '@core/enums/messages.enum';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { Observable, catchError, throwError } from 'rxjs';
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { ErrorMessages, SnackBarHeaders } from "@core/enums/messages.enum";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { getFriendlyErrorMessage } from "@core/utilities/helpers";
+import { Observable, catchError, throwError } from "rxjs";
 
 export function errorInterceptor(
   req: HttpRequest<unknown>,
@@ -17,7 +13,7 @@ export function errorInterceptor(
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      let message = '';
+      let message = "";
       if (err.error instanceof ProgressEvent) {
         // Client Side
         switch (err.status) {
@@ -32,12 +28,12 @@ export function errorInterceptor(
             break;
         }
       } else {
-        // Server Side
-        message = err.error.message ? err.error.message : err.statusText;
+        // Server Side - Usar la función helper para obtener el mensaje más específico
+        message = getFriendlyErrorMessage(err);
       }
 
-      if (message === 'Failed to fetch') {
-        message = 'Por favor recargue la página';
+      if (message === "Failed to fetch") {
+        message = "Por favor recargue la página";
       }
       snackBar.showError(SnackBarHeaders.Error, message);
       return throwError(() => err);

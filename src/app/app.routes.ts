@@ -1,147 +1,142 @@
-import { Routes } from '@angular/router';
-import { DashboardLayoutComponent } from '@core/components/dashboard-layout/dashboard-layout.component';
-import { authGuard } from '@core/guards/auth.guards';
-import { signInGuard } from '@core/guards/sign-in.guards';
-import { AuthLayoutComponent } from '@features/auth/components/auth-layout/auth-layout.component';
-import { LoginPageComponent } from '@features/auth/pages/login-page/login-page.component';
-import { RegisterPageComponent } from '@features/auth/pages/register-page/register-page.component';
-import { SchedulePageComponent } from '@features/schedule/pages/schedule-page/schedule-page.component';
-import { ExerciseComponent } from '@features/exercises/pages/exercise/exercise.component';
-import { AddEditRoutinePageComponent } from '@features/routines/pages/add-edit-page/add-edit-routine.page.component';
-import { RoutinePageComponent } from '@features/routines/pages/routine/routine.component';
-import { SettingsPagesComponent } from '@features/settings/pages/settings-pages/settings-pages.component';
-import { PageNotFoundComponent } from '@shared/components/page-not-found/page-not-found.component';
-import { WelcomeComponent } from '@core/components/welcome/welcome.component';
-import { SubRoutinePageComponent } from '@features/sub-routines/pages/sub-routine-page/sub-routine-page.component';
-import { AddEditSubRoutineComponent } from '@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component';
-import { PlansPageComponent } from '@features/plans/pages/plans-page/plans-page.component';
-import { AddEditPlanComponent } from '@features/plans/pages/add-edit-plan/add-edit-plan.component';
-import { ForgotPasswordPageComponent } from '@features/auth/pages/forgot-password-page/forgot-password-page.component';
-import { ClientPageComponent } from '@features/client/pages/client-page/client-page.component';
-import { AddClientPageComponent } from '@features/client/pages/add-client-page/add-client-page.component';
-import { AddEditClientPageComponent } from '@features/client/pages/add-edit-client-page/add-edit-client-page.component';
-import { DetailClientComponent } from '@features/client/pages/detail-client/detail-client.component';
-import { ScreenPagesComponent } from '@features/screenRoutine/pages/screen-pages/screen-pages.component';
-import { SpecialAccessPageComponent } from '@features/special-access/pages/special-access-page/special-access-page.component';
-import { GymAccessPageComponent } from '@features/gym-access/pages/gym-access-page/gym-access-page.component';
-import { GymAccessStatsPageComponent } from '@features/gym-access/pages/gym-access-stats-page/gym-access-stats-page.component';
+import { Routes } from "@angular/router";
+import { DashboardLayoutComponent } from "@core/components/dashboard-layout/dashboard-layout.component";
+import { authGuard } from "@core/guards/auth.guards";
+import { signInGuard } from "@core/guards/sign-in.guards";
+import { AuthLayoutComponent } from "@features/auth/components/auth-layout/auth-layout.component";
+import { LoginPageComponent } from "@features/auth/pages/login-page/login-page.component";
+import { RegisterPageComponent } from "@features/auth/pages/register-page/register-page.component";
+import { SchedulePageComponent } from "@features/schedule/pages/schedule-page/schedule-page.component";
+import { ExerciseComponent } from "@features/exercises/pages/exercise/exercise.component";
+import { AddEditRoutinePageComponent } from "@features/routines/pages/add-edit-page/add-edit-routine.page.component";
+import { RoutinePageComponent } from "@features/routines/pages/routine/routine.component";
+import { SettingsPagesComponent } from "@features/settings/pages/settings-pages/settings-pages.component";
+import { PageNotFoundComponent } from "@shared/components/page-not-found/page-not-found.component";
+import { WelcomeComponent } from "@core/components/welcome/welcome.component";
+import { SubRoutinePageComponent } from "@features/sub-routines/pages/sub-routine-page/sub-routine-page.component";
+import { AddEditSubRoutineComponent } from "@features/sub-routines/pages/add-edit-sub-routine/add-edit-sub-routine.component";
+import { PlansPageComponent } from "@features/plans/pages/plans-page/plans-page.component";
+import { AddEditPlanComponent } from "@features/plans/pages/add-edit-plan/add-edit-plan.component";
+import { ForgotPasswordPageComponent } from "@features/auth/pages/forgot-password-page/forgot-password-page.component";
+import { ClientPageComponent } from "@features/client/pages/client-page/client-page.component";
+import { AddClientPageComponent } from "@features/client/pages/add-client-page/add-client-page.component";
+import { AddEditClientPageComponent } from "@features/client/pages/add-edit-client-page/add-edit-client-page.component";
+import { DetailClientComponent } from "@features/client/pages/detail-client/detail-client.component";
+import { ScreenPagesComponent } from "@features/screenRoutine/pages/screen-pages/screen-pages.component";
+import { SpecialAccessPageComponent } from "@features/special-access/pages/special-access-page/special-access-page.component";
+import { GymAccessPageComponent } from "@features/gym-access/pages/gym-access-page/gym-access-page.component";
 
 export const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: DashboardLayoutComponent,
     canActivate: [signInGuard],
     children: [
       {
-        path: '',
+        path: "",
         component: WelcomeComponent,
       },
       {
-        path: 'subrutinas',
+        path: "subrutinas",
         component: SubRoutinePageComponent,
       },
       {
-        path: 'subrutinas/:id',
+        path: "subrutinas/:id",
         component: AddEditSubRoutineComponent,
       },
       {
-        path: 'subrutinas/crear',
+        path: "subrutinas/crear",
         component: AddEditSubRoutineComponent,
       },
       {
-        path: 'ejercicios',
+        path: "ejercicios",
         component: ExerciseComponent,
       },
       {
-        path: 'rutinas/crear',
+        path: "rutinas/crear",
         component: AddEditRoutinePageComponent,
       },
       {
-        path: 'rutinas/:id',
+        path: "rutinas/:id",
         component: AddEditRoutinePageComponent,
       },
       {
-        path: 'configuracion',
+        path: "configuracion",
         component: SettingsPagesComponent,
       },
       {
-        path: 'rutinas',
+        path: "rutinas",
         component: RoutinePageComponent,
       },
       {
-        path: 'horarios',
+        path: "horarios",
         component: SchedulePageComponent,
       },
       {
-        path: 'clientes',
+        path: "clientes",
         component: ClientPageComponent,
       },
       {
-        path: 'clientes/crear',
+        path: "clientes/crear",
         component: AddClientPageComponent,
       },
       {
-        path: 'clientes/:id',
+        path: "clientes/:id",
         component: AddEditClientPageComponent,
       },
       {
-        path: 'clientes/detalle/:id',
+        path: "clientes/detalle/:id",
         component: DetailClientComponent,
       },
       {
-        path: 'planes',
+        path: "planes",
         component: PlansPageComponent,
       },
       {
-        path: 'planes/:id',
+        path: "planes/:id",
         component: AddEditPlanComponent,
       },
       {
-        path: 'planes/crear',
+        path: "planes/crear",
         component: AddEditPlanComponent,
       },
       {
-        path: 'historial-accesos',
+        path: "historial-accesos",
         component: GymAccessPageComponent,
-      },
-      {
-        path: 'estadisticas-accesos',
-        component: GymAccessStatsPageComponent,
       },
     ],
   },
   {
-    path: 'pantalla',
+    path: "pantalla",
     component: ScreenPagesComponent,
     canActivate: [signInGuard], // 🔐 Protege la ruta con el guard
   },
   {
-    path: 'acceso-especial',
+    path: "acceso-especial",
     component: SpecialAccessPageComponent,
     canActivate: [signInGuard], // 🔐 Protege la ruta con el guard
   },
   {
-    path: 'auth',
+    path: "auth",
     component: AuthLayoutComponent,
     canActivate: [authGuard],
     children: [
       {
-        path: 'login',
+        path: "login",
         component: LoginPageComponent,
       },
       {
-        path: 'register',
+        path: "register",
         component: RegisterPageComponent,
       },
       {
-        path: 'forgot-password',
+        path: "forgot-password",
         component: ForgotPasswordPageComponent,
       },
     ],
   },
   {
-    path: '**',
+    path: "**",
     component: PageNotFoundComponent,
-    pathMatch: 'full',
+    pathMatch: "full",
   },
 ];

@@ -29,8 +29,8 @@ import { Client } from "@features/client/interface/clients.interface";
 
 import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { NativeDateAdapter } from "@angular/material/core";
-import { InputDirective } from "@shared/directives/btn/input.directive";
 import { Plan } from "@features/plans/interfaces/plan.interface";
+import { RecaptchaService } from "@core/services/recaptcha.service";
 
 export class MyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: NonNullable<unknown>): string {
@@ -77,7 +77,6 @@ export const MY_DATE_FORMATS = {
     AutocompleteComponent,
     AsyncPipe,
     BtnDirective,
-    InputDirective,
   ],
   templateUrl: "./client-form.component.html",
   styleUrl: "./client-form.component.css",
@@ -115,7 +114,8 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
     private router: Router,
     private store: Store,
     private actions: Actions,
-    private snackbar: SnackBarService,
+  private snackbar: SnackBarService,
+  private recaptchaService: RecaptchaService,
   ) {}
 
   ngOnInit(): void {
@@ -163,6 +163,9 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
       this.clientData = this.store.selectSnapshot((state) => state.clients.selectedClient);
       if (this.clientData) {
+        // Actualizar cada control individualmente con conversión explícita para los radio buttons
+
+        // Campos de texto regulares
         if (this.clientData.name) this.clientForm.get("name")?.setValue(this.clientData.name);
         if (this.clientData.identifier)
           this.clientForm.get("identifier")?.setValue(this.clientData.identifier);
@@ -291,33 +294,49 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
           this.snackbar.showError("Error", "El plan seleccionado no es válido");
           return;
         }
-        const dataRegister = {
-          identifier: this.clientForm.get("identifier")?.value,
-          password: this.clientForm.get("password")?.value,
-        };
-        this.store.dispatch(new RegisterClient(dataRegister));
-        this.actions
-          .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
-          .subscribe(() => {
-            const registerClient = this.store.selectSnapshot(ClientsState.getRegisterClient);
-            this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
+        // Ejecutar reCAPTCHA v3 antes de registrar el cliente
+        this.recaptchaService.executeRecaptcha("register").subscribe({
+          next: (recaptchaToken: string) => {
+            const dataRegister = {
+              identifier: this.clientForm.get("identifier")?.value,
+              password: this.clientForm.get("password")?.value,
+              recaptchaToken,
+            };
+            this.store.dispatch(new RegisterClient(dataRegister));
             this.actions
-              .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
+              .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
               .subscribe(() => {
-                if (this.selectedPlan) {
-                  this.store.dispatch(
-                    new AssignPlanToUser(this.selectedPlan._id, registerClient._id),
-                  );
-                  this.actions
-                    .pipe(ofActionSuccessful(AssignPlanToUser), takeUntil(this._destroyed))
-                    .subscribe(() => {
-                      this.snackbar.showSuccess("Exito", "Cliente registrado con correctamente");
-                      this.clientForm.reset();
-                      this.router.navigate(["/clientes"]);
-                    });
-                }
+                const registerClient = this.store.selectSnapshot(ClientsState.getRegisterClient);
+                this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
+                this.actions
+                  .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
+                  .subscribe(() => {
+                    if (this.selectedPlan) {
+                      this.store.dispatch(
+                        new AssignPlanToUser(this.selectedPlan._id, registerClient._id),
+                      );
+                      this.actions
+                        .pipe(ofActionSuccessful(AssignPlanToUser), takeUntil(this._destroyed))
+                        .subscribe(() => {
+                          this.snackbar.showSuccess(
+                            "Exito",
+                            "Cliente registrado con correctamente",
+                          );
+                          this.clientForm.reset();
+                          this.router.navigate(["/clientes"]);
+                        });
+                    }
+                  });
               });
-          });
+          },
+          error: (error) => {
+            console.error("Error al ejecutar reCAPTCHA:", error);
+            this.snackbar.showError(
+              "Error de verificación",
+              "No se pudo verificar que eres humano. Inténtalo de nuevo.",
+            );
+          },
+        });
       }
     }
   }
