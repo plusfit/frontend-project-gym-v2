@@ -163,11 +163,6 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
       this.clientData = this.store.selectSnapshot((state) => state.clients.selectedClient);
       if (this.clientData) {
-        console.log("Datos originales del cliente:", this.clientData);
-
-        // Actualizar cada control individualmente con conversión explícita para los radio buttons
-
-        // Campos de texto regulares
         if (this.clientData.name) this.clientForm.get("name")?.setValue(this.clientData.name);
         if (this.clientData.identifier)
           this.clientForm.get("identifier")?.setValue(this.clientData.identifier);
@@ -182,12 +177,10 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
         // Campos de selección
         if (this.clientData.sex) {
-          console.log("Estableciendo sexo:", this.clientData.sex);
           this.clientForm.get("sex")?.setValue(this.clientData.sex);
         }
 
         if (this.clientData.bloodPressure) {
-          console.log("Estableciendo presión arterial:", this.clientData.bloodPressure);
           this.clientForm.get("bloodPressure")?.setValue(this.clientData.bloodPressure);
         }
 
@@ -220,13 +213,6 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
               ? "false"
               : String(this.clientData.historyofPathologicalLesions || "false");
 
-        // Mostrar los valores que se están asignando
-        console.log("Estableciendo valores para radio buttons:");
-        console.log("respiratoryHistory:", respiratoryHistoryValue);
-        console.log("cardiacHistory:", cardiacHistoryValue);
-        console.log("surgicalHistory:", surgicalHistoryValue);
-        console.log("historyofPathologicalLesions:", historyofPathologicalLesionsValue);
-
         // Asignar valores a los radio buttons
         this.clientForm.get("respiratoryHistory")?.setValue(respiratoryHistoryValue);
         this.clientForm.get("cardiacHistory")?.setValue(cardiacHistoryValue);
@@ -250,29 +236,8 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
         )
         .subscribe((plan) => {
           if (plan) {
-            console.log("Plan seleccionado:", plan);
-            this.selectedPlan = plan;
-            // Actualizar el control del plan después de tener el plan seleccionado
-            this.clientForm.get("plan")?.setValue(plan.name);
-            this.clientForm.get("plan")?.updateValueAndValidity();
-            // Forzar una actualización adicional de los controles del formulario para asegurar la sincronización
-            setTimeout(() => {
-              // Verificar que todos los controles tengan los valores correctos
-              console.log("Estado final del formulario:");
-              console.log("name:", this.clientForm.get("name")?.value);
-              console.log("sex:", this.clientForm.get("sex")?.value);
-              console.log("bloodPressure:", this.clientForm.get("bloodPressure")?.value);
-              console.log("respiratoryHistory:", this.clientForm.get("respiratoryHistory")?.value);
-              console.log("cardiacHistory:", this.clientForm.get("cardiacHistory")?.value);
-              console.log("surgicalHistory:", this.clientForm.get("surgicalHistory")?.value);
-              console.log(
-                "historyofPathologicalLesions:",
-                this.clientForm.get("historyofPathologicalLesions")?.value,
-              );
-              console.log("plan:", this.clientForm.get("plan")?.value);
-
-              this.clientForm.updateValueAndValidity();
-            }, 100);
+            this.selectedPlan = plan; // Asigna el plan seleccionado
+            this.clientForm.get("plan")?.setValue(plan.name); // Establece el nombre del plan en el formulario
           }
         });
     }
