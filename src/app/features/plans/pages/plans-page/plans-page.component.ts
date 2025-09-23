@@ -5,10 +5,17 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { Plan } from "@features/plans/interfaces/plan.interface";
-import { DeletePlan, GetClientsByPlanId, GetPlans } from "@features/plans/state/plan.actions";
+import {
+  DeletePlan,
+  GetClientsByPlanId,
+  GetPlans,
+} from "@features/plans/state/plan.actions";
 import { PlansState } from "@features/plans/state/plan.state";
 import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { FiltersBarComponent } from "@shared/components/filter-bar/filter-bar.component";
 import { TableComponent } from "@shared/components/table/table.component";
 import { FilterValues } from "@shared/interfaces/filters.interface";
@@ -26,7 +33,14 @@ export class PlansPageComponent implements OnInit, OnDestroy {
   loading!: Observable<boolean | null>;
   total!: Observable<number | null>;
 
-  displayedColumns: string[] = ["name", "type", "sexType", "createdAt", "updatedAt", "acciones"];
+  displayedColumns: string[] = [
+    "name",
+    "type",
+    "sexType",
+    "createdAt",
+    "updatedAt",
+    "acciones",
+  ];
   pageSize: number = environment.config.pageSize;
   filterValues: FilterValues | null = null;
 
@@ -83,19 +97,21 @@ export class PlansPageComponent implements OnInit, OnDestroy {
 
   deletePlan(event: string): void {
     this.store.dispatch(new GetClientsByPlanId(event));
-    this.actions.pipe(ofActionSuccessful(GetClientsByPlanId), take(1)).subscribe(
-      () => {
-        const clients = this.store.selectSnapshot(PlansState.getPlanClients);
-        if (clients.length > 0) {
-          this.openDialog(event, clients);
-        } else {
-          this.openDialog(event);
-        }
-      },
-      (error: any) => {
-        this.snackbar.showError("Error", error.error.message);
-      },
-    );
+    this.actions
+      .pipe(ofActionSuccessful(GetClientsByPlanId), take(1))
+      .subscribe(
+        () => {
+          const clients = this.store.selectSnapshot(PlansState.getPlanClients);
+          if (clients.length > 0) {
+            this.openDialog(event, clients);
+          } else {
+            this.openDialog(event);
+          }
+        },
+        (error: any) => {
+          this.snackbar.showError("Error", error.error.message);
+        },
+      );
   }
 
   openDialog(plan: any, clientsList?: { email: string }[]): void {
@@ -107,7 +123,8 @@ export class PlansPageComponent implements OnInit, OnDestroy {
           title: "Eliminar Plan",
           contentMessage: clientsList
             ? this.parseClientListToString(clientsList)
-            : "¿Estás seguro de que deseas eliminar el Plan?",
+            : "¿Estás seguro de que deseas eliminar el Plan? Esta acción no se puede deshacer.",
+          type: DialogType.DELETE_PLAN,
         },
       },
     );
@@ -115,17 +132,16 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     dialogRef.componentInstance.confirm.subscribe((value: boolean) => {
       if (!value) return;
       this.store.dispatch(new DeletePlan(plan._id));
-      this.actions.pipe(ofActionSuccessful(DeletePlan), takeUntil(this.destroy)).subscribe(() => {
-        this.snackbar.showSuccess("Éxito", "Plan eliminado correctamente");
-      });
+      this.actions
+        .pipe(ofActionSuccessful(DeletePlan), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess("Éxito", "Plan eliminado correctamente");
+        });
     });
   }
 
   parseClientListToString(clientsList: { email: string }[]): string {
-    return (
-      "El plan tiene asignado los siguientes clientes: " +
-      clientsList.map((client: { email: string }) => client.email).join(", ")
-    );
+    return `El plan tiene asignado los siguientes clientes: ${clientsList.map((client: { email: string }) => client.email).join(", ")}`;
   }
 
   getSexTypeLabel(sexType: string): string {
