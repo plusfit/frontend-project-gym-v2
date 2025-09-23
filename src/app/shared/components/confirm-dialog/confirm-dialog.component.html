@@ -5,14 +5,8 @@
       class="w-16 h-16 rounded-full flex items-center justify-center"
       [ngClass]="getIconBackgroundClass()"
     >
-      <mat-icon
-        class="text-white text-4xl"
-        [style.font-size]="'2rem'"
-        [style.width]="'2rem'"
-        [style.height]="'2rem'"
-      >
-        {{ data.icon || "help" }}
-      </mat-icon>
+      <!-- Phosphor Icons -->
+      <i [class]="getDefaultIcon() + ' text-white'" style="font-size: 2rem"></i>
     </div>
   </div>
 
@@ -42,7 +36,7 @@
       class="text-white px-6 py-2 min-w-[100px]"
       (click)="handleConfirm()"
     >
-      {{ data.confirmButtonText || "Aceptar" }}
+      {{ getConfirmButtonText() }}
     </button>
   </div>
 </div>
