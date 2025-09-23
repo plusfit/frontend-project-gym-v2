@@ -54,11 +54,12 @@
               <div class="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-sm md:max-w-md lg:max-w-lg mx-auto">
                 <!-- Number buttons -->
                 <button 
-                  *ngFor="let number of keypadNumbers" 
-                  (click)="onKeypadClick(number)"
+                  *ngFor="let number of keypadNumbers; trackBy: trackByNumber" 
+                  (click)="onKeypadClick(number, $event)"
                   [disabled]="formState.isLoading || formState.cedula.length >= 8"
-                  class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-3xl md:text-4xl lg:text-5xl py-6 md:py-8 lg:py-10 px-8 md:px-10 lg:px-12 rounded-lg shadow-md transform hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]"
-                  [attr.aria-label]="'Dígito ' + number">
+                  class="keypad-btn bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-3xl md:text-4xl lg:text-5xl py-6 md:py-8 lg:py-10 px-8 md:px-10 lg:px-12 rounded-lg shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]"
+                  [attr.aria-label]="'Dígito ' + number"
+                  [attr.data-number]="number">
                   {{ number }}
                 </button>
               </div>

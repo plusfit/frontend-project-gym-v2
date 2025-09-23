@@ -89,7 +89,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
     );
   }
 
-  deleteRoutine(routineId: string) {
+  deleteRoutine(routine: any) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "500px",
       data: {
@@ -100,7 +100,7 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
-      this.store.dispatch(new DeleteRoutine(routineId));
+      this.store.dispatch(new DeleteRoutine(routine._id));
       this.actions
         .pipe(ofActionSuccessful(DeleteRoutine), takeUntil(this.destroy))
         .subscribe(() => {

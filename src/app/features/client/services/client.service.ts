@@ -76,6 +76,11 @@ export class ClientService {
     return this.http.delete<any>(`${environment.api}/clients/${id}`);
   }
 
+  // Nuevo método para eliminar solo de MongoDB (después de eliminar de Firebase)
+  deleteClientFromMongoDB(id: string): Observable<any> {
+    return this.http.delete<any>(`${environment.api}/clients/${id}`);
+  }
+
   toggleDisabledClient(id: string, disabled: boolean): Observable<any> {
     return this.http.patch<any>(`${environment.api}/clients/${id}/disabled`, {
       disabled,

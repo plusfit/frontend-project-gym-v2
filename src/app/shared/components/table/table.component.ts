@@ -3,26 +3,19 @@ import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatIcon } from "@angular/material/icon";
-import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import {
+  MatMenu,
+  MatMenuContent,
+  MatMenuItem,
+  MatMenuTrigger,
+} from "@angular/material/menu";
 import { MatNoDataRow } from "@angular/material/table";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { LoaderComponent } from "@shared/components/loader/loader.component";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
 import { TranslationPipe } from "@shared/pipes/translation.pipe";
+import { UtcDatePipe } from "@shared/pipes/utc-date.pipe";
 import { EColorBadge } from "../../enums/badge-color.enum";
-
-interface AccessObject {
-    id: string;
-    clientId: string;
-    cedula: string;
-    accessDate: string;
-    accessDay: string;
-    successful: boolean;
-    reason: string;
-    clientName: string;
-    createdAt: string;
-    updatedAt: string;
-  }
 
 /**
  * The TableComponent displays a table of data.
@@ -46,6 +39,7 @@ interface AccessObject {
     TranslationPipe,
     CamelToTitlePipe,
     DatePipe,
+    UtcDatePipe,
     MatCheckbox,
     MatIcon,
   ],
@@ -111,7 +105,9 @@ export class TableComponent implements OnInit {
 
   get tableColumns(): string[] {
     const isSelect = this.isSelect;
-    const tableColums = isSelect ? ["select", ...this.displayedColumns] : this.displayedColumns;
+    const tableColums = isSelect
+      ? ["select", ...this.displayedColumns]
+      : this.displayedColumns;
     return tableColums;
   }
 
@@ -120,7 +116,7 @@ export class TableComponent implements OnInit {
    * @param element AccessObject
    */
   emitSeeDetail(element: any): void {
-      this.seeDetail.emit(element);
+    this.seeDetail.emit(element);
   }
   /**
    * Emit identifier to edit seats of an organization
@@ -143,12 +139,16 @@ export class TableComponent implements OnInit {
   }
 
   resolveNestedProperty(object: any, path: string): any {
-    return path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A";
+    return (
+      path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A"
+    );
   }
 
   toggleSelection(element: any): void {
     const elementId = element.id || element._id;
-    const index = this.selection.findIndex((item) => (item.id || item._id) === elementId);
+    const index = this.selection.findIndex(
+      (item) => (item.id || item._id) === elementId,
+    );
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
@@ -169,7 +169,9 @@ export class TableComponent implements OnInit {
   isAllSelected(): boolean {
     if (this.data) {
       return this.data?.every((item) =>
-        this.selection.some((selected) => (selected.id || selected._id) === (item.id || item._id)),
+        this.selection.some(
+          (selected) => (selected.id || selected._id) === (item.id || item._id),
+        ),
       );
     } else {
       return false;
@@ -177,11 +179,15 @@ export class TableComponent implements OnInit {
   }
 
   isSelected(element: any): boolean {
-    return this.selection.some((item) => (item.id || item._id) === (element.id || element._id));
+    return this.selection.some(
+      (item) => (item.id || item._id) === (element.id || element._id),
+    );
   }
 
   ngOnInit() {
-    this.selected ? (this.selection = [...this.selected]) : (this.selection = []);
+    this.selected
+      ? (this.selection = [...this.selected])
+      : (this.selection = []);
   }
 
   getColorBadge(category: string): EColorBadge {
@@ -275,21 +281,21 @@ export class TableComponent implements OnInit {
    * Get image URL with fallback protection
    */
   getImageUrl(imageUrl: string): string {
-    if (!imageUrl || typeof imageUrl !== 'string') {
+    if (!imageUrl || typeof imageUrl !== "string") {
       return this.getPlaceholderImage();
     }
-    
+
     try {
       // Handle absolute URLs
-      if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
         return imageUrl;
       }
-      
+
       // Handle relative URLs - ensure they start with /
-      const cleanPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+      const cleanPath = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
       return `${window.location.origin}${cleanPath}`;
     } catch (error) {
-      console.warn('Error processing image URL:', imageUrl, error);
+      console.warn("Error processing image URL:", imageUrl, error);
       return this.getPlaceholderImage();
     }
   }
@@ -299,7 +305,7 @@ export class TableComponent implements OnInit {
    */
   private getPlaceholderImage(): string {
     // Return an inline SVG that will never fail to load
-    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyOGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHptMC0xMmMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyOGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHptMC0xMmMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+";
   }
 
   /**
@@ -307,15 +313,18 @@ export class TableComponent implements OnInit {
    */
   handleImageError(event: any): void {
     const target = event.target;
-    
+
     // Prevent infinite recursion by checking if we're already showing the fallback
-    if (target.src.includes('data:image/svg+xml') || target.dataset.errorHandled) {
+    if (
+      target.src.includes("data:image/svg+xml") ||
+      target.dataset.errorHandled
+    ) {
       return;
     }
-    
+
     // Mark as error handled to prevent recursion
-    target.dataset.errorHandled = 'true';
-    
+    target.dataset.errorHandled = "true";
+
     // Use the same safe placeholder
     target.src = this.getPlaceholderImage();
   }
@@ -324,20 +333,20 @@ export class TableComponent implements OnInit {
    * Format exchange date for display
    */
   formatExchangeDate(date: string | Date): string {
-    if (!date) return '';
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    
+    if (!date) return "";
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+
     // Verificar si la fecha es válida
     if (isNaN(dateObj.getTime())) {
-      return 'Fecha inválida';
+      return "Fecha inválida";
     }
-    
-    return dateObj.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+
+    return dateObj.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }
 
@@ -346,11 +355,11 @@ export class TableComponent implements OnInit {
    */
   getExchangeStatusBadgeColor(status: string): EColorBadge {
     switch (status) {
-      case 'completed':
+      case "completed":
         return EColorBadge.SUCCESS;
-      case 'pending':
+      case "pending":
         return EColorBadge.WARNING;
-      case 'cancelled':
+      case "cancelled":
         return EColorBadge.ERROR;
       default:
         return EColorBadge.NEUTRAL;
@@ -362,12 +371,12 @@ export class TableComponent implements OnInit {
    */
   getExchangeStatusText(status: string): string {
     switch (status) {
-      case 'completed':
-        return 'Completado';
-      case 'pending':
-        return 'Pendiente';
-      case 'cancelled':
-        return 'Cancelado';
+      case "completed":
+        return "Completado";
+      case "pending":
+        return "Pendiente";
+      case "cancelled":
+        return "Cancelado";
       default:
         return status;
     }

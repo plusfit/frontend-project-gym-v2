@@ -60,6 +60,15 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       role: "User",
     };
     this.store.dispatch(new GetClients(this.filterValues));
+
+    // Escuchar cambios en el control de filtro
+    this.filterControl.valueChanges
+      .pipe(takeUntil(this.destroy))
+      .subscribe((value) => {
+        if (value !== null) {
+          this.applyFilterFromControl(value);
+        }
+      });
   }
 
   paginate(pageEvent: PageEvent): void {
@@ -70,8 +79,6 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       ...this.filterValues,
       page: currentPage,
       pageSize: currentPageSize,
-      searchQ: this.filterValues.searchQ,
-      withoutPlan: this.filterControl.value === "true" ? true : false,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));
@@ -81,9 +88,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.filterValues = {
       ...this.filterValues,
       page: 1,
-      pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,
-      withoutPlan: this.filterControl.value === "true" ? true : false,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));
@@ -95,6 +100,26 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: 1,
       withoutPlan: filters.withoutPlan,
       disabled: filters.disabled,
+    };
+
+    this.store.dispatch(new GetClients(this.filterValues));
+  }
+
+  private applyFilterFromControl(selectedValue: string): void {
+    let withoutPlan = false;
+    let disabled = false;
+
+    if (selectedValue === 'disabled') {
+      disabled = true;
+    } else if (selectedValue === 'withoutPlan') {
+      withoutPlan = true;
+    }
+
+    this.filterValues = {
+      ...this.filterValues,
+      page: 1,
+      withoutPlan,
+      disabled,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));
@@ -140,17 +165,20 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "500px",
       data: {
-        title: "Eliminar cliente",
-        contentMessage: "¿Estás seguro que desea eliminar cliente?",
+        title: 'Eliminar cliente',
+        contentMessage: '¿Estás seguro que deseas eliminar este cliente?',
       },
     });
 
     dialogRef.componentInstance.confirm.subscribe((value) => {
       if (!value) return;
-      this.store.dispatch(new DeleteClient(event));
-      this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {
-        this.snackbar.showSuccess("Exito", "Cliente eliminado correctamente");
-      });
+      const id = event?._id || event?.id || event; // pass only the id
+      this.store.dispatch(new DeleteClient(id));
+      this.actions
+        .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
+        .subscribe(() => {
+          this.snackbar.showSuccess('Éxito', 'Cliente eliminado');
+        });
     });
   }
 

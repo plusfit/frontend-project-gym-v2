@@ -57,6 +57,7 @@
             <app-filter-select
               [placeholder]="'Selecciona un filtro'"
               [control]="filterControl"
+              (filterChange)="onFilterChange($event)"
               class="bg-white text-gray-700 rounded-lg"
             ></app-filter-select>
           </app-filter-bar>
@@ -76,7 +77,7 @@
           [showSeeDetail]="true"
           (disabled)="toggleDisabledClient($event, $event.disabled)"
           [showDisabled]="true"
-          [showDelete]="false"
+          [showDelete]="true"
           class="w-full"
         >
           <mat-paginator
