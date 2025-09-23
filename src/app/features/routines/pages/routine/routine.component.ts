@@ -1,21 +1,31 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator, MatPaginatorModule, PageEvent } from "@angular/material/paginator";
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { RoutineTableComponent } from "@features/routines/components/routine-table/routine-table.component";
 import { Routine } from "@features/routines/interfaces/routine.interface";
 import {
-    DeleteRoutine,
-    GetRoutinesByName,
-    GetRoutinesByPage,
-    SetLimitPerPage,
+  DeleteRoutine,
+  GetRoutinesByName,
+  GetRoutinesByPage,
+  SetLimitPerPage,
 } from "@features/routines/state/routine.actions";
 import { RoutineState } from "@features/routines/state/routine.state";
 import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { ConfirmDialogComponent, DialogType } from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
@@ -23,7 +33,12 @@ import { FiltersBarComponent } from "../../../../shared/components/filter-bar/fi
 @Component({
   selector: "app-routine",
   standalone: true,
-  imports: [RoutineTableComponent, MatPaginatorModule, CommonModule, FiltersBarComponent],
+  imports: [
+    RoutineTableComponent,
+    MatPaginatorModule,
+    CommonModule,
+    FiltersBarComponent,
+  ],
   templateUrl: "./routine.component.html",
   styleUrl: "./routine.component.css",
 })
@@ -39,11 +54,21 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   pageSize = environment.config.pageSize;
   currentPage = 1;
-  displayedColumns: string[] = ["name", "description", "isCustom", "days", "acciones"];
+  displayedColumns: string[] = [
+    "name",
+    "description",
+    "isCustom",
+    "days",
+    "acciones",
+  ];
   dataSource = new MatTableDataSource<Routine>();
-  totalRoutines$: Observable<number> = this.store.select(RoutineState.totalRoutines);
+  totalRoutines$: Observable<number> = this.store.select(
+    RoutineState.totalRoutines,
+  );
   searchTerm$ = new Subject<string>();
-  loading$: Observable<boolean> = this.store.select(RoutineState.routineLoading);
+  loading$: Observable<boolean> = this.store.select(
+    RoutineState.routineLoading,
+  );
   routines$: Observable<Routine[]> = this.store.select(RoutineState.routines);
 
   searchValue = "";
@@ -94,7 +119,9 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
       width: "500px",
       data: {
         title: "Eliminar rutina",
-        contentMessage: "¿Estás seguro de que deseas eliminar la rutina?",
+        contentMessage:
+          "¿Estás seguro de que deseas eliminar la rutina? Esta acción no se puede deshacer.",
+        type: DialogType.DELETE_ROUTINE,
       },
     });
 
@@ -106,12 +133,14 @@ export class RoutinePageComponent implements AfterViewInit, OnInit, OnDestroy {
         .subscribe(() => {
           this.snackbar.showSuccess("Exito", "Rutina borrada correctamente");
           this.currentPage = 1;
-          this.store.dispatch(new GetRoutinesByPage({ page: this.currentPage })).subscribe(() => {
-            this.totalRoutines$.subscribe((total) => {
-              this.paginator.length = total;
-              this.paginator.firstPage();
+          this.store
+            .dispatch(new GetRoutinesByPage({ page: this.currentPage }))
+            .subscribe(() => {
+              this.totalRoutines$.subscribe((total) => {
+                this.paginator.length = total;
+                this.paginator.firstPage();
+              });
             });
-          });
         });
     });
   }
