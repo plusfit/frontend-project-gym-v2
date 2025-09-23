@@ -7,13 +7,16 @@ import { Router } from "@angular/router";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { Client } from "@features/client/interface/clients.interface";
 import {
-    DeleteClient,
-    GetClients,
-    ToggleDisabledClient,
+  DeleteClient,
+  GetClients,
+  ToggleDisabledClient,
 } from "@features/client/state/clients.actions";
 import { ClientsState } from "@features/client/state/clients.state";
 import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
@@ -23,7 +26,13 @@ import { TableComponent } from "../../../../shared/components/table/table.compon
 @Component({
   selector: "app-client-page",
   standalone: true,
-  imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe, FilterSelectComponent],
+  imports: [
+    FiltersBarComponent,
+    TableComponent,
+    MatPaginator,
+    AsyncPipe,
+    FilterSelectComponent,
+  ],
   templateUrl: "./client-page.component.html",
   styleUrl: "./client-page.component.css",
 })
@@ -35,7 +44,13 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
-  displayedColumns: string[] = ["userInfo.name", "userInfo.CI", "email", "lastAccess", "acciones"];
+  displayedColumns: string[] = [
+    "userInfo.name",
+    "userInfo.CI",
+    "email",
+    "lastAccess",
+    "acciones",
+  ];
 
   private destroy = new Subject<void>();
 
@@ -109,9 +124,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     let withoutPlan = false;
     let disabled = false;
 
-    if (selectedValue === 'disabled') {
+    if (selectedValue === "disabled") {
       disabled = true;
-    } else if (selectedValue === 'withoutPlan') {
+    } else if (selectedValue === "withoutPlan") {
       withoutPlan = true;
     }
 
@@ -142,7 +157,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       width: "500px",
       data: {
         title: `${disabled ? "Habilitar" : "Deshabilitar"} cliente`,
-        contentMessage: `¿Estás seguro que desea ${disabled ? "habilitar" : "deshabilitar"} cliente?`,
+        contentMessage: `¿Estás seguro que desea ${disabled ? "habilitar" : "deshabilitar"} este cliente?`,
+        type: disabled ? DialogType.ENABLE_CLIENT : DialogType.DISABLE_CLIENT,
       },
     });
 
@@ -165,8 +181,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "500px",
       data: {
-        title: 'Eliminar cliente',
-        contentMessage: '¿Estás seguro que deseas eliminar este cliente?',
+        title: "Eliminar cliente",
+        contentMessage:
+          "¿Estás seguro que deseas eliminar este cliente? Esta acción no se puede deshacer y se eliminarán todos sus datos asociados.",
+        type: DialogType.DELETE_CLIENT,
       },
     });
 
@@ -177,7 +195,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('Éxito', 'Cliente eliminado');
+          this.snackbar.showSuccess("Éxito", "Cliente eliminado");
         });
     });
   }
