@@ -14,7 +14,10 @@ import {
 } from "@features/sub-routines/state/sub-routine.actions";
 import { SubRoutinesState } from "@features/sub-routines/state/sub-routine.state";
 import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { FiltersBarComponent } from "@shared/components/filter-bar/filter-bar.component";
 import { TableComponent } from "@shared/components/table/table.component";
 import { FilterValues } from "@shared/interfaces/filters.interface";
@@ -123,9 +126,7 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
           contentMessage: routineList
             ? this.parseRoutineListToString(routineList)
             : "¿Estás seguro de que deseas eliminar la Subrutina?",
-          icon: "ph-list-bullets-light",
-          iconColor: "bg-indigo-100",
-          confirmButtonText: "Eliminar",
+          type: DialogType.DELETE_SUBROUTINE,
         },
       },
     );
