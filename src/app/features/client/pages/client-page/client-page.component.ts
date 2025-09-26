@@ -15,7 +15,7 @@ import { Client } from "@features/client/interface/clients.interface";
 import { AsyncPipe } from "@angular/common";
 import { ClientsState } from "@features/client/state/clients.state";
 import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
-import { AddPaymentDialogComponent } from "@shared/components/add-payment-dialog/add-payment-dialog.component";
+import { AddPaymentDialogComponent } from "../../components/add-payment-dialog/add-payment-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
