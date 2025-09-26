@@ -60,3 +60,11 @@ export class AddAvailableDays {
     public readonly daysToAdd: number,
   ) {}
 }
+
+export class UpdateAvailableDays {
+  static readonly type = "[Client] UpdateAvailableDays";
+  constructor(
+    public readonly clientId: string,
+    public readonly availableDays: number,
+  ) {}
+}

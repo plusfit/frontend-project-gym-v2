@@ -30,6 +30,7 @@ import {
   RegisterClient,
   RoutineClient,
   ToggleDisabledClient,
+  UpdateAvailableDays,
   UpdateClient,
 } from "./clients.actions";
 import { ClientsStateModel } from "./clients.model";
@@ -474,6 +475,40 @@ export class ClientsState {
       catchError((error) => {
         ctx.patchState({ error, loading: false });
         this.snackBarService.showError("Error", "Error al procesar el pago");
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(UpdateAvailableDays, { cancelUncompleted: true })
+  updateAvailableDays(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId, availableDays }: UpdateAvailableDays,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.updateAvailableDays(clientId, availableDays).pipe(
+      tap((response: any) => {
+        // Actualizar el selectedClient con los nuevos días disponibles
+        const state = ctx.getState();
+        const updatedClient = {
+          ...state.selectedClient,
+          availableDays: availableDays,
+        };
+
+        ctx.patchState({
+          selectedClient: updatedClient,
+          loading: false,
+        });
+
+        this.snackBarService.showSuccess(
+          "Días Actualizados",
+          `Días disponibles actualizados a ${availableDays} correctamente`,
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        this.snackBarService.showError("Error", "Error al actualizar los días disponibles");
         return throwError(() => error);
       }),
     );
