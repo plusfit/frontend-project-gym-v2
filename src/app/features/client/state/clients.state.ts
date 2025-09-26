@@ -206,6 +206,7 @@ export class ClientsState {
           routineId: response.data.routineId,
           lastAccess: response.data.lastAccess,
           totalAccesses: response.data.totalAccesses,
+          availableDays: response.data.availableDays,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),

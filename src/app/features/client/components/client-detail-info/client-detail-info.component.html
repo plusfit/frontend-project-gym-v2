@@ -86,7 +86,7 @@
         >
           Actividad en el Gimnasio
         </span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
           <div
             class="p-5 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-blue-100 flex flex-col"
           >
@@ -102,6 +102,17 @@
             <div class="flex items-center space-x-3">
               <span class="text-lg font-medium text-gray-800">
                 {{ clientInfo.totalAccesses || 0 }}
+              </span>
+            </div>
+          </div>
+          <div
+            class="p-5 bg-green-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-green-100 flex flex-col"
+          >
+            <span class="text-gray-500 text-sm mb-1">Días Disponibles</span>
+            <div class="flex items-center space-x-3">
+              <i class="ph-calendar-check text-green-600 text-xl"></i>
+              <span class="text-lg font-medium text-gray-800">
+                {{ clientInfo.availableDays || 0 }}
               </span>
             </div>
           </div>
