@@ -20,6 +20,7 @@ import {
 import { Client, ClientApiResponse, RegisterResponse } from "../interface/clients.interface";
 import { ClientService } from "../services/client.service";
 import {
+  AddAvailableDays,
   CreateClient,
   DeleteClient,
   GetActiveClientsCount,
@@ -221,10 +222,10 @@ export class ClientsState {
     action: RegisterClient,
   ): Observable<RegisterResponse> {
     ctx.patchState({ loading: true });
-  const { identifier, password, recaptchaToken } = action.payload as any;
+    const { identifier, password, recaptchaToken } = action.payload as any;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-    return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
+        return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
           tap((res: RegisterResponse) => {
             ctx.patchState({
               registerClient: {
@@ -327,10 +328,7 @@ export class ClientsState {
   }
 
   @Action(DeleteClient, { cancelUncompleted: true })
-  deleteClient(
-    ctx: StateContext<ClientsStateModel>,
-    { id }: DeleteClient,
-  ): Observable<any> {
+  deleteClient(ctx: StateContext<ClientsStateModel>, { id }: DeleteClient): Observable<any> {
     ctx.patchState({ loading: true, error: null });
 
     // Primero obtener los datos del cliente para tener email y password
@@ -341,7 +339,9 @@ export class ClientsState {
         const password = clientData.userInfo?.password;
 
         if (!email || !password) {
-          throw new Error('No se pueden obtener las credenciales del cliente para eliminarlo de Firebase');
+          throw new Error(
+            "No se pueden obtener las credenciales del cliente para eliminarlo de Firebase",
+          );
         }
 
         // Eliminar de Firebase Auth primero
@@ -351,10 +351,13 @@ export class ClientsState {
             return this.clientService.deleteClientFromMongoDB(id);
           }),
           catchError((firebaseError) => {
-            console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
+            console.warn(
+              "Error eliminando de Firebase, intentando eliminar solo de MongoDB:",
+              firebaseError,
+            );
             // Si falla Firebase, al menos eliminar de MongoDB
             return this.clientService.deleteClientFromMongoDB(id);
-          })
+          }),
         );
       }),
       tap(() => {
@@ -447,6 +450,29 @@ export class ClientsState {
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(AddAvailableDays, { cancelUncompleted: true })
+  addAvailableDays(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId, daysToAdd }: AddAvailableDays,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.addAvailableDays(clientId, daysToAdd).pipe(
+      tap((response: any) => {
+        ctx.patchState({ loading: false });
+        this.snackBarService.showSuccess(
+          "Pago Registrado",
+          `Se agregaron ${daysToAdd} días disponibles correctamente`,
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        this.snackBarService.showError("Error", "Error al procesar el pago");
         return throwError(() => error);
       }),
     );

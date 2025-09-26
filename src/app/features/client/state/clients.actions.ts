@@ -52,3 +52,11 @@ export class ToggleDisabledClient {
 export class GetActiveClientsCount {
   static readonly type = "[Client] GetActiveClientsCount";
 }
+
+export class AddAvailableDays {
+  static readonly type = "[Client] AddAvailableDays";
+  constructor(
+    public readonly clientId: string,
+    public readonly daysToAdd: number,
+  ) {}
+}

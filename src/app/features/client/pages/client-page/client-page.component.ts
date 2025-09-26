@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
 import {
+  AddAvailableDays,
   DeleteClient,
   GetClients,
   ToggleDisabledClient,
@@ -147,20 +148,12 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((result) => {
       if (result) {
-        // Mostrar los datos en consola como solicitaste
-        console.log("Datos del pago confirmado:");
-        console.log("Nombre:", result.clientName);
-        console.log("ID:", result.clientId);
-        console.log("Días:", result.days);
-        console.log("Meses:", result.months);
-
-        this.snackbar.showSuccess(
-          "Pago Registrado",
-          `Pago de ${result.months} ${result.months === 1 ? "mes" : "meses"} registrado para ${result.clientName}`,
-        );
-
-        // TODO: Aquí integraremos con el backend para guardar el pago
-        // this.store.dispatch(new CreatePayment(result));
+        this.store.dispatch(new AddAvailableDays(result.clientId, result.days));
+        this.actions
+          .pipe(ofActionSuccessful(AddAvailableDays), takeUntil(this.destroy))
+          .subscribe(() => {
+            this.store.dispatch(new GetClients(this.filterValues));
+          });
       }
     });
   }
@@ -211,29 +204,5 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
-  }
-
-  /**
-   * Get the count of active clients
-   */
-  getActiveClientsCount(): number {
-    // Por ahora retornamos un valor fijo, puedes implementar lógica específica
-    return 45; // Placeholder - implementar lógica real según tu estructura de datos
-  }
-
-  /**
-   * Get the count of inactive clients
-   */
-  getInactiveClientsCount(): number {
-    // Por ahora retornamos un valor fijo
-    return 12; // Placeholder - implementar lógica real según tu estructura de datos
-  }
-
-  /**
-   * Get the total count of clients
-   */
-  getTotalClientsCount(): number {
-    // Por ahora retornamos un valor fijo
-    return 57; // Placeholder - implementar lógica real según tu estructura de datos
   }
 }
