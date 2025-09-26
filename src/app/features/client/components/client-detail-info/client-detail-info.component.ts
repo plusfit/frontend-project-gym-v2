@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe } from "@angular/common";
+import { AsyncPipe, DatePipe, NgClass } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ClientsState } from "@features/client/state/clients.state";
 import { Actions, Store } from "@ngxs/store";
@@ -11,7 +11,7 @@ import { EColorBadge } from "@shared/enums/badge-color.enum";
 @Component({
   selector: "app-client-detail-info",
   standalone: true,
-  imports: [AsyncPipe, LoaderComponent, DatePipe, TranslationPipe, BadgeComponent],
+  imports: [AsyncPipe, LoaderComponent, DatePipe, TranslationPipe, BadgeComponent, NgClass],
   templateUrl: "./client-detail-info.component.html",
   styleUrl: "./client-detail-info.component.css",
 })

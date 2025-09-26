@@ -106,12 +106,28 @@
             </div>
           </div>
           <div
-            class="p-5 bg-green-50 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-green-100 flex flex-col"
+            [ngClass]="{
+              'p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow border flex flex-col': true,
+              'bg-green-50 border-green-100': (clientInfo.availableDays || 0) > 0,
+              'bg-red-50 border-red-100': (clientInfo.availableDays || 0) === 0
+            }"
           >
             <span class="text-gray-500 text-sm mb-1">Días Disponibles</span>
             <div class="flex items-center space-x-3">
-              <i class="ph-calendar-check text-green-600 text-xl"></i>
-              <span class="text-lg font-medium text-gray-800">
+              <i 
+                [ngClass]="{
+                  'ph-calendar-check text-xl': true,
+                  'text-green-600': (clientInfo.availableDays || 0) > 0,
+                  'text-red-600': (clientInfo.availableDays || 0) === 0
+                }"
+              ></i>
+              <span 
+                [ngClass]="{
+                  'text-lg font-medium': true,
+                  'text-gray-800': (clientInfo.availableDays || 0) > 0,
+                  'text-red-700': (clientInfo.availableDays || 0) === 0
+                }"
+              >
                 {{ clientInfo.availableDays || 0 }}
               </span>
             </div>

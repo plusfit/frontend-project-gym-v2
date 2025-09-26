@@ -37,7 +37,14 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
-  displayedColumns: string[] = ["userInfo.name", "userInfo.CI", "email", "lastAccess", "acciones"];
+  displayedColumns: string[] = [
+    "userInfo.name",
+    "userInfo.CI",
+    "email",
+    "lastAccess",
+    "estadoPago",
+    "acciones",
+  ];
 
   private destroy = new Subject<void>();
 
@@ -199,6 +206,21 @@ export class ClientPageComponent implements OnInit, OnDestroy {
         this.snackbar.showSuccess("Éxito", "Cliente eliminado");
       });
     });
+  }
+
+  getPaymentStatus(client: Client & { availableDays?: number }): { text: string; class: string } {
+    const availableDays = client.availableDays || 0;
+    if (availableDays > 0) {
+      return {
+        text: "Al día",
+        class: "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium",
+      };
+    }
+
+    return {
+      text: "Atrasado",
+      class: "text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium",
+    };
   }
 
   ngOnDestroy(): void {
