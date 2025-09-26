@@ -47,10 +47,12 @@ export class TableComponent implements OnInit {
     id: string;
     disabled: boolean;
   }>();
+  @Output() readonly addPayment = new EventEmitter<any>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
+  @Input() showAddPayment = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -127,6 +129,10 @@ export class TableComponent implements OnInit {
 
   emitDisabled(id: string, disabled: boolean): void {
     this.disabled.emit({ id, disabled });
+  }
+
+  emitAddPayment(element: any): void {
+    this.addPayment.emit(element);
   }
 
   resolveNestedProperty(object: any, path: string): any {

@@ -15,6 +15,7 @@ import { Client } from "@features/client/interface/clients.interface";
 import { AsyncPipe } from "@angular/common";
 import { ClientsState } from "@features/client/state/clients.state";
 import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { AddPaymentDialogComponent } from "@shared/components/add-payment-dialog/add-payment-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
@@ -62,13 +63,11 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetClients(this.filterValues));
 
     // Escuchar cambios en el control de filtro
-    this.filterControl.valueChanges
-      .pipe(takeUntil(this.destroy))
-      .subscribe((value) => {
-        if (value !== null) {
-          this.applyFilterFromControl(value);
-        }
-      });
+    this.filterControl.valueChanges.pipe(takeUntil(this.destroy)).subscribe((value) => {
+      if (value !== null) {
+        this.applyFilterFromControl(value);
+      }
+    });
   }
 
   paginate(pageEvent: PageEvent): void {
@@ -109,9 +108,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     let withoutPlan = false;
     let disabled = false;
 
-    if (selectedValue === 'disabled') {
+    if (selectedValue === "disabled") {
       disabled = true;
-    } else if (selectedValue === 'withoutPlan') {
+    } else if (selectedValue === "withoutPlan") {
       withoutPlan = true;
     }
 
@@ -135,6 +134,35 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   seeDetailClient(id: string): void {
     this.router.navigate([`/clientes/detalle/${id}`]);
+  }
+
+  addPayment(client: any): void {
+    const dialogRef = this.dialog.open(AddPaymentDialogComponent, {
+      width: "500px",
+      data: {
+        clientName: client.userInfo?.name || "Cliente",
+        clientId: client._id || client.id,
+      },
+    });
+
+    dialogRef.componentInstance.confirm.subscribe((result) => {
+      if (result) {
+        // Mostrar los datos en consola como solicitaste
+        console.log("Datos del pago confirmado:");
+        console.log("Nombre:", result.clientName);
+        console.log("ID:", result.clientId);
+        console.log("Días:", result.days);
+        console.log("Meses:", result.months);
+
+        this.snackbar.showSuccess(
+          "Pago Registrado",
+          `Pago de ${result.months} ${result.months === 1 ? "mes" : "meses"} registrado para ${result.clientName}`,
+        );
+
+        // TODO: Aquí integraremos con el backend para guardar el pago
+        // this.store.dispatch(new CreatePayment(result));
+      }
+    });
   }
 
   toggleDisabledClient(event: any, disabled: boolean): void {
@@ -165,8 +193,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "500px",
       data: {
-        title: 'Eliminar cliente',
-        contentMessage: '¿Estás seguro que deseas eliminar este cliente?',
+        title: "Eliminar cliente",
+        contentMessage: "¿Estás seguro que deseas eliminar este cliente?",
       },
     });
 
@@ -174,11 +202,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       if (!value) return;
       const id = event?._id || event?.id || event; // pass only the id
       this.store.dispatch(new DeleteClient(id));
-      this.actions
-        .pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy))
-        .subscribe(() => {
-          this.snackbar.showSuccess('Éxito', 'Cliente eliminado');
-        });
+      this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {
+        this.snackbar.showSuccess("Éxito", "Cliente eliminado");
+      });
     });
   }
 
