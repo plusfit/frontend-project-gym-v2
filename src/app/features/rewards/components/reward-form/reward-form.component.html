@@ -174,27 +174,27 @@
             <div class="flex items-center space-x-3">
               <i
                 class="ph-{{
-                  form.get('enabled')?.value ? 'eye' : 'eye-slash'
+                  form.get('disabled')?.value ? 'eye-slash' : 'eye'
                 }} text-blue-600 text-xl"
               ></i>
               <div>
                 <span class="font-medium text-gray-800">
                   {{
-                    form.get("enabled")?.value
-                      ? "Premio Habilitado"
-                      : "Premio Deshabilitado"
+                    form.get("disabled")?.value
+                      ? "Premio Deshabilitado"
+                      : "Premio Habilitado"
                   }}
                 </span>
                 <p class="text-sm text-gray-600 mt-1">
                   {{
-                    form.get("enabled")?.value
-                      ? "Los clientes pueden ver y canjear este premio"
-                      : "Este premio no será visible para los clientes"
+                    form.get("disabled")?.value
+                      ? "Este premio no será visible para los clientes"
+                      : "Los clientes pueden ver y canjear este premio"
                   }}
                 </p>
               </div>
             </div>
-            <mat-slide-toggle formControlName="enabled" color="primary">
+            <mat-slide-toggle formControlName="disabled" color="primary">
             </mat-slide-toggle>
           </div>
         </div>

@@ -3,18 +3,18 @@ export interface Reward {
   name: string;
   description?: string;
   pointsRequired: number;
-  enabled: boolean;
+  disabled: boolean;
   totalCanjes: number;
   imageUrl?: string;
   imagePath?: string;
-  mediaType?: 'image' | 'video';
+  mediaType?: "image" | "video";
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface RewardFilters {
   search?: string;
-  enabled?: boolean;
+  disabled?: boolean;
   page?: number;
   limit?: number;
 }
@@ -37,20 +37,20 @@ export interface CreateRewardRequest {
   name: string;
   description?: string;
   pointsRequired: number;
-  enabled?: boolean;
+  disabled?: boolean;
   imageUrl?: string;
   imagePath?: string;
-  mediaType?: 'image' | 'video';
+  mediaType?: "image" | "video";
 }
 
 export interface UpdateRewardRequest {
   name?: string;
   description?: string;
   pointsRequired?: number;
-  enabled?: boolean;
+  disabled?: boolean;
   imageUrl?: string;
   imagePath?: string;
-  mediaType?: 'image' | 'video';
+  mediaType?: "image" | "video";
 }
 
 export interface RewardApiResponse {

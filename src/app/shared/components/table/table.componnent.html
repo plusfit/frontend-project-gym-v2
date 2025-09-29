@@ -150,10 +150,10 @@
             [textBadge]="(element[column] ?? 0).toString()"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
-          } @if (column === "enabled") {
+          } @if (column === "enabled" || column === "disabled") {
           <app-badge
-            [colorBadge]="element[column] ? EColorBadge.SUCCESS : EColorBadge.ERROR"
-            [textBadge]="element[column] ? 'Habilitado' : 'Deshabilitado'"
+            [colorBadge]="(column === 'disabled' ? !element[column] : element[column]) ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="(column === 'disabled' ? !element[column] : element[column]) ? 'Habilitado' : 'Deshabilitado'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
           } @if (column === "lastAccess") {
@@ -204,15 +204,13 @@
             [textBadge]="getExchangeStatusText(element[column])"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "estadoPago") {
+          <span [ngClass]="getPaymentStatusClass(element)">
+            {{ getPaymentStatusText(element) }}
+          </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" &&
-          column !== "successful" && column !== "accessDate" && column !==
-          "cedula" && column !== "lastAccess" && column !== "totalAccesses" &&
-          column !== "imageUrl" && column !== "pointsRequired" && column !==
-          "totalExchanges" && column !== "enabled" && column !== "date" &&
-          column !== "client" && column !== "reward" && column !== "pointsUsed"
-          && column !== "status" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -266,6 +264,46 @@
                     >
                   </div>
                 </button>
+                @if (showAddPayment) {
+                <button
+                  (click)="emitAddPayment(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      class="ph-currency-dollar text-button-lg text-green-600 group-hover:text-green-700"
+                    ></i>
+                    <span class="text-green-600 group-hover:text-green-700"
+                      >Agregar Pago</span
+                    >
+                  </div>
+                </button>
+                }
+                 @if (showDisabled) {
+                <button
+                  (click)="emitDisabled(element.id || element._id, element.disabled)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      [class]="element.disabled 
+                        ? 'ph-check-circle-fill text-button-lg text-green-500 group-hover:text-green-600' 
+                        : 'ph-x-circle-fill text-button-lg text-red-500 group-hover:text-red-600'"
+                    ></i>
+                    <span
+                      [class]="element.disabled 
+                        ? 'text-green-500 group-hover:text-green-600' 
+                        : 'text-red-500 group-hover:text-red-600'"
+                      >{{ element.disabled ? "Habilitar" : "Deshabilitar"
+                      }}</span
+                    >
+                  </div>
+                </button>
+                }
                 @if (showDelete) {
                 <button
                   (click)="emitDelete(element)"
@@ -279,28 +317,6 @@
                     ></i>
                     <span class="text-red-500 group-hover:text-red-600"
                       >Borrar</span
-                    >
-                  </div>
-                </button>
-                } @if (showDisabled) {
-                <button
-                  (click)="emitDisabled(element.id || element._id, !element.enabled)"
-                  type="button"
-                  class="group"
-                  mat-menu-item
-                >
-                  <div class="flex flex-row items-center space-x-2">
-                    <i
-                      [class]="element.enabled 
-                        ? 'ph-x-circle-fill text-button-lg text-red-500 group-hover:text-red-600' 
-                        : 'ph-check-circle-fill text-button-lg text-green-500 group-hover:text-green-600'"
-                    ></i>
-                    <span
-                      [class]="element.enabled 
-                        ? 'text-red-500 group-hover:text-red-600' 
-                        : 'text-green-500 group-hover:text-green-600'"
-                      >{{ element.enabled ? "Deshabilitar" : "Habilitar"
-                      }}</span
                     >
                   </div>
                 </button>

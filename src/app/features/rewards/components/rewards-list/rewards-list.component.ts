@@ -46,7 +46,7 @@ export class RewardsListComponent implements OnInit {
     "pointsRequired",
     "totalExchanges",
     "createdAt",
-    "enabled",
+    "disabled",
     "acciones",
   ];
 
@@ -59,7 +59,7 @@ export class RewardsListComponent implements OnInit {
 
   // Filtros
   searchControl = new FormControl("");
-  showEnabledOnly = new FormControl(false);
+  showDisabledOnly = new FormControl(false);
 
   constructor(
     private rewardsService: RewardsService,
@@ -82,7 +82,7 @@ export class RewardsListComponent implements OnInit {
       });
 
     // Filtro de habilitados
-    this.showEnabledOnly.valueChanges.subscribe(() => {
+    this.showDisabledOnly.valueChanges.subscribe(() => {
       this.currentPage = 0;
       this.loadRewards();
     });
@@ -93,7 +93,7 @@ export class RewardsListComponent implements OnInit {
 
     const filters: RewardFilters = {
       search: this.searchControl.value || undefined,
-      enabled: this.showEnabledOnly.value ? true : undefined,
+      disabled: this.showDisabledOnly.value ? true : undefined,
       page: this.currentPage + 1,
       limit: this.pageSize,
     };
@@ -108,16 +108,13 @@ export class RewardsListComponent implements OnInit {
 
           this.rewards = rewardsData;
           this.totalCount = paginationData.totalCount || 0;
-          this.filteredData = !!(filters.search || filters.enabled === true);
+          this.filteredData = !!(filters.search || filters.disabled === true);
         } else {
           console.warn("Invalid response structure:", response);
           this.rewards = [];
           this.totalCount = 0;
           this.filteredData = false;
-          this.snackBarService.showError(
-            "Error",
-            "Respuesta inválida del servidor",
-          );
+          this.snackBarService.showError("Error", "Respuesta inválida del servidor");
         }
         this.loading = false;
       },
@@ -166,33 +163,24 @@ export class RewardsListComponent implements OnInit {
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           this.loadRewards();
-          this.snackBarService.showSuccess(
-            "Éxito",
-            "Premio actualizado exitosamente",
-          );
+          this.snackBarService.showSuccess("Éxito", "Premio actualizado exitosamente");
         }
       });
     }
   }
 
-  toggleEnabled(data: { id: string; disabled: boolean }): void {
-    this.rewardsService.toggleRewardEnabled(data.id).subscribe({
+  toggleDisabled(data: { id: string; disabled: boolean }): void {
+    this.rewardsService.toggleRewardDisabled(data.id).subscribe({
       next: (response) => {
         if (response.success) {
           this.loadRewards();
           const status = data.disabled ? "habilitado" : "deshabilitado";
-          this.snackBarService.showSuccess(
-            "Éxito",
-            `Premio ${status} exitosamente`,
-          );
+          this.snackBarService.showSuccess("Éxito", `Premio ${status} exitosamente`);
         }
       },
       error: (error) => {
         console.error("Error toggling reward:", error);
-        this.snackBarService.showError(
-          "Error",
-          "Error al cambiar el estado del premio",
-        );
+        this.snackBarService.showError("Error", "Error al cambiar el estado del premio");
       },
     });
   }
@@ -213,15 +201,11 @@ export class RewardsListComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.loadRewards();
-              this.snackBarService.showSuccess(
-                "Éxito",
-                "Premio eliminado exitosamente",
-              );
+              this.snackBarService.showSuccess("Éxito", "Premio eliminado exitosamente");
             }
           },
           error: (error) => {
-            const message =
-              error.error?.data.message || "Error al eliminar el premio";
+            const message = error.error?.data.message || "Error al eliminar el premio";
             this.snackBarService.showError("Error", message);
           },
         });

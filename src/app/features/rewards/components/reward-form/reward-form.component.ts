@@ -1,27 +1,21 @@
-import {
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Storage } from '@angular/fire/storage';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
+import { Storage } from "@angular/fire/storage";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
-import { ErrorHandlerService } from '@core/services/error-handler.service';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { CreateRewardRequest, Reward } from '../../interfaces/reward.interface';
-import { RewardsService } from '../../services/rewards.service';
+import { ErrorHandlerService } from "@core/services/error-handler.service";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { CreateRewardRequest, Reward } from "../../interfaces/reward.interface";
+import { RewardsService } from "../../services/rewards.service";
 
 export interface RewardFormData {
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
   reward?: Reward;
 }
 
 @Component({
-  selector: 'app-reward-form',
-  templateUrl: './reward-form.component.html'
+  selector: "app-reward-form",
+  templateUrl: "./reward-form.component.html",
 })
 export class RewardFormComponent implements OnInit {
   form: FormGroup;
@@ -30,14 +24,9 @@ export class RewardFormComponent implements OnInit {
   selectedFile: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   dragging = false;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>;
 
-  private readonly allowedFileTypes = [
-    'image/gif',
-    'image/jpeg',
-    'image/jpg',
-    'image/png'
-  ];
+  private readonly allowedFileTypes = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
 
   constructor(
     private fb: FormBuilder,
@@ -47,9 +36,9 @@ export class RewardFormComponent implements OnInit {
     private storage: Storage,
     public dialogRef: MatDialogRef<RewardFormComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: RewardFormData
+    public data: RewardFormData,
   ) {
-    this.isEditMode = data.mode === 'edit';
+    this.isEditMode = data.mode === "edit";
     this.form = this.createForm();
   }
 
@@ -61,19 +50,19 @@ export class RewardFormComponent implements OnInit {
 
   private createForm(): FormGroup {
     return this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.maxLength(500)]],
+      name: ["", [Validators.required, Validators.maxLength(100)]],
+      description: ["", [Validators.maxLength(500)]],
       pointsRequired: [0, [Validators.required, Validators.min(1)]],
-      enabled: [false]
+      disabled: [false],
     });
   }
 
   private loadRewardData(reward: Reward): void {
     this.form.patchValue({
       name: reward.name,
-      description: reward.description || '',
+      description: reward.description || "",
       pointsRequired: reward.pointsRequired,
-      enabled: reward.enabled
+      disabled: reward.disabled,
     });
     if (reward.imageUrl) {
       this.filePreview = reward.imageUrl;
@@ -107,55 +96,55 @@ export class RewardFormComponent implements OnInit {
                 ...formData,
                 imageUrl: url,
                 imagePath: uploadResult.ref.fullPath,
-                mediaType: 'image' as const
+                mediaType: "image" as const,
               };
 
               this.rewardsService.createReward(dataWithImage).subscribe({
                 next: (response) => {
                   if (response.success) {
-                    this.errorHandler.handleSuccess('create', 'premio');
+                    this.errorHandler.handleSuccess("create", "premio");
                     this.dialogRef.close(true);
                   } else {
-                    this.snackBarService.showError('Error', 'Error al crear el premio');
+                    this.snackBarService.showError("Error", "Error al crear el premio");
                   }
                   this.loading = false;
                 },
                 error: (error) => {
-                  console.error('Error creating premio:', error);
-                  this.errorHandler.handleHttpError(error, 'create', 'premio');
+                  console.error("Error creating premio:", error);
+                  this.errorHandler.handleHttpError(error, "create", "premio");
                   this.loading = false;
-                }
+                },
               });
             },
             error: (error) => {
-              console.error('Error getting file URL:', error);
-              this.snackBarService.showError('Error', 'Error al obtener URL del archivo');
+              console.error("Error getting file URL:", error);
+              this.snackBarService.showError("Error", "Error al obtener URL del archivo");
               this.loading = false;
-            }
+            },
           });
         },
         error: (error) => {
-          console.error('Error uploading file:', error);
-          this.snackBarService.showError('Error', 'Error al subir la imagen');
+          console.error("Error uploading file:", error);
+          this.snackBarService.showError("Error", "Error al subir la imagen");
           this.loading = false;
-        }
+        },
       });
     } else {
       this.rewardsService.createReward(formData).subscribe({
         next: (response) => {
           if (response.success) {
-            this.errorHandler.handleSuccess('create', 'premio');
+            this.errorHandler.handleSuccess("create", "premio");
             this.dialogRef.close(true);
           } else {
-            this.snackBarService.showError('Error', 'Error al crear el premio');
+            this.snackBarService.showError("Error", "Error al crear el premio");
           }
           this.loading = false;
         },
         error: (error) => {
-          console.error('Error creating premio:', error);
-          this.errorHandler.handleHttpError(error, 'create', 'premio');
+          console.error("Error creating premio:", error);
+          this.errorHandler.handleHttpError(error, "create", "premio");
           this.loading = false;
-        }
+        },
       });
     }
   }
@@ -170,58 +159,58 @@ export class RewardFormComponent implements OnInit {
                 ...formData,
                 imageUrl: url,
                 imagePath: uploadResult.ref.fullPath,
-                mediaType: 'image' as const
+                mediaType: "image" as const,
               };
 
               if (this.data.reward) {
                 this.rewardsService.updateReward(this.data.reward.id, dataWithImage).subscribe({
                   next: (response) => {
                     if (response.success) {
-                      this.errorHandler.handleSuccess('update', 'premio');
+                      this.errorHandler.handleSuccess("update", "premio");
                       this.dialogRef.close(true);
                     } else {
-                      this.snackBarService.showError('Error', 'Error al actualizar el premio');
+                      this.snackBarService.showError("Error", "Error al actualizar el premio");
                     }
                     this.loading = false;
                   },
                   error: (error) => {
-                    console.error('Error updating premio:', error);
-                    this.errorHandler.handleHttpError(error, 'update', 'premio');
+                    console.error("Error updating premio:", error);
+                    this.errorHandler.handleHttpError(error, "update", "premio");
                     this.loading = false;
-                  }
+                  },
                 });
               }
             },
             error: (error) => {
-              console.error('Error getting file URL:', error);
-              this.snackBarService.showError('Error', 'Error al obtener URL del archivo');
+              console.error("Error getting file URL:", error);
+              this.snackBarService.showError("Error", "Error al obtener URL del archivo");
               this.loading = false;
-            }
+            },
           });
         },
         error: (error) => {
-          console.error('Error uploading file:', error);
-          this.snackBarService.showError('Error', 'Error al subir la imagen');
+          console.error("Error uploading file:", error);
+          this.snackBarService.showError("Error", "Error al subir la imagen");
           this.loading = false;
-        }
+        },
       });
     } else {
       if (this.data.reward) {
         this.rewardsService.updateReward(this.data.reward.id, formData).subscribe({
           next: (response) => {
             if (response.success) {
-              this.errorHandler.handleSuccess('update', 'premio');
+              this.errorHandler.handleSuccess("update", "premio");
               this.dialogRef.close(true);
             } else {
-              this.snackBarService.showError('Error', 'Error al actualizar el premio');
+              this.snackBarService.showError("Error", "Error al actualizar el premio");
             }
             this.loading = false;
           },
           error: (error) => {
-            console.error('Error updating premio:', error);
-            this.errorHandler.handleHttpError(error, 'update', 'premio');
+            console.error("Error updating premio:", error);
+            this.errorHandler.handleHttpError(error, "update", "premio");
             this.loading = false;
-          }
+          },
         });
       }
     }
@@ -244,8 +233,11 @@ export class RewardFormComponent implements OnInit {
       const file = input.files[0];
 
       if (!this.allowedFileTypes.includes(file.type)) {
-        this.snackBarService.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG');
-        input.value = '';
+        this.snackBarService.showError(
+          "Error",
+          "Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG",
+        );
+        input.value = "";
         return;
       }
 
@@ -267,7 +259,7 @@ export class RewardFormComponent implements OnInit {
     this.selectedFile = null;
 
     if (this.fileInput?.nativeElement) {
-      this.fileInput.nativeElement.value = '';
+      this.fileInput.nativeElement.value = "";
     }
   }
 
@@ -299,40 +291,42 @@ export class RewardFormComponent implements OnInit {
       };
       reader.readAsDataURL(file);
 
-      console.log('Archivo seleccionado:', file.name);
+      console.log("Archivo seleccionado:", file.name);
     } else {
-      this.snackBarService.showError('Error', 'Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG');
+      this.snackBarService.showError(
+        "Error",
+        "Formato no permitido. Solo se aceptan archivos GIF, JPG, JPEG y PNG",
+      );
     }
   }
 
-
   get nameError(): string {
-    const control = this.form.get('name');
-    if (control?.hasError('required') && control?.touched) {
-      return 'El nombre es requerido';
+    const control = this.form.get("name");
+    if (control?.hasError("required") && control?.touched) {
+      return "El nombre es requerido";
     }
-    if (control?.hasError('maxlength') && control?.touched) {
-      return 'El nombre no puede exceder 100 caracteres';
+    if (control?.hasError("maxlength") && control?.touched) {
+      return "El nombre no puede exceder 100 caracteres";
     }
-    return '';
+    return "";
   }
 
   get descriptionError(): string {
-    const control = this.form.get('description');
-    if (control?.hasError('maxlength') && control?.touched) {
-      return 'La descripción no puede exceder 500 caracteres';
+    const control = this.form.get("description");
+    if (control?.hasError("maxlength") && control?.touched) {
+      return "La descripción no puede exceder 500 caracteres";
     }
-    return '';
+    return "";
   }
 
   get pointsError(): string {
-    const control = this.form.get('pointsRequired');
-    if (control?.hasError('required') && control?.touched) {
-      return 'Los puntos requeridos son obligatorios';
+    const control = this.form.get("pointsRequired");
+    if (control?.hasError("required") && control?.touched) {
+      return "Los puntos requeridos son obligatorios";
     }
-    if (control?.hasError('min') && control?.touched) {
-      return 'Los puntos deben ser mayor a 0';
+    if (control?.hasError("min") && control?.touched) {
+      return "Los puntos deben ser mayor a 0";
     }
-    return '';
+    return "";
   }
 }

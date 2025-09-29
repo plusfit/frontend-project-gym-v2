@@ -3,12 +3,7 @@ import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatIcon } from "@angular/material/icon";
-import {
-  MatMenu,
-  MatMenuContent,
-  MatMenuItem,
-  MatMenuTrigger,
-} from "@angular/material/menu";
+import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatNoDataRow } from "@angular/material/table";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { LoaderComponent } from "@shared/components/loader/loader.component";
@@ -54,10 +49,12 @@ export class TableComponent implements OnInit {
     id: string;
     disabled: boolean;
   }>();
+  @Output() readonly addPayment = new EventEmitter<any>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
+  @Input() showAddPayment = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -105,9 +102,7 @@ export class TableComponent implements OnInit {
 
   get tableColumns(): string[] {
     const isSelect = this.isSelect;
-    const tableColums = isSelect
-      ? ["select", ...this.displayedColumns]
-      : this.displayedColumns;
+    const tableColums = isSelect ? ["select", ...this.displayedColumns] : this.displayedColumns;
     return tableColums;
   }
 
@@ -138,17 +133,17 @@ export class TableComponent implements OnInit {
     this.disabled.emit({ id, disabled });
   }
 
+  emitAddPayment(element: any): void {
+    this.addPayment.emit(element);
+  }
+
   resolveNestedProperty(object: any, path: string): any {
-    return (
-      path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A"
-    );
+    return path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A";
   }
 
   toggleSelection(element: any): void {
     const elementId = element.id || element._id;
-    const index = this.selection.findIndex(
-      (item) => (item.id || item._id) === elementId,
-    );
+    const index = this.selection.findIndex((item) => (item.id || item._id) === elementId);
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
@@ -169,25 +164,21 @@ export class TableComponent implements OnInit {
   isAllSelected(): boolean {
     if (this.data) {
       return this.data?.every((item) =>
-        this.selection.some(
-          (selected) => (selected.id || selected._id) === (item.id || item._id),
-        ),
+        this.selection.some((selected) => (selected.id || selected._id) === (item.id || item._id)),
       );
+      // biome-ignore lint/style/noUselessElse: <explanation>
     } else {
       return false;
     }
   }
 
   isSelected(element: any): boolean {
-    return this.selection.some(
-      (item) => (item.id || item._id) === (element.id || element._id),
-    );
+    return this.selection.some((item) => (item.id || item._id) === (element.id || element._id));
   }
 
   ngOnInit() {
-    this.selected
-      ? (this.selection = [...this.selected])
-      : (this.selection = []);
+    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+    this.selected ? (this.selection = [...this.selected]) : (this.selection = []);
   }
 
   getColorBadge(category: string): EColorBadge {
@@ -315,10 +306,7 @@ export class TableComponent implements OnInit {
     const target = event.target;
 
     // Prevent infinite recursion by checking if we're already showing the fallback
-    if (
-      target.src.includes("data:image/svg+xml") ||
-      target.dataset.errorHandled
-    ) {
+    if (target.src.includes("data:image/svg+xml") || target.dataset.errorHandled) {
       return;
     }
 
@@ -337,6 +325,7 @@ export class TableComponent implements OnInit {
     const dateObj = typeof date === "string" ? new Date(date) : date;
 
     // Verificar si la fecha es válida
+    // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
     if (isNaN(dateObj.getTime())) {
       return "Fecha inválida";
     }
@@ -380,5 +369,16 @@ export class TableComponent implements OnInit {
       default:
         return status;
     }
+  }
+  getPaymentStatusText(element: { availableDays?: number }): string {
+    const availableDays = element.availableDays || 0;
+    return availableDays > 0 ? "Al día" : "Atrasado";
+  }
+
+  getPaymentStatusClass(element: { availableDays?: number }): string {
+    const availableDays = element.availableDays || 0;
+    return availableDays > 0
+      ? "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium"
+      : "text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium";
   }
 }
