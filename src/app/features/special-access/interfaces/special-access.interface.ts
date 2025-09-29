@@ -32,6 +32,7 @@ export interface ClientAccessInfo {
   plan?: string;
   consecutiveDays: number;
   totalAccesses: number;
+  availableDays?: number;
 }
 
 export interface RewardInfo {
@@ -47,7 +48,12 @@ export interface GymAccessResponse {
   client?: ClientAccessInfo;
   reward?: RewardInfo;
   reason?: string;
-  denialType?: 'client_not_found' | 'client_disabled' | 'already_accessed' | 'outside_hours' | 'system_error';
+  denialType?:
+    | "client_not_found"
+    | "client_disabled"
+    | "already_accessed"
+    | "outside_hours"
+    | "system_error";
 }
 
 // Raw API Response Structure

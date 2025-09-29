@@ -115,6 +115,7 @@ export class GymAccessService {
               plan: response.data.client.plan,
               consecutiveDays: response.data.client.consecutiveDays || 0,
               totalAccesses: response.data.client.totalAccesses || 0,
+              availableDays: response.data.client.availableDays || 0,
             }
           : undefined,
       };
@@ -135,6 +136,7 @@ export class GymAccessService {
               plan: response.data.client.plan,
               consecutiveDays: response.data.client.consecutiveDays || 0,
               totalAccesses: response.data.client.totalAccesses || 0,
+              availableDays: response.data.client.availableDays || 0,
             }
           : undefined,
         denialType: denialType,
@@ -161,6 +163,7 @@ export class GymAccessService {
               plan: response.data.client.plan,
               consecutiveDays: response.data.client.consecutiveDays || 0,
               totalAccesses: response.data.client.totalAccesses || 0,
+              availableDays: response.data.client.availableDays || 0,
             }
           : undefined,
         denialType: denialType,
