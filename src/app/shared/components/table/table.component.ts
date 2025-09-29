@@ -375,10 +375,8 @@ export class TableComponent implements OnInit {
     return availableDays > 0 ? "Al día" : "Atrasado";
   }
 
-  getPaymentStatusClass(element: { availableDays?: number }): string {
+  getPaymentStatusBadgeColor(element: { availableDays?: number }): EColorBadge {
     const availableDays = element.availableDays || 0;
-    return availableDays > 0
-      ? "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium"
-      : "text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium";
+    return availableDays > 0 ? EColorBadge.SUCCESS : EColorBadge.ERROR;
   }
 }

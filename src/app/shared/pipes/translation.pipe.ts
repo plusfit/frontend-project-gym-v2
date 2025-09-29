@@ -69,6 +69,8 @@ export class TranslationPipe implements PipeTransform {
         return "Último Acceso";
       case "totalAccesses":
         return "Total Accesos";
+      case "estadoPago":
+        return "Estado de Pago";
 
       // Rewards fields
       case "pointsRequired":
