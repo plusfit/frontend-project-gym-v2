@@ -92,4 +92,16 @@ export class ClientService {
       `${environment.api}/clients/count/active`,
     );
   }
+
+  addAvailableDays(clientId: string, daysToAdd: number): Observable<any> {
+    return this.http.post<any>(`${environment.api}/clients/available-days/${clientId}/add`, {
+      daysToAdd,
+    });
+  }
+
+  updateAvailableDays(clientId: string, availableDays: number): Observable<any> {
+    return this.http.patch<any>(`${environment.api}/clients/available-days/${clientId}/update`, {
+      availableDays,
+    });
+  }
 }

@@ -47,10 +47,12 @@ export class TableComponent implements OnInit {
     id: string;
     disabled: boolean;
   }>();
+  @Output() readonly addPayment = new EventEmitter<any>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
+  @Input() showAddPayment = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -127,6 +129,10 @@ export class TableComponent implements OnInit {
 
   emitDisabled(id: string, disabled: boolean): void {
     this.disabled.emit({ id, disabled });
+  }
+
+  emitAddPayment(element: any): void {
+    this.addPayment.emit(element);
   }
 
   resolveNestedProperty(object: any, path: string): any {
@@ -256,5 +262,23 @@ export class TableComponent implements OnInit {
       return `${cedula.substring(0, 1)}.${cedula.substring(1, 4)}.${cedula.substring(4, 7)}-${cedula.substring(7)}`;
     }
     return cedula || "";
+  }
+
+  /**
+   * Get payment status text based on available days
+   */
+  getPaymentStatusText(element: { availableDays?: number }): string {
+    const availableDays = element.availableDays || 0;
+    return availableDays > 0 ? "Al día" : "Atrasado";
+  }
+
+  /**
+   * Get payment status CSS class based on available days
+   */
+  getPaymentStatusClass(element: { availableDays?: number }): string {
+    const availableDays = element.availableDays || 0;
+    return availableDays > 0
+      ? "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium"
+      : "text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium";
   }
 }
