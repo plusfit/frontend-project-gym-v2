@@ -208,21 +208,11 @@ export class AccessHistoryTableComponent implements OnInit, OnChanges {
     this.viewClientDetail.emit(cedula);
   }
 
-  /**
-   * Handle edit event from app-table (will be used for viewing client detail)
-   */
-  handleEdit(id: string): void {
-    // id here will be either element.id, element._id, or element.cedula
-    // For gym access, we use cedula to view client details
-    this.onViewClientDetail(id);
-  }
 
   /**
    * Handle view detail event from app-table
    */
   handleViewDetail(id: string): void {
-    // id here will be either element.id, element._id, or element.cedula
-    // For gym access, we use cedula to view client details
     this.onViewClientDetail(id);
   }
 

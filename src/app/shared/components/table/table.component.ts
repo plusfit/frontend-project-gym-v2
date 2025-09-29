@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { EColorBadge } from "../../enums/badge-color.enum";
 import { CdkTableModule } from "@angular/cdk/table";
 import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { MatCheckbox } from "@angular/material/checkbox";
+import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatNoDataRow } from "@angular/material/table";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { LoaderComponent } from "@shared/components/loader/loader.component";
-import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
+import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { UtcDatePipe } from "@shared/pipes/utc-date.pipe";
-import { MatCheckbox } from "@angular/material/checkbox";
+import { EColorBadge } from "../../enums/badge-color.enum";
 
 /**
  * The TableComponent displays a table of data.
@@ -35,6 +36,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
     DatePipe,
     UtcDatePipe,
     MatCheckbox,
+    MatIcon,
   ],
 })
 export class TableComponent implements OnInit {
@@ -106,10 +108,10 @@ export class TableComponent implements OnInit {
 
   /**
    * Emit identifier to seeDetail seats of an organization
-   * @param id Organization identifier
+   * @param element AccessObject
    */
-  emitSeeDetail(id: string): void {
-    this.seeDetail.emit(id);
+  emitSeeDetail(element: any): void {
+    this.seeDetail.emit(element);
   }
   /**
    * Emit identifier to edit seats of an organization
@@ -164,6 +166,7 @@ export class TableComponent implements OnInit {
       return this.data?.every((item) =>
         this.selection.some((selected) => (selected.id || selected._id) === (item.id || item._id)),
       );
+      // biome-ignore lint/style/noUselessElse: <explanation>
     } else {
       return false;
     }
@@ -174,6 +177,7 @@ export class TableComponent implements OnInit {
   }
 
   ngOnInit() {
+    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
     this.selected ? (this.selection = [...this.selected]) : (this.selection = []);
   }
 
@@ -265,20 +269,114 @@ export class TableComponent implements OnInit {
   }
 
   /**
-   * Get payment status text based on available days
+   * Get image URL with fallback protection
    */
+  getImageUrl(imageUrl: string): string {
+    if (!imageUrl || typeof imageUrl !== "string") {
+      return this.getPlaceholderImage();
+    }
+
+    try {
+      // Handle absolute URLs
+      if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+        return imageUrl;
+      }
+
+      // Handle relative URLs - ensure they start with /
+      const cleanPath = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
+      return `${window.location.origin}${cleanPath}`;
+    } catch (error) {
+      console.warn("Error processing image URL:", imageUrl, error);
+      return this.getPlaceholderImage();
+    }
+  }
+
+  /**
+   * Get a safe placeholder image that won't cause recursion
+   */
+  private getPlaceholderImage(): string {
+    // Return an inline SVG that will never fail to load
+    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyOGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHptMC0xMmMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+";
+  }
+
+  /**
+   * Handle image error by setting fallback - prevents infinite loops
+   */
+  handleImageError(event: any): void {
+    const target = event.target;
+
+    // Prevent infinite recursion by checking if we're already showing the fallback
+    if (target.src.includes("data:image/svg+xml") || target.dataset.errorHandled) {
+      return;
+    }
+
+    // Mark as error handled to prevent recursion
+    target.dataset.errorHandled = "true";
+
+    // Use the same safe placeholder
+    target.src = this.getPlaceholderImage();
+  }
+
+  /**
+   * Format exchange date for display
+   */
+  formatExchangeDate(date: string | Date): string {
+    if (!date) return "";
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+
+    // Verificar si la fecha es válida
+    // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
+    if (isNaN(dateObj.getTime())) {
+      return "Fecha inválida";
+    }
+
+    return dateObj.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  /**
+   * Get exchange status badge color
+   */
+  getExchangeStatusBadgeColor(status: string): EColorBadge {
+    switch (status) {
+      case "completed":
+        return EColorBadge.SUCCESS;
+      case "pending":
+        return EColorBadge.WARNING;
+      case "cancelled":
+        return EColorBadge.ERROR;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
+  }
+
+  /**
+   * Get exchange status text
+   */
+  getExchangeStatusText(status: string): string {
+    switch (status) {
+      case "completed":
+        return "Completado";
+      case "pending":
+        return "Pendiente";
+      case "cancelled":
+        return "Cancelado";
+      default:
+        return status;
+    }
+  }
   getPaymentStatusText(element: { availableDays?: number }): string {
     const availableDays = element.availableDays || 0;
     return availableDays > 0 ? "Al día" : "Atrasado";
   }
 
-  /**
-   * Get payment status CSS class based on available days
-   */
-  getPaymentStatusClass(element: { availableDays?: number }): string {
+  getPaymentStatusBadgeColor(element: { availableDays?: number }): EColorBadge {
     const availableDays = element.availableDays || 0;
-    return availableDays > 0
-      ? "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium"
-      : "text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium";
+    return availableDays > 0 ? EColorBadge.SUCCESS : EColorBadge.ERROR;
   }
 }

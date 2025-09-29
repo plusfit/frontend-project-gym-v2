@@ -55,10 +55,11 @@
           class="pl-4 p-1 border-b border-gray-100 hover:bg-blue-50 transition-colors"
         >
           @if (column.includes(".")) {
-           <span
-    class="{{ column === 'userInfo.name' ? 'font-bold text-gray-800 text-base' : 'text-gray-700' }}">
-    {{ resolveNestedProperty(element, column) }}
-  </span>
+          <span
+            class="{{ column === 'userInfo.name' ? 'font-bold text-gray-800 text-base' : 'text-gray-700' }}"
+          >
+            {{ resolveNestedProperty(element, column) }}
+          </span>
           } @if (column === "type") {
           <app-badge
             [colorBadge]="
@@ -102,22 +103,116 @@
           } @if (column === "accessDate") {
           <span class="text-gray-700">{{ element[column] | utcDate }}</span>
           } @if (column === "cedula") {
-          <span class="text-gray-700 font-mono">{{ formatCedula(element[column]) }}</span>
+          <span class="text-gray-700 font-mono"
+            >{{ formatCedula(element[column]) }}</span
+          >
+          } @if (column === "image") {
+          <div class="image-container flex justify-center">
+            @if (element.rewardImageUrl || element.imageUrl) {
+            <img
+              [src]="element.rewardImageUrl || element.imageUrl"
+              [alt]="element.rewardName || element.name || 'Imagen'"
+              class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event)"
+            />
+            } @else {
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg border border-gray-300 flex items-center justify-center shadow-sm"
+            >
+              <mat-icon class="text-gray-500" style="font-size: 20px"
+                >image</mat-icon
+              >
+            </div>
+            }
+          </div>
+          } @if (column === "imageUrl") {
+          <div class="image-container flex justify-center">
+            <img
+              [src]="getImageUrl(element[column])"
+              [alt]="element.name || 'Premio'"
+              class="w-12 h-12 object-cover rounded-lg border border-gray-200"
+              loading="lazy"
+              decoding="async"
+              (error)="handleImageError($event)"
+            />
+          </div>
+          } @if (column === "pointsRequired") {
+          <app-badge
+            [colorBadge]="EColorBadge.INFO"
+            [textBadge]="element[column] + ' pts'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "totalExchanges") {
+          <app-badge
+            [colorBadge]="element[column] > 0 ? EColorBadge.SUCCESS : EColorBadge.NEUTRAL"
+            [textBadge]="(element[column] ?? 0).toString()"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "enabled" || column === "disabled") {
+          <app-badge
+            [colorBadge]="(column === 'disabled' ? !element[column] : element[column]) ? EColorBadge.SUCCESS : EColorBadge.ERROR"
+            [textBadge]="(column === 'disabled' ? !element[column] : element[column]) ? 'Habilitado' : 'Deshabilitado'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if (column === "lastAccess") {
-          <span class="text-gray-700">{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a') : 'Sin acceso' }}</span>
+          <span class="text-gray-700"
+            >{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a') :
+            'Sin acceso' }}</span
+          >
           } @if (column === "totalAccesses") {
           <app-badge
             [colorBadge]="getTotalAccessesBadgeColor(element[column])"
             [textBadge]="(element[column] || 0) + ' accesos'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "date") {
+          <span class="font-medium text-gray-900"
+            >{{ formatExchangeDate(element.exchangeDate || element.createdAt)
+            }}</span
+          >
+          } @if (column === "client") {
+          <div class="flex flex-col space-y-1">
+            <span class="font-medium text-gray-900"
+              >{{ element.clientName }}</span
+            >
+            <span class="text-sm text-gray-500">{{ element.clientEmail }}</span>
+          </div>
+          } @if (column === "reward") {
+          <div class="flex flex-col space-y-1">
+            <span class="font-medium text-gray-900 truncate"
+              >{{ element.rewardName }}</span
+            >
+            <span
+              class="text-sm text-gray-500 line-clamp-2"
+              *ngIf="element.rewardDescription"
+            >
+              {{ element.rewardDescription }}
+            </span>
+          </div>
+          } @if (column === "pointsUsed") {
+          <app-badge
+            [colorBadge]="EColorBadge.INFO"
+            [textBadge]="element[column] + ' pts'"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "status" && (element.status === 'completed' ||
+          element.status === 'pending' || element.status === 'cancelled')) {
+          <app-badge
+            [colorBadge]="getExchangeStatusBadgeColor(element[column])"
+            [textBadge]="getExchangeStatusText(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if (column === "estadoPago") {
-          <span [ngClass]="getPaymentStatusClass(element)">
-            {{ getPaymentStatusText(element) }}
-          </span>
+          <app-badge
+            [colorBadge]="getPaymentStatusBadgeColor(element)"
+            [textBadge]="getPaymentStatusText(element)"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -141,7 +236,7 @@
               <ng-template matMenuContent>
                 @if (showSeeDetail) {
                 <button
-                  (click)="emitSeeDetail(element.id || element._id || element.cedula)"
+                  (click)="emitSeeDetail(element.clientId ? element.clientId : element.id || element._id || element.cedula)"
                   type="button"
                   class="group"
                   mat-menu-item
@@ -197,9 +292,14 @@
                 >
                   <div class="flex flex-row items-center space-x-2">
                     <i
-                      class="ph-x-circle-fill text-button-lg text-error-100 group-hover:text-error-200"
+                      [class]="element.disabled 
+                        ? 'ph-check-circle-fill text-button-lg text-green-500 group-hover:text-green-600' 
+                        : 'ph-x-circle-fill text-button-lg text-red-500 group-hover:text-red-600'"
                     ></i>
-                    <span class="text-error-100 group-hover:text-error-200"
+                    <span
+                      [class]="element.disabled 
+                        ? 'text-green-500 group-hover:text-green-600' 
+                        : 'text-red-500 group-hover:text-red-600'"
                       >{{ element.disabled ? "Habilitar" : "Deshabilitar"
                       }}</span
                     >

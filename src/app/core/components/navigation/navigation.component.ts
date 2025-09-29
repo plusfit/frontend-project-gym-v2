@@ -17,7 +17,7 @@ export class NavigationComponent {
   // Estado de submenús
   submenuStates = {
     acceso: false,
-    premios: false,
+    rewards: false,
   };
 
   toggleSubmenu(menu: keyof typeof this.submenuStates) {

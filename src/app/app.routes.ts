@@ -103,6 +103,10 @@ export const routes: Routes = [
         path: "historial-accesos",
         component: GymAccessPageComponent,
       },
+      {
+        path: "rewards",
+        loadChildren: () => import('./features/rewards/rewards.module').then(m => m.RewardsModule)
+      },
     ],
   },
   {

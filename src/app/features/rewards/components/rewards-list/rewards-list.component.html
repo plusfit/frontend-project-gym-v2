@@ -16,10 +16,7 @@
             <div
               class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse"
             >
-              <i
-                class="ph-clipboard-text text-white"
-                style="font-size: 40px"
-              ></i>
+              <i class="ph-gift text-white" style="font-size: 40px"></i>
             </div>
 
             <div class="flex flex-col">
@@ -28,20 +25,20 @@
                   class="font-bold text-white tracking-tight"
                   style="font-size: 2.5rem; line-height: 1.2"
                 >
-                  Gestión de Subrutinas
+                  Gestión de Premios
                 </h3>
               </div>
             </div>
           </div>
 
-          <!-- Enhanced Add SubRoutine Button -->
+          <!-- Enhanced Add Reward Button -->
           <div class="flex items-center space-x-3">
             <button
               class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white border-white border-opacity-30 shadow-lg transition-all duration-300 hover:scale-105 font-bold py-3 px-6 rounded-lg flex items-center space-x-2"
-              (click)="createSubRoutine()"
+              (click)="openCreateDialog()"
             >
               <i class="ph-plus text-white text-lg"></i>
-              <span>Crear Subrutina</span>
+              <span>Crear Premio</span>
             </button>
           </div>
         </div>
@@ -65,9 +62,34 @@
           <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
         </div>
 
-        <div class="md:flex lg:flex flex-row justify-between items-center">
-          <app-filter-bar class="flex-1" (formValues)="onSearch($event)">
-          </app-filter-bar>
+        <div
+          class="flex flex-col lg:flex-row justify-between items-start lg:items-center"
+        >
+          <!-- Filters Section -->
+          <div
+            class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start sm:items-center w-full lg:w-auto"
+          >
+            <mat-form-field appearance="outline" class="w-full sm:w-80">
+              <mat-label>Buscar por nombre...</mat-label>
+              <input
+                matInput
+                [formControl]="searchControl"
+                placeholder="Buscar premios"
+                class="text-gray-700"
+              />
+              <i class="ph-magnifying-glass text-gray-400" matSuffix></i>
+            </mat-form-field>
+
+            <mat-slide-toggle
+              [formControl]="showDisabledOnly"
+              color="primary"
+              class="flex-shrink-0"
+            >
+              <span class="text-gray-700 font-medium"
+                >Solo mostrar deshabilitados</span
+              >
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
 
@@ -75,22 +97,35 @@
       <div class="overflow-hidden">
         <app-table
           [displayedColumns]="displayedColumns"
-          [data]="subRoutines | async"
-          [total]="total | async"
-          [loading]="loading | async"
-          (edit)="editSubRoutine($event)"
-          (delete)="deleteSubRoutine($event)"
+          [data]="rewards"
+          [total]="totalCount"
+          [loading]="loading"
+          [filteredData]="filteredData"
+          [showDelete]="true"
+          [showDisabled]="true"
+          (edit)="openEditDialog($event)"
+          (delete)="deleteReward($event)"
+          (disabled)="toggleDisabled($event)"
           class="w-full"
         >
+        </app-table>
+
+        <!-- Paginator -->
+        <div
+          *ngIf="!loading && rewards.length > 0"
+          class="border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+        >
           <mat-paginator
-            appJumpPages
-            class="border-t border-gray-200 bg-white text-gray-700"
-            [length]="total | async"
+            [length]="totalCount"
             [pageSize]="pageSize"
-            (page)="paginate($event)"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            [pageIndex]="currentPage"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="border-none bg-transparent"
           >
           </mat-paginator>
-        </app-table>
+        </div>
       </div>
     </div>
   </div>

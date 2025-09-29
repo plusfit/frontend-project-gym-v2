@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
 import {
@@ -7,20 +8,22 @@ import {
   GetClients,
   ToggleDisabledClient,
 } from "@features/client/state/clients.actions";
-import { Actions, ofActionSuccessful, Store } from "@ngxs/store";
+import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
-import { TableComponent } from "../../../../shared/components/table/table.component";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { Client } from "@features/client/interface/clients.interface";
 import { AsyncPipe } from "@angular/common";
 import { ClientsState } from "@features/client/state/clients.state";
-import { ConfirmDialogComponent } from "@shared/components/confirm-dialog/confirm-dialog.component";
 import { AddPaymentDialogComponent } from "../../components/add-payment-dialog/add-payment-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
-import { FormControl } from "@angular/forms";
+import { TableComponent } from "../../../../shared/components/table/table.component";
 
 @Component({
   selector: "app-client-page",
@@ -170,7 +173,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       width: "500px",
       data: {
         title: `${disabled ? "Habilitar" : "Deshabilitar"} cliente`,
-        contentMessage: `¿Estás seguro que desea ${disabled ? "habilitar" : "deshabilitar"} cliente?`,
+        contentMessage: `¿Estás seguro que desea ${disabled ? "habilitar" : "deshabilitar"} este cliente?`,
+        type: disabled ? DialogType.ENABLE_CLIENT : DialogType.DISABLE_CLIENT,
       },
     });
 
@@ -194,7 +198,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       width: "500px",
       data: {
         title: "Eliminar cliente",
-        contentMessage: "¿Estás seguro que deseas eliminar este cliente?",
+        contentMessage:
+          "¿Estás seguro que deseas eliminar este cliente? Esta acción no se puede deshacer y se eliminarán todos sus datos asociados.",
+        type: DialogType.DELETE_CLIENT,
       },
     });
 
@@ -202,6 +208,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       if (!value) return;
       const id = event?._id || event?.id || event; // pass only the id
       this.store.dispatch(new DeleteClient(id));
+      this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {
+        this.snackbar.showSuccess("Éxito", "Cliente eliminado");
+      });
       this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {
         this.snackbar.showSuccess("Éxito", "Cliente eliminado");
       });
