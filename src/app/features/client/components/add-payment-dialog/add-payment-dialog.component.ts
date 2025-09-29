@@ -37,9 +37,9 @@ export class AddPaymentDialogComponent {
   readonly dialog = inject(MatDialog);
 
   paymentOptions: PaymentOption[] = [
-    { days: 30, label: "1 mes", selected: false },
-    { days: 90, label: "3 meses", selected: false },
-    { days: 180, label: "6 meses", selected: false },
+    { days: 40, label: "1 mes", selected: false },
+    { days: 100, label: "3 meses", selected: false },
+    { days: 190, label: "6 meses", selected: false },
   ];
 
   selectedOption: PaymentOption | null = null;
@@ -69,11 +69,6 @@ export class AddPaymentDialogComponent {
 
   handleConfirm(): void {
     if (this.selectedOption) {
-      console.log("Datos del pago:");
-      console.log("Nombre:", this.data.clientName);
-      console.log("ID:", this.data.clientId);
-      console.log("Días:", this.selectedOption.days);
-
       this.confirm.emit({
         clientName: this.data.clientName,
         clientId: this.data.clientId,

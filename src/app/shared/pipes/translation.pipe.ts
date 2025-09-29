@@ -79,6 +79,8 @@ export class TranslationPipe implements PipeTransform {
         return "Total Canjes";
       case "enabled":
         return "Habilitado";
+      case "disabled":
+        return "Estado";
 
       // Exchange History fields
       case "date":
