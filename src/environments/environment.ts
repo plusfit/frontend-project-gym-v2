@@ -15,7 +15,7 @@ export const environment = {
   /**
    * The URL of the API for the application.
    */
-  api: "https://backend-project-gym-production-9fcf.up.railway.app",
+  api: "http://localhost:3000",
   _api: "http://localhost:3000",
   /**
    * The configuration settings for the application.
@@ -40,4 +40,8 @@ export const environment = {
   recaptcha: {
     siteKey: "6Led5m4rAAAAANjCNb_XFHRocWnlsuGDYKFkjtvf", // TODO: Reemplazar con tu site key real
   },
+  /**
+   * Admin password access code for viewing user passwords
+   */
+  adminPasswordCode: "GYM2024ADMIN",
 };

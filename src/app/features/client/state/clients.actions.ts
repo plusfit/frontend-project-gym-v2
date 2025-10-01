@@ -33,10 +33,12 @@ export class DeleteClient {
   constructor(public readonly id: string) {}
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class RoutineClient {
   static readonly type = "[Client] RoutineClient";
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class PlanClient {
   static readonly type = "[Client] PlanClient";
 }
@@ -49,6 +51,24 @@ export class ToggleDisabledClient {
   ) {}
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class GetActiveClientsCount {
   static readonly type = "[Client] GetActiveClientsCount";
+}
+
+export class GetUserPassword {
+  static readonly type = "[Client] GetUserPassword";
+  constructor(
+    public readonly clientId: string,
+    public readonly adminCode: string,
+  ) {}
+}
+
+export const ClearUserPassword = {
+  type: "[Client] ClearUserPassword",
+};
+
+export class SendForgotPassword {
+  static readonly type = "[Client] SendForgotPassword";
+  constructor(public readonly clientId: string) {}
 }

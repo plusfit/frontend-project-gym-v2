@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
-import { Client } from "../interface/clients.interface";
+import { Client, UserPasswordResponse } from "../interface/clients.interface";
 
 @Injectable({
   providedIn: "root",
@@ -91,5 +91,20 @@ export class ClientService {
     return this.http.get<{ success: boolean; data: number }>(
       `${environment.api}/clients/count/active`,
     );
+  }
+
+  getUserPassword(clientId: string, adminCode: string): Observable<UserPasswordResponse> {
+    return this.http.get<UserPasswordResponse>(`${environment.api}/clients/${clientId}/password`, {
+      params: { adminCode },
+    });
+  }
+
+  // Método para obtener la contraseña para operaciones internas (sin código de administrador)
+  getUserPasswordForInternalOperations(clientId: string): Observable<UserPasswordResponse> {
+    return this.http.get<UserPasswordResponse>(`${environment.api}/clients/${clientId}/password`);
+  }
+
+  sendForgotPasswordEmail(clientId: string): Observable<{success: boolean; message: string}> {
+    return this.http.post<{success: boolean; message: string}>(`${environment.api}/clients/${clientId}/forgot-password`, {});
   }
 }

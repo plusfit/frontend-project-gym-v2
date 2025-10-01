@@ -142,7 +142,6 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
       startTime: this.data.day.hour.startTime,
       endTime: this.data.day.hour.endTime,
       maxCount: this.editForm.value.maxCount,
-      clients: this.data.day.hour.clients,
       day: this.data.day.name,
     };
 

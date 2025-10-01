@@ -1,6 +1,148 @@
 @if (clientInfo$ | async; as clientInfo) {
-  @if (clientInfo && Object.keys(clientInfo).length > 0) {
-    <div class="p-6">
+  <div class="p-6">
+    <!-- Sección: Contraseña de Usuario (Solo Administrador) - Siempre visible -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between pb-2 border-b border-gray-200">
+        <span
+          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600"
+        >
+          Contraseña de Usuario
+        </span>
+        <div class="space-x-2">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="sendForgotPasswordEmail()"
+            [disabled]="forgotPasswordLoading$ | async"
+            class="ml-4"
+          >
+                <mat-icon>email</mat-icon>
+                Recuperar Contraseña
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="togglePasswordSection()"
+            class="ml-4"
+          >
+            <mat-icon>{{ showPasswordSection ? 'visibility_off' : 'visibility' }}</mat-icon>
+            {{ showPasswordSection ? 'Ocultar' : 'Ver Contraseña' }}
+          </button>
+        </div>
+      </div>
+
+      @if (showPasswordSection) {
+        <div class="mt-5 p-5 bg-orange-50 rounded-lg border border-orange-200">
+          <div class="mb-4">
+            <mat-icon class="text-orange-600 mr-2">warning</mat-icon>
+            <span class="text-orange-700 font-semibold">Acceso Restringido - Solo Administradores</span>
+          </div>
+          
+          <form [formGroup]="adminCodeForm" (ngSubmit)="requestPassword()" class="space-y-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Código de Administrador</mat-label>
+              <input
+                matInput
+                type="password"
+                formControlName="adminCode"
+                placeholder="Ingrese el código de administrador"
+              />
+              @if (adminCodeForm.get('adminCode')?.errors?.['required']) {
+                <mat-error>El código de administrador es requerido</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="flex space-x-3">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="adminCodeForm.invalid || (passwordLoading$ | async)"
+              >
+                @if (passwordLoading$ | async) {
+                  <ng-container>
+                    <mat-icon class="animate-spin mr-2">refresh</mat-icon>
+                    Obteniendo...
+                  </ng-container>
+                } @else {
+                  <ng-container>
+                    <mat-icon class="mr-2">lock_open</mat-icon>
+                    Obtener Contraseña
+                  </ng-container>
+                }
+              </button>
+
+              @if (userPassword$ | async) {
+                <button
+                  mat-raised-button
+                  color="accent"
+                  type="button"
+                  (click)="clearPassword()"
+                >
+                  <mat-icon class="mr-2">clear</mat-icon>
+                  Limpiar
+                </button>
+              }
+            </div>
+          </form>
+
+          @if (userPassword$ | async; as password) {
+            <div class="mt-5 p-4 bg-green-50 rounded-lg border border-green-200">
+              <div class="flex items-center justify-between">
+                <span class="text-green-700 font-semibold">Contraseña del Usuario:</span>
+                <button
+                  mat-icon-button
+                  (click)="togglePasswordVisibility()"
+                  class="text-green-600"
+                >
+                  <mat-icon>{{ passwordVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <div class="mt-2 p-3 bg-white rounded border font-mono text-lg">
+                {{ passwordVisible ? password : '••••••••' }}
+              </div>
+              <div class="mt-2 text-xs text-green-600">
+                <mat-icon class="text-sm mr-1">info</mat-icon>
+                Esta información es confidencial y solo debe ser utilizada por administradores autorizados.
+              </div>
+            </div>
+          }
+
+          @if (passwordError$ | async) {
+            <div class="mt-5 p-4 bg-red-50 rounded-lg border border-red-200">
+              <div class="flex items-center">
+                <mat-icon class="text-red-600 mr-2">error</mat-icon>
+                <span class="text-red-700 font-semibold">Error al obtener la contraseña</span>
+              </div>
+              <p class="mt-2 text-red-600">Código de administrador incorrecto o error en el servidor.</p>
+            </div>
+          }
+        </div>
+      }
+
+      @if (forgotPasswordSuccess$ | async) {
+        <div class="mt-5 p-4 bg-green-50 rounded-lg border border-green-200">
+          <div class="flex items-center">
+            <mat-icon class="text-green-600 mr-2">check_circle</mat-icon>
+            <span class="text-green-700 font-semibold">Email de recuperación enviado</span>
+          </div>
+          <p class="mt-2 text-green-600">Se ha enviado un email con instrucciones para restablecer la contraseña al usuario.</p>
+        </div>
+      }
+
+      @if (forgotPasswordError$ | async) {
+        <div class="mt-5 p-4 bg-red-50 rounded-lg border border-red-200">
+          <div class="flex items-center">
+            <mat-icon class="text-red-600 mr-2">error</mat-icon>
+            <span class="text-red-700 font-semibold">Error al enviar email de recuperación</span>
+          </div>
+          <p class="mt-2 text-red-600">No se pudo enviar el email de recuperación. Intenta nuevamente.</p>
+        </div>
+      }
+    </div>
+
+    <!-- Resto de la información del cliente -->
+    @if (clientInfo && Object.keys(clientInfo).length > 0) {
       <!-- Sección: Datos Personales -->
       <div class="mb-8">
         <span
@@ -207,19 +349,19 @@
           </div>
         </div>
       </div>
-    </div>
-  } @else {
-    <div class="flex justify-center items-center h-64 my-6">
-      <div class="bg-blue-50 p-8 rounded-xl border border-blue-100 shadow-sm">
-        <p
-          class="text-xl font-bold text-gray-700 text-center flex items-center"
-        >
-          <i class="ph-info text-blue-500 text-2xl mr-2"></i>
-          No hay información disponible
-        </p>
+    } @else {
+      <div class="flex justify-center items-center h-64 my-6">
+        <div class="bg-blue-50 p-8 rounded-xl border border-blue-100 shadow-sm">
+          <p
+            class="text-xl font-bold text-gray-700 text-center flex items-center"
+          >
+            <i class="ph-info text-blue-500 text-2xl mr-2"></i>
+            No hay información disponible para este cliente
+          </p>
+        </div>
       </div>
-    </div>
-  }
+    }
+  </div>
 } @else {
   <div class="flex justify-center items-center p-12">
     <app-loader></app-loader>
