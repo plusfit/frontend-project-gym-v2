@@ -8,6 +8,7 @@ import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { LoaderComponent } from "@shared/components/loader/loader.component";
 import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
+import { UtcDatePipe } from "@shared/pipes/utc-date.pipe";
 import { MatCheckbox } from "@angular/material/checkbox";
 
 /**
@@ -32,6 +33,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
     TranslationPipe,
     CamelToTitlePipe,
     DatePipe,
+    UtcDatePipe,
     MatCheckbox,
   ],
 })

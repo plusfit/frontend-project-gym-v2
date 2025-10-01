@@ -173,8 +173,6 @@ export class ExerciseState {
     action: DeleteExercise,
   ): Observable<void> {
     ctx.patchState({ loading: true });
-    console.log('action', action);
-
     return this.exerciseService
       .deleteExercise(action.id, action.imagePath)
       .pipe(

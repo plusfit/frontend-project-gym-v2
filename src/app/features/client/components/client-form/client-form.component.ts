@@ -239,29 +239,8 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
         )
         .subscribe((plan) => {
           if (plan) {
-            console.log("Plan seleccionado:", plan);
-            this.selectedPlan = plan;
-            // Actualizar el control del plan después de tener el plan seleccionado
-            this.clientForm.get("plan")?.setValue(plan.name);
-            this.clientForm.get("plan")?.updateValueAndValidity();
-            // Forzar una actualización adicional de los controles del formulario para asegurar la sincronización
-            setTimeout(() => {
-              // Verificar que todos los controles tengan los valores correctos
-              console.log("Estado final del formulario:");
-              console.log("name:", this.clientForm.get("name")?.value);
-              console.log("sex:", this.clientForm.get("sex")?.value);
-              console.log("bloodPressure:", this.clientForm.get("bloodPressure")?.value);
-              console.log("respiratoryHistory:", this.clientForm.get("respiratoryHistory")?.value);
-              console.log("cardiacHistory:", this.clientForm.get("cardiacHistory")?.value);
-              console.log("surgicalHistory:", this.clientForm.get("surgicalHistory")?.value);
-              console.log(
-                "historyofPathologicalLesions:",
-                this.clientForm.get("historyofPathologicalLesions")?.value,
-              );
-              console.log("plan:", this.clientForm.get("plan")?.value);
-
-              this.clientForm.updateValueAndValidity();
-            }, 100);
+            this.selectedPlan = plan; // Asigna el plan seleccionado
+            this.clientForm.get("plan")?.setValue(plan.name); // Establece el nombre del plan en el formulario
           }
         });
     }

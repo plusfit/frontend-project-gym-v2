@@ -60,6 +60,25 @@
   transform: scale(0.95);
 }
 
+/* Fix for keypad buttons - prevent animation conflicts */
+.keypad-btn {
+  transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease !important;
+  transform-origin: center center !important;
+  isolation: isolate !important;
+}
+
+.keypad-btn:hover:not(:disabled) {
+  transform: scale(1.05) !important;
+}
+
+.keypad-btn:active:not(:disabled) {
+  transform: scale(0.98) !important;
+}
+
+.keypad-btn:focus {
+  transform: none !important;
+}
+
 /* Large, readable cedula display */
 .cedula-display {
   font-size: 4rem;
