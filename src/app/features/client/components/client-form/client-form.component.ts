@@ -16,7 +16,11 @@ import { MatSelectModule } from "@angular/material/select";
 import { Router } from "@angular/router";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { passwordValidator } from "@core/validators/password.validator";
-import { RegisterClient, UpdateClient } from "@features/client/state/clients.actions";
+import {
+  RegisterClient,
+  UpdateAvailableDays,
+  UpdateClient,
+} from "@features/client/state/clients.actions";
 import { ClientsState } from "@features/client/state/clients.state";
 import { AssignPlanToUser, GetPlan, GetPlans } from "@features/plans/state/plan.actions";
 import { PlansState } from "@features/plans/state/plan.state";
@@ -108,14 +112,19 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
   private _destroyed = new Subject<void>();
   showPassword: boolean = false;
 
+  // Available days management
+  availableDaysControl = new FormControl<number>(0, [Validators.required, Validators.min(0)]);
+  currentAvailableDays: number = 0;
+  updatingDays: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private location: Location,
     private router: Router,
     private store: Store,
     private actions: Actions,
-  private snackbar: SnackBarService,
-  private recaptchaService: RecaptchaService,
+    private snackbar: SnackBarService,
+    private recaptchaService: RecaptchaService,
   ) {}
 
   ngOnInit(): void {
@@ -226,6 +235,12 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
         // Forzar la actualización de todos los controles
         this.clientForm.updateValueAndValidity();
+
+        // Inicializar días disponibles si estamos en modo edición
+        if (this.isEdit()) {
+          this.currentAvailableDays = (this.clientData as any).availableDays || 0;
+          this.availableDaysControl.setValue(this.currentAvailableDays);
+        }
       }
 
       this.store.dispatch(new GetPlan(this.clientData?.planId ?? ""));
@@ -413,6 +428,27 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   get dateBirthdayControl(): FormControl {
     return this.clientForm.get("dateBirthday") as FormControl;
+  }
+
+  updateAvailableDays(): void {
+    if (this.availableDaysControl.valid && this.id()) {
+      const newDays = this.availableDaysControl.value;
+
+      if (newDays !== null && newDays !== undefined) {
+        this.updatingDays = true;
+
+        this.store.dispatch(new UpdateAvailableDays(this.id(), newDays));
+
+        this.actions
+          .pipe(ofActionSuccessful(UpdateAvailableDays), takeUntil(this._destroyed))
+          .subscribe(() => {
+            this.updatingDays = false;
+            this.currentAvailableDays = newDays;
+            // Limpiar el campo después de la actualización exitosa
+            this.availableDaysControl.setValue(newDays);
+          });
+      }
+    }
   }
 
   ngOnDestroy() {

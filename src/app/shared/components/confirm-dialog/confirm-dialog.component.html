@@ -1,16 +1,42 @@
-<div class="flex flex-col p-4 gap-4 text-center">
-  <h2 mat-dialog-title class="text-xl font-bold text-gray-800">
-    {{ data.title }}
-  </h2>
-  <mat-dialog-content class="text-base text-gray-600">{{
-    data.contentMessage
-  }}</mat-dialog-content>
-  <div class="flex justify-end space-x-4">
-    <button appBtn mat-dialog-close color="secondary" (click)="handleCancel()">
+<div class="flex flex-col p-6 gap-6 text-center">
+  <!-- Icon Section -->
+  <div class="flex justify-center">
+    <div
+      class="w-16 h-16 rounded-full flex items-center justify-center"
+      [ngClass]="getIconBackgroundClass()"
+    >
+      <!-- Phosphor Icons -->
+      <i [class]="getDefaultIcon() + ' text-white'" style="font-size: 2rem"></i>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="space-y-4">
+    <h2 mat-dialog-title class="text-2xl font-bold text-gray-800">
+      {{ data.title }}
+    </h2>
+    <mat-dialog-content class="text-base text-gray-600 leading-relaxed">{{
+      data.contentMessage
+    }}</mat-dialog-content>
+  </div>
+
+  <!-- Actions Section -->
+  <div class="flex justify-center space-x-4 pt-4">
+    <button
+      appBtn
+      color="secondary"
+      (click)="handleCancel()"
+      class="px-6 py-2 min-w-[100px]"
+    >
       Cancelar
     </button>
-    <button appBtn mat-dialog-close class="" (click)="handleConfirm()">
-      Aceptar
+    <button
+      appBtn
+      [ngClass]="getConfirmButtonClass()"
+      class="text-white px-6 py-2 min-w-[100px]"
+      (click)="handleConfirm()"
+    >
+      {{ getConfirmButtonText() }}
     </button>
   </div>
 </div>

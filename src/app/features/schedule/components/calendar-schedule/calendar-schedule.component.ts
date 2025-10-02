@@ -23,7 +23,7 @@ import {
   ToggleAllDaySchedules,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { EDays } from '@shared/enums/days-enum';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';

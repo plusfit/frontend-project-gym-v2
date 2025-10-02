@@ -20,6 +20,7 @@ import {
 import { Client, ClientApiResponse, RegisterResponse } from "../interface/clients.interface";
 import { ClientService } from "../services/client.service";
 import {
+  AddAvailableDays,
   CreateClient,
   DeleteClient,
   GetActiveClientsCount,
@@ -29,6 +30,7 @@ import {
   RegisterClient,
   RoutineClient,
   ToggleDisabledClient,
+  UpdateAvailableDays,
   UpdateClient,
 } from "./clients.actions";
 import { ClientsStateModel } from "./clients.model";
@@ -205,6 +207,7 @@ export class ClientsState {
           routineId: response.data.routineId,
           lastAccess: response.data.lastAccess,
           totalAccesses: response.data.totalAccesses,
+          availableDays: response.data.availableDays,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),
@@ -221,10 +224,10 @@ export class ClientsState {
     action: RegisterClient,
   ): Observable<RegisterResponse> {
     ctx.patchState({ loading: true });
-  const { identifier, password, recaptchaToken } = action.payload as any;
+    const { identifier, password, recaptchaToken } = action.payload as any;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-    return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
+        return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
           tap((res: RegisterResponse) => {
             ctx.patchState({
               registerClient: {
@@ -327,10 +330,7 @@ export class ClientsState {
   }
 
   @Action(DeleteClient, { cancelUncompleted: true })
-  deleteClient(
-    ctx: StateContext<ClientsStateModel>,
-    { id }: DeleteClient,
-  ): Observable<any> {
+  deleteClient(ctx: StateContext<ClientsStateModel>, { id }: DeleteClient): Observable<any> {
     ctx.patchState({ loading: true, error: null });
 
     // Primero obtener los datos del cliente para tener email y password
@@ -341,7 +341,9 @@ export class ClientsState {
         const password = clientData.userInfo?.password;
 
         if (!email || !password) {
-          throw new Error('No se pueden obtener las credenciales del cliente para eliminarlo de Firebase');
+          throw new Error(
+            "No se pueden obtener las credenciales del cliente para eliminarlo de Firebase",
+          );
         }
 
         // Eliminar de Firebase Auth primero
@@ -351,10 +353,13 @@ export class ClientsState {
             return this.clientService.deleteClientFromMongoDB(id);
           }),
           catchError((firebaseError) => {
-            console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
+            console.warn(
+              "Error eliminando de Firebase, intentando eliminar solo de MongoDB:",
+              firebaseError,
+            );
             // Si falla Firebase, al menos eliminar de MongoDB
             return this.clientService.deleteClientFromMongoDB(id);
-          })
+          }),
         );
       }),
       tap(() => {
@@ -447,6 +452,63 @@ export class ClientsState {
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(AddAvailableDays, { cancelUncompleted: true })
+  addAvailableDays(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId, daysToAdd }: AddAvailableDays,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.addAvailableDays(clientId, daysToAdd).pipe(
+      tap((response: any) => {
+        ctx.patchState({ loading: false });
+        this.snackBarService.showSuccess(
+          "Pago Registrado",
+          `Se agregaron ${daysToAdd} días disponibles correctamente`,
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        this.snackBarService.showError("Error", "Error al procesar el pago");
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(UpdateAvailableDays, { cancelUncompleted: true })
+  updateAvailableDays(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId, availableDays }: UpdateAvailableDays,
+  ): Observable<any> {
+    ctx.patchState({ loading: true, error: null });
+
+    return this.clientService.updateAvailableDays(clientId, availableDays).pipe(
+      tap((response: any) => {
+        // Actualizar el selectedClient con los nuevos días disponibles
+        const state = ctx.getState();
+        const updatedClient = {
+          ...state.selectedClient,
+          availableDays: availableDays,
+        };
+
+        ctx.patchState({
+          selectedClient: updatedClient,
+          loading: false,
+        });
+
+        this.snackBarService.showSuccess(
+          "Días Actualizados",
+          `Días disponibles actualizados a ${availableDays} correctamente`,
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ error, loading: false });
+        this.snackBarService.showError("Error", "Error al actualizar los días disponibles");
         return throwError(() => error);
       }),
     );

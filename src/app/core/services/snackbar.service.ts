@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from '@shared/components/snackbar/snackbar.component';
 import { ESeverity } from '@shared/enums/severity.enum';
+import { ErrorTranslationService } from './error-translation.service';
 
 /**
  * The SnackBarService provides methods to show snack bar notifications with different severity levels.
@@ -10,7 +11,10 @@ import { ESeverity } from '@shared/enums/severity.enum';
   providedIn: 'root',
 })
 export class SnackBarService {
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private errorTranslationService: ErrorTranslationService
+  ) {}
 
   /**
    * Shows an error snack bar notification with the specified title and message.
@@ -46,6 +50,36 @@ export class SnackBarService {
    */
   showWarning(title: string, message: string): void {
     this.showSnackBar(ESeverity.WARNING, title, message);
+  }
+
+  /**
+   * Shows an error snack bar notification with translated backend error message.
+   * @param {any} error HTTP error response from backend
+   * @param {string} title The title of the snack bar notification
+   * @param {'create' | 'update' | 'delete' | 'fetch' | 'general'} context Operation context for fallback message
+   */
+  showBackendError(
+    error: any, 
+    title: string = 'Error', 
+    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate'
+  ): void {
+    const translatedMessage = this.errorTranslationService.extractAndTranslateError(error, context);
+    this.showError(title, translatedMessage);
+  }
+
+  /**
+   * Shows a translated error message.
+   * @param {string} errorMessage Backend error message to translate
+   * @param {string} title The title of the snack bar notification
+   * @param {'create' | 'update' | 'delete' | 'fetch' | 'general'} context Operation context for fallback message
+   */
+  showTranslatedError(
+    errorMessage: string, 
+    title: string = 'Error',
+    context?: 'create' | 'update' | 'delete' | 'fetch' | 'general' | 'validate'
+  ): void {
+    const translatedMessage = this.errorTranslationService.translateError(errorMessage, context);
+    this.showError(title, translatedMessage);
   }
 
   /**

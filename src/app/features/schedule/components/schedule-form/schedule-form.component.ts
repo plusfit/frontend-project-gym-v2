@@ -1,33 +1,33 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
 import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogRef,
 } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
-  DeleteClient,
-  EditHour,
-  postClientsArray,
-  SelectedClient,
+    DeleteClient,
+    EditHour,
+    SelectedClient,
+    postClientsArray,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { TitleComponent } from '../../../../shared/components/title/title.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 
 @Component({
   selector: 'app-schedule-form',

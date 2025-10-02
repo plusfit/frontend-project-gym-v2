@@ -5,14 +5,13 @@ import { Pipe, PipeTransform } from "@angular/core";
   standalone: true,
 })
 export class TranslationPipe implements PipeTransform {
-  constructor() {}
-
   transform(value: string): string {
-    if (value && value.includes(".")) {
-      value = value.split(".")[1];
+    let key = value;
+    if (key?.includes(".")) {
+      key = key.split(".")[1];
     }
 
-    switch (value) {
+    switch (key) {
       // Standard fields
       case "name":
         return "Nombre";
@@ -40,6 +39,8 @@ export class TranslationPipe implements PipeTransform {
         return "Categoría";
       case "isCustom":
         return "Personalizada";
+      case "image":
+        return "Imagen";
       case "days":
         return "Días";
       case "day":
@@ -68,6 +69,38 @@ export class TranslationPipe implements PipeTransform {
         return "Último Acceso";
       case "totalAccesses":
         return "Total Accesos";
+      case "estadoPago":
+        return "Estado de Pago";
+
+      // Rewards fields
+      case "pointsRequired":
+        return "Puntos Requeridos";
+      case "totalExchanges":
+        return "Total Canjes";
+      case "enabled":
+        return "Habilitado";
+      case "disabled":
+        return "Estado";
+
+      // Exchange History fields
+      case "date":
+        return "Fecha";
+      case "client":
+        return "Cliente";
+      case "reward":
+        return "Premio";
+      case "rewardName":
+        return "Premio";
+      case "pointsUsed":
+        return "Puntos Utilizados";
+      case "status":
+        return "Estado";
+      case "exchangeDate":
+        return "Fecha de Canje";
+      case "clientEmail":
+        return "Email Cliente";
+      case "rewardDescription":
+        return "Descripción Premio";
 
       // Categorías del Plan
       case "weightLoss":
@@ -117,7 +150,7 @@ export class TranslationPipe implements PipeTransform {
       case "other":
         return "Otros";
       default:
-        return value;
+        return key;
     }
   }
 }

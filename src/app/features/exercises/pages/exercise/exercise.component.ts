@@ -1,38 +1,41 @@
+import { CommonModule } from "@angular/common";
 import {
   AfterViewInit,
   Component,
+  OnDestroy,
   OnInit,
   ViewChild,
-  OnDestroy,
-} from '@angular/core';
-import { ExerciseTableComponent } from '../../components/exercise-table/exercise-table.component';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExerciseState } from '@features/exercises/state/exercise.state';
+} from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import {
   MatPaginator,
   MatPaginatorModule,
   PageEvent,
-} from '@angular/material/paginator';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Exercise } from '@features/exercises/interfaces/exercise.interface';
+} from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { ExerciseFormComponent } from "@features/exercises/components/exercise-form/exercise-form.component";
+import { Exercise } from "@features/exercises/interfaces/exercise.interface";
 import {
   DeleteExercise,
   GetExercisesByName,
   GetExercisesByPage,
   SetLimitPerPage,
-} from '@features/exercises/state/exercise.actions';
-import { CommonModule } from '@angular/common';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ExerciseFormComponent } from '@features/exercises/components/exercise-form/exercise-form.component';
-import { environment } from '../../../../../environments/environment';
-import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import { SnackBarService } from '@core/services/snackbar.service';
-import { BtnDirective } from '@shared/directives/btn/btn.directive';
-import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
+} from "@features/exercises/state/exercise.actions";
+import { ExerciseState } from "@features/exercises/state/exercise.state";
+import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { BtnDirective } from "@shared/directives/btn/btn.directive";
+import { Observable, Subject, takeUntil } from "rxjs";
+import { environment } from "../../../../../environments/environment";
+import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
+import { ExerciseTableComponent } from "../../components/exercise-table/exercise-table.component";
 
 @Component({
-  selector: 'app-exercise',
+  selector: "app-exercise",
   standalone: true,
   imports: [
     ExerciseTableComponent,
@@ -41,8 +44,8 @@ import { FiltersBarComponent } from '../../../../shared/components/filter-bar/fi
     BtnDirective,
     FiltersBarComponent,
   ],
-  templateUrl: './exercise.component.html',
-  styleUrls: ['./exercise.component.css'],
+  templateUrl: "./exercise.component.html",
+  styleUrls: ["./exercise.component.css"],
 })
 export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   private destroy: Subject<void> = new Subject<void>();
@@ -52,13 +55,13 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
   currentPage: number = 1;
 
   displayedColumns: string[] = [
-    'name',
-    'description',
-    'type',
-    'category',
-    'createdAt',
-    'updatedAt',
-    'acciones',
+    "name",
+    "description",
+    "type",
+    "category",
+    "createdAt",
+    "updatedAt",
+    "acciones",
   ];
 
   dataSource: MatTableDataSource<Exercise> = new MatTableDataSource<Exercise>();
@@ -72,7 +75,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     ExerciseState.exercises,
   );
 
-  searchValue: string = '';
+  searchValue: string = "";
   isSearching: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -132,7 +135,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
   editExercise(exerciseId: string): void {
     this.dialog.open(ExerciseFormComponent, {
-      width: '800px',
+      width: "800px",
       data: { isEdit: true, exerciseId },
     });
   }
@@ -141,10 +144,12 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
     const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(
       ConfirmDialogComponent,
       {
-        width: '500px',
+        width: "500px",
         data: {
-          title: 'Eliminar ejercicio',
-          contentMessage: '¿Estás seguro de que deseas eliminar el ejercicio?',
+          title: "Eliminar ejercicio",
+          contentMessage:
+            "¿Estás seguro de que deseas eliminar el ejercicio? Esta acción no se puede deshacer.",
+          type: DialogType.DELETE_EXERCISE,
         },
       },
     );
@@ -156,7 +161,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
       this.actions
         .pipe(ofActionSuccessful(DeleteExercise), takeUntil(this.destroy))
         .subscribe(() => {
-          this.snackbar.showSuccess('Éxito!', 'Ejercicio borrado');
+          this.snackbar.showSuccess("Éxito!", "Ejercicio borrado");
           this.currentPage = 1;
           this.store
             .dispatch(new GetExercisesByPage({ page: this.currentPage }))
@@ -174,7 +179,7 @@ export class ExerciseComponent implements AfterViewInit, OnInit, OnDestroy {
 
   addExerciseModal(): void {
     this.dialog.open(ExerciseFormComponent, {
-      width: '800px',
+      width: "800px",
       data: { isEdit: false },
     });
   }
