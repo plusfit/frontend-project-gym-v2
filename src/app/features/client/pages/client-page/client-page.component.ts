@@ -187,7 +187,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           this.snackbar.showSuccess(
             "Exito",
-            `Cliente ${disabled ? "hablitado" : "deshabilitado"} correctamente`,
+            `Cliente ${disabled ? "habilitado" : "deshabilitado"} correctamente`,
           );
         });
     });
