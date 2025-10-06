@@ -40,7 +40,7 @@ import { EDay } from '@core/enums/day.enum';
 })
 @Injectable({ providedIn: 'root' })
 export class ScheduleState {
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(private scheduleService: ScheduleService) { }
 
   @Selector()
   static scheduleLoading(state: ScheduleStateModel): boolean {
@@ -101,9 +101,9 @@ export class ScheduleState {
   static enabledSchedule(state: ScheduleStateModel): any {
     const schedule = state?.schedule;
     const disabledDays = state?.disabledDays || [];
-    
+
     if (!schedule) return null;
-    
+
     return schedule.filter((day: any) => !disabledDays.includes(day.day));
   }
 
@@ -136,7 +136,7 @@ export class ScheduleState {
         const sortSchedule = schedule.data.reduce((acc: any[], hour: any) => {
           // Buscamos si ya existe una entrada para el día actual
           let dayEntry = acc.find((d: any) => d.day === hour.day);
-       
+
 
           if (!dayEntry) {
             // Si no existe, la creamos
@@ -246,7 +246,7 @@ export class ScheduleState {
           );
         });
 
-        ctx.patchState({ 
+        ctx.patchState({
           clients: [...currentClients, ...updatedClients],
           maxCount: state.schedule?.maxCount,
           loadingAssignable: false
@@ -519,9 +519,9 @@ export class ScheduleState {
   toggleDayStatus(ctx: StateContext<ScheduleStateModel>, action: ToggleDayStatus) {
     const state = ctx.getState();
     const disabledDays = state.disabledDays || [];
-    
+
     let updatedDisabledDays: string[];
-    
+
     if (disabledDays.includes(action.day)) {
       // Si el día está deshabilitado, lo habilitamos
       updatedDisabledDays = disabledDays.filter(day => day !== action.day);
@@ -573,19 +573,19 @@ export class ScheduleState {
   toggleAllDaySchedules(ctx: StateContext<ScheduleStateModel>, action: ToggleAllDaySchedules) {
     const state = ctx.getState();
     const schedule = state.schedule;
-    
+
     if (!schedule) return;
 
     // Encontrar todos los horarios del día específico
     const daySchedule = schedule.find((day: any) => day.day === action.day);
-    
+
     if (!daySchedule || !daySchedule.hours || daySchedule.hours.length === 0) {
       // Si no hay horarios, solo actualizar el estado local
       return this.toggleDayStatus(ctx, new ToggleDayStatus(action.day, action.reason));
     }
 
     // Crear observables para toggle de todos los horarios del día
-    const toggleRequests = daySchedule.hours.map((hour: any) => 
+    const toggleRequests = daySchedule.hours.map((hour: any) =>
       this.scheduleService.toggleScheduleDisabled(hour._id, action.disabled, action.reason)
     );
 
@@ -609,20 +609,20 @@ export class ScheduleState {
         // También actualizar los días deshabilitados
         const disabledDays = state.disabledDays || [];
         let updatedDisabledDays: string[];
-        
+
         if (action.disabled) {
           // Agregar el día a la lista de deshabilitados si no está
-          updatedDisabledDays = disabledDays.includes(action.day) 
-            ? disabledDays 
+          updatedDisabledDays = disabledDays.includes(action.day)
+            ? disabledDays
             : [...disabledDays, action.day];
         } else {
           // Remover el día de la lista de deshabilitados
           updatedDisabledDays = disabledDays.filter(day => day !== action.day);
         }
 
-        ctx.patchState({ 
+        ctx.patchState({
           schedule: updatedSchedule,
-          disabledDays: updatedDisabledDays 
+          disabledDays: updatedDisabledDays
         });
 
         // Guardar también en localStorage para persistencia

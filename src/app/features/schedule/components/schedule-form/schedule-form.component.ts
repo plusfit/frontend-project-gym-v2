@@ -1,24 +1,24 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    ReactiveFormsModule,
-    Validators,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
 } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
-    DeleteClient,
-    EditHour,
-    SelectedClient,
-    postClientsArray,
+  DeleteClient,
+  EditHour,
+  SelectedClient,
+  postClientsArray,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
@@ -70,7 +70,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     public data: { day: any; title: string },
     private fb: FormBuilder,
     private dialog: MatDialog,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
