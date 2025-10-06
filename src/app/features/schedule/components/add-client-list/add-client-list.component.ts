@@ -30,7 +30,6 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 import { TableComponent } from '../../../../shared/components/table/table.component';
-import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 interface Client {
@@ -49,7 +48,6 @@ interface Client {
     ReactiveFormsModule,
     TableComponent,
     FiltersBarComponent,
-    LoaderComponent,
     AsyncPipe,
     MatPaginator,
     NgIf,
