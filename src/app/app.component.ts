@@ -20,7 +20,6 @@ export class AppComponent implements OnInit {
   constructor(
     private pwaUpdateService: PwaUpdateService,
     private pwaInstallService: PwaInstallService,
-    private networkStatusService: NetworkStatusService
   ) {}
 
   ngOnInit() {
