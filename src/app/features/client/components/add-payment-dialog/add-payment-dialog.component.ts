@@ -37,9 +37,9 @@ export class AddPaymentDialogComponent {
   readonly dialog = inject(MatDialog);
 
   paymentOptions: PaymentOption[] = [
-    { days: 40, label: "1 mes", selected: false },
-    { days: 100, label: "3 meses", selected: false },
-    { days: 190, label: "6 meses", selected: false },
+    { days: 32, label: "1 mes", selected: false },
+    { days: 92, label: "3 meses", selected: false },
+    { days: 182, label: "6 meses", selected: false },
   ];
 
   selectedOption: PaymentOption | null = null;
@@ -56,7 +56,7 @@ export class AddPaymentDialogComponent {
       clientName: string;
       clientId: string;
     },
-  ) {}
+  ) { }
 
   selectOption(option: PaymentOption): void {
     for (const opt of this.paymentOptions) {
