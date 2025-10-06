@@ -19,7 +19,15 @@
         class="w-full sticky top-20 bg-white z-10 pb-2"
       ></app-filter-bar>
 
-      <div class="rounded-xl overflow-hidden shadow border border-gray-100">
+      <div class="rounded-xl overflow-hidden shadow border border-gray-100 relative">
+        <!-- Loading overlay -->
+        <div 
+          *ngIf="loadingAssignable$ | async" 
+          class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20 rounded-xl"
+        >
+          <app-loader text="Buscando clientes..." size="text-2xl"></app-loader>
+        </div>
+        
         <app-table
           [data]="clientsAssignable$ | async"
           [displayedColumns]="['name', 'CI', 'email']"

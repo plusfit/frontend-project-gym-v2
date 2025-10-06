@@ -1,6 +1,6 @@
 export class CreateSchedule {
   static readonly type = '[Schedule] Create Schedule';
-  constructor(public readonly payload: any) {}
+  constructor(public readonly payload: any) { }
 }
 
 export class GetSchedule {
@@ -12,12 +12,12 @@ export class UpdateSchedule {
   constructor(
     public readonly _id: string,
     public readonly payload: any,
-  ) {}
+  ) { }
 }
 
 export class DeleteHour {
   static readonly type = '[Schedule] Delete Hour';
-  constructor(public readonly _id: string) {}
+  constructor(public readonly _id: string) { }
 }
 
 export class EditHour {
@@ -25,12 +25,12 @@ export class EditHour {
   constructor(
     public readonly _id: string,
     public readonly schedule: any,
-  ) {}
+  ) { }
 }
 
 export class GetClientsById {
   static readonly type = '[Schedule] Get Clients';
-  constructor(public readonly _id: string) {}
+  constructor(public readonly _id: string) { }
 }
 
 export class AssignClient {
@@ -38,7 +38,7 @@ export class AssignClient {
   constructor(
     public readonly _id: string,
     public readonly clients: string[],
-  ) {}
+  ) { }
 }
 
 export class DeleteClient {
@@ -46,7 +46,7 @@ export class DeleteClient {
   constructor(
     public readonly _id: string,
     public readonly client: string,
-  ) {}
+  ) { }
 }
 
 export class getClientsAssignable {
@@ -58,12 +58,12 @@ export class getClientsAssignable {
       searchQ?: string;
       hourId?: string;
     },
-  ) {}
+  ) { }
 }
 
 export class postClientsArray {
   static readonly type = '[Schedule] Get Clients Array';
-  constructor(public readonly ids: string[]) {}
+  constructor(public readonly ids: string[]) { }
 }
 
 export class ClearClients {
@@ -72,16 +72,20 @@ export class ClearClients {
 
 export class getMaxCount {
   static readonly type = '[Schedule] Get Max Count';
-  constructor(public readonly _id: string) {}
+  constructor(public readonly _id: string) { }
 }
 
 export class SelectedClient {
   static readonly type = '[Schedule] Selected Client';
-  constructor(public readonly client: any) {}
+  constructor(public readonly client: any) { }
 }
 
 export class ClearSelectedClient {
   static readonly type = '[Schedule] Clear Selected Client';
+}
+
+export class ClearClientsAssignable {
+  static readonly type = '[Schedule] Clear Clients Assignable';
 }
 
 export class GetDisabledDays {
@@ -90,7 +94,7 @@ export class GetDisabledDays {
 
 export class SetDisabledDays {
   static readonly type = '[Schedule] Set Disabled Days';
-  constructor(public readonly disabledDays: string[]) {}
+  constructor(public readonly disabledDays: string[]) { }
 }
 
 export class ToggleDayStatus {
@@ -98,15 +102,15 @@ export class ToggleDayStatus {
   constructor(
     public readonly day: string,
     public readonly reason?: string
-  ) {}
+  ) { }
 }
 
 export class ToggleScheduleDisabled {
   static readonly type = '[Schedule] Toggle Schedule Disabled';
   constructor(
-    public readonly scheduleId: string, 
+    public readonly scheduleId: string,
     public readonly disabled: boolean
-  ) {}
+  ) { }
 }
 
 export class ToggleAllDaySchedules {
@@ -115,5 +119,5 @@ export class ToggleAllDaySchedules {
     public readonly day: string,
     public readonly disabled: boolean,
     public readonly reason?: string
-  ) {}
+  ) { }
 }

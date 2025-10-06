@@ -6,6 +6,7 @@ import { catchError, forkJoin, Observable, switchMap, tap, throwError } from 'rx
 import {
   AssignClient,
   ClearClients,
+  ClearClientsAssignable,
   DeleteClient,
   DeleteHour,
   EditHour,
@@ -444,6 +445,17 @@ export class ScheduleState {
     ctx.patchState({
       ...state,
       clients: [], // Limpia la lista de clientes
+      loadingAssignable: false, // Resetea el estado de loading
+    });
+  }
+
+  @Action(ClearClientsAssignable)
+  clearClientsAssignable(ctx: StateContext<ScheduleStateModel>) {
+    const state = ctx.getState();
+    ctx.patchState({
+      ...state,
+      clientsAssignable: [], // Limpia la lista de clientes asignables
+      total: 0, // Resetea el total
       loadingAssignable: false, // Resetea el estado de loading
     });
   }

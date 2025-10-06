@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   output,
 } from '@angular/core';
@@ -21,6 +22,7 @@ import {
   AssignClient,
   getClientsAssignable,
   getMaxCount,
+  ClearClientsAssignable,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
@@ -28,6 +30,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { FiltersBarComponent } from '../../../../shared/components/filter-bar/filter-bar.component';
 import { TableComponent } from '../../../../shared/components/table/table.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 interface Client {
@@ -46,6 +49,7 @@ interface Client {
     ReactiveFormsModule,
     TableComponent,
     FiltersBarComponent,
+    LoaderComponent,
     AsyncPipe,
     MatPaginator,
     NgIf,
@@ -53,7 +57,7 @@ interface Client {
   templateUrl: './add-client-list.component.html',
   styleUrl: './add-client-list.component.css',
 })
-export class AddClientListComponent implements OnInit, AfterViewChecked {
+export class AddClientListComponent implements OnInit, AfterViewChecked, OnDestroy {
   clientsAssignable$!: Observable<Client[]>;
   totalClients$!: Observable<number>;
   filteredClients!: Client[];
@@ -87,6 +91,11 @@ export class AddClientListComponent implements OnInit, AfterViewChecked {
   }
   ngAfterViewChecked(): void {
     this.cdr.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar el estado de clientes asignables al cerrar el modal
+    this.store.dispatch(new ClearClientsAssignable());
   }
 
   cancel(): void {
