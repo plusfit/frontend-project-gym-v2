@@ -231,6 +231,7 @@ export class ScheduleState {
     ctx: StateContext<ScheduleStateModel>,
     action: postClientsArray,
   ) {
+    ctx.patchState({ loadingAssignable: true });
     return this.scheduleService.postClientsArray(action.ids).pipe(
       tap((clients: any) => {
         const state = ctx.getState();
@@ -245,9 +246,16 @@ export class ScheduleState {
           );
         });
 
-        ctx.patchState({ clients: [...currentClients, ...updatedClients] });
-        ctx.patchState({ maxCount: state.schedule?.maxCount });
+        ctx.patchState({ 
+          clients: [...currentClients, ...updatedClients],
+          maxCount: state.schedule?.maxCount,
+          loadingAssignable: false
+        });
       }),
+      catchError((error) => {
+        ctx.patchState({ loadingAssignable: false });
+        return throwError(() => error);
+      })
     );
   }
 
@@ -436,6 +444,7 @@ export class ScheduleState {
     ctx.patchState({
       ...state,
       clients: [], // Limpia la lista de clientes
+      loadingAssignable: false, // Resetea el estado de loading
     });
   }
 

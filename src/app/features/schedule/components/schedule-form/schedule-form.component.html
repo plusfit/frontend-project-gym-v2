@@ -51,30 +51,35 @@
       </div>
 
       <div class="space-y-3 max-h-60 overflow-y-auto pr-1">
-        @if ((clientsTotal$ | async) === 0) {
+        @if (loadingClients$ | async) {
+          <div class="flex justify-center items-center py-8">
+            <app-loader text="Cargando clientes..." size="text-xl"></app-loader>
+          </div>
+        } @else if ((clientsTotal$ | async) === 0) {
           <div class="flex justify-center items-center py-8">
             <span class="text-lg text-center text-gray-500"
               >No hay clientes agregados</span
             >
           </div>
-        }
-        @if (clients$ | async) {
-          @for (client of clients$ | async; track $index) {
-            <div
-              class="bg-gradient-to-r from-gray-50 to-white rounded-lg border border-gray-100 shadow-sm p-3 flex items-center justify-between hover:shadow-md transition-all"
-            >
-              <span class="truncate w-2/3 text-gray-800 font-medium">
-                {{ client.userInfo.name }}
-              </span>
-              <button
-                type="button"
-                class="text-red-500 hover:text-white hover:bg-red-500 px-3 py-1.5 text-sm font-medium rounded-lg border border-red-500 transition-colors duration-200 flex items-center space-x-1"
-                (click)="removeClient(client._id, client.email)"
+        } @else {
+          @if (clients$ | async) {
+            @for (client of clients$ | async; track $index) {
+              <div
+                class="bg-gradient-to-r from-gray-50 to-white rounded-lg border border-gray-100 shadow-sm p-3 flex items-center justify-between hover:shadow-md transition-all"
               >
-                <i class="ph-trash text-sm"></i>
-                <span>Eliminar</span>
-              </button>
-            </div>
+                <span class="truncate w-2/3 text-gray-800 font-medium">
+                  {{ client.userInfo.name }}
+                </span>
+                <button
+                  type="button"
+                  class="text-red-500 hover:text-white hover:bg-red-500 px-3 py-1.5 text-sm font-medium rounded-lg border border-red-500 transition-colors duration-200 flex items-center space-x-1"
+                  (click)="removeClient(client._id, client.email)"
+                >
+                  <i class="ph-trash text-sm"></i>
+                  <span>Eliminar</span>
+                </button>
+              </div>
+            }
           }
         }
       </div>

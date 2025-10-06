@@ -28,6 +28,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TitleComponent } from '../../../../shared/components/title/title.component';
 import { AddClientListComponent } from '../add-client-list/add-client-list.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-schedule-form',
@@ -39,6 +40,7 @@ import { AddClientListComponent } from '../add-client-list/add-client-list.compo
     InputComponent,
     TitleComponent,
     MatDividerModule,
+    LoaderComponent,
   ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
@@ -51,6 +53,9 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   );
   loading$: Observable<boolean> = this.store.select(
     ScheduleState.scheduleLoading,
+  );
+  loadingClients$: Observable<boolean> = this.store.select(
+    ScheduleState.loadingAssignable,
   );
   title = '';
 
@@ -84,6 +89,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   initClients() {
     const clientsForSend = this.data.day.hour?.clients;
     if (!clientsForSend?.length) return;
+    // Despachar la acción para mostrar el loading mientras carga los clientes
     this.store.dispatch(new postClientsArray(clientsForSend));
   }
 
