@@ -1,10 +1,9 @@
-@if (clientInfo$ | async; as clientInfo) {
   <div class="p-6">
     <!-- Sección: Contraseña de Usuario (Solo Administrador) - Siempre visible -->
     <div class="mb-8">
       <div class="flex items-center justify-between pb-2 border-b border-gray-200">
         <span
-          class="block text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600"
+          class="block text-xl font-bold text-red-600"
         >
           Contraseña de Usuario
         </span>
@@ -33,7 +32,7 @@
 
       @if (showPasswordSection) {
         <div class="mt-5 p-5 bg-orange-50 rounded-lg border border-orange-200">
-          <div class="mb-4">
+          <div class="flex mb-4">
             <mat-icon class="text-orange-600 mr-2">warning</mat-icon>
             <span class="text-orange-700 font-semibold">Acceso Restringido - Solo Administradores</span>
           </div>
@@ -59,17 +58,8 @@
                 type="submit"
                 [disabled]="adminCodeForm.invalid || (passwordLoading$ | async)"
               >
-                @if (passwordLoading$ | async) {
-                  <ng-container>
-                    <mat-icon class="animate-spin mr-2">refresh</mat-icon>
-                    Obteniendo...
-                  </ng-container>
-                } @else {
-                  <ng-container>
                     <mat-icon class="mr-2">lock_open</mat-icon>
                     Obtener Contraseña
-                  </ng-container>
-                }
               </button>
 
               @if (userPassword$ | async) {
@@ -89,7 +79,7 @@
           @if (userPassword$ | async; as password) {
             <div class="mt-5 p-4 bg-green-50 rounded-lg border border-green-200">
               <div class="flex items-center justify-between">
-                <span class="text-green-700 font-semibold">Contraseña del Usuario:</span>
+                <span class="text-red-600 font-semibold">Contraseña del Usuario:</span>
                 <button
                   mat-icon-button
                   (click)="togglePasswordVisibility()"
@@ -101,8 +91,7 @@
               <div class="mt-2 p-3 bg-white rounded border font-mono text-lg">
                 {{ passwordVisible ? password : '••••••••' }}
               </div>
-              <div class="mt-2 text-xs text-green-600">
-                <mat-icon class="text-sm mr-1">info</mat-icon>
+              <div class="flex items-center text-xs text-green-600 mt-2">
                 Esta información es confidencial y solo debe ser utilizada por administradores autorizados.
               </div>
             </div>
@@ -140,9 +129,9 @@
         </div>
       }
     </div>
-
+@if (clientInfo$ | async; as clientInfo) {
     <!-- Resto de la información del cliente -->
-    @if (clientInfo && Object.keys(clientInfo).length > 0) {
+    @if (clientInfo && clientInfo.name && Object.keys(clientInfo).length > 0) {
       <!-- Sección: Datos Personales -->
       <div class="mb-8">
         <span
@@ -361,7 +350,6 @@
         </div>
       </div>
     }
-  </div>
 } @else {
   <div class="flex justify-center items-center p-12">
     <app-loader></app-loader>
