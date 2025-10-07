@@ -23,45 +23,91 @@
       <div class="p-6">
         <div class="flex flex-col space-y-4">
           @if (schedule) {
-            @for (day of schedule; track $index) {
-              <mat-accordion class="mt-2">
-                <mat-expansion-panel
-                  [expanded]="day.day === currentDay"
-                  hideToggle
-                  class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <mat-expansion-panel-header class="py-4">
-                    <mat-panel-title>
-                      <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                          <i class="ph-calendar text-white" style="font-size: 16px;"></i>
-                        </div>
-                        <span
-                          class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600"
-                        >
-                          {{ day.day }}
-                        </span>
-                        <div
-                          class="h-0.5 flex-grow bg-gradient-to-r from-blue-300 to-transparent"
-                        ></div>
-                      </div>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4"
+            @for (day of allDaysSchedule; track $index) {
+              @if (disabledDays$ | async; as disabledDays) {
+                <mat-accordion class="mt-2">
+                  <mat-expansion-panel
+                    [expanded]="day.day === currentDay"
+                    hideToggle
+                    class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    [class.day-disabled]="isDayDisabled(day.day, disabledDays)"
                   >
-                    @for (hour of day.hours; track $index) {
-                      <app-card-schedule
-                        [hour]="hour"
-                        [day]="day"
-                        class="transform transition-transform hover:scale-102 duration-200"
-                        (edit)="editarHorario($event)"
-                        (delete)="eliminarHorario($event)"
-                      ></app-card-schedule>
-                    }
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <mat-expansion-panel-header class="py-4">
+                      <mat-panel-title>
+                        <div class="flex items-center justify-between w-full mr-4">
+                          <div class="flex items-center space-x-3">
+                            <div 
+                              class="w-8 h-8 rounded-lg flex items-center justify-center"
+                              [class.bg-gradient-to-br]="!isDayDisabled(day.day, disabledDays)"
+                              [class.from-blue-500]="!isDayDisabled(day.day, disabledDays)"
+                              [class.to-cyan-500]="!isDayDisabled(day.day, disabledDays)"
+                              [class.bg-gray-400]="isDayDisabled(day.day, disabledDays)"
+                            >
+                              <i 
+                                class="text-white" 
+                                [class.ph-calendar]="!isDayDisabled(day.day, disabledDays)"
+                                [class.ph-calendar-x]="isDayDisabled(day.day, disabledDays)"
+                                style="font-size: 16px;"
+                              ></i>
+                            </div>
+                            <span
+                              class="text-xl font-bold"
+                              [class.text-transparent]="!isDayDisabled(day.day, disabledDays)"
+                              [class.bg-clip-text]="!isDayDisabled(day.day, disabledDays)"
+                              [class.bg-gradient-to-r]="!isDayDisabled(day.day, disabledDays)"
+                              [class.from-blue-600]="!isDayDisabled(day.day, disabledDays)"
+                              [class.to-cyan-600]="!isDayDisabled(day.day, disabledDays)"
+                              [class.text-gray-500]="isDayDisabled(day.day, disabledDays)"
+                            >
+                              {{ day.day }}
+                            </span>
+                            <div class="flex items-center space-x-2">
+                              <span 
+                                class="text-sm px-2 py-1 rounded-full font-medium"
+                                [class]="getDayStatusClass(day.day, disabledDays)"
+                              >
+                                {{ getDayStatusText(day.day, disabledDays) }}
+                              </span>
+                              <span class="text-sm text-gray-500">{{ day.hours.length }} horario(s)</span>
+                            </div>
+                          </div>
+                          
+                          <div class="flex items-center space-x-3 day-toggle-section">
+                            <div class="flex items-center space-x-2 day-status-toggle">
+                              <span class="text-sm text-gray-600">
+                                {{ isDayDisabled(day.day, disabledDays) ? 'Habilitar' : 'Deshabilitar' }}
+                              </span>
+                              <mat-slide-toggle
+                                [checked]="!isDayDisabled(day.day, disabledDays)"
+                                (change)="toggleDayStatus(day.day)"
+                                [matTooltip]="isDayDisabled(day.day, disabledDays) ? 'Habilitar día para agendamiento' : 'Deshabilitar día para agendamiento'"
+                                color="primary"
+                                (click)="$event.stopPropagation()"
+                              ></mat-slide-toggle>
+                            </div>
+                            <div
+                              class="h-0.5 w-16 bg-gradient-to-r from-blue-300 to-transparent"
+                            ></div>
+                          </div>
+                        </div>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                      <div
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4"
+                      >
+                        @for (hour of day.hours; track $index) {
+                          <app-card-schedule
+                            [hour]="hour"
+                            [day]="day"
+                            class="transform transition-transform hover:scale-102 duration-200"
+                            (edit)="editarHorario($event)"
+                            (delete)="eliminarHorario($event)"
+                          ></app-card-schedule>
+                        }
+                      </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              }
             }
           } @else {
             <div

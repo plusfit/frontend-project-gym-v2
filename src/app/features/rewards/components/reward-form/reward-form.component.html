@@ -1,0 +1,235 @@
+<div
+  class="w-full p-2 max-w-2xl mx-auto bg-white rounded-xl overflow-hidden shadow-xl"
+>
+  <!-- Header -->
+  <div class="p-6 flex justify-between items-center border-b border-gray-200">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-blue-100 rounded-lg">
+        <i class="ph-gift text-blue-600 text-2xl"></i>
+      </div>
+      <div>
+        <h2 mat-dialog-title class="text-xl font-bold text-gray-800 m-0">
+          {{ isEditMode ? "Editar Premio" : "Crear Nuevo Premio" }}
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">
+          {{
+            isEditMode
+              ? "Modifica los datos del premio"
+              : "Configura un nuevo premio para tus clientes"
+          }}
+        </p>
+      </div>
+    </div>
+    <button
+      mat-icon-button
+      mat-dialog-close
+      class="text-gray-400 hover:text-gray-600 transition-colors"
+    >
+      <i class="ph-x text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <mat-dialog-content class="p-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Información Básica -->
+      <div class="space-y-4">
+        <h3
+          class="text-lg font-semibold text-blue-600 border-b-2 border-blue-600 pb-2"
+        >
+          Información Básica
+        </h3>
+
+        <div class="space-y-4">
+          <!-- Nombre -->
+          <div class="h-[80px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Nombre del Premio</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Ej: Proteína Premium, Entrada VIP..."
+              />
+              <mat-error *ngIf="nameError">{{ nameError }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Descripción -->
+          <div class="h-[100px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Descripción</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="3"
+                placeholder="Describe el premio y sus beneficios..."
+              ></textarea>
+              <mat-hint align="end">
+                {{ form.get("description")?.value?.length || 0 }}/500
+              </mat-hint>
+              <mat-error *ngIf="descriptionError">{{
+                descriptionError
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Imagen del Premio -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700"
+              >Imagen del Premio</label
+            >
+            <div
+              class="mt-2 mb-6 border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-indigo-500 transition relative flex flex-col items-center justify-center"
+              [class.border-indigo-500]="dragging"
+              [class.bg-indigo-50]="dragging"
+              tabindex="0"
+              role="button"
+              (click)="fileInput.click()"
+              (keydown.enter)="fileInput.click()"
+              (keyup.space)="fileInput.click()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+            >
+              <input
+                #fileInput
+                type="file"
+                accept=".gif,.jpg,.jpeg,.png,image/gif,image/jpeg,image/jpg,image/png"
+                (change)="onFileSelected($event)"
+                hidden
+              />
+
+              <ng-container *ngIf="!filePreview">
+                <svg
+                  class="w-12 h-12 text-gray-400 mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7 16V8a4 4 0 118 0m-6 8h6m-6 0a2 2 0 110-4m6 4a2 2 0 110-4"
+                  ></path>
+                </svg>
+                <p class="text-sm text-gray-600">
+                  Arrastra y suelta aquí o
+                  <span class="text-indigo-500 font-medium"
+                    >haz clic para subir</span
+                  >
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                  Solo archivos GIF, JPG, JPEG y PNG
+                </p>
+              </ng-container>
+
+              <ng-container *ngIf="filePreview">
+                <img
+                  [src]="filePreview"
+                  class="w-32 h-32 rounded-lg shadow-md border border-gray-200 object-cover"
+                  alt="Preview del premio"
+                />
+                <button
+                  type="button"
+                  class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition"
+                  (click)="removeFile($event)"
+                >
+                  ✕
+                </button>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Puntos Requeridos -->
+          <div class="h-[80px]">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Puntos Requeridos</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="pointsRequired"
+                placeholder="100"
+                min="1"
+              />
+              <span matSuffix>pts</span>
+              <mat-error *ngIf="pointsError">{{ pointsError }}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuración -->
+      <div class="space-y-4">
+        <h3
+          class="text-lg font-semibold text-blue-600 border-b-2 border-blue-600 pb-2"
+        >
+          Configuración
+        </h3>
+
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <i
+                class="ph-{{
+                  form.get('disabled')?.value ? 'eye-slash' : 'eye'
+                }} text-blue-600 text-xl"
+              ></i>
+              <div>
+                <span class="font-medium text-gray-800">
+                  {{
+                    form.get("disabled")?.value
+                      ? "Premio Deshabilitado"
+                      : "Premio Habilitado"
+                  }}
+                </span>
+                <p class="text-sm text-gray-600 mt-1">
+                  {{
+                    form.get("disabled")?.value
+                      ? "Este premio no será visible para los clientes"
+                      : "Los clientes pueden ver y canjear este premio"
+                  }}
+                </p>
+              </div>
+            </div>
+            <mat-slide-toggle formControlName="disabled" color="primary">
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions
+    class="flex justify-end space-x-3 px-6 py-4 border-t border-gray-200"
+  >
+    <button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="loading"
+      class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Volver
+    </button>
+
+    <button
+      type="submit"
+      (click)="onSubmit()"
+      [disabled]="loading || form.invalid"
+      class="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+    >
+      <mat-spinner
+        diameter="16"
+        *ngIf="loading"
+        class="text-white"
+      ></mat-spinner>
+      <span *ngIf="!loading">{{ isEditMode ? "Actualizar" : "Crear" }}</span>
+      <span *ngIf="loading">{{
+        isEditMode ? "Actualizando..." : "Creando..."
+      }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

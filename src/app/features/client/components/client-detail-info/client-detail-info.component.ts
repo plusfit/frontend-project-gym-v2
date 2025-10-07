@@ -24,10 +24,8 @@ import { SnackBarService } from "@core/services/snackbar.service";
   imports: [
     AsyncPipe, 
     LoaderComponent,
-    JsonPipe,
     DatePipe, 
     TranslationPipe, 
-    BadgeComponent,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,

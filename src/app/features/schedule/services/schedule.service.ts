@@ -86,4 +86,61 @@ export class ScheduleService {
   deleteHour(id: string) {
     return this.http.delete<any>(`${environment.api}/schedules/${id}`);
   }
+
+  // Métodos para manejar días deshabilitados
+  getDisabledDays(): Observable<any> {
+    // Por ahora usamos localStorage como persistencia temporal
+    // En producción esto debería ser una llamada al backend
+    const disabledDays = JSON.parse(
+      localStorage.getItem('disabledDays') || '[]',
+    );
+    return new Observable((observer) => {
+      observer.next({ data: { disabledDays } });
+      observer.complete();
+    });
+  }
+
+  updateDisabledDays(disabledDays: string[], reason?: string): Observable<any> {
+    // Por ahora guardamos en localStorage hasta que el backend tenga endpoint para días completos
+    // El endpoint actual toggle-schedule/:id es para horarios específicos, no días completos
+    const data = { disabledDays, reason };
+    localStorage.setItem('disabledDays', JSON.stringify(disabledDays));
+
+    // Si hay razón, también la guardamos para referencia futura
+    if (reason) {
+      const savedReasons = JSON.parse(
+        localStorage.getItem('disabledDaysReasons') || '{}',
+      );
+      disabledDays.forEach((day) => {
+        savedReasons[day] = reason;
+      });
+      localStorage.setItem('disabledDaysReasons', JSON.stringify(savedReasons));
+    }
+
+    return new Observable((observer) => {
+      observer.next({ data });
+      observer.complete();
+    });
+  }
+
+  // Método para toggle individual de horarios (usando el endpoint del backend)
+  toggleScheduleDisabled(
+    scheduleId: string,
+    disabled: boolean,
+    disabledReason?: string,
+  ): Observable<any> {
+    const payload: { disabled: boolean; disabledReason?: string } = {
+      disabled,
+    };
+
+    if (disabledReason) {
+      payload.disabledReason = disabledReason;
+    }
+
+    return this.http
+      .patch(`${environment.api}/schedules/toggle-schedule/${scheduleId}`, payload)
+      .pipe(
+        // Aquí puedes agregar operadores RxJS adicionales si es necesario
+      );
+  }
 }

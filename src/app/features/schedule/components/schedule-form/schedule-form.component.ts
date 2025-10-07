@@ -12,22 +12,23 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
   DeleteClient,
   EditHour,
-  postClientsArray,
   SelectedClient,
+  postClientsArray,
 } from '@features/schedule/state/schedule.actions';
 import { ScheduleState } from '@features/schedule/state/schedule.state';
-import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { Actions, Store, ofActionSuccessful } from '@ngxs/store';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { BtnDirective } from '@shared/directives/btn/btn.directive';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { TitleComponent } from '../../../../shared/components/title/title.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { AddClientListComponent } from '../add-client-list/add-client-list.component';
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-schedule-form',
@@ -39,6 +40,7 @@ import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confir
     InputComponent,
     TitleComponent,
     MatDividerModule,
+    LoaderComponent,
   ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
@@ -51,6 +53,9 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   );
   loading$: Observable<boolean> = this.store.select(
     ScheduleState.scheduleLoading,
+  );
+  loadingClients$: Observable<boolean> = this.store.select(
+    ScheduleState.loadingAssignable,
   );
   title = '';
 
@@ -65,7 +70,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
     public data: { day: any; title: string },
     private fb: FormBuilder,
     private dialog: MatDialog,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
@@ -84,6 +89,7 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   initClients() {
     const clientsForSend = this.data.day.hour?.clients;
     if (!clientsForSend?.length) return;
+    // Despachar la acción para mostrar el loading mientras carga los clientes
     this.store.dispatch(new postClientsArray(clientsForSend));
   }
 

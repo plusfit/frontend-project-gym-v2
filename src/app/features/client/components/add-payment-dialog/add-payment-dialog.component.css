@@ -1,0 +1,56 @@
+.payment-option-btn {
+  @apply w-full p-4 border-2 border-gray-200 rounded-lg transition-all duration-200 hover:border-blue-300 hover:shadow-md cursor-pointer bg-white;
+}
+
+.payment-option-btn.selected {
+  @apply border-green-500 bg-green-50 shadow-lg;
+}
+
+.payment-option-btn:hover {
+  @apply transform scale-[1.02];
+}
+
+.payment-icon {
+  @apply w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 transition-colors;
+}
+
+.payment-icon.selected {
+  @apply bg-green-500 text-white;
+}
+
+.payment-details {
+  @apply text-sm text-gray-500 font-medium transition-colors;
+}
+
+.payment-details.selected {
+  @apply text-green-700 font-semibold;
+}
+
+.payment-option-btn.selected .payment-details {
+  @apply text-green-700;
+}
+
+button[disabled] {
+  @apply cursor-not-allowed opacity-50;
+}
+
+/* Animación suave para la selección */
+.payment-option-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-option-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.payment-option-btn.selected::before {
+  left: 100%;
+}

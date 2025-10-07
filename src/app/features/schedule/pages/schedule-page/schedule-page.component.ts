@@ -24,6 +24,8 @@ export class SchedulePageComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new GetSchedule());
     this.schedule = this.store.select(ScheduleState.schedule);
+    // Usamos el schedule completo para mostrar todos los días
+    // La lógica de filtrado se maneja en el template del calendario
   }
 
   actualizarSchedule(nuevoHorario: any[]) {
