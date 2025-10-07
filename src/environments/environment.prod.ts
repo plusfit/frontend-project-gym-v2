@@ -28,4 +28,8 @@ export const environment = {
   recaptcha: {
     siteKey: "6Led5m4rAAAAANjCNb_XFHRocWnlsuGDYKFkjtvf", // TODO: Reemplazar con tu site key de producción
   },
+  /**
+   * Admin password access code for viewing user passwords
+   */
+  adminPasswordCode: "GYM2024ADMIN",
 };

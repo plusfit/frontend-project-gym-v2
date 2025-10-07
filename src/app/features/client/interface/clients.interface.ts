@@ -17,6 +17,7 @@ export class Client {
   CI!: number;
   planId!: string;
   routineId?: string;
+  password?: string; // Password del usuario (solo se obtiene cuando se solicita específicamente)
 }
 
 export interface ClientInfo {
@@ -56,6 +57,13 @@ export interface RegisterResponse {
     _id: string;
     identifier: string;
     role: string;
+  };
+}
+
+export interface UserPasswordResponse {
+  success: boolean;
+  data: {
+    password: string;
   };
 }
 

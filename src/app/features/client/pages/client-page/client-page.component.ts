@@ -204,8 +204,9 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    dialogRef.componentInstance.confirm.subscribe((value) => {
-      if (!value) return;
+    dialogRef.componentInstance.confirm.subscribe((confirmed) => {
+      if (!confirmed) return;
+
       const id = event?._id || event?.id || event; // pass only the id
       this.store.dispatch(new DeleteClient(id));
       this.actions.pipe(ofActionSuccessful(DeleteClient), takeUntil(this.destroy)).subscribe(() => {

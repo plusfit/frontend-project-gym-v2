@@ -8,7 +8,7 @@ export class Login {
 
 export class ForgotPassword {
   static readonly type = '[Auth] Forgot Password';
-  constructor(public readonly payload: { email: string }) {}
+  constructor(public readonly email: string ) {}
 }
 
 export class ResetPassword {
@@ -16,10 +16,12 @@ export class ResetPassword {
   constructor(public readonly payload: NewPasswordRequest) {}
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Logout {
   static readonly type = '[Auth] Logout';
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class GetUserPreferences {
   static readonly type = '[Auth] Get User Preferences';
 }

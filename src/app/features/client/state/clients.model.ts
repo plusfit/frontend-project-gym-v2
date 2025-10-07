@@ -11,6 +11,12 @@ export class ClientsStateModel {
   selectedClient?: any;
   selectedClientRoutine?: any;
   selectedClientPlan?: any;
+  userPassword?: string | null; // Password del usuario actual
+  passwordLoading?: boolean; // Estado de carga para obtener la contraseña
+  passwordError?: any; // Error al obtener la contraseña
+  forgotPasswordLoading?: boolean; // Estado de carga para forgot password
+  forgotPasswordSuccess?: boolean; // Éxito del forgot password
+  forgotPasswordError?: any; // Error del forgot password
   total?: number;
   activeClientsCount?: number;
   error?: any;

@@ -17,7 +17,7 @@ import {
   tap,
   throwError,
 } from "rxjs";
-import { Client, ClientApiResponse, RegisterResponse } from "../interface/clients.interface";
+import { Client, ClientApiResponse, RegisterResponse, UserPasswordResponse } from "../interface/clients.interface";
 import { ClientService } from "../services/client.service";
 import {
   AddAvailableDays,
@@ -26,6 +26,9 @@ import {
   GetActiveClientsCount,
   GetClientById,
   GetClients,
+  GetUserPassword,
+  ClearUserPassword,
+  SendForgotPassword,
   PlanClient,
   RegisterClient,
   RoutineClient,
@@ -43,6 +46,12 @@ import { ClientsStateModel } from "./clients.model";
     selectedClientRoutine: undefined,
     selectedClientPlan: undefined,
     registerClient: null,
+    userPassword: null,
+    passwordLoading: false,
+    passwordError: null,
+    forgotPasswordLoading: false,
+    forgotPasswordSuccess: false,
+    forgotPasswordError: null,
     total: 0,
     activeClientsCount: 0,
     loading: false,
@@ -94,6 +103,36 @@ export class ClientsState {
   @Selector()
   static getSelectedClientPlan(state: ClientsStateModel) {
     return state.selectedClientPlan ?? {};
+  }
+
+  @Selector()
+  static getUserPassword(state: ClientsStateModel) {
+    return state.userPassword ?? null;
+  }
+
+  @Selector()
+  static isPasswordLoading(state: ClientsStateModel) {
+    return state.passwordLoading ?? false;
+  }
+
+  @Selector()
+  static getPasswordError(state: ClientsStateModel) {
+    return state.passwordError ?? null;
+  }
+
+  @Selector()
+  static isForgotPasswordLoading(state: ClientsStateModel) {
+    return state.forgotPasswordLoading ?? false;
+  }
+
+  @Selector()
+  static getForgotPasswordSuccess(state: ClientsStateModel) {
+    return state.forgotPasswordSuccess ?? false;
+  }
+
+  @Selector()
+  static getForgotPasswordError(state: ClientsStateModel) {
+    return state.forgotPasswordError ?? null;
   }
 
   constructor(
@@ -187,22 +226,22 @@ export class ClientsState {
       tap((response: any) => {
         const selectedClient = {
           _id: response.data._id,
-          name: response.data.userInfo.name,
+          name: response.data.userInfo?.name,
           identifier: response.data.email,
-          password: response.data.userInfo.password,
-          phone: response.data.userInfo.phone,
-          address: response.data.userInfo.address,
-          dateBirthday: response.data.userInfo.dateBirthday,
-          surgicalHistory: response.data.userInfo.surgicalHistory,
-          historyofPathologicalLesions: response.data.userInfo.historyofPathologicalLesions,
-          medicalSociety: response.data.userInfo.medicalSociety,
-          sex: response.data.userInfo.sex,
-          cardiacHistory: response.data.userInfo.cardiacHistory,
-          cardiacHistoryInput: response.data.userInfo.cardiacHistoryInput,
-          bloodPressure: response.data.userInfo.bloodPressure,
-          respiratoryHistory: response.data.userInfo.respiratoryHistory,
-          respiratoryHistoryInput: response.data.userInfo.respiratoryHistoryInput,
-          CI: response.data.userInfo.CI,
+          password: response.data.userInfo?.password,
+          phone: response.data.userInfo?.phone,
+          address: response.data.userInfo?.address,
+          dateBirthday: response.data.userInfo?.dateBirthday,
+          surgicalHistory: response.data.userInfo?.surgicalHistory,
+          historyofPathologicalLesions: response.data.userInfo?.historyofPathologicalLesions,
+          medicalSociety: response.data.userInfo?.medicalSociety,
+          sex: response.data.userInfo?.sex,
+          cardiacHistory: response.data.userInfo?.cardiacHistory,
+          cardiacHistoryInput: response.data.userInfo?.cardiacHistoryInput,
+          bloodPressure: response.data.userInfo?.bloodPressure,
+          respiratoryHistory: response.data.userInfo?.respiratoryHistory,
+          respiratoryHistoryInput: response.data.userInfo?.respiratoryHistoryInput,
+          CI: response.data.userInfo?.CI,
           planId: response.data.planId,
           routineId: response.data.routineId,
           lastAccess: response.data.lastAccess,
@@ -333,33 +372,38 @@ export class ClientsState {
   deleteClient(ctx: StateContext<ClientsStateModel>, { id }: DeleteClient): Observable<any> {
     ctx.patchState({ loading: true, error: null });
 
-    // Primero obtener los datos del cliente para tener email y password
+    // Primero obtener los datos del cliente para tener email
     return this.clientService.getClientById(id).pipe(
       switchMap((clientResponse: any) => {
         const clientData = clientResponse.data;
         const email = clientData.email || clientData.identifier;
-        const password = clientData.userInfo?.password;
 
-        if (!email || !password) {
-          throw new Error(
-            "No se pueden obtener las credenciales del cliente para eliminarlo de Firebase",
-          );
+        if (!email) {
+          throw new Error('No se puede obtener el email del cliente para eliminarlo de Firebase');
         }
 
-        // Eliminar de Firebase Auth primero
-        return this.authService.deleteFirebaseUser(email, password).pipe(
-          switchMap(() => {
-            // Después eliminar de MongoDB
-            return this.clientService.deleteClientFromMongoDB(id);
-          }),
-          catchError((firebaseError) => {
-            console.warn(
-              "Error eliminando de Firebase, intentando eliminar solo de MongoDB:",
-              firebaseError,
+        // Obtener la contraseña usando el servicio getUserPassword para operaciones internas
+        return this.clientService.getUserPasswordForInternalOperations(id).pipe(
+          switchMap((passwordResponse: UserPasswordResponse) => {
+            const password = passwordResponse.data.password;
+
+            if (!password) {
+              throw new Error('No se puede obtener la contraseña del cliente para eliminarlo de Firebase');
+            }
+
+            // Eliminar de Firebase Auth primero
+            return this.authService.deleteFirebaseUser(email, password).pipe(
+              switchMap(() => {
+                // Después eliminar de MongoDB
+                return this.clientService.deleteClientFromMongoDB(id);
+              }),
+              catchError((firebaseError) => {
+                console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
+                // Si falla Firebase, al menos eliminar de MongoDB
+                return this.clientService.deleteClientFromMongoDB(id);
+              })
             );
-            // Si falla Firebase, al menos eliminar de MongoDB
-            return this.clientService.deleteClientFromMongoDB(id);
-          }),
+          })
         );
       }),
       tap(() => {
@@ -372,7 +416,7 @@ export class ClientsState {
         ctx.patchState({ error, loading: false });
         this.snackBarService.showError(
           "Error",
-          "No se pudo eliminar el cliente de Firebase y MongoDB. Intenta nuevamente",
+          "No se pudo obtener las credenciales del cliente o eliminar de Firebase y MongoDB. Intenta nuevamente",
         );
         return throwError(() => error);
       }),
@@ -537,6 +581,81 @@ export class ClientsState {
     }
 
     return of(null); // Retornar un observable vacío si no hay `planId`
+  }
+
+  @Action(GetUserPassword, { cancelUncompleted: true })
+  getUserPassword(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId, adminCode }: GetUserPassword,
+  ): Observable<UserPasswordResponse> {
+    ctx.patchState({ passwordLoading: true, passwordError: null, userPassword: null });
+
+    return this.clientService.getUserPassword(clientId, adminCode).pipe(
+      tap((response: UserPasswordResponse) => {
+        ctx.patchState({
+          userPassword: response.data.password,
+          passwordLoading: false,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({ 
+          passwordError: error, 
+          passwordLoading: false,
+          userPassword: null 
+        });
+        this.snackBarService.showError(
+          "Error", 
+          "Código de administrador incorrecto o error en el servidor"
+        );
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  @Action(ClearUserPassword)
+  clearUserPassword(ctx: StateContext<ClientsStateModel>): void {
+    ctx.patchState({ 
+      userPassword: null, 
+      passwordError: null, 
+      passwordLoading: false 
+    });
+  }
+
+  @Action(SendForgotPassword, { cancelUncompleted: true })
+  sendForgotPassword(
+    ctx: StateContext<ClientsStateModel>,
+    { clientId }: SendForgotPassword,
+  ): Observable<{success: boolean; message: string}> {
+    ctx.patchState({ 
+      forgotPasswordLoading: true, 
+      forgotPasswordError: null,
+      forgotPasswordSuccess: false 
+    });
+
+    return this.clientService.sendForgotPasswordEmail(clientId).pipe(
+      tap((response) => {
+        ctx.patchState({
+          forgotPasswordSuccess: true,
+          forgotPasswordLoading: false,
+        });
+        this.snackBarService.showSuccess(
+          "Éxito", 
+          response.message || "Se ha enviado el email de recuperación de contraseña"
+        );
+      }),
+      catchError((error) => {
+        ctx.patchState({ 
+          forgotPasswordError: error, 
+          forgotPasswordLoading: false,
+          forgotPasswordSuccess: false 
+        });
+        this.snackBarService.showError(
+          "Error", 
+          "No se pudo enviar el email de recuperación. Intenta nuevamente"
+        );
+        return throwError(() => error);
+      }),
+    );
   }
 
   private mapFirebaseError(errorCode: string): string {
