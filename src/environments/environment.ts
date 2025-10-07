@@ -43,5 +43,5 @@ export const environment = {
   /**
    * Admin password access code for viewing user passwords
    */
-  adminPasswordCode: "GYM2024ADMIN",
+  adminPasswordCode: "PLUS1108",
 };
