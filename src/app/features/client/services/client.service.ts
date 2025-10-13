@@ -107,4 +107,16 @@ export class ClientService {
   sendForgotPasswordEmail(clientId: string): Observable<{success: boolean; message: string}> {
     return this.http.post<{success: boolean; message: string}>(`${environment.api}/clients/${clientId}/forgot-password`, {});
   }
+
+    addAvailableDays(clientId: string, daysToAdd: number): Observable<any> {
+    return this.http.post<any>(`${environment.api}/clients/available-days/${clientId}/add`, {
+      daysToAdd,
+    });
+  }
+
+  updateAvailableDays(clientId: string, availableDays: number): Observable<any> {
+    return this.http.patch<any>(`${environment.api}/clients/available-days/${clientId}/update`, {
+      availableDays,
+    });
+  }
 }
