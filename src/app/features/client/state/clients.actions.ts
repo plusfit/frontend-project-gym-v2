@@ -72,3 +72,20 @@ export class SendForgotPassword {
   static readonly type = "[Client] SendForgotPassword";
   constructor(public readonly clientId: string) {}
 }
+
+export class AddAvailableDays {
+  static readonly type = "[Client] AddAvailableDays";
+  constructor(
+    public readonly clientId: string,
+    public readonly daysToAdd: number,
+  ) {}
+}
+
+export class UpdateAvailableDays {
+  static readonly type = "[Client] UpdateAvailableDays";
+  constructor(
+    public readonly clientId: string,
+    public readonly availableDays: number,
+  ) {}
+}
+
