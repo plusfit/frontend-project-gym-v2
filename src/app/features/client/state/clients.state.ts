@@ -596,6 +596,12 @@ export class ClientsState {
           userPassword: response.data.password,
           passwordLoading: false,
         });
+        if (!response.data.password) {
+          this.snackBarService.showError(
+            "Error", 
+            "No esta seteada la contraseña para este usuario o el código de administrador es incorrecto"
+          );
+        }
       }),
       catchError((error) => {
         ctx.patchState({ 
