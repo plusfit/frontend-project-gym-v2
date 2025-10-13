@@ -4,7 +4,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { LoadingOverlayComponent } from '@core/components/loading-overlay/loading-overlay.component';
 import { PwaUpdateService } from '@core/services/pwa-update.service';
 import { PwaInstallService } from '@core/services/pwa-install.service';
-import { NetworkStatusService } from '@core/services/network-status.service';
 import { PwaInstallButtonComponent } from '@core/components/pwa-install-button/pwa-install-button.component';
 
 @Component({
