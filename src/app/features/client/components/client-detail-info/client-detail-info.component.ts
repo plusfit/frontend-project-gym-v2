@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, JsonPipe } from "@angular/common";
+import { AsyncPipe, DatePipe, JsonPipe, NgClass } from "@angular/common";
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -30,6 +30,7 @@ import { SnackBarService } from "@core/services/snackbar.service";
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    NgClass,
     MatIconModule,
     MatCardModule
   ],
