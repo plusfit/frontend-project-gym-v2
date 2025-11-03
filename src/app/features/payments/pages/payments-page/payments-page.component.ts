@@ -11,7 +11,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
+import { Subject, takeUntil, debounceTime, Observable, finalize } from 'rxjs';
+import { Store, Actions, ofActionSuccessful } from '@ngxs/store';
+
+import { PaymentsState } from '../../state/payments.state';
+import {
+  GetPayments,
+  GetPaymentsSummary,
+  UpdatePayment,
+  DeletePayment,
+  ExportPayments,
+  SetPaymentsFilters,
+  ClearPaymentsError
+} from '../../state/payments.actions';
 
 import { PaymentsTableComponent } from '../../components/payments-table/payments-table.component';
 import { DeletePaymentDialogComponent } from '../../components/delete-payment-dialog/delete-payment-dialog.component';
@@ -45,24 +57,19 @@ import {
 export class PaymentsPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  // Component state
-  payments: PaymentItem[] = [];
-  loading = false;
-  totalCount = 0;
-  currentPage = 0;
-  pageSize = 10;
-  hasError = false;
-  errorMessage = '';
+  // Component state using NGXS observables
+  payments$: Observable<PaymentItem[]>;
+  loading$: Observable<boolean>;
+  totalCount$: Observable<number>;
+  currentPage$: Observable<number>;
+  pageSize$: Observable<number>;
+  hasError$: Observable<boolean>;
+  errorMessage$: Observable<string>;
 
-  // Statistics
-  stats: PaymentsStats | null = null;
-  statsLoading = false;
-  statsError = false;
-
-  // Summary
-  summary: PaymentsSummary | null = null;
-  summaryLoading = false;
-  summaryError = false;
+  // Summary using NGXS observables
+  summary$: Observable<PaymentsSummary | null>;
+  summaryLoading$: Observable<boolean>;
+  summaryError$: Observable<boolean>;
 
   // Filters
   filterForm: FormGroup;
@@ -72,8 +79,8 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private paymentsService: PaymentsService,
-    private snackBarService: SnackBarService,
+    private store: Store,
+    private actions: Actions,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private router: Router
@@ -82,6 +89,18 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       startDate: [null],
       endDate: [null]
     });
+
+    // Initialize observables from NGXS store
+    this.payments$ = this.store.select(PaymentsState.getPayments);
+    this.loading$ = this.store.select(PaymentsState.isLoading);
+    this.totalCount$ = this.store.select(PaymentsState.getTotal);
+    this.currentPage$ = this.store.select(PaymentsState.getCurrentPage);
+    this.pageSize$ = this.store.select(PaymentsState.getPageSize);
+    this.hasError$ = this.store.select(PaymentsState.hasError);
+    this.errorMessage$ = this.store.select(PaymentsState.getErrorMessage);
+    this.summary$ = this.store.select(PaymentsState.getSummary);
+    this.summaryLoading$ = this.store.select(PaymentsState.isSummaryLoading);
+    this.summaryError$ = this.store.select(PaymentsState.hasSummaryError);
   }
 
   ngOnInit() {
@@ -140,7 +159,6 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       endDate: filterValues.endDate ? this.formatDateForApi(filterValues.endDate) : undefined
     };
 
-    this.currentPage = 0;
     this.loadPayments();
     this.loadSummary();
   }
@@ -150,80 +168,13 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   loadPayments() {
-    this.loading = true;
-    this.hasError = false;
-
-    this.paymentsService.getPayments(this.currentFilters)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.loading = false)
-      )
-      .subscribe({
-        next: (response) => {
-
-          this.payments = response.data.data;
-          this.totalCount = response.data.pagination.totalCount;
-          this.currentPage = response.data.pagination.currentPage - 1; // Material paginator uses 0-based indexing
-        },
-        error: (error) => {
-          this.hasError = true;
-          this.errorMessage = 'Error al cargar los pagos. Por favor, inténtelo de nuevo.';
-          this.snackBarService.showError('Error al cargar los pagos', 'Cerrar');
-          this.payments = [];
-          this.totalCount = 0;
-        }
-      });
-  }
-
-  loadStats() {
-    this.statsLoading = true;
-    this.statsError = false;
-
-    const startDate = this.currentFilters.startDate;
-    const endDate = this.currentFilters.endDate;
-
-    this.paymentsService.getPaymentsStats(startDate, endDate)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.statsLoading = false)
-      )
-      .subscribe({
-        next: (stats) => {
-          this.stats = stats;
-        },
-        error: (error) => {
-          console.error('Error loading payments stats:', error);
-          this.statsError = true;
-          this.stats = null;
-        }
-      });
+    this.store.dispatch(new GetPayments(this.currentFilters));
   }
 
   loadSummary() {
-    this.summaryLoading = true;
-    this.summaryError = false;
-
     const startDate = this.currentFilters.startDate;
     const endDate = this.currentFilters.endDate;
-
-
-
-    this.paymentsService.getPaymentsSummary(startDate, endDate)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.summaryLoading = false)
-      )
-      .subscribe({
-        next: (summary) => {
-
-          this.summary = summary;
-        },
-        error: (error) => {
-          console.error('Error loading payments summary:', error);
-          this.summaryError = true;
-          this.summary = null;
-        }
-      });
+    this.store.dispatch(new GetPaymentsSummary(startDate, endDate));
   }
 
   onPageChange(event: PageEvent) {
@@ -232,28 +183,11 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       page: event.pageIndex + 1, // Convert to 1-based indexing for API
       limit: event.pageSize
     };
-    this.pageSize = event.pageSize;
     this.loadPayments();
   }
 
   onExportData(format: 'csv' | 'excel') {
-    this.paymentsService.exportPayments(this.currentFilters, format)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `pagos_${new Date().toISOString().split('T')[0]}.${format}`;
-          link.click();
-          window.URL.revokeObjectURL(url);
-          this.snackBarService.showSuccess('Archivo descargado exitosamente', 'Cerrar');
-        },
-        error: (error) => {
-          console.error('Error exporting payments:', error);
-          this.snackBarService.showError('Error al exportar los datos', 'Cerrar');
-        }
-      });
+    this.store.dispatch(new ExportPayments(this.currentFilters, format));
   }
 
   refreshData() {
@@ -264,7 +198,6 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   clearFilters() {
     // En lugar de reset completo, establecer las fechas del mes actual
     this.setDefaultDateRange();
-    this.currentPage = 0;
     this.loadPayments();
     this.loadSummary();
   }
@@ -342,50 +275,16 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   private deletePayment(payment: PaymentItem) {
-    this.paymentsService.deletePayment(payment._id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          console.log('Payment deleted successfully:', response);
-          this.snackBarService.showSuccess(
-            `Pago de ${payment.clientName} eliminado correctamente`,
-            'Cerrar'
-          );
-          // Recargar los datos
-          this.loadPayments();
-          this.loadSummary();
-        },
-        error: (error) => {
-          console.error('Error deleting payment:', error);
-          this.snackBarService.showError(
-            'Error al eliminar el pago. Por favor, inténtelo de nuevo.',
-            'Cerrar'
-          );
-        }
-      });
+    this.store.dispatch(new DeletePayment(payment._id)).subscribe(() => {
+      // Reload summary after successful deletion
+      this.loadSummary();
+    });
   }
 
   private updatePayment(payment: PaymentItem, newAmount: number) {
-    this.paymentsService.updatePayment(payment._id, newAmount)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          console.log('Payment updated successfully:', response);
-          this.snackBarService.showSuccess(
-            `Pago de ${payment.clientName} actualizado correctamente`,
-            'Cerrar'
-          );
-          // Recargar los datos
-          this.loadPayments();
-          this.loadSummary();
-        },
-        error: (error) => {
-          console.error('Error updating payment:', error);
-          this.snackBarService.showError(
-            'Error al actualizar el pago. Por favor, inténtelo de nuevo.',
-            'Cerrar'
-          );
-        }
-      });
+    this.store.dispatch(new UpdatePayment(payment._id, newAmount)).subscribe(() => {
+      // Reload summary after successful update
+      this.loadSummary();
+    });
   }
 }
