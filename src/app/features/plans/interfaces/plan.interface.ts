@@ -7,6 +7,7 @@ export interface Plan {
   sexType: string;
   defaultRoutine: Routine;
   days: number;
+  price: number;
   updatedAt: Date;
   createdAt: Date;
 }

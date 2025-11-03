@@ -49,6 +49,18 @@
 
             <div class="h-[80px]">
               <app-input
+                [control]="getControl('price')"
+                label="Precio ($)"
+                type="number"
+                errorKey="price"
+                placeholder="Precio del plan"
+                appearance="outline"
+                class="w-full"
+              ></app-input>
+            </div>
+
+            <div class="h-[80px]">
+              <app-input
                 [control]="getControl('minAge')"
                 label="Edad mínima"
                 type="number"
