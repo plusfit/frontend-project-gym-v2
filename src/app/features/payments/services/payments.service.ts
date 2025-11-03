@@ -108,6 +108,13 @@ export class PaymentsService {
   }
 
   /**
+   * Update payment amount by ID
+   */
+  updatePayment(paymentId: string, amount: number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${paymentId}`, { amount });
+  }
+
+  /**
    * Delete a payment by ID
    */
   deletePayment(paymentId: string): Observable<any> {

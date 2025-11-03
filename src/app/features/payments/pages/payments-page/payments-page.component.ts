@@ -14,6 +14,7 @@ import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
 
 import { PaymentsTableComponent } from '../../components/payments-table/payments-table.component';
 import { DeletePaymentDialogComponent } from '../../components/delete-payment-dialog/delete-payment-dialog.component';
+import { EditPaymentDialogComponent } from '../../components/edit-payment-dialog/edit-payment-dialog.component';
 import { PaymentsService } from '../../services/payments.service';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
@@ -305,10 +306,18 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   onEditPayment(payment: PaymentItem) {
-    console.log('Editing payment:', payment);
-    // TODO: Implementar la lógica de edición
-    // Ejemplo: abrir un dialog de edición
-    this.snackBarService.showSuccess(`Editando pago de ${payment.clientName}`, 'Cerrar');
+    const dialogRef = this.dialog.open(EditPaymentDialogComponent, {
+      width: '500px',
+      data: { payment },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(newAmount => {
+      if (newAmount !== undefined && newAmount !== payment.amount) {
+        // Usuario guardó un nuevo monto
+        this.updatePayment(payment, newAmount);
+      }
+    });
   }
 
   onDeletePayment(payment: PaymentItem) {
@@ -344,6 +353,30 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
           console.error('Error deleting payment:', error);
           this.snackBarService.showError(
             'Error al eliminar el pago. Por favor, inténtelo de nuevo.',
+            'Cerrar'
+          );
+        }
+      });
+  }
+
+  private updatePayment(payment: PaymentItem, newAmount: number) {
+    this.paymentsService.updatePayment(payment._id, newAmount)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log('Payment updated successfully:', response);
+          this.snackBarService.showSuccess(
+            `Pago de ${payment.clientName} actualizado correctamente`,
+            'Cerrar'
+          );
+          // Recargar los datos
+          this.loadPayments();
+          this.loadSummary();
+        },
+        error: (error) => {
+          console.error('Error updating payment:', error);
+          this.snackBarService.showError(
+            'Error al actualizar el pago. Por favor, inténtelo de nuevo.',
             'Cerrar'
           );
         }

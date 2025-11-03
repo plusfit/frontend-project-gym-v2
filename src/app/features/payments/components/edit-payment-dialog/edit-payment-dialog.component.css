@@ -1,0 +1,66 @@
+/* Estilos para el modal de edición de pago */
+
+.mat-mdc-dialog-container {
+    border-radius: 12px;
+}
+
+/* Animaciones suaves para los botones */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Efectos hover personalizados */
+.bg-gray-100:hover {
+    background-color: #f3f4f6;
+}
+
+.bg-blue-600:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+/* Transiciones para iconos */
+mat-icon {
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover mat-icon {
+    transform: scale(1.05);
+}
+
+/* Estilos para el campo de formulario */
+.mat-mdc-form-field {
+    width: 100%;
+}
+
+/* Animación para la vista previa */
+.bg-green-50 {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para botón deshabilitado */
+button:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+}
+
+button:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
