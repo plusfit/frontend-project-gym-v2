@@ -57,7 +57,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private snackbar: SnackBarService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.clients = this.store.select(ClientsState.getClients);

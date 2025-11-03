@@ -74,7 +74,7 @@ export class AddPaymentDialogComponent {
       // Calcular el precio total basado en el plan y los meses
       const monthsSelected = this.getMonthsFromDays(this.selectedOption.days);
       const totalPrice = this.calculateTotalPrice(monthsSelected);
-      
+
       // Console.log del precio calculado
       console.log(`💰 Pago calculado:`, {
         cliente: this.data.clientName,

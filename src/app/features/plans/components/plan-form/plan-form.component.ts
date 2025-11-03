@@ -92,7 +92,7 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
     private router: Router,
     private location: Location,
     private snackBarService: SnackBarService,
-  ) {}
+  ) { }
 
   ngOnDestroy(): void {
     this.destroy.next();
