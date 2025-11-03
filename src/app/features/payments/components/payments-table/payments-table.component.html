@@ -81,6 +81,19 @@
             <mat-menu #actionsMenu="matMenu">
               <button
                 mat-menu-item
+                (click)="onViewClientDetail(payment)"
+                class="group"
+              >
+                <div class="flex items-center space-x-2">
+                  <i class="ph-eye text-cyan-600 text-lg"></i>
+                  <span class="text-gray-700 group-hover:text-cyan-600 transition-colors">
+                    Ver Detalle
+                  </span>
+                </div>
+              </button>
+              
+              <button
+                mat-menu-item
                 (click)="onEditPayment(payment)"
                 class="group"
               >

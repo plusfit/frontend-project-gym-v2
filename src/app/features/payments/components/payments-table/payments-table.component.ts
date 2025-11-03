@@ -34,6 +34,7 @@ export class PaymentsTableComponent implements OnInit {
   @Output() exportData = new EventEmitter<'csv' | 'excel'>();
   @Output() editPayment = new EventEmitter<PaymentItem>();
   @Output() deletePayment = new EventEmitter<PaymentItem>();
+  @Output() viewClientDetail = new EventEmitter<string>();
 
   displayedColumns: PaymentTableColumn[] = [
     { key: 'clientName', label: 'Cliente', sortable: true, type: 'text' },
@@ -90,5 +91,9 @@ export class PaymentsTableComponent implements OnInit {
 
   onDeletePayment(payment: PaymentItem) {
     this.deletePayment.emit(payment);
+  }
+
+  onViewClientDetail(payment: PaymentItem) {
+    this.viewClientDetail.emit(payment.clientId);
   }
 }

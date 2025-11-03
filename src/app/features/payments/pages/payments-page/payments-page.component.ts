@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -74,7 +75,8 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     private paymentsService: PaymentsService,
     private snackBarService: SnackBarService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {
     this.filterForm = this.fb.group({
       startDate: [null],
@@ -303,6 +305,10 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       startDate: startDate,
       endDate: endDate
     });
+  }
+
+  onViewClientDetail(clientId: string) {
+    this.router.navigate([`/clientes/detalle/${clientId}`]);
   }
 
   onEditPayment(payment: PaymentItem) {
