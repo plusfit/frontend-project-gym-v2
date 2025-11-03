@@ -1,0 +1,69 @@
+/* Estilos personalizados para la página de pagos */
+
+/* Animación del loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Animación pulse para el icono del header */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .8;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Estilos para los campos de formulario */
+.mat-mdc-form-field {
+  margin-bottom: 0;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0.5rem;
+}
+
+/* Transiciones suaves */
+.transition-all {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Hover effects */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.hover\:bg-opacity-30:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Mejoras para los botones de filtros rápidos */
+.mat-mdc-button:not(:disabled) {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid.grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .grid.grid-cols-1.md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
