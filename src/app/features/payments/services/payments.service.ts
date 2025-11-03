@@ -108,6 +108,13 @@ export class PaymentsService {
   }
 
   /**
+   * Delete a payment by ID
+   */
+  deletePayment(paymentId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${paymentId}`);
+  }
+
+  /**
    * Get payments summary for date range
    */
   getPaymentsSummary(startDate?: string, endDate?: string): Observable<PaymentsSummary> {

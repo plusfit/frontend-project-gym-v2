@@ -66,6 +66,46 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {{ formatDate(payment.createdAt) }}
           </td>
+          
+          <!-- Actions Column -->
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button
+              title="Acciones"
+              type="button"
+              [matMenuTriggerFor]="actionsMenu"
+              class="text-gray-600 hover:text-blue-600 transition-colors rounded-full p-2 hover:bg-blue-50"
+            >
+              <i class="ph-dots-three-vertical-fill text-lg"></i>
+            </button>
+            
+            <mat-menu #actionsMenu="matMenu">
+              <button
+                mat-menu-item
+                (click)="onEditPayment(payment)"
+                class="group"
+              >
+                <div class="flex items-center space-x-2">
+                  <i class="ph-pencil-simple text-blue-600 text-lg"></i>
+                  <span class="text-gray-700 group-hover:text-blue-600 transition-colors">
+                    Editar
+                  </span>
+                </div>
+              </button>
+              
+              <button
+                mat-menu-item
+                (click)="onDeletePayment(payment)"
+                class="group"
+              >
+                <div class="flex items-center space-x-2">
+                  <i class="ph-trash text-red-600 text-lg"></i>
+                  <span class="text-gray-700 group-hover:text-red-600 transition-colors">
+                    Eliminar
+                  </span>
+                </div>
+              </button>
+            </mat-menu>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -6,12 +6,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { Subject, takeUntil, finalize, debounceTime } from 'rxjs';
 
 import { PaymentsTableComponent } from '../../components/payments-table/payments-table.component';
+import { DeletePaymentDialogComponent } from '../../components/delete-payment-dialog/delete-payment-dialog.component';
 import { PaymentsService } from '../../services/payments.service';
 import { SnackBarService } from '@core/services/snackbar.service';
 import {
@@ -70,7 +72,8 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   constructor(
     private paymentsService: PaymentsService,
     private snackBarService: SnackBarService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.filterForm = this.fb.group({
       startDate: [null],
@@ -299,5 +302,51 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       startDate: startDate,
       endDate: endDate
     });
+  }
+
+  onEditPayment(payment: PaymentItem) {
+    console.log('Editing payment:', payment);
+    // TODO: Implementar la lógica de edición
+    // Ejemplo: abrir un dialog de edición
+    this.snackBarService.showSuccess(`Editando pago de ${payment.clientName}`, 'Cerrar');
+  }
+
+  onDeletePayment(payment: PaymentItem) {
+    const dialogRef = this.dialog.open(DeletePaymentDialogComponent, {
+      width: '400px',
+      data: { payment },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        // Usuario confirmó la eliminación
+        this.deletePayment(payment);
+      }
+    });
+  }
+
+  private deletePayment(payment: PaymentItem) {
+    this.paymentsService.deletePayment(payment._id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log('Payment deleted successfully:', response);
+          this.snackBarService.showSuccess(
+            `Pago de ${payment.clientName} eliminado correctamente`,
+            'Cerrar'
+          );
+          // Recargar los datos
+          this.loadPayments();
+          this.loadSummary();
+        },
+        error: (error) => {
+          console.error('Error deleting payment:', error);
+          this.snackBarService.showError(
+            'Error al eliminar el pago. Por favor, inténtelo de nuevo.',
+            'Cerrar'
+          );
+        }
+      });
   }
 }

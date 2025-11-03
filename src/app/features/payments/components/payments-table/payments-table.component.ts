@@ -32,11 +32,14 @@ export class PaymentsTableComponent implements OnInit {
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() sortChange = new EventEmitter<Sort>();
   @Output() exportData = new EventEmitter<'csv' | 'excel'>();
+  @Output() editPayment = new EventEmitter<PaymentItem>();
+  @Output() deletePayment = new EventEmitter<PaymentItem>();
 
   displayedColumns: PaymentTableColumn[] = [
     { key: 'clientName', label: 'Cliente', sortable: true, type: 'text' },
     { key: 'amount', label: 'Monto', sortable: true, type: 'currency' },
-    { key: 'createdAt', label: 'Fecha de Pago', sortable: true, type: 'date' }
+    { key: 'createdAt', label: 'Fecha de Pago', sortable: true, type: 'date' },
+    { key: 'actions', label: 'Acciones', sortable: false, type: 'text' }
   ];
 
   get columnKeys(): string[] {
@@ -79,5 +82,13 @@ export class PaymentsTableComponent implements OnInit {
 
   trackByPaymentId(index: number, payment: PaymentItem): string {
     return payment._id;
+  }
+
+  onEditPayment(payment: PaymentItem) {
+    this.editPayment.emit(payment);
+  }
+
+  onDeletePayment(payment: PaymentItem) {
+    this.deletePayment.emit(payment);
   }
 }

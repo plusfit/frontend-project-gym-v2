@@ -186,6 +186,7 @@
     </div>
 
     <!-- Payments Table -->
+    <!-- Payments Table -->
     <div *ngIf="!hasError">
       <app-payments-table
         [payments]="payments"
@@ -194,9 +195,10 @@
         [pageSize]="pageSize"
         [currentPage]="currentPage"
         (pageChange)="onPageChange($event)"
+        
         (exportData)="onExportData($event)"
+        (editPayment)="onEditPayment($event)"
+        (deletePayment)="onDeletePayment($event)"
       ></app-payments-table>
-    </div>
-
-  </div>
+    </div>  </div>
 </section>
