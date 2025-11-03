@@ -38,12 +38,9 @@ export class PaymentsService {
       params = params.set('endDate', filters.endDate);
     }
 
-    console.log('Sending request with params:', params.toString());
-
     return this.http.get<PaymentsResponse>(this.baseUrl, { params })
       .pipe(
         tap(response => {
-          console.log('Payment service response:', response);
         })
       );
   }
@@ -126,7 +123,6 @@ export class PaymentsService {
 
     return this.http.get<PaymentsSummaryResponse>(`${this.baseUrl}/summary`, { params })
       .pipe(
-        tap(response => console.log('Summary API response:', response)),
         map(response => response.data)
       );
   }

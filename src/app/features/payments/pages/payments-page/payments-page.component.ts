@@ -79,7 +79,7 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('PaymentsPageComponent initialized');
+    this.setDefaultDateRange();
     this.setupFilters();
     this.loadPayments();
     this.loadSummary();
@@ -100,6 +100,30 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       .subscribe(value => {
         this.applyFilters(value);
       });
+  }
+
+  private setDefaultDateRange() {
+    const today = new Date();
+
+    // Primer día del mes actual
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // Último día del mes actual
+    // El día 0 del siguiente mes es el último día del mes actual
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    // Establecer las fechas en el formulario
+    this.filterForm.patchValue({
+      startDate: firstDayOfMonth,
+      endDate: lastDayOfMonth
+    }, { emitEvent: false }); // emitEvent: false para evitar trigger inmediato
+
+    // También actualizar los filtros internos
+    this.currentFilters = {
+      ...this.currentFilters,
+      startDate: this.formatDateForApi(firstDayOfMonth),
+      endDate: this.formatDateForApi(lastDayOfMonth)
+    };
   }
 
   private applyFilters(filterValues: any) {
@@ -123,34 +147,19 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.hasError = false;
 
-    // Si no hay fechas seleccionadas, usar un rango por defecto (último mes)
-    const filtersToUse = { ...this.currentFilters };
-
-    if (!filtersToUse.startDate || !filtersToUse.endDate) {
-      const today = new Date();
-      const lastMonth = new Date(today);
-      lastMonth.setMonth(today.getMonth() - 1);
-
-      filtersToUse.startDate = this.formatDateForApi(lastMonth);
-      filtersToUse.endDate = this.formatDateForApi(today);
-    }
-
-    console.log('Loading payments with filters:', filtersToUse);
-
-    this.paymentsService.getPayments(filtersToUse)
+    this.paymentsService.getPayments(this.currentFilters)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.loading = false)
       )
       .subscribe({
         next: (response) => {
-          console.log('Payments loaded:', response);
+
           this.payments = response.data.data;
           this.totalCount = response.data.pagination.totalCount;
           this.currentPage = response.data.pagination.currentPage - 1; // Material paginator uses 0-based indexing
         },
         error: (error) => {
-          console.error('Error loading payments:', error);
           this.hasError = true;
           this.errorMessage = 'Error al cargar los pagos. Por favor, inténtelo de nuevo.';
           this.snackBarService.showError('Error al cargar los pagos', 'Cerrar');
@@ -188,20 +197,10 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     this.summaryLoading = true;
     this.summaryError = false;
 
-    // Si no hay fechas seleccionadas, usar un rango por defecto (último mes)
-    let startDate = this.currentFilters.startDate;
-    let endDate = this.currentFilters.endDate;
+    const startDate = this.currentFilters.startDate;
+    const endDate = this.currentFilters.endDate;
 
-    if (!startDate || !endDate) {
-      const today = new Date();
-      const lastMonth = new Date(today);
-      lastMonth.setMonth(today.getMonth() - 1);
 
-      startDate = this.formatDateForApi(lastMonth);
-      endDate = this.formatDateForApi(today);
-    }
-
-    console.log('Loading summary with dates:', { startDate, endDate });
 
     this.paymentsService.getPaymentsSummary(startDate, endDate)
       .pipe(
@@ -210,7 +209,7 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (summary) => {
-          console.log('Summary loaded:', summary);
+
           this.summary = summary;
         },
         error: (error) => {
@@ -229,11 +228,6 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     };
     this.pageSize = event.pageSize;
     this.loadPayments();
-  }
-
-  onSortChange(sort: Sort) {
-    // Implement sorting if needed
-    console.log('Sort change:', sort);
   }
 
   onExportData(format: 'csv' | 'excel') {
@@ -262,11 +256,8 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
-    this.filterForm.reset();
-    this.currentFilters = {
-      page: 1,
-      limit: this.pageSize
-    };
+    // En lugar de reset completo, establecer las fechas del mes actual
+    this.setDefaultDateRange();
     this.currentPage = 0;
     this.loadPayments();
     this.loadSummary();
