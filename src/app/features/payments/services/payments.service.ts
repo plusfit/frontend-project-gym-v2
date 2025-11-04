@@ -122,6 +122,18 @@ export class PaymentsService {
   }
 
   /**
+   * Create a new payment
+   */
+  createPayment(amount: number, clientId: string, clientName: string): Observable<any> {
+    const payload = {
+      amount,
+      clientId,
+      clientName
+    };
+    return this.http.post(this.baseUrl, payload);
+  }
+
+  /**
    * Get payments summary for date range
    */
   getPaymentsSummary(startDate?: string, endDate?: string): Observable<PaymentsSummary> {

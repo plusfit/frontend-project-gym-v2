@@ -10,6 +10,7 @@ import {
   GetPaymentsSummary,
   UpdatePayment,
   DeletePayment,
+  CreatePayment,
   ExportPayments,
   SetPaymentsFilters,
   ClearPaymentsError,
@@ -255,6 +256,34 @@ export class PaymentsState {
         ctx.patchState({ loading: false });
         this.snackBarService.showError(
           "Error al eliminar el pago. Por favor, inténtelo de nuevo.",
+          "Cerrar"
+        );
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(CreatePayment, { cancelUncompleted: true })
+  createPayment(
+    ctx: StateContext<PaymentsStateModel>,
+    { amount, clientId, clientName }: CreatePayment
+  ): Observable<any> {
+    ctx.patchState({ loading: true });
+
+    return this.paymentsService.createPayment(amount, clientId, clientName).pipe(
+      tap((response) => {
+        ctx.patchState({ loading: false });
+
+        this.snackBarService.showSuccess(
+          `Pago de ${clientName} registrado correctamente`,
+          "Cerrar"
+        );
+      }),
+      catchError((error) => {
+        console.error("Error creating payment:", error);
+        ctx.patchState({ loading: false });
+        this.snackBarService.showError(
+          "Error al registrar el pago. Por favor, inténtelo de nuevo.",
           "Cerrar"
         );
         return throwError(() => error);

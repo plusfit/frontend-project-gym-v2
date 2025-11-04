@@ -26,6 +26,15 @@ export class DeletePayment {
   constructor(public readonly paymentId: string) { }
 }
 
+export class CreatePayment {
+  static readonly type = "[Payments] Create Payment";
+  constructor(
+    public readonly amount: number,
+    public readonly clientId: string,
+    public readonly clientName: string
+  ) { }
+}
+
 export class ExportPayments {
   static readonly type = "[Payments] Export Payments";
   constructor(

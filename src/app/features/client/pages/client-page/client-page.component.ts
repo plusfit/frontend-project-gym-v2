@@ -13,6 +13,7 @@ import {
   ConfirmDialogComponent,
   DialogType,
 } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { CreatePayment } from "@features/payments/state/payments.actions";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
 import { Observable, Subject, takeUntil } from "rxjs";
@@ -148,9 +149,6 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   }
 
   addPayment(client: any): void {
-    // Debug: vamos a ver qué estructura tiene el objeto client
-    console.log('🔍 Estructura del cliente:', client);
-
     const dialogRef = this.dialog.open(AddPaymentDialogComponent, {
       width: "500px",
       data: {
@@ -162,7 +160,13 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
     dialogRef.componentInstance.confirm.subscribe((result) => {
       if (result) {
+        // 1. Agregar días disponibles al cliente
         this.store.dispatch(new AddAvailableDays(result.clientId, result.days));
+
+        // 2. Registrar el pago en el sistema
+        this.store.dispatch(new CreatePayment(result.amount, result.clientId, result.clientName));
+
+        // Actualizar la lista de clientes después de ambas operaciones
         this.actions
           .pipe(ofActionSuccessful(AddAvailableDays), takeUntil(this.destroy))
           .subscribe(() => {
