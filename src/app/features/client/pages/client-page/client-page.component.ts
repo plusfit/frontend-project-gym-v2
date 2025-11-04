@@ -148,13 +148,15 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   }
 
   addPayment(client: any): void {
+    // Debug: vamos a ver qué estructura tiene el objeto client
+    console.log('🔍 Estructura del cliente:', client);
+
     const dialogRef = this.dialog.open(AddPaymentDialogComponent, {
       width: "500px",
       data: {
         clientName: client.userInfo?.name || "Cliente",
         clientId: client._id || client.id,
-        planName: client.plan?.name || "Plan no asignado",
-        planPrice: client.plan?.price || 0,
+        planId: client.planId
       },
     });
 

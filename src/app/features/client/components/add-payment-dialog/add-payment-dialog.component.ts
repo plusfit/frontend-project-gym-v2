@@ -55,8 +55,7 @@ export class AddPaymentDialogComponent {
     public data: {
       clientName: string;
       clientId: string;
-      planName?: string;
-      planPrice?: number;
+      planId: string;
     },
   ) { }
 
@@ -71,18 +70,16 @@ export class AddPaymentDialogComponent {
 
   handleConfirm(): void {
     if (this.selectedOption) {
-      // Calcular el precio total basado en el plan y los meses
+
       const monthsSelected = this.getMonthsFromDays(this.selectedOption.days);
       const totalPrice = this.calculateTotalPrice(monthsSelected);
 
-      // Console.log del precio calculado
       console.log(`💰 Pago calculado:`, {
         cliente: this.data.clientName,
-        plan: this.data.planName || 'Sin plan asignado',
-        precioPlan: this.data.planPrice || 0,
         mesesSeleccionados: monthsSelected,
         precioTotal: totalPrice,
-        diasAgregados: this.selectedOption.days
+        diasAgregados: this.selectedOption.days,
+        planId: this.data.planId
       });
 
       this.confirm.emit({
@@ -103,7 +100,7 @@ export class AddPaymentDialogComponent {
   }
 
   private calculateTotalPrice(months: number): number {
-    const planPrice = this.data.planPrice || 0;
+    const planPrice = 0//this.data.planPrice || 0;
     return planPrice * months;
   }
 

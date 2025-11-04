@@ -189,11 +189,11 @@
     <!-- Payments Table -->
     <div *ngIf="!(hasError$ | async)">
       <app-payments-table
-        [payments]="payments$ | async"
-        [loading]="loading$ | async"
-        [totalCount]="totalCount$ | async"
-        [pageSize]="pageSize$ | async"
-        [currentPage]="currentPage$ | async"
+        [payments]="(payments$ | async) || []"
+        [loading]="(loading$ | async) || false"
+        [totalCount]="(totalCount$ | async) || 0"
+        [pageSize]="(pageSize$ | async) || 10"
+        [currentPage]="(currentPage$ | async) || 1"
         (pageChange)="onPageChange($event)"
         
         (exportData)="onExportData($event)"
