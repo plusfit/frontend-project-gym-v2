@@ -205,8 +205,8 @@
         [payments]="(payments$ | async) || []"
         [loading]="(loading$ | async) || false"
         [totalCount]="(totalCount$ | async) || 0"
-        [pageSize]="(pageSize$ | async) || 10"
-        [currentPage]="(currentPage$ | async) || 1"
+        [pageSize]="(pageSize$ | async) || 8"
+        [currentPage]="(currentPage$ | async) || 0"
         (pageChange)="onPageChange($event)"
         
         (exportData)="onExportData($event)"

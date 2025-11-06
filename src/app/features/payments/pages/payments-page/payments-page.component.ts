@@ -75,7 +75,7 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
   currentFilters: PaymentsFilters = {
     page: 1,
-    limit: 10
+    limit: 8
   };
 
   constructor(

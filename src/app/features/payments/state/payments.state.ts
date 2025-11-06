@@ -33,7 +33,7 @@ import {
     summaryError: false,
     total: 0,
     currentPage: 0,
-    pageSize: 10,
+    pageSize: 8,
     pageCount: 0,
     error: null,
     filters: null,
@@ -67,7 +67,7 @@ export class PaymentsState {
 
   @Selector()
   static getPageSize(state: PaymentsStateModel): number {
-    return state.pageSize ?? 10;
+    return state.pageSize ?? 8;
   }
 
   @Selector()

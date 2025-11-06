@@ -26,7 +26,7 @@ export class PaymentsTableComponent implements OnInit {
   @Input() payments: PaymentItem[] = [];
   @Input() loading = false;
   @Input() totalCount = 0;
-  @Input() pageSize = 10;
+  @Input() pageSize = 8;
   @Input() currentPage = 0;
 
   @Output() pageChange = new EventEmitter<PageEvent>();
