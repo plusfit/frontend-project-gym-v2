@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -49,10 +50,12 @@ import {
     MatInputModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    PaymentsTableComponent
+    PaymentsTableComponent,
+    MatPaginatorModule
   ],
   templateUrl: './payments-page.component.html',
-  styleUrls: ['./payments-page.component.css']
+  styleUrls: ['./payments-page.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -186,9 +189,6 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     this.loadPayments();
   }
 
-  onExportData(format: 'csv' | 'excel') {
-    this.store.dispatch(new ExportPayments(this.currentFilters, format));
-  }
 
   refreshData() {
     this.loadPayments();

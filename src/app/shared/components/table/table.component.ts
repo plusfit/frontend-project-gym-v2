@@ -379,4 +379,14 @@ export class TableComponent implements OnInit {
     const availableDays = element.availableDays || 0;
     return availableDays > 0 ? EColorBadge.SUCCESS : EColorBadge.ERROR;
   }
+
+  /**
+   * Format currency for payments
+   */
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('es-UY', {
+      style: 'currency',
+      currency: 'UYU'
+    }).format(amount);
+  }
 }
