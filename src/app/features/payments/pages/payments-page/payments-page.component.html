@@ -186,8 +186,21 @@
     </div>
 
     <!-- Payments Table -->
-    <!-- Payments Table -->
     <div *ngIf="!(hasError$ | async)">
+      <!-- Table Header -->
+      <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-gray-900">
+            <i class="ph-currency-dollar-simple text-blue-600 mr-2"></i>
+            Lista de Pagos
+          </h3>
+          <div class="text-sm text-gray-600">
+            {{ (totalCount$ | async) || 0 }} pago(s) encontrado(s)
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Component -->
       <app-payments-table
         [payments]="(payments$ | async) || []"
         [loading]="(loading$ | async) || false"
