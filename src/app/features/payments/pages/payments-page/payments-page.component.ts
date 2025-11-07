@@ -80,11 +80,11 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
   filterForm: FormGroup;
   searchControl = new FormControl('');
   activeQuickFilter: string | null = null;
-  
+
   // Direct date properties for ngModel
   startDate: Date | null = null;
   endDate: Date | null = null;
-  
+
   currentFilters: PaymentsFilters = {
     page: 1,
     limit: 8
@@ -184,7 +184,7 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
       startDate: this.startDate ? this.formatDateForApi(this.startDate) : undefined,
       endDate: this.endDate ? this.formatDateForApi(this.endDate) : undefined
     };
-    
+
     console.log('Default dates set:', {
       startDate: this.startDate,
       endDate: this.endDate,
@@ -286,12 +286,12 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
       searchQ: undefined
     };
     this.activeQuickFilter = null;
-    
+
     // Restablecer las fechas al mes completo
     const today = new Date();
     this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
     this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
+
     // Aplicar los cambios
     this.onDateChange();
   }
