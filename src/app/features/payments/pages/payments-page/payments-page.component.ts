@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { Subject, takeUntil, debounceTime, Observable, finalize } from 'rxjs';
@@ -18,6 +18,7 @@ import { Store, Actions, ofActionSuccessful } from '@ngxs/store';
 import { PaymentsState } from '../../state/payments.state';
 import {
   GetPayments,
+  SearchPaymentsByName,
   GetPaymentsSummary,
   UpdatePayment,
   DeletePayment,
@@ -50,14 +51,15 @@ import {
     MatInputModule,
     MatNativeDateModule,
     ReactiveFormsModule,
+    FormsModule,
     PaymentsTableComponent,
     MatPaginatorModule
   ],
   templateUrl: './payments-page.component.html',
-  styleUrls: ['./payments-page.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./payments-page.component.css']
+  // changeDetection: ChangeDetectionStrategy.OnPush // Commenting out to test
 })
-export class PaymentsPageComponent implements OnInit, OnDestroy {
+export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
 
   // Component state using NGXS observables
@@ -76,6 +78,13 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
 
   // Filters
   filterForm: FormGroup;
+  searchControl = new FormControl('');
+  activeQuickFilter: string | null = null;
+  
+  // Direct date properties for ngModel
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  
   currentFilters: PaymentsFilters = {
     page: 1,
     limit: 8
@@ -86,11 +95,17 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     private actions: Actions,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
+    // Initialize dates directly
+    const today = new Date();
+    this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
     this.filterForm = this.fb.group({
-      startDate: [null],
-      endDate: [null]
+      startDate: [this.startDate],
+      endDate: [this.endDate]
     });
 
     // Initialize observables from NGXS store
@@ -107,10 +122,17 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setDefaultDateRange();
     this.setupFilters();
-    this.loadPayments();
-    this.loadSummary();
+    this.setupSearch();
+  }
+
+  ngAfterViewInit() {
+    // Establecer las fechas después de que la vista esté completamente inicializada
+    setTimeout(() => {
+      this.setDefaultDateRange();
+      this.loadPayments();
+      this.loadSummary();
+    }, 100);
   }
 
   ngOnDestroy() {
@@ -119,51 +141,55 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   private setupFilters() {
-    // Watch for filter changes
+    // Watch for filter changes and apply automatically like before
     this.filterForm.valueChanges
       .pipe(
         debounceTime(300),
         takeUntil(this.destroy$)
       )
       .subscribe(value => {
-        this.applyFilters(value);
+        this.currentFilters = {
+          ...this.currentFilters,
+          page: 1,
+          startDate: value.startDate ? this.formatDateForApi(value.startDate) : undefined,
+          endDate: value.endDate ? this.formatDateForApi(value.endDate) : undefined,
+          searchQ: this.searchControl.value?.trim() || undefined
+        };
+        this.loadPayments();
+        this.loadSummary();
+      });
+  }
+
+  private setupSearch() {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(searchTerm => {
+        this.currentFilters = {
+          ...this.currentFilters,
+          page: 1,
+          searchQ: searchTerm?.trim() || undefined
+        };
+        this.loadPayments();
       });
   }
 
   private setDefaultDateRange() {
-    const today = new Date();
-
-    // Primer día del mes actual
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-    // Último día del mes actual
-    // El día 0 del siguiente mes es el último día del mes actual
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-    // Establecer las fechas en el formulario
-    this.filterForm.patchValue({
-      startDate: firstDayOfMonth,
-      endDate: lastDayOfMonth
-    }, { emitEvent: false }); // emitEvent: false para evitar trigger inmediato
-
-    // También actualizar los filtros internos
+    // Las fechas ya están inicializadas en el constructor
+    // Solo necesitamos actualizar los filtros internos
     this.currentFilters = {
       ...this.currentFilters,
-      startDate: this.formatDateForApi(firstDayOfMonth),
-      endDate: this.formatDateForApi(lastDayOfMonth)
+      startDate: this.startDate ? this.formatDateForApi(this.startDate) : undefined,
+      endDate: this.endDate ? this.formatDateForApi(this.endDate) : undefined
     };
-  }
-
-  private applyFilters(filterValues: any) {
-    this.currentFilters = {
-      ...this.currentFilters,
-      page: 1, // Reset to first page when filters change
-      startDate: filterValues.startDate ? this.formatDateForApi(filterValues.startDate) : undefined,
-      endDate: filterValues.endDate ? this.formatDateForApi(filterValues.endDate) : undefined
-    };
-
-    this.loadPayments();
-    this.loadSummary();
+    
+    console.log('Default dates set:', {
+      startDate: this.startDate,
+      endDate: this.endDate,
+      filters: this.currentFilters
+    });
   }
 
   private formatDateForApi(date: Date): string {
@@ -171,7 +197,12 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   loadPayments() {
-    this.store.dispatch(new GetPayments(this.currentFilters));
+    // If there's a search query, use search action, otherwise use regular getPayments
+    if (this.currentFilters.searchQ?.trim()) {
+      this.store.dispatch(new SearchPaymentsByName(this.currentFilters.searchQ, this.currentFilters));
+    } else {
+      this.store.dispatch(new GetPayments(this.currentFilters));
+    }
   }
 
   loadSummary() {
@@ -189,6 +220,57 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
     this.loadPayments();
   }
 
+  onSearch(searchQuery: { searchQ: string }): void {
+    this.currentFilters = {
+      ...this.currentFilters,
+      page: 1, // Reset to first page when searching
+      searchQ: searchQuery.searchQ?.trim()
+    };
+
+    // If search query is empty, use regular getPayments, otherwise use search
+    if (!this.currentFilters.searchQ) {
+      this.store.dispatch(new GetPayments(this.currentFilters));
+    } else {
+      this.store.dispatch(new SearchPaymentsByName(this.currentFilters.searchQ, this.currentFilters));
+    }
+  }
+
+  applySearch() {
+    const searchTerm = this.searchControl.value?.trim();
+    this.currentFilters = {
+      ...this.currentFilters,
+      page: 1,
+      searchQ: searchTerm || undefined
+    };
+    this.loadPayments();
+  }
+
+  applyFilters() {
+    const formValues = this.filterForm.value;
+    this.currentFilters = {
+      ...this.currentFilters,
+      page: 1,
+      startDate: this.startDate ? this.formatDateForApi(this.startDate) : undefined,
+      endDate: this.endDate ? this.formatDateForApi(this.endDate) : undefined,
+      searchQ: this.searchControl.value?.trim() || undefined
+    };
+    this.loadPayments();
+    this.loadSummary();
+  }
+
+  onDateChange() {
+    // Se ejecuta cuando cambian las fechas via ngModel
+    this.currentFilters = {
+      ...this.currentFilters,
+      page: 1,
+      startDate: this.startDate ? this.formatDateForApi(this.startDate) : undefined,
+      endDate: this.endDate ? this.formatDateForApi(this.endDate) : undefined,
+      searchQ: this.searchControl.value?.trim() || undefined
+    };
+    this.loadPayments();
+    this.loadSummary();
+  }
+
 
   refreshData() {
     this.loadPayments();
@@ -196,10 +278,22 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
-    // En lugar de reset completo, establecer las fechas del mes actual
-    this.setDefaultDateRange();
-    this.loadPayments();
-    this.loadSummary();
+    // Reset search query and filters
+    this.searchControl.setValue('', { emitEvent: false });
+    this.currentFilters = {
+      page: 1,
+      limit: 8,
+      searchQ: undefined
+    };
+    this.activeQuickFilter = null;
+    
+    // Restablecer las fechas al mes completo
+    const today = new Date();
+    this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    // Aplicar los cambios
+    this.onDateChange();
   }
 
   formatNumber(value: number): string {
@@ -214,13 +308,16 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
   }
 
   setQuickFilter(period: 'today' | 'week' | 'month') {
+    this.activeQuickFilter = period;
     const today = new Date();
     let startDate: Date;
-    let endDate: Date = today;
+    let endDate: Date = new Date(today);
 
     switch (period) {
       case 'today':
         startDate = new Date(today);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
         break;
       case 'week':
         startDate = new Date(today);
@@ -234,10 +331,12 @@ export class PaymentsPageComponent implements OnInit, OnDestroy {
         return;
     }
 
-    this.filterForm.patchValue({
-      startDate: startDate,
-      endDate: endDate
-    });
+    // Actualizar las propiedades directamente
+    this.startDate = startDate;
+    this.endDate = endDate;
+
+    // Aplicar los filtros
+    this.onDateChange();
   }
 
   onViewClientDetail(clientId: string) {

@@ -114,57 +114,104 @@
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-      <div class="flex items-center justify-between mb-4">
-        <h4 class="text-lg font-semibold text-gray-900">
-          <i class="ph-funnel text-blue-600 mr-2"></i>
-          Filtros de Búsqueda
-        </h4>
-        <button
-          mat-button
-          class="text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2"
-          (click)="clearFilters()"
-        >
-          <mat-icon>clear</mat-icon>
-          Limpiar Filtros
-        </button>
-      </div>
-
-      <form [formGroup]="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Start Date -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Fecha Desde</mat-label>
-          <input matInput [matDatepicker]="startPicker" formControlName="startDate">
-          <mat-hint>Selecciona la fecha inicial</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-
-        <!-- End Date -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-          <mat-hint>Selecciona la fecha final</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-
-        <!-- Quick Date Filters -->
-        <div class="flex flex-col space-y-2">
-          <label class="text-sm font-medium text-gray-700">Filtros rápidos:</label>
-          <div class="flex">
+    <div class="bg-white rounded-xl shadow-lg border border-neutral-400 mb-8 overflow-hidden">
+      <div class="p-4 border-b border-neutral-400 bg-gradient-to-r from-neutral-200 to-neutral-100">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+              <mat-icon class="text-white" style="font-size: 20px">filter_list</mat-icon>
+            </div>
+            <h3 class="text-lg font-bold text-neutral-900">Filtros de Búsqueda</h3>
+          </div>
+          <div class="flex items-center space-x-2">
             <button
-              type="button"
-              mat-button
-              class="text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2"
-              (click)="setQuickFilter('today')"
+              mat-stroked-button
+              (click)="clearFilters()"
+              class="flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 px-3 py-2"
             >
-              <mat-icon>today</mat-icon>
-              Hoy
+              <mat-icon style="font-size: 16px">clear</mat-icon>
+              <span class="text-sm">Limpiar Filtros</span>
             </button>
           </div>
         </div>
-      </form>
+
+        <!-- Enhanced Filter Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <!-- Client Name Filter -->
+          <mat-form-field appearance="outline" class="w-full compact-field">
+            <mat-label>Nombre del Cliente</mat-label>
+            <input
+              matInput
+              [formControl]="searchControl"
+              placeholder="Buscar por nombre..."
+              (keyup.enter)="applySearch()"
+            />
+            <mat-icon matSuffix style="font-size: 18px">person</mat-icon>
+          </mat-form-field>
+
+          <!-- Start Date Filter -->
+          <mat-form-field appearance="outline" class="w-full compact-field">
+            <mat-label>Fecha Desde</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              [(ngModel)]="startDate"
+              (ngModelChange)="onDateChange()"
+              readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- End Date Filter -->
+          <mat-form-field appearance="outline" class="w-full compact-field">
+            <mat-label>Fecha Hasta</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              [(ngModel)]="endDate"
+              (ngModelChange)="onDateChange()"
+              readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Filter Actions -->
+          <div class="w-full flex items-end pb-2">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="applyFilters()"
+              class="w-full"
+              style="height: 40px; margin-bottom: 1.25em"
+            >
+              <mat-icon>search</mat-icon>
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        <!-- Enhanced Quick Date Filters -->
+        <div class="flex flex-wrap gap-3 mt-6 p-4 bg-white rounded-lg border border-neutral-300">
+          <span class="text-sm font-semibold text-neutral-800 mr-3 flex items-center gap-2">
+            <mat-icon style="font-size: 16px; width: 16px; height: 16px">schedule</mat-icon>
+            Filtros rápidos:
+          </span>
+          <button
+            mat-stroked-button
+            (click)="setQuickFilter('today')"
+            [class]="
+              activeQuickFilter === 'today'
+                ? 'text-xs bg-primary-100 border-primary-500 text-primary-700 font-semibold'
+                : 'text-xs hover:bg-primary-50 hover:border-primary-300 transition-all duration-200'
+            "
+          >
+            <mat-icon style="font-size: 14px">today</mat-icon>
+            Hoy
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Error State -->

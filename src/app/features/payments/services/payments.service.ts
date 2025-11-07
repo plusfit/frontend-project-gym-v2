@@ -46,6 +46,29 @@ export class PaymentsService {
   }
 
   /**
+   * Search payments by client name
+   */
+  searchPaymentsByName(searchTerm: string, filters: PaymentsFilters): Observable<PaymentsResponse> {
+    let params = new HttpParams()
+      .set('page', filters.page.toString())
+      .set('limit', filters.limit.toString());
+
+    if (filters.startDate) {
+      params = params.set('startDate', filters.startDate);
+    }
+
+    if (filters.endDate) {
+      params = params.set('endDate', filters.endDate);
+    }
+
+    return this.http.get<PaymentsResponse>(`${this.baseUrl}/search-by-name/${searchTerm}`, { params })
+      .pipe(
+        tap(response => {
+        })
+      );
+  }
+
+  /**
    * Get payment statistics
    */
   getPaymentsStats(startDate?: string, endDate?: string): Observable<PaymentsStats> {

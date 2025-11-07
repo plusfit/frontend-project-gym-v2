@@ -5,6 +5,14 @@ export class GetPayments {
   constructor(public readonly filters: PaymentsFilters) { }
 }
 
+export class SearchPaymentsByName {
+  static readonly type = "[Payments] Search Payments By Name";
+  constructor(
+    public readonly searchTerm: string,
+    public readonly filters: PaymentsFilters
+  ) { }
+}
+
 export class GetPaymentsSummary {
   static readonly type = "[Payments] Get Payments Summary";
   constructor(

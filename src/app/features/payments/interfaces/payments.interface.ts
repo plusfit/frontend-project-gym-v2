@@ -26,6 +26,7 @@ export interface PaymentsFilters {
   limit: number;
   startDate?: string; // Format: YYYY-MM-DD
   endDate?: string;   // Format: YYYY-MM-DD
+  searchQ?: string;   // Search term for client name
 }
 
 export interface PaymentsStats {

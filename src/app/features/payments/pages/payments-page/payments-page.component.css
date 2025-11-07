@@ -67,3 +67,57 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Compact field styling for consistent form appearance */
+.compact-field {
+  height: auto;
+}
+
+.compact-field .mat-mdc-form-field-flex {
+  min-height: 40px;
+}
+
+.compact-field .mat-mdc-form-field-infix {
+  padding: 8px 0;
+  min-height: 24px;
+}
+
+.compact-field .mat-mdc-form-field-label {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.compact-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline-start,
+.compact-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline-end {
+  border-radius: 8px;
+}
+
+/* Filter section styling */
+.bg-gradient-to-r.from-neutral-200.to-neutral-100 {
+  background: linear-gradient(90deg, #f5f5f5 0%, #e5e5e5 100%);
+}
+
+.bg-gradient-to-br.from-primary-500.to-primary-600 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Active quick filter styling */
+.bg-primary-100 {
+  background-color: rgb(219 234 254);
+}
+
+.border-primary-500 {
+  border-color: rgb(59 130 246);
+}
+
+.text-primary-700 {
+  color: rgb(29 78 216);
+}
+
+.hover\:bg-primary-50:hover {
+  background-color: rgb(239 246 255);
+}
+
+.hover\:border-primary-300:hover {
+  border-color: rgb(147 197 253);
+}

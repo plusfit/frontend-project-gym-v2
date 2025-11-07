@@ -7,6 +7,7 @@ import { PaymentsService } from "../services/payments.service";
 import { SnackBarService } from "@core/services/snackbar.service";
 import {
   GetPayments,
+  SearchPaymentsByName,
   GetPaymentsSummary,
   UpdatePayment,
   DeletePayment,
@@ -143,6 +144,44 @@ export class PaymentsState {
           total: 0,
         });
         this.snackBarService.showError("Error al cargar los pagos", "Cerrar");
+        return throwError(() => error);
+      })
+    );
+  }
+
+  @Action(SearchPaymentsByName, { cancelUncompleted: true })
+  searchPaymentsByName(
+    ctx: StateContext<PaymentsStateModel>,
+    { searchTerm, filters }: SearchPaymentsByName
+  ): Observable<PaymentsResponse> {
+    ctx.patchState({
+      loading: true,
+      hasError: false,
+      errorMessage: "",
+      filters: filters,
+    });
+
+    return this.paymentsService.searchPaymentsByName(searchTerm, filters).pipe(
+      tap((response: PaymentsResponse) => {
+        ctx.patchState({
+          payments: response.data.data,
+          total: response.data.pagination.totalCount,
+          currentPage: response.data.pagination.currentPage - 1, // Material paginator uses 0-based indexing
+          pageSize: response.data.pagination.limit,
+          pageCount: response.data.pagination.totalPages,
+          loading: false,
+        });
+      }),
+      catchError((error) => {
+        ctx.patchState({
+          error,
+          loading: false,
+          hasError: true,
+          errorMessage: "Error al buscar los pagos. Por favor, inténtelo de nuevo.",
+          payments: [],
+          total: 0,
+        });
+        this.snackBarService.showError("Error al buscar los pagos", "Cerrar");
         return throwError(() => error);
       })
     );
