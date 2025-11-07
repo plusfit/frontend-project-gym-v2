@@ -197,20 +197,16 @@
         (editPayment)="onEditPayment($event)"
         (deletePayment)="onDeletePayment($event)"
       >
-        <!-- Pagination -->
-        <div 
-          *ngIf="!(loading$ | async) && ((payments$ | async)?.length || 0) > 0" 
-          class="border-t border-neutral-400 bg-neutral-100"
-        >
-          <mat-paginator
-            [length]="(totalCount$ | async) || 0"
-            [pageSize]="(pageSize$ | async) || 8"
-            [pageIndex]="(currentPage$ | async) || 0"
-            [pageSizeOptions]="[]"
-            (page)="onPageChange($event)"
-            showFirstLastButtons
-          ></mat-paginator>
-        </div>
+        <mat-paginator
+          *ngIf="!(loading$ | async) && ((payments$ | async)?.length || 0) > 0"
+          class="border-t border-gray-200 bg-white text-gray-700"
+          [length]="(totalCount$ | async) || 0"
+          [pageSize]="(pageSize$ | async) || 8"
+          [pageIndex]="(currentPage$ | async) || 0"
+          [pageSizeOptions]="[]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+        ></mat-paginator>
       </app-payments-table>
     </div>  </div>
 </section>

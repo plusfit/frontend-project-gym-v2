@@ -30,10 +30,6 @@ export class PaymentsTableComponent implements OnInit {
     'acciones'
   ];
 
-  get transformedPayments(): any[] {
-    return this.payments;
-  }
-
   ngOnInit() {
     // Component initialization
   }
