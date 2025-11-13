@@ -1,0 +1,12 @@
+<app-table
+  [displayedColumns]="columnKeys"
+  [data]="payments"
+  [loading]="loading"
+  [showDelete]="true"
+  [showSeeDetail]="true"
+  (edit)="onEditPayment($event)"
+  (delete)="onDeletePayment($event)"
+  (seeDetail)="onViewClientDetail($event)"
+>
+  <ng-content></ng-content>
+</app-table>

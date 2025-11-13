@@ -210,9 +210,13 @@
             [textBadge]="getPaymentStatusText(element)"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "amount") {
+          <span class="text-sm font-bold text-green-600">
+            {{ formatCurrency(element[column]) }}
+          </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" && column !== "amount" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container

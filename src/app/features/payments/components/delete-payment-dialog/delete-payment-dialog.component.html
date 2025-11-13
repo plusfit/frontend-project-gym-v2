@@ -1,0 +1,70 @@
+<div class="p-6 max-w-md">
+  <!-- Header -->
+  <div class="flex items-center mb-6">
+    <div class="flex-shrink-0 mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+      <mat-icon class="text-red-600">warning</mat-icon>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="text-center mb-4">
+    <h3 class="text-lg font-bold text-gray-900 mb-2">
+      Confirmar Eliminación
+    </h3>
+    <p class="text-sm text-gray-600">
+      Esta acción no se puede deshacer
+    </p>
+  </div>
+
+  <!-- Payment Details -->
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div class="flex items-center space-x-3 mb-3">
+      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+        <mat-icon class="text-blue-600 text-sm">person</mat-icon>
+      </div>
+      <div>
+        <p class="text-sm font-medium text-gray-900">
+          {{ data.payment.clientName }}
+        </p>
+        <p class="text-xs text-gray-500">
+          {{ formatDate(data.payment.createdAt) }}
+        </p>
+      </div>
+    </div>
+    
+    <div class="border-t border-gray-200 pt-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600">Monto:</span>
+        <span class="text-lg font-bold text-red-600">
+          {{ formatCurrency(data.payment.amount) }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Text -->
+  <div class="text-center mb-6">
+    <p class="text-sm text-gray-700">
+      ¿Estás seguro de que quieres eliminar este pago?
+    </p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex space-x-3">
+    <button
+      mat-button
+      (click)="onCancel()"
+      class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg py-2 px-4 transition-colors"
+    >
+      Cancelar
+    </button>
+    <button
+      mat-raised-button
+      (click)="onConfirm()"
+      class="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 px-4 transition-colors"
+    >
+      <mat-icon class="mr-1">delete</mat-icon>
+      Eliminar
+    </button>
+  </div>
+</div>

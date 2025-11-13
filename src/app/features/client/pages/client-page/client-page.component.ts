@@ -13,6 +13,7 @@ import {
   ConfirmDialogComponent,
   DialogType,
 } from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { CreatePayment } from "@features/payments/state/payments.actions";
 import { environment } from "../../../../../environments/environment";
 import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
 import { Observable, Subject, takeUntil } from "rxjs";
@@ -57,7 +58,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private snackbar: SnackBarService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.clients = this.store.select(ClientsState.getClients);
@@ -153,12 +154,19 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       data: {
         clientName: client.userInfo?.name || "Cliente",
         clientId: client._id || client.id,
+        planId: client.planId
       },
     });
 
     dialogRef.componentInstance.confirm.subscribe((result) => {
       if (result) {
+        // 1. Agregar días disponibles al cliente
         this.store.dispatch(new AddAvailableDays(result.clientId, result.days));
+
+        // 2. Registrar el pago en el sistema
+        this.store.dispatch(new CreatePayment(result.amount, result.clientId, result.clientName));
+
+        // Actualizar la lista de clientes después de ambas operaciones
         this.actions
           .pipe(ofActionSuccessful(AddAvailableDays), takeUntil(this.destroy))
           .subscribe(() => {

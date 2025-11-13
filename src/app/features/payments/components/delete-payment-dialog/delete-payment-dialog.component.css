@@ -1,0 +1,33 @@
+/* Estilos para el modal de confirmación de eliminación */
+
+.mat-mdc-dialog-container {
+    border-radius: 12px;
+}
+
+/* Animaciones suaves para los botones */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Efectos hover personalizados */
+.bg-gray-100:hover {
+    background-color: #f3f4f6;
+}
+
+.bg-red-600:hover {
+    background-color: #dc2626;
+}
+
+/* Transiciones para iconos */
+mat-icon {
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover mat-icon {
+    transform: scale(1.1);
+}

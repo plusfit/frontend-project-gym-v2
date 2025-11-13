@@ -72,6 +72,10 @@ export class TranslationPipe implements PipeTransform {
       case "estadoPago":
         return "Estado de Pago";
 
+      // Payments fields
+      case "amount":
+        return "Monto";
+
       // Rewards fields
       case "pointsRequired":
         return "Puntos Requeridos";

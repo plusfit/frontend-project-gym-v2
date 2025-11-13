@@ -1,0 +1,30 @@
+/* Estilos personalizados para la tabla de pagos */
+
+.mat-mdc-paginator {
+  background: transparent;
+}
+
+.mat-mdc-paginator .mat-mdc-paginator-range-label {
+  color: #374151;
+}
+
+/* Estilos para mejorar la apariencia de la tabla */
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+
+/* Animaciones suaves */
+.transition-colors {
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Estilo para el loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

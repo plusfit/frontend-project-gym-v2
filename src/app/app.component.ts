@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   constructor(
     private pwaUpdateService: PwaUpdateService,
     private pwaInstallService: PwaInstallService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Los servicios se inicializan automáticamente a través de la inyección de dependencias

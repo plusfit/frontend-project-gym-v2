@@ -27,72 +27,74 @@ import { ScheduleState } from "@features/schedule/state/schedule.state";
 import { ClientsState } from "@features/client/state/clients.state";
 import { PlansState } from "@features/plans/state/plan.state";
 import { ScreenRoutineState } from "@features/screenRoutine/state/screenRoutine.state";
+import { PaymentsState } from "@features/payments/state/payments.state";
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideClientHydration(),
-    provideAnimationsAsync(),
-    provideHttpClient(withFetch(), withInterceptors([tokenInterceptor, errorInterceptor, authorizeInterceptor])),
-    provideFirebaseApp(() => initializeApp({
-        projectId: "project-gym-e5005",
-        appId: "1:437288461955:web:cf931e31562c7601059db6",
-        storageBucket: "project-gym-e5005",
-        apiKey: "AIzaSyCa5LaZB6Gscv5V7Du-bH01oBkx0dUBLUo",
-        authDomain: "project-gym-e5005.firebaseapp.com",
-        messagingSenderId: "437288461955",
-        measurementId: "G-3GKPHZY9M7",
-    })),
-    provideAuth(() => getAuth()),
-    provideStorage(() => getStorage()),
-    importProvidersFrom(NgxsModule.forRoot([
-        AuthState,
-        SettingsState,
-        ExerciseState,
-        SubRoutinesState,
-        RoutineState,
-        ScheduleState,
-        ClientsState,
-        PlansState,
-        ScreenRoutineState,
-    ], {
-        developmentMode: true,
-    })),
-    importProvidersFrom(NgxsReduxDevtoolsPluginModule.forRoot({
-        disabled: environment.production,
-    })),
-    importProvidersFrom(NgxsStoragePluginModule.forRoot({
-        keys: [
-            {
-                key: AuthState,
-                engine: LOCAL_STORAGE_ENGINE,
+    providers: [
+        provideRouter(routes),
+        provideClientHydration(),
+        provideAnimationsAsync(),
+        provideHttpClient(withFetch(), withInterceptors([tokenInterceptor, errorInterceptor, authorizeInterceptor])),
+        provideFirebaseApp(() => initializeApp({
+            projectId: "project-gym-e5005",
+            appId: "1:437288461955:web:cf931e31562c7601059db6",
+            storageBucket: "project-gym-e5005",
+            apiKey: "AIzaSyCa5LaZB6Gscv5V7Du-bH01oBkx0dUBLUo",
+            authDomain: "project-gym-e5005.firebaseapp.com",
+            messagingSenderId: "437288461955",
+            measurementId: "G-3GKPHZY9M7",
+        })),
+        provideAuth(() => getAuth()),
+        provideStorage(() => getStorage()),
+        importProvidersFrom(NgxsModule.forRoot([
+            AuthState,
+            SettingsState,
+            ExerciseState,
+            SubRoutinesState,
+            RoutineState,
+            ScheduleState,
+            ClientsState,
+            PlansState,
+            ScreenRoutineState,
+            PaymentsState,
+        ], {
+            developmentMode: true,
+        })),
+        importProvidersFrom(NgxsReduxDevtoolsPluginModule.forRoot({
+            disabled: environment.production,
+        })),
+        importProvidersFrom(NgxsStoragePluginModule.forRoot({
+            keys: [
+                {
+                    key: AuthState,
+                    engine: LOCAL_STORAGE_ENGINE,
+                },
+            ],
+        })),
+        {
+            provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+            useValue: {
+                horizontalPosition: "right",
+                verticalPosition: "top",
+                duration: 5000,
             },
-        ],
-    })),
-    {
-        provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-        useValue: {
-            horizontalPosition: "right",
-            verticalPosition: "top",
-            duration: 5000,
         },
-    },
-    {
-        provide: DEFAULT_DIALOG_CONFIG,
-        useValue: {
-            autoFocus: false,
-            backdropClass: ["bg-opacity-75", "transition-opacity", "bg-black"],
-            hasBackdrop: true,
-            panelClass: ["w-full", "md:w-2/5", "max-w-2/5", "!m-4"],
+        {
+            provide: DEFAULT_DIALOG_CONFIG,
+            useValue: {
+                autoFocus: false,
+                backdropClass: ["bg-opacity-75", "transition-opacity", "bg-black"],
+                hasBackdrop: true,
+                panelClass: ["w-full", "md:w-2/5", "max-w-2/5", "!m-4"],
+            },
         },
-    },
-    // Locale configuration for Spanish date format (DD/MM/YYYY)
-    { provide: LOCALE_ID, useValue: "es-ES" },
-    { provide: MAT_DATE_LOCALE, useValue: "es-ES" },
-    provideServiceWorker('ngsw-worker.js', {
-        enabled: !isDevMode(),
-        registrationStrategy: 'registerWhenStable:30000'
-    })
-],
+        // Locale configuration for Spanish date format (DD/MM/YYYY)
+        { provide: LOCALE_ID, useValue: "es-ES" },
+        { provide: MAT_DATE_LOCALE, useValue: "es-ES" },
+        provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+        })
+    ],
 };

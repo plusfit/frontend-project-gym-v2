@@ -1,0 +1,123 @@
+/* Estilos personalizados para la página de pagos */
+
+/* Animación del loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Animación pulse para el icono del header */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .8;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Estilos para los campos de formulario */
+.mat-mdc-form-field {
+  margin-bottom: 0;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0.5rem;
+}
+
+/* Transiciones suaves */
+.transition-all {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Hover effects */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.hover\:bg-opacity-30:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Mejoras para los botones de filtros rápidos */
+.mat-mdc-button:not(:disabled) {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid.grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .grid.grid-cols-1.md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Compact field styling for consistent form appearance */
+.compact-field {
+  height: auto;
+}
+
+.compact-field .mat-mdc-form-field-flex {
+  min-height: 40px;
+}
+
+.compact-field .mat-mdc-form-field-infix {
+  padding: 8px 0;
+  min-height: 24px;
+}
+
+.compact-field .mat-mdc-form-field-label {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.compact-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline-start,
+.compact-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline-end {
+  border-radius: 8px;
+}
+
+/* Filter section styling */
+.bg-gradient-to-r.from-neutral-200.to-neutral-100 {
+  background: linear-gradient(90deg, #f5f5f5 0%, #e5e5e5 100%);
+}
+
+.bg-gradient-to-br.from-primary-500.to-primary-600 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Active quick filter styling */
+.bg-primary-100 {
+  background-color: rgb(219 234 254);
+}
+
+.border-primary-500 {
+  border-color: rgb(59 130 246);
+}
+
+.text-primary-700 {
+  color: rgb(29 78 216);
+}
+
+.hover\:bg-primary-50:hover {
+  background-color: rgb(239 246 255);
+}
+
+.hover\:border-primary-300:hover {
+  border-color: rgb(147 197 253);
+}
