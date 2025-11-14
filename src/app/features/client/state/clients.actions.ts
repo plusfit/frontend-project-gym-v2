@@ -89,3 +89,8 @@ export class UpdateAvailableDays {
   ) {}
 }
 
+export class ValidateCI {
+  static readonly type = "[Client] ValidateCI";
+  constructor(public readonly ci: string) {}
+}
+

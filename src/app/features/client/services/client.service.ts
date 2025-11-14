@@ -119,4 +119,10 @@ export class ClientService {
       availableDays,
     });
   }
+
+  validateCI(ci: string): Observable<{ success: boolean; data: boolean }> {
+    return this.http.get<{ success: boolean; data: boolean }>(
+      `${environment.api}/clients/validate/ci/${ci}`,
+    );
+  }
 }

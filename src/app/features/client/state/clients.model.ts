@@ -17,6 +17,7 @@ export class ClientsStateModel {
   forgotPasswordLoading?: boolean; // Estado de carga para forgot password
   forgotPasswordSuccess?: boolean; // Éxito del forgot password
   forgotPasswordError?: any; // Error del forgot password
+  ciValidation?: { exists: boolean; ci: string } | null; // Resultado de validación de CI
   total?: number;
   activeClientsCount?: number;
   error?: any;

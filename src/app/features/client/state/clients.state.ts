@@ -35,6 +35,7 @@ import {
   ToggleDisabledClient,
   UpdateAvailableDays,
   UpdateClient,
+  ValidateCI,
 } from "./clients.actions";
 import { ClientsStateModel } from "./clients.model";
 
@@ -52,6 +53,7 @@ import { ClientsStateModel } from "./clients.model";
     forgotPasswordLoading: false,
     forgotPasswordSuccess: false,
     forgotPasswordError: null,
+    ciValidation: null,
     total: 0,
     activeClientsCount: 0,
     loading: false,
@@ -133,6 +135,11 @@ export class ClientsState {
   @Selector()
   static getForgotPasswordError(state: ClientsStateModel) {
     return state.forgotPasswordError ?? null;
+  }
+
+  @Selector()
+  static getCIValidation(state: ClientsStateModel) {
+    return state.ciValidation;
   }
 
   constructor(
@@ -687,6 +694,32 @@ export class ClientsState {
       default:
         return "Ha ocurrido un error. Por favor, inténtalo de nuevo";
     }
+  }
+
+  @Action(ValidateCI)
+  validateCI(
+    ctx: StateContext<ClientsStateModel>,
+    action: ValidateCI,
+  ): Observable<{ success: boolean; data: boolean }> {
+    // Limpiar validación anterior
+    ctx.patchState({ ciValidation: null });
+
+    return this.clientService.validateCI(action.ci).pipe(
+      tap((response) => {
+        if (response?.success) {
+          ctx.patchState({
+            ciValidation: {
+              exists: response.data,
+              ci: action.ci,
+            },
+          });
+        }
+      }),
+      catchError((error) => {
+        ctx.patchState({ ciValidation: null });
+        return throwError(() => error);
+      }),
+    );
   }
 
   private getFriendlyErrorMessage(err: any): string {
