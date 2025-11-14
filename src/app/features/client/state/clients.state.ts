@@ -149,7 +149,7 @@ export class ClientsState {
     private exerciseService: ExerciseService,
     private planService: PlansService,
     private snackBarService: SnackBarService,
-  ) {}
+  ) { }
 
   @Action(GetClients, { cancelUncompleted: true })
   getClients(
@@ -605,19 +605,19 @@ export class ClientsState {
         });
         if (!response.data.password) {
           this.snackBarService.showError(
-            "Error", 
+            "Error",
             "No esta seteada la contraseña para este usuario o el código de administrador es incorrecto"
           );
         }
       }),
       catchError((error) => {
-        ctx.patchState({ 
-          passwordError: error, 
+        ctx.patchState({
+          passwordError: error,
           passwordLoading: false,
-          userPassword: null 
+          userPassword: null
         });
         this.snackBarService.showError(
-          "Error", 
+          "Error",
           "Código de administrador incorrecto o error en el servidor"
         );
         return throwError(() => error);
@@ -627,10 +627,10 @@ export class ClientsState {
 
   @Action(ClearUserPassword)
   clearUserPassword(ctx: StateContext<ClientsStateModel>): void {
-    ctx.patchState({ 
-      userPassword: null, 
-      passwordError: null, 
-      passwordLoading: false 
+    ctx.patchState({
+      userPassword: null,
+      passwordError: null,
+      passwordLoading: false
     });
   }
 
@@ -638,11 +638,11 @@ export class ClientsState {
   sendForgotPassword(
     ctx: StateContext<ClientsStateModel>,
     { clientId }: SendForgotPassword,
-  ): Observable<{success: boolean; message: string}> {
-    ctx.patchState({ 
-      forgotPasswordLoading: true, 
+  ): Observable<{ success: boolean; message: string }> {
+    ctx.patchState({
+      forgotPasswordLoading: true,
       forgotPasswordError: null,
-      forgotPasswordSuccess: false 
+      forgotPasswordSuccess: false
     });
 
     return this.clientService.sendForgotPasswordEmail(clientId).pipe(
@@ -652,18 +652,18 @@ export class ClientsState {
           forgotPasswordLoading: false,
         });
         this.snackBarService.showSuccess(
-          "Éxito", 
+          "Éxito",
           response.message || "Se ha enviado el email de recuperación de contraseña"
         );
       }),
       catchError((error) => {
-        ctx.patchState({ 
-          forgotPasswordError: error, 
+        ctx.patchState({
+          forgotPasswordError: error,
           forgotPasswordLoading: false,
-          forgotPasswordSuccess: false 
+          forgotPasswordSuccess: false
         });
         this.snackBarService.showError(
-          "Error", 
+          "Error",
           "No se pudo enviar el email de recuperación. Intenta nuevamente"
         );
         return throwError(() => error);
