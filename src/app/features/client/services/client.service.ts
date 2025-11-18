@@ -8,7 +8,7 @@ import { Client, UserPasswordResponse } from "../interface/clients.interface";
   providedIn: "root",
 })
 export class ClientService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getClients(page: number, limit: number): Observable<any> {
     const url = `/clients?page=${page}&limit=${limit}`;
@@ -104,11 +104,11 @@ export class ClientService {
     return this.http.get<UserPasswordResponse>(`${environment.api}/clients/${clientId}/password`);
   }
 
-  sendForgotPasswordEmail(clientId: string): Observable<{success: boolean; message: string}> {
-    return this.http.post<{success: boolean; message: string}>(`${environment.api}/clients/${clientId}/forgot-password`, {});
+  sendForgotPasswordEmail(clientId: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${environment.api}/clients/${clientId}/forgot-password`, {});
   }
 
-    addAvailableDays(clientId: string, daysToAdd: number): Observable<any> {
+  addAvailableDays(clientId: string, daysToAdd: number): Observable<any> {
     return this.http.post<any>(`${environment.api}/clients/available-days/${clientId}/add`, {
       daysToAdd,
     });
@@ -118,5 +118,11 @@ export class ClientService {
     return this.http.patch<any>(`${environment.api}/clients/available-days/${clientId}/update`, {
       availableDays,
     });
+  }
+
+  validateCI(ci: string): Observable<{ success: boolean; data: boolean }> {
+    return this.http.get<{ success: boolean; data: boolean }>(
+      `${environment.api}/clients/validate/ci/${ci}`,
+    );
   }
 }

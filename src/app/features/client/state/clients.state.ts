@@ -35,6 +35,7 @@ import {
   ToggleDisabledClient,
   UpdateAvailableDays,
   UpdateClient,
+  ValidateCI,
 } from "./clients.actions";
 import { ClientsStateModel } from "./clients.model";
 
@@ -52,6 +53,7 @@ import { ClientsStateModel } from "./clients.model";
     forgotPasswordLoading: false,
     forgotPasswordSuccess: false,
     forgotPasswordError: null,
+    ciValidation: null,
     total: 0,
     activeClientsCount: 0,
     loading: false,
@@ -135,6 +137,11 @@ export class ClientsState {
     return state.forgotPasswordError ?? null;
   }
 
+  @Selector()
+  static getCIValidation(state: ClientsStateModel) {
+    return state.ciValidation;
+  }
+
   constructor(
     private clientService: ClientService,
     private authService: AuthService,
@@ -142,7 +149,7 @@ export class ClientsState {
     private exerciseService: ExerciseService,
     private planService: PlansService,
     private snackBarService: SnackBarService,
-  ) {}
+  ) { }
 
   @Action(GetClients, { cancelUncompleted: true })
   getClients(
@@ -373,39 +380,7 @@ export class ClientsState {
     ctx.patchState({ loading: true, error: null });
 
     // Primero obtener los datos del cliente para tener email
-    return this.clientService.getClientById(id).pipe(
-      switchMap((clientResponse: any) => {
-        const clientData = clientResponse.data;
-        const email = clientData.email || clientData.identifier;
-
-        if (!email) {
-          throw new Error('No se puede obtener el email del cliente para eliminarlo de Firebase');
-        }
-
-        // Obtener la contraseña usando el servicio getUserPassword para operaciones internas
-        return this.clientService.getUserPasswordForInternalOperations(id).pipe(
-          switchMap((passwordResponse: UserPasswordResponse) => {
-            const password = passwordResponse.data.password;
-
-            if (!password) {
-              throw new Error('No se puede obtener la contraseña del cliente para eliminarlo de Firebase');
-            }
-
-            // Eliminar de Firebase Auth primero
-            return this.authService.deleteFirebaseUser(email, password).pipe(
-              switchMap(() => {
-                // Después eliminar de MongoDB
-                return this.clientService.deleteClientFromMongoDB(id);
-              }),
-              catchError((firebaseError) => {
-                console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
-                // Si falla Firebase, al menos eliminar de MongoDB
-                return this.clientService.deleteClientFromMongoDB(id);
-              })
-            );
-          })
-        );
-      }),
+    return this.clientService.deleteClientFromMongoDB(id).pipe(
       tap(() => {
         const state = ctx.getState();
         const clients = state.clients?.filter((client) => client._id !== id) ?? [];
@@ -416,7 +391,7 @@ export class ClientsState {
         ctx.patchState({ error, loading: false });
         this.snackBarService.showError(
           "Error",
-          "No se pudo obtener las credenciales del cliente o eliminar de Firebase y MongoDB. Intenta nuevamente",
+          "No se pudo borrar el cliente. Intenta nuevamente.",
         );
         return throwError(() => error);
       }),
@@ -598,19 +573,19 @@ export class ClientsState {
         });
         if (!response.data.password) {
           this.snackBarService.showError(
-            "Error", 
+            "Error",
             "No esta seteada la contraseña para este usuario o el código de administrador es incorrecto"
           );
         }
       }),
       catchError((error) => {
-        ctx.patchState({ 
-          passwordError: error, 
+        ctx.patchState({
+          passwordError: error,
           passwordLoading: false,
-          userPassword: null 
+          userPassword: null
         });
         this.snackBarService.showError(
-          "Error", 
+          "Error",
           "Código de administrador incorrecto o error en el servidor"
         );
         return throwError(() => error);
@@ -620,10 +595,10 @@ export class ClientsState {
 
   @Action(ClearUserPassword)
   clearUserPassword(ctx: StateContext<ClientsStateModel>): void {
-    ctx.patchState({ 
-      userPassword: null, 
-      passwordError: null, 
-      passwordLoading: false 
+    ctx.patchState({
+      userPassword: null,
+      passwordError: null,
+      passwordLoading: false
     });
   }
 
@@ -631,11 +606,11 @@ export class ClientsState {
   sendForgotPassword(
     ctx: StateContext<ClientsStateModel>,
     { clientId }: SendForgotPassword,
-  ): Observable<{success: boolean; message: string}> {
-    ctx.patchState({ 
-      forgotPasswordLoading: true, 
+  ): Observable<{ success: boolean; message: string }> {
+    ctx.patchState({
+      forgotPasswordLoading: true,
       forgotPasswordError: null,
-      forgotPasswordSuccess: false 
+      forgotPasswordSuccess: false
     });
 
     return this.clientService.sendForgotPasswordEmail(clientId).pipe(
@@ -645,18 +620,18 @@ export class ClientsState {
           forgotPasswordLoading: false,
         });
         this.snackBarService.showSuccess(
-          "Éxito", 
+          "Éxito",
           response.message || "Se ha enviado el email de recuperación de contraseña"
         );
       }),
       catchError((error) => {
-        ctx.patchState({ 
-          forgotPasswordError: error, 
+        ctx.patchState({
+          forgotPasswordError: error,
           forgotPasswordLoading: false,
-          forgotPasswordSuccess: false 
+          forgotPasswordSuccess: false
         });
         this.snackBarService.showError(
-          "Error", 
+          "Error",
           "No se pudo enviar el email de recuperación. Intenta nuevamente"
         );
         return throwError(() => error);
@@ -687,6 +662,32 @@ export class ClientsState {
       default:
         return "Ha ocurrido un error. Por favor, inténtalo de nuevo";
     }
+  }
+
+  @Action(ValidateCI)
+  validateCI(
+    ctx: StateContext<ClientsStateModel>,
+    action: ValidateCI,
+  ): Observable<{ success: boolean; data: boolean }> {
+    // Limpiar validación anterior
+    ctx.patchState({ ciValidation: null });
+
+    return this.clientService.validateCI(action.ci).pipe(
+      tap((response) => {
+        if (response?.success) {
+          ctx.patchState({
+            ciValidation: {
+              exists: response.data,
+              ci: action.ci,
+            },
+          });
+        }
+      }),
+      catchError((error) => {
+        ctx.patchState({ ciValidation: null });
+        return throwError(() => error);
+      }),
+    );
   }
 
   private getFriendlyErrorMessage(err: any): string {

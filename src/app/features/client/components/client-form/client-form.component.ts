@@ -14,12 +14,14 @@ import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
 import { Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { passwordValidator } from "@core/validators/password.validator";
 import {
   RegisterClient,
   UpdateAvailableDays,
   UpdateClient,
+  ValidateCI,
 } from "@features/client/state/clients.actions";
 import { ClientsState } from "@features/client/state/clients.state";
 import { AssignPlanToUser, GetPlan, GetPlans } from "@features/plans/state/plan.actions";
@@ -35,6 +37,10 @@ import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { NativeDateAdapter } from "@angular/material/core";
 import { Plan } from "@features/plans/interfaces/plan.interface";
 import { RecaptchaService } from "@core/services/recaptcha.service";
+import {
+  ConfirmDialogComponent,
+  DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
 
 export class MyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: NonNullable<unknown>): string {
@@ -125,7 +131,8 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
     private actions: Actions,
     private snackbar: SnackBarService,
     private recaptchaService: RecaptchaService,
-  ) {}
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
@@ -145,6 +152,19 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
       plan: ["", [Validators.required]],
       CI: ["", [Validators.required, Validators.pattern("^[0-9]{8,15}$")]],
     });
+
+    // Validar CI solo en modo creación
+    if (!this.isEdit()) {
+      // Suscribirse a los cambios en el estado de validación
+      this.store
+        .select(ClientsState.getCIValidation)
+        .pipe(takeUntil(this._destroyed))
+        .subscribe((validation) => {
+          if (validation?.exists) {
+            this.showCIExistsDialog(validation.ci);
+          }
+        });
+    }
   }
 
   private pastDateValidator(control: FormControl): { [key: string]: any } | null {
@@ -309,51 +329,78 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
           this.snackbar.showError("Error", "El plan seleccionado no es válido");
           return;
         }
-        // Ejecutar reCAPTCHA v3 antes de registrar el cliente
-        this.recaptchaService.executeRecaptcha("register").subscribe({
-          next: (recaptchaToken: string) => {
-            const dataRegister = {
-              identifier: this.clientForm.get("identifier")?.value,
-              password: this.clientForm.get("password")?.value,
-              recaptchaToken,
-            };
-            this.store.dispatch(new RegisterClient(dataRegister));
-            this.actions
-              .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
-              .subscribe(() => {
-                const registerClient = this.store.selectSnapshot(ClientsState.getRegisterClient);
-                this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
-                this.actions
-                  .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
-                  .subscribe(() => {
-                    if (this.selectedPlan) {
-                      this.store.dispatch(
-                        new AssignPlanToUser(this.selectedPlan._id, registerClient._id),
-                      );
-                      this.actions
-                        .pipe(ofActionSuccessful(AssignPlanToUser), takeUntil(this._destroyed))
-                        .subscribe(() => {
-                          this.snackbar.showSuccess(
-                            "Exito",
-                            "Cliente registrado con correctamente",
-                          );
-                          this.clientForm.reset();
-                          this.router.navigate(["/clientes"]);
-                        });
-                    }
-                  });
-              });
-          },
-          error: (error) => {
-            console.error("Error al ejecutar reCAPTCHA:", error);
-            this.snackbar.showError(
-              "Error de verificación",
-              "No se pudo verificar que eres humano. Inténtalo de nuevo.",
-            );
-          },
-        });
+
+        // Validar CI antes de proceder con el registro usando el state
+        const ci = this.clientForm.get("CI")?.value;
+        if (ci && /^[0-9]{8,15}$/.test(ci)) {
+          this.store.dispatch(new ValidateCI(ci));
+
+          this.actions
+            .pipe(ofActionSuccessful(ValidateCI), takeUntil(this._destroyed))
+            .subscribe(() => {
+              const validation = this.store.selectSnapshot(ClientsState.getCIValidation);
+
+              if (validation?.exists) {
+                // CI ya existe, mostrar diálogo y detener el registro
+                this.showCIExistsDialog(ci);
+                return;
+              }
+
+              // CI no existe, proceder con el registro
+              this.proceedWithRegistration(userInfo);
+            });
+        } else {
+          // Si el CI no tiene formato válido, proceder con el registro
+          this.proceedWithRegistration(userInfo);
+        }
       }
     }
+  }
+
+  private proceedWithRegistration(userInfo: any): void {
+    // Ejecutar reCAPTCHA v3 antes de registrar el cliente
+    this.recaptchaService.executeRecaptcha("register").subscribe({
+      next: (recaptchaToken: string) => {
+        const dataRegister = {
+          identifier: this.clientForm.get("identifier")?.value,
+          password: this.clientForm.get("password")?.value,
+          recaptchaToken,
+        };
+        this.store.dispatch(new RegisterClient(dataRegister));
+        this.actions
+          .pipe(ofActionSuccessful(RegisterClient), takeUntil(this._destroyed))
+          .subscribe(() => {
+            const registerClient = this.store.selectSnapshot(ClientsState.getRegisterClient);
+            this.store.dispatch(new UpdateClient(registerClient._id, userInfo));
+            this.actions
+              .pipe(ofActionSuccessful(UpdateClient), takeUntil(this._destroyed))
+              .subscribe(() => {
+                if (this.selectedPlan) {
+                  this.store.dispatch(
+                    new AssignPlanToUser(this.selectedPlan._id, registerClient._id),
+                  );
+                  this.actions
+                    .pipe(ofActionSuccessful(AssignPlanToUser), takeUntil(this._destroyed))
+                    .subscribe(() => {
+                      this.snackbar.showSuccess(
+                        "Exito",
+                        "Cliente registrado con correctamente",
+                      );
+                      this.clientForm.reset();
+                      this.router.navigate(["/clientes"]);
+                    });
+                }
+              });
+          });
+      },
+      error: (error) => {
+        console.error("Error al ejecutar reCAPTCHA:", error);
+        this.snackbar.showError(
+          "Error de verificación",
+          "No se pudo verificar que eres humano. Inténtalo de nuevo.",
+        );
+      },
+    });
   }
 
   action(searchTerm: string): GetPlans {
@@ -428,6 +475,26 @@ export class ClientFormComponent implements OnDestroy, OnInit, OnChanges {
 
   get dateBirthdayControl(): FormControl {
     return this.clientForm.get("dateBirthday") as FormControl;
+  }
+
+  private showCIExistsDialog(ci: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: "500px",
+      data: {
+        title: "Cliente Existente",
+        contentMessage: `Ya existe un cliente registrado con la cédula ${ci}.`,
+        type: DialogType.GENERAL,
+        icon: "ph-warning",
+        iconColor: "orange",
+        confirmButtonText: "Entendido",
+      },
+    });
+
+    // Limpiar el campo CI cuando el usuario cierra el diálogo
+    dialogRef.afterClosed().subscribe(() => {
+      this.clientForm.get("CI")?.setValue("");
+      this.clientForm.get("CI")?.markAsTouched();
+    });
   }
 
   updateAvailableDays(): void {

@@ -3,22 +3,22 @@ import { PageClient } from "../interface/filters.clients.interface";
 
 export class GetClients {
   static readonly type = "[Client] GetClients";
-  constructor(public readonly payload: PageClient) {}
+  constructor(public readonly payload: PageClient) { }
 }
 
 export class GetClientById {
   static readonly type = "[Client] GetClientById";
-  constructor(public readonly id: string) {}
+  constructor(public readonly id: string) { }
 }
 
 export class RegisterClient {
   static readonly type = "[Client] RegisterClient";
-  constructor(public readonly payload: AuthCredentials) {}
+  constructor(public readonly payload: AuthCredentials) { }
 }
 
 export class CreateClient {
   static readonly type = "[Client] createClient";
-  constructor(public readonly payload: any) {}
+  constructor(public readonly payload: any) { }
 }
 
 export class UpdateClient {
@@ -26,11 +26,11 @@ export class UpdateClient {
   constructor(
     public readonly id: string,
     public readonly payload: any,
-  ) {}
+  ) { }
 }
 export class DeleteClient {
   static readonly type = "[Client] DeleteClient";
-  constructor(public readonly id: string) {}
+  constructor(public readonly id: string) { }
 }
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -48,7 +48,7 @@ export class ToggleDisabledClient {
   constructor(
     public readonly id: string,
     public disabled: boolean,
-  ) {}
+  ) { }
 }
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -61,7 +61,7 @@ export class GetUserPassword {
   constructor(
     public readonly clientId: string,
     public readonly adminCode: string,
-  ) {}
+  ) { }
 }
 
 export const ClearUserPassword = {
@@ -70,7 +70,7 @@ export const ClearUserPassword = {
 
 export class SendForgotPassword {
   static readonly type = "[Client] SendForgotPassword";
-  constructor(public readonly clientId: string) {}
+  constructor(public readonly clientId: string) { }
 }
 
 export class AddAvailableDays {
@@ -78,7 +78,7 @@ export class AddAvailableDays {
   constructor(
     public readonly clientId: string,
     public readonly daysToAdd: number,
-  ) {}
+  ) { }
 }
 
 export class UpdateAvailableDays {
@@ -86,6 +86,11 @@ export class UpdateAvailableDays {
   constructor(
     public readonly clientId: string,
     public readonly availableDays: number,
-  ) {}
+  ) { }
+}
+
+export class ValidateCI {
+  static readonly type = "[Client] ValidateCI";
+  constructor(public readonly ci: string) { }
 }
 
