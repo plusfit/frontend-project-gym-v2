@@ -380,39 +380,7 @@ export class ClientsState {
     ctx.patchState({ loading: true, error: null });
 
     // Primero obtener los datos del cliente para tener email
-    return this.clientService.getClientById(id).pipe(
-      switchMap((clientResponse: any) => {
-        const clientData = clientResponse.data;
-        const email = clientData.email || clientData.identifier;
-
-        if (!email) {
-          throw new Error('No se puede obtener el email del cliente para eliminarlo de Firebase');
-        }
-
-        // Obtener la contraseña usando el servicio getUserPassword para operaciones internas
-        return this.clientService.getUserPasswordForInternalOperations(id).pipe(
-          switchMap((passwordResponse: UserPasswordResponse) => {
-            const password = passwordResponse.data.password;
-
-            if (!password) {
-              throw new Error('No se puede obtener la contraseña del cliente para eliminarlo de Firebase');
-            }
-
-            // Eliminar de Firebase Auth primero
-            return this.authService.deleteFirebaseUser(email, password).pipe(
-              switchMap(() => {
-                // Después eliminar de MongoDB
-                return this.clientService.deleteClientFromMongoDB(id);
-              }),
-              catchError((firebaseError) => {
-                console.warn('Error eliminando de Firebase, intentando eliminar solo de MongoDB:', firebaseError);
-                // Si falla Firebase, al menos eliminar de MongoDB
-                return this.clientService.deleteClientFromMongoDB(id);
-              })
-            );
-          })
-        );
-      }),
+    return this.clientService.deleteClientFromMongoDB(id).pipe(
       tap(() => {
         const state = ctx.getState();
         const clients = state.clients?.filter((client) => client._id !== id) ?? [];
@@ -423,7 +391,7 @@ export class ClientsState {
         ctx.patchState({ error, loading: false });
         this.snackBarService.showError(
           "Error",
-          "No se pudo obtener las credenciales del cliente o eliminar de Firebase y MongoDB. Intenta nuevamente",
+          "No se pudo borrar el cliente. Intenta nuevamente.",
         );
         return throwError(() => error);
       }),
