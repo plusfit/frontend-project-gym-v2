@@ -18,6 +18,7 @@ export class Client {
   planId!: string;
   routineId?: string;
   password?: string; // Password del usuario (solo se obtiene cuando se solicita específicamente)
+  schedules?: { [key: string]: string }; // Horarios del cliente (key: día, value: horario)
 }
 
 export interface ClientInfo {
@@ -39,6 +40,7 @@ export interface ClientInfo {
   disabled: boolean;
   lastAccess?: string;
   totalAccesses?: number;
+  schedules?: { [key: string]: string }; // Horarios del cliente (key: día, value: horario)
 }
 
 export interface clientApiResponseClientById {

@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ClientDetailInfoComponent } from '../../components/client-detail-info/client-detail-info.component';
 import { ClientDetailRoutineComponent } from '../../components/client-detail-routine/client-detail-routine.component';
 import { ClientDetailPlanComponent } from '../../components/client-detail-plan/client-detail-plan.component';
+import { ClientDetailSchedulesComponent } from '../../components/client-detail-schedules/client-detail-schedules.component';
 
 @Component({
   selector: 'app-detail-client',
@@ -20,6 +21,7 @@ import { ClientDetailPlanComponent } from '../../components/client-detail-plan/c
     ClientDetailInfoComponent,
     ClientDetailRoutineComponent,
     ClientDetailPlanComponent,
+    ClientDetailSchedulesComponent,
   ],
   templateUrl: './detail-client.component.html',
   styleUrl: './detail-client.component.css',
@@ -30,7 +32,7 @@ export class DetailClientComponent implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private actions: Actions,
-  ) {}
+  ) { }
 
   private destroy = new Subject<void>();
 
@@ -44,7 +46,7 @@ export class DetailClientComponent implements OnInit, OnDestroy {
           this.store
             .select((state) => state.clients.selectedClient)
             .pipe(takeUntil(this.destroy))
-            .subscribe(() => {});
+            .subscribe(() => { });
           this.store.dispatch(new RoutineClient()).subscribe();
           this.store.dispatch(new PlanClient()).subscribe();
         });

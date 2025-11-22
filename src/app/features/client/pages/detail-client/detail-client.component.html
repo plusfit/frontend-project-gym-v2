@@ -33,19 +33,24 @@
 
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
       <mat-tab-group mat-align-tabs="center">
-        <mat-tab label="Información Cliente">
+        <mat-tab label="Información general">
           <div class="p-4">
             <app-client-detail-info></app-client-detail-info>
           </div>
         </mat-tab>
-        <mat-tab label="Rutina Cliente">
+        <mat-tab label="Rutina">
           <div class="p-4">
             <app-client-detail-routine></app-client-detail-routine>
           </div>
         </mat-tab>
-        <mat-tab label="Plan Cliente">
+        <mat-tab label="Plan">
           <div class="p-4">
             <app-client-detail-plan></app-client-detail-plan>
+          </div>
+        </mat-tab>
+        <mat-tab label="Horarios">
+          <div class="p-4">
+            <app-client-detail-schedules></app-client-detail-schedules>
           </div>
         </mat-tab>
       </mat-tab-group>
