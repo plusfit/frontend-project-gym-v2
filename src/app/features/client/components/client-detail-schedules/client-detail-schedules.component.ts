@@ -47,28 +47,27 @@ export class ClientDetailSchedulesComponent implements OnInit {
 
     /**
      * Formatea el horario de "20-21" a "De 20 a 21 hrs"
-     * Si hay múltiples horarios separados por coma, los formatea todos
+     * Si hay múltiples horarios separados por coma, devuelve un array
      */
-    formatSchedule(schedule: string): string {
+    formatSchedule(schedule: string): string[] {
         // Si hay múltiples horarios separados por coma
         if (schedule.includes(',')) {
             const schedules = schedule.split(',').map(s => s.trim());
-            const formatted = schedules.map(s => {
+            return schedules.map(s => {
                 const parts = s.split('-');
                 if (parts.length === 2) {
                     return `${parts[0]} a ${parts[1]} hrs`;
                 }
                 return s;
             });
-            return `De ${formatted.join(' y de ')}`;
         }
 
         // Si es un solo horario
         const parts = schedule.split('-');
         if (parts.length === 2) {
-            return `De ${parts[0]} a ${parts[1]} hrs`;
+            return [`${parts[0]} a ${parts[1]} hrs`];
         }
-        return schedule;
+        return [schedule];
     }
 
     protected readonly Object = Object;
