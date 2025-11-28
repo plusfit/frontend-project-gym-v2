@@ -55,6 +55,7 @@ export class TableComponent implements OnInit {
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
   @Input() showAddPayment = false;
+  @Input() showEdit = true;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names

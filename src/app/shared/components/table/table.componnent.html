@@ -254,6 +254,7 @@
                   </div>
                 </button>
                 }
+                @if (showEdit) {
                 <button
                   (click)="emitEdit(element.id || element._id || element.cedula)"
                   type="button"
@@ -270,6 +271,7 @@
                     >
                   </div>
                 </button>
+                }
                 @if (showAddPayment) {
                 <button
                   (click)="emitAddPayment(element)"
