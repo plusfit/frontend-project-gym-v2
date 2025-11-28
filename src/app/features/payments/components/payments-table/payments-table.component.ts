@@ -52,9 +52,9 @@ export class PaymentsTableComponent implements OnInit {
     });
   }
 
-  onEditPayment(element: any) {
-    // app-table pasa el elemento completo, necesitamos extraer el payment original
-    const payment = this.payments.find(p => p._id === element._id);
+  onEditPayment(id: string) {
+    // app-table emits the ID, we need to find the original payment object
+    const payment = this.payments.find(p => p._id === id);
     if (payment) {
       this.editPayment.emit(payment);
     }
