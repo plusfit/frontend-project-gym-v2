@@ -5,11 +5,12 @@ import { SettingsState } from '@features/settings/state/settings.state';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { tap } from 'rxjs';
 import { SettingsFormComponent } from '../../components/settings-form/settings-form.component';
+import { InvitationCodeComponent } from '../../components/invitation-code/invitation-code.component';
 
 @Component({
   selector: 'app-settings-pages',
   standalone: true,
-  imports: [SettingsFormComponent],
+  imports: [SettingsFormComponent, InvitationCodeComponent],
   templateUrl: './settings-pages.component.html',
   styleUrl: './settings-pages.component.css',
 })
