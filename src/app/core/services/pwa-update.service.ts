@@ -37,7 +37,8 @@ export class PwaUpdateService {
       {
         duration: 0,
         horizontalPosition: 'center',
-        verticalPosition: 'bottom'
+        verticalPosition: 'bottom',
+        panelClass: 'pwa-update-snackbar'
       }
     );
 

@@ -35,9 +35,9 @@ import { SnackBarService } from '@core/services/snackbar.service';
               <div class="flex items-center gap-4">
                 <span class="text-4xl font-mono font-bold text-gray-900 tracking-widest">{{ currentCode.code }}</span>
                 <button 
-                  (click)="copyLink()" 
+                  (click)="copyCode()" 
                   class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                  title="Copiar Link">
+                  title="Copiar Código">
                   <i class="ph-copy text-xl"></i>
                 </button>
               </div>
@@ -146,6 +146,14 @@ export class InvitationCodeComponent implements OnInit {
     if (this.currentCode?.link) {
       navigator.clipboard.writeText(this.currentCode.link).then(() => {
         this.snackBarService.showSuccess('Éxito', 'Link copiado al portapapeles');
+      });
+    }
+  }
+
+  copyCode() {
+    if (this.currentCode?.code) {
+      navigator.clipboard.writeText(this.currentCode.code).then(() => {
+        this.snackBarService.showSuccess('Éxito', 'Código copiado al portapapeles');
       });
     }
   }
