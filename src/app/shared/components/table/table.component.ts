@@ -390,4 +390,46 @@ export class TableComponent implements OnInit {
       currency: 'UYU'
     }).format(amount);
   }
+
+  /**
+   * Get notification status badge color
+   */
+  getNotificationStatusBadgeColor(status: string): EColorBadge {
+    switch (status) {
+      case "COMPLETED":
+        return EColorBadge.SUCCESS;
+      case "PENDING":
+        return EColorBadge.WARNING;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
+  }
+
+  /**
+   * Get notification status text
+   */
+  getNotificationStatusText(status: string): string {
+    switch (status) {
+      case "COMPLETED":
+        return "Completada";
+      case "PENDING":
+        return "Pendiente";
+      default:
+        return status;
+    }
+  }
+
+  /**
+   * Get reason badge color (for notifications)
+   */
+  getReasonBadgeColor(reason: string): EColorBadge {
+    switch (reason) {
+      case "Primera vez":
+        return EColorBadge.INFO;
+      case "Inactividad":
+        return EColorBadge.ERROR;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
+  }
 }

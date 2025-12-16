@@ -197,6 +197,19 @@
             [textBadge]="element[column] + ' pts'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "reason") {
+          <app-badge
+            [colorBadge]="getReasonBadgeColor(element[column])"
+            [textBadge]="element[column]"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "status" && (element.status === 'COMPLETED' ||
+          element.status === 'PENDING')) {
+          <app-badge
+            [colorBadge]="getNotificationStatusBadgeColor(element[column])"
+            [textBadge]="getNotificationStatusText(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if (column === "status" && (element.status === 'completed' ||
           element.status === 'pending' || element.status === 'cancelled')) {
           <app-badge
@@ -216,7 +229,7 @@
           </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" && column !== "amount" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" && column !== "amount" && column !== "reason" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
