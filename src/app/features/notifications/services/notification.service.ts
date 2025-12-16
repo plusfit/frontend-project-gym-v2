@@ -45,7 +45,7 @@ export class NotificationService {
     }
 
     updateNotificationStatus(id: string, status: string): Observable<any> {
-        return this.http.patch<any>(`${environment.api}/notifications/${id}/status`, {
+        return this.http.patch<any>(`${environment.api}/notifications/${id}`, {
             status,
         });
     }

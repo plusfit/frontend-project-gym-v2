@@ -67,10 +67,10 @@ export class NotificationsState {
             .pipe(
                 tap((response) => {
                     ctx.patchState({
-                        notifications: response.data,
-                        total: response.total,
-                        currentPage: response.page,
-                        pageSize: response.pageSize,
+                        notifications: response.data.data,
+                        total: response.data.total,
+                        currentPage: response.data.page,
+                        pageSize: response.data.limit,
                         loading: false,
                     });
                 }),

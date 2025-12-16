@@ -302,6 +302,29 @@
                   </div>
                 </button>
                 }
+                @if (showChangeStatus) {
+                <button
+                  (click)="emitChangeStatus(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      [class]="element.status === 'COMPLETED' 
+                        ? 'ph-arrow-counter-clockwise text-button-lg text-orange-600 group-hover:text-orange-700' 
+                        : 'ph-check-circle text-button-lg text-green-600 group-hover:text-green-700'"
+                    ></i>
+                    <span
+                      [class]="element.status === 'COMPLETED' 
+                        ? 'text-orange-600 group-hover:text-orange-700' 
+                        : 'text-green-600 group-hover:text-green-700'"
+                      >{{ element.status === 'COMPLETED' ? "Marcar como Pendiente" : "Marcar como Completada"
+                      }}</span
+                    >
+                  </div>
+                </button>
+                }
                  @if (showDisabled) {
                 <button
                   (click)="emitDisabled(element.id || element._id, element.disabled)"

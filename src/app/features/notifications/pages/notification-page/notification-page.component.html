@@ -58,6 +58,9 @@
           [loading]="loading | async"
           (delete)="deleteNotification($event)"
           [showDelete]="true"
+          (changeStatus)="onChangeStatus($event)"
+          [showChangeStatus]="true"
+          [showEdit]="false"
           class="w-full"
         >
           <mat-paginator

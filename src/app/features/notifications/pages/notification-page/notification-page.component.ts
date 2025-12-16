@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
@@ -32,6 +32,8 @@ import { NotificationFilterSelectComponent } from "../../components/notification
     styleUrl: "./notification-page.component.css",
 })
 export class NotificationPageComponent implements OnInit, OnDestroy {
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+
     notifications!: Observable<NotificationData[] | null>;
     loading!: Observable<boolean | null>;
     total!: Observable<number | null>;
@@ -98,6 +100,10 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             searchQ: searchQuery.searchQ,
         };
 
+        if (this.paginator) {
+            this.paginator.pageIndex = 0;
+        }
+
         this.store.dispatch(new GetNotifications(this.filterValues));
     }
 
@@ -117,15 +123,23 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             status,
         };
 
+        if (this.paginator) {
+            this.paginator.pageIndex = 0;
+        }
+
         this.store.dispatch(new GetNotifications(this.filterValues));
     }
 
-    updateStatus(notification: NotificationData, newStatus: string): void {
+    onChangeStatus(notification: NotificationData): void {
+        // Toggle status: if COMPLETED -> PENDING, if PENDING -> COMPLETED
+        const newStatus = notification.status === "COMPLETED" ? "PENDING" : "COMPLETED";
+        const statusText = newStatus === "COMPLETED" ? "completada" : "pendiente";
+
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             width: "500px",
             data: {
-                title: "Actualizar estado",
-                contentMessage: `¿Estás seguro que deseas marcar esta notificación como ${newStatus === "COMPLETED" ? "completada" : "pendiente"}?`,
+                title: "Cambiar estado",
+                contentMessage: `¿Estás seguro que deseas marcar la notificación de ${notification.name} como ${statusText}?`,
                 type: DialogType.GENERAL,
             },
         });
@@ -137,6 +151,7 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             this.actions
                 .pipe(ofActionSuccessful(UpdateNotificationStatus), takeUntil(this.destroy))
                 .subscribe(() => {
+                    this.snackbar.showSuccess("Éxito", `Notificación de ${notification.name} marcada como ${statusText}`);
                     this.store.dispatch(new GetNotifications(this.filterValues));
                 });
         });

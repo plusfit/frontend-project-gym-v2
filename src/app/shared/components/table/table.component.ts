@@ -50,12 +50,14 @@ export class TableComponent implements OnInit {
     disabled: boolean;
   }>();
   @Output() readonly addPayment = new EventEmitter<any>();
+  @Output() readonly changeStatus = new EventEmitter<any>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
   @Input() showAddPayment = false;
   @Input() showEdit = true;
+  @Input() showChangeStatus = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -136,6 +138,10 @@ export class TableComponent implements OnInit {
 
   emitAddPayment(element: any): void {
     this.addPayment.emit(element);
+  }
+
+  emitChangeStatus(element: any): void {
+    this.changeStatus.emit(element);
   }
 
   resolveNestedProperty(object: any, path: string): any {
