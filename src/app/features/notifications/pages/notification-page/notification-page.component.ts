@@ -22,11 +22,12 @@ import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
 import { TableComponent } from "../../../../shared/components/table/table.component";
+import { NotificationFilterSelectComponent } from "../../components/notification-filter-select/notification-filter-select.component";
 
 @Component({
     selector: "app-notification-page",
     standalone: true,
-    imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe, FilterSelectComponent],
+    imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe, NotificationFilterSelectComponent],
     templateUrl: "./notification-page.component.html",
     styleUrl: "./notification-page.component.css",
 })
@@ -103,11 +104,12 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
     private applyFilterFromControl(selectedValue: string): void {
         let status = "";
 
-        if (selectedValue === "PENDING") {
+        if (selectedValue === "pending") {
             status = "PENDING";
-        } else if (selectedValue === "COMPLETED") {
+        } else if (selectedValue === "completed") {
             status = "COMPLETED";
         }
+        // Si es "all", status queda vacío y muestra todos
 
         this.filterValues = {
             ...this.filterValues,
