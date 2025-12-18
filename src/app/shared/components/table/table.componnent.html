@@ -348,6 +348,23 @@
                   </div>
                 </button>
                 }
+                @if (showStartChat) {
+                <button
+                  (click)="emitStartChat(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      class="ph-whatsapp-logo text-button-lg text-green-700 group-hover:text-green-800"
+                    ></i>
+                    <span class="text-green-700 group-hover:text-green-800"
+                      >Iniciar Chat</span
+                    >
+                  </div>
+                </button>
+                }
                 @if (showDelete) {
                 <button
                   (click)="emitDelete(element)"

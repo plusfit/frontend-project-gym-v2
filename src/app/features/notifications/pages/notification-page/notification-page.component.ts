@@ -181,6 +181,17 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         });
     }
 
+    openWhatsApp(notification: NotificationData): void {
+        if (!notification.phone) {
+            this.snackbar.showError("Error", "El cliente no tiene un número de teléfono registrado");
+            return;
+        }
+        const phoneNumber = notification.phone.replace(/\D/g, "");
+        const message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+        const url = `https://wa.me/598${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+    }
+
     getStatusBadge(status: string): { text: string; class: string } {
         if (status === "COMPLETED") {
             return {
