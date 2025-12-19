@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { UtilsService } from '@core/services/utils.service';
-import { Settings, SettingsResponse } from '../interfaces/settings.interface';
+import { Settings, SettingsResponse, InvitationCodeResponse, InvitationCode } from '../interfaces/settings.interface';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -35,5 +36,18 @@ export class SettingsService {
       `${environment.api}/schedules/updateScheduleConfig/${id}`,
       { schedule },
     );
+  }
+
+  generateInvitationCode() {
+    return this.http.post<InvitationCodeResponse>(
+      `${environment.api}/auth/invitation-code/generate`,
+      {}
+    ).pipe(map((response) => response.data));
+  }
+
+  getCurrentInvitationCode() {
+    return this.http.get<InvitationCodeResponse>(
+      `${environment.api}/auth/invitation-code/current`
+    ).pipe(map((response) => response.data));
   }
 }
