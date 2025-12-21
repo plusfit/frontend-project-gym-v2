@@ -50,12 +50,16 @@ export class TableComponent implements OnInit {
     disabled: boolean;
   }>();
   @Output() readonly addPayment = new EventEmitter<any>();
+  @Output() readonly changeStatus = new EventEmitter<any>();
+  @Output() readonly startChat = new EventEmitter<any>();
 
   @Input() showDelete = true;
   @Input() showSeeDetail = false;
   @Input() showDisabled = false;
   @Input() showAddPayment = false;
   @Input() showEdit = true;
+  @Input() showChangeStatus = false;
+  @Input() showStartChat = false;
   /**
    * The list of column names to display in the table.
    * @type {Array} array of column names
@@ -136,6 +140,14 @@ export class TableComponent implements OnInit {
 
   emitAddPayment(element: any): void {
     this.addPayment.emit(element);
+  }
+
+  emitChangeStatus(element: any): void {
+    this.changeStatus.emit(element);
+  }
+
+  emitStartChat(element: any): void {
+    this.startChat.emit(element);
   }
 
   resolveNestedProperty(object: any, path: string): any {
@@ -389,5 +401,47 @@ export class TableComponent implements OnInit {
       style: 'currency',
       currency: 'UYU'
     }).format(amount);
+  }
+
+  /**
+   * Get notification status badge color
+   */
+  getNotificationStatusBadgeColor(status: string): EColorBadge {
+    switch (status) {
+      case "COMPLETED":
+        return EColorBadge.SUCCESS;
+      case "PENDING":
+        return EColorBadge.WARNING;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
+  }
+
+  /**
+   * Get notification status text
+   */
+  getNotificationStatusText(status: string): string {
+    switch (status) {
+      case "COMPLETED":
+        return "Completada";
+      case "PENDING":
+        return "Pendiente";
+      default:
+        return status;
+    }
+  }
+
+  /**
+   * Get reason badge color (for notifications)
+   */
+  getReasonBadgeColor(reason: string): EColorBadge {
+    switch (reason) {
+      case "Primera vez":
+        return EColorBadge.INFO;
+      case "Inactividad":
+        return EColorBadge.ERROR;
+      default:
+        return EColorBadge.NEUTRAL;
+    }
   }
 }

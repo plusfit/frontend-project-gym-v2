@@ -25,6 +25,7 @@ import { ScreenPagesComponent } from "@features/screenRoutine/pages/screen-pages
 import { SpecialAccessPageComponent } from "@features/special-access/pages/special-access-page/special-access-page.component";
 import { GymAccessPageComponent } from "@features/gym-access/pages/gym-access-page/gym-access-page.component";
 import { PaymentsPageComponent } from "@features/payments/pages/payments-page/payments-page.component";
+import { NotificationPageComponent } from "@features/notifications/pages/notification-page/notification-page.component";
 
 export const routes: Routes = [
   {
@@ -107,6 +108,10 @@ export const routes: Routes = [
       {
         path: "pagos",
         component: PaymentsPageComponent,
+      },
+      {
+        path: "notificaciones",
+        component: NotificationPageComponent,
       },
       {
         path: "rewards",

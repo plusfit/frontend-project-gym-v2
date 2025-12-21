@@ -153,6 +153,8 @@ export class TranslationPipe implements PipeTransform {
         return "Normal";
       case "other":
         return "Otros";
+      case "phone":
+        return "Teléfono";
       default:
         return key;
     }

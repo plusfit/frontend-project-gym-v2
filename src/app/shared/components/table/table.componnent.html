@@ -197,6 +197,19 @@
             [textBadge]="element[column] + ' pts'"
             class="transform hover:scale-105 transition-transform"
           ></app-badge>
+          } @if (column === "reason") {
+          <app-badge
+            [colorBadge]="getReasonBadgeColor(element[column])"
+            [textBadge]="element[column]"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
+          } @if (column === "status" && (element.status === 'COMPLETED' ||
+          element.status === 'PENDING')) {
+          <app-badge
+            [colorBadge]="getNotificationStatusBadgeColor(element[column])"
+            [textBadge]="getNotificationStatusText(element[column])"
+            class="transform hover:scale-105 transition-transform"
+          ></app-badge>
           } @if (column === "status" && (element.status === 'completed' ||
           element.status === 'pending' || element.status === 'cancelled')) {
           <app-badge
@@ -216,7 +229,7 @@
           </span>
           } @if ( column !== "isActive" && column !== "type" && column !==
           "createdAt" && column !== "updatedAt" && column !== "name" && column
-          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" && column !== "amount" ) {
+          !== "isCustom" && column !== "category" && column !== "sexType" && column !== "successful" && column !== "accessDate" && column !== "cedula" && column !== "lastAccess" && column !== "totalAccesses" && column !== "estadoPago" && column !== "imageUrl" && column !== "pointsRequired" && column !== "totalExchanges" && column !== "enabled" && column !== "disabled" && column !== "date" && column !== "client" && column !== "reward" && column !== "pointsUsed" && column !== "status" && column !== "image" && column !== "amount" && column !== "reason" ) {
           <span class="text-gray-700">{{ element[column] }}</span>
           }
           <ng-container
@@ -289,6 +302,29 @@
                   </div>
                 </button>
                 }
+                @if (showChangeStatus) {
+                <button
+                  (click)="emitChangeStatus(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      [class]="element.status === 'COMPLETED' 
+                        ? 'ph-arrow-counter-clockwise text-button-lg text-orange-600 group-hover:text-orange-700' 
+                        : 'ph-check-circle text-button-lg text-green-600 group-hover:text-green-700'"
+                    ></i>
+                    <span
+                      [class]="element.status === 'COMPLETED' 
+                        ? 'text-orange-600 group-hover:text-orange-700' 
+                        : 'text-green-600 group-hover:text-green-700'"
+                      >{{ element.status === 'COMPLETED' ? "Marcar como Pendiente" : "Marcar como Completada"
+                      }}</span
+                    >
+                  </div>
+                </button>
+                }
                  @if (showDisabled) {
                 <button
                   (click)="emitDisabled(element.id || element._id, element.disabled)"
@@ -308,6 +344,23 @@
                         : 'text-red-500 group-hover:text-red-600'"
                       >{{ element.disabled ? "Habilitar" : "Deshabilitar"
                       }}</span
+                    >
+                  </div>
+                </button>
+                }
+                @if (showStartChat) {
+                <button
+                  (click)="emitStartChat(element)"
+                  type="button"
+                  class="group"
+                  mat-menu-item
+                >
+                  <div class="flex flex-row items-center space-x-2">
+                    <i
+                      class="ph-whatsapp-logo text-button-lg text-green-700 group-hover:text-green-800"
+                    ></i>
+                    <span class="text-green-700 group-hover:text-green-800"
+                      >Iniciar Chat</span
                     >
                   </div>
                 </button>

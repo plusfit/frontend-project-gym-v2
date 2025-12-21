@@ -1,0 +1,233 @@
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { Router } from "@angular/router";
+import {
+    DeleteNotification,
+    GetNotifications,
+    UpdateNotificationStatus,
+} from "@features/notifications/state/notifications.actions";
+import { Actions, Store, ofActionSuccessful } from "@ngxs/store";
+import {
+    ConfirmDialogComponent,
+    DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
+import { environment } from "../../../../../environments/environment";
+import { FiltersBarComponent } from "../../../../shared/components/filter-bar/filter-bar.component";
+import { Observable, Subject, takeUntil } from "rxjs";
+import { NotificationData } from "@features/notifications/interface/notifications.interface";
+import { AsyncPipe } from "@angular/common";
+import { NotificationsState } from "@features/notifications/state/notifications.state";
+import { MatDialog } from "@angular/material/dialog";
+import { SnackBarService } from "@core/services/snackbar.service";
+import { TableComponent } from "../../../../shared/components/table/table.component";
+import { NotificationFilterSelectComponent } from "../../components/notification-filter-select/notification-filter-select.component";
+import { NotificationReason, NotificationStatus } from "../../enums/notifications.enum";
+
+@Component({
+    selector: "app-notification-page",
+    standalone: true,
+    imports: [FiltersBarComponent, TableComponent, MatPaginator, AsyncPipe, NotificationFilterSelectComponent],
+    templateUrl: "./notification-page.component.html",
+    styleUrl: "./notification-page.component.css",
+})
+export class NotificationPageComponent implements OnInit, OnDestroy {
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+    notifications!: Observable<NotificationData[] | null>;
+    loading!: Observable<boolean | null>;
+    total!: Observable<number | null>;
+    filterControl = new FormControl("all");
+
+    pageSize = environment.config.pageSize;
+    filterValues: any | null = null;
+    displayedColumns: string[] = [
+        "name",
+        "reason",
+        "phone",
+        "status",
+        "createdAt",
+        "acciones",
+    ];
+
+    private destroy = new Subject<void>();
+
+    constructor(
+        private store: Store,
+        private actions: Actions,
+        private router: Router,
+        private dialog: MatDialog,
+        private snackbar: SnackBarService,
+    ) { }
+
+    ngOnInit(): void {
+        this.notifications = this.store.select(NotificationsState.getNotifications);
+        this.loading = this.store.select(NotificationsState.isLoading);
+        this.total = this.store.select(NotificationsState.getTotal);
+        this.filterValues = {
+            page: 1,
+            pageSize: this.pageSize,
+            searchQ: "",
+            status: "",
+        };
+        this.store.dispatch(new GetNotifications(this.filterValues));
+
+        this.filterControl.valueChanges.pipe(takeUntil(this.destroy)).subscribe((value) => {
+            if (value !== null) {
+                this.applyFilterFromControl(value);
+            }
+        });
+    }
+
+    paginate(pageEvent: PageEvent): void {
+        const currentPage = pageEvent.pageIndex + 1;
+        const currentPageSize = pageEvent.pageSize;
+
+        this.filterValues = {
+            ...this.filterValues,
+            page: currentPage,
+            pageSize: currentPageSize,
+        };
+
+        this.store.dispatch(new GetNotifications(this.filterValues));
+    }
+
+    onSearch(searchQuery: { searchQ: string }): void {
+        this.filterValues = {
+            ...this.filterValues,
+            page: 1,
+            searchQ: searchQuery.searchQ,
+        };
+
+        if (this.paginator) {
+            this.paginator.pageIndex = 0;
+        }
+
+        this.store.dispatch(new GetNotifications(this.filterValues));
+    }
+
+    private applyFilterFromControl(selectedValue: string): void {
+        let status: NotificationStatus | "" = "";
+
+        if (selectedValue === NotificationStatus.PENDING) {
+            status = NotificationStatus.PENDING;
+        } else if (selectedValue === NotificationStatus.COMPLETED) {
+            status = NotificationStatus.COMPLETED;
+        }
+        // Si es "all", status queda vacío y muestra todos
+
+        this.filterValues = {
+            ...this.filterValues,
+            page: 1,
+            status,
+        };
+
+        if (this.paginator) {
+            this.paginator.pageIndex = 0;
+        }
+
+        this.store.dispatch(new GetNotifications(this.filterValues));
+    }
+
+    onChangeStatus(notification: NotificationData): void {
+        // Toggle status: if COMPLETED -> PENDING, if PENDING -> COMPLETED
+        const newStatus = notification.status === NotificationStatus.COMPLETED 
+            ? NotificationStatus.PENDING 
+            : NotificationStatus.COMPLETED;
+        const statusText = newStatus === NotificationStatus.COMPLETED ? "completada" : "pendiente";
+
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: "500px",
+            data: {
+                title: "Cambiar estado",
+                contentMessage: `¿Estás seguro que deseas marcar la notificación de ${notification.name} como ${statusText}?`,
+                type: DialogType.GENERAL,
+            },
+        });
+
+        dialogRef.componentInstance.confirm.subscribe((confirmed) => {
+            if (!confirmed) return;
+
+            this.store.dispatch(new UpdateNotificationStatus(notification._id, newStatus));
+            this.actions
+                .pipe(ofActionSuccessful(UpdateNotificationStatus), takeUntil(this.destroy))
+                .subscribe(() => {
+                    this.snackbar.showSuccess("Éxito", `Notificación de ${notification.name} marcada como ${statusText}`);
+                    this.store.dispatch(new GetNotifications(this.filterValues));
+                });
+        });
+    }
+
+    deleteNotification(event: any): void {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: "500px",
+            data: {
+                title: "Eliminar notificación",
+                contentMessage:
+                    "¿Estás seguro que deseas eliminar esta notificación? Esta acción no se puede deshacer.",
+                type: DialogType.GENERAL,
+            },
+        });
+
+        dialogRef.componentInstance.confirm.subscribe((confirmed) => {
+            if (!confirmed) return;
+
+            const id = event?._id || event?.id || event;
+            this.store.dispatch(new DeleteNotification(id));
+            this.actions
+                .pipe(ofActionSuccessful(DeleteNotification), takeUntil(this.destroy))
+                .subscribe(() => {
+                    this.snackbar.showSuccess("Éxito", "Notificación eliminada");
+                });
+        });
+    }
+
+    openWhatsApp(notification: NotificationData): void {
+        if (!notification.phone) {
+            this.snackbar.showError("Error", "El cliente no tiene un número de teléfono registrado");
+            return;
+        }
+        const phoneNumber = notification.phone.replace(/\D/g, "");
+        const message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+        const url = `https://wa.me/598${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+    }
+
+    getStatusBadge(status: NotificationStatus): { text: string; class: string } {
+        if (status === NotificationStatus.COMPLETED) {
+            return {
+                text: "Completada",
+                class: "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium",
+            };
+        }
+
+        return {
+            text: "Pendiente",
+            class: "text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium",
+        };
+    }
+
+    getReasonBadge(reason: NotificationReason): { text: string; class: string } {
+        if (reason === NotificationReason.FIRST_TIME) {
+            return {
+                text: "Primera vez",
+                class: "text-blue-700 bg-blue-100 px-3 py-1 rounded-full text-xs font-semibold",
+            };
+        } else if (reason === NotificationReason.INACTIVITY) {
+            return {
+                text: "Inactividad",
+                class: "text-orange-700 bg-orange-100 px-3 py-1 rounded-full text-xs font-semibold",
+            };
+        }
+
+        return {
+            text: reason,
+            class: "text-gray-700 bg-gray-100 px-3 py-1 rounded-full text-xs font-semibold",
+        };
+    }
+
+    ngOnDestroy(): void {
+        this.destroy.next();
+        this.destroy.complete();
+    }
+}

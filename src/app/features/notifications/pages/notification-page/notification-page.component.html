@@ -1,0 +1,80 @@
+<section
+  class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4"
+>
+  <div class="max-w-7xl mx-auto flex flex-col space-y-6">
+    
+    <!-- Premium Header Section -->
+    <div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200">
+      <!-- Enhanced Header with animated gradient -->
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden">
+        
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Icon with pulse animation -->
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
+              <i class="ph-bell text-white" style="font-size: 40px;"></i>
+            </div>
+            
+            <div class="flex flex-col">
+              <div class="flex items-center space-x-3 mb-2">
+                <h3 class="font-bold text-white tracking-tight" style="font-size: 2.5rem; line-height: 1.2;">
+                  Gestión de Notificaciones
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Filter and Table Section -->
+    <div class="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+      <!-- Filter Bar Section -->
+      <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+            <i class="ph-funnel text-white" style="font-size: 20px;"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
+        </div>
+        
+        <div class="md:flex lg:flex flex-row justify-between items-center">
+          <app-filter-bar class="flex-1" (formValues)="onSearch($event)">
+            <app-notification-filter-select
+              [placeholder]="'Filtrar por estado'"
+              [control]="filterControl"
+              class="bg-white text-gray-700 rounded-lg"
+            ></app-notification-filter-select>
+          </app-filter-bar>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="overflow-hidden">
+        <app-table
+          [displayedColumns]="displayedColumns"
+          [data]="notifications | async"
+          [total]="total | async"
+          [loading]="loading | async"
+          (delete)="deleteNotification($event)"
+          [showDelete]="true"
+          (changeStatus)="onChangeStatus($event)"
+          [showChangeStatus]="true"
+          (startChat)="openWhatsApp($event)"
+          [showStartChat]="true"
+          [showEdit]="false"
+          class="w-full"
+        >
+          <mat-paginator
+            appJumpPages
+            class="border-t border-gray-200 bg-white text-gray-700"
+            [length]="total | async"
+            [pageSize]="pageSize"
+            (page)="paginate($event)"
+          >
+          </mat-paginator>
+        </app-table>
+      </div>
+    </div>
+  </div>
+</section>
