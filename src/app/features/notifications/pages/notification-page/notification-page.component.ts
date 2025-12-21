@@ -20,9 +20,9 @@ import { AsyncPipe } from "@angular/common";
 import { NotificationsState } from "@features/notifications/state/notifications.state";
 import { MatDialog } from "@angular/material/dialog";
 import { SnackBarService } from "@core/services/snackbar.service";
-import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { NotificationFilterSelectComponent } from "../../components/notification-filter-select/notification-filter-select.component";
+import { NotificationReason, NotificationStatus } from "../../enums/notifications.enum";
 
 @Component({
     selector: "app-notification-page",
@@ -72,7 +72,6 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         };
         this.store.dispatch(new GetNotifications(this.filterValues));
 
-        // Escuchar cambios en el control de filtro
         this.filterControl.valueChanges.pipe(takeUntil(this.destroy)).subscribe((value) => {
             if (value !== null) {
                 this.applyFilterFromControl(value);
@@ -108,12 +107,12 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
     }
 
     private applyFilterFromControl(selectedValue: string): void {
-        let status = "";
+        let status: NotificationStatus | "" = "";
 
-        if (selectedValue === "pending") {
-            status = "PENDING";
-        } else if (selectedValue === "completed") {
-            status = "COMPLETED";
+        if (selectedValue === NotificationStatus.PENDING) {
+            status = NotificationStatus.PENDING;
+        } else if (selectedValue === NotificationStatus.COMPLETED) {
+            status = NotificationStatus.COMPLETED;
         }
         // Si es "all", status queda vacío y muestra todos
 
@@ -132,8 +131,10 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
 
     onChangeStatus(notification: NotificationData): void {
         // Toggle status: if COMPLETED -> PENDING, if PENDING -> COMPLETED
-        const newStatus = notification.status === "COMPLETED" ? "PENDING" : "COMPLETED";
-        const statusText = newStatus === "COMPLETED" ? "completada" : "pendiente";
+        const newStatus = notification.status === NotificationStatus.COMPLETED 
+            ? NotificationStatus.PENDING 
+            : NotificationStatus.COMPLETED;
+        const statusText = newStatus === NotificationStatus.COMPLETED ? "completada" : "pendiente";
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             width: "500px",
@@ -192,8 +193,8 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         window.open(url, "_blank");
     }
 
-    getStatusBadge(status: string): { text: string; class: string } {
-        if (status === "COMPLETED") {
+    getStatusBadge(status: NotificationStatus): { text: string; class: string } {
+        if (status === NotificationStatus.COMPLETED) {
             return {
                 text: "Completada",
                 class: "text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium",
@@ -206,13 +207,13 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         };
     }
 
-    getReasonBadge(reason: string): { text: string; class: string } {
-        if (reason === "Primera vez") {
+    getReasonBadge(reason: NotificationReason): { text: string; class: string } {
+        if (reason === NotificationReason.FIRST_TIME) {
             return {
                 text: "Primera vez",
                 class: "text-blue-700 bg-blue-100 px-3 py-1 rounded-full text-xs font-semibold",
             };
-        } else if (reason === "Inactividad") {
+        } else if (reason === NotificationReason.INACTIVITY) {
             return {
                 text: "Inactividad",
                 class: "text-orange-700 bg-orange-100 px-3 py-1 rounded-full text-xs font-semibold",

@@ -1,3 +1,5 @@
+import { NotificationReason, NotificationStatus } from "../enums/notifications.enum";
+
 export class NotificationData {
     _id!: string;
     clientId!: {
@@ -6,9 +8,9 @@ export class NotificationData {
         email: string;
     };
     name!: string;
-    reason!: string;
+    reason!: NotificationReason;
     phone!: string;
-    status!: string;
+    status!: NotificationStatus;
     createdAt!: string;
     updatedAt!: string;
 }

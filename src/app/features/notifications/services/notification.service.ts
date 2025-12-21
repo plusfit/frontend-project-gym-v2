@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
+import { NotificationReason, NotificationStatus } from "../enums/notifications.enum";
 
 @Injectable({
     providedIn: "root",
@@ -22,8 +23,8 @@ export class NotificationService {
         page: number,
         limit: number,
         searchQ?: string,
-        status?: string,
-        reason?: string,
+        status?: NotificationStatus | "",
+        reason?: NotificationReason,
     ): Observable<any> {
         let params = new HttpParams().set("page", page.toString()).set("limit", limit.toString());
 
@@ -44,7 +45,7 @@ export class NotificationService {
         });
     }
 
-    updateNotificationStatus(id: string, status: string): Observable<any> {
+    updateNotificationStatus(id: string, status: NotificationStatus): Observable<any> {
         return this.http.patch<any>(`${environment.api}/notifications/${id}`, {
             status,
         });

@@ -1,3 +1,4 @@
+import { NotificationStatus } from "../enums/notifications.enum";
 import { PageNotification } from "../interface/filters.notifications.interface";
 
 export class GetNotifications {
@@ -14,7 +15,7 @@ export class UpdateNotificationStatus {
     static readonly type = "[Notification] UpdateNotificationStatus";
     constructor(
         public readonly id: string,
-        public readonly status: string,
+        public readonly status: NotificationStatus,
     ) { }
 }
 

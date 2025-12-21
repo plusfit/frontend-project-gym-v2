@@ -1,5 +1,8 @@
 <div class="flex flex-col space-y-6 h-full">
-  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'flex-shrink-0': !isMenuOpen() }">
+  <div
+    class="hidden md:block"
+    [ngClass]="{ hidden: isMenuOpen(), 'flex-shrink-0': !isMenuOpen() }"
+  >
     <!-- Botón hamburguesa (solo visible en móviles/tablets) -->
     <a routerLink="/">
       <img
@@ -10,7 +13,10 @@
       />
     </a>
   </div>
-  <div class="hidden md:block" [ngClass]="{ 'hidden': isMenuOpen(), 'block': !isMenuOpen() }">
+  <div
+    class="hidden md:block"
+    [ngClass]="{ hidden: isMenuOpen(), block: !isMenuOpen() }"
+  >
     <div class="flex flex-col space-y-2">
       <a
         routerLink="clientes"
@@ -83,20 +89,23 @@
       <!-- Submenú de Acceso -->
       <div class="space-y-1">
         <!-- Toggle del submenú -->
-        <div 
+        <div
           (click)="toggleSubmenu('acceso')"
-          [class]="'submenu-toggle ' + (submenuStates.acceso ? 'submenu-toggle-active' : '')"
+          [class]="
+            'submenu-toggle ' +
+            (submenuStates.acceso ? 'submenu-toggle-active' : '')
+          "
         >
           <i class="ph-key text-white text-xl"></i>
           <span class="flex-1">Acceso</span>
-          <i 
+          <i
             class="ph-caret-right text-white text-sm submenu-arrow"
             [class.submenu-arrow-expanded]="submenuStates.acceso"
           ></i>
         </div>
-        
+
         <!-- Submenú items -->
-        <div 
+        <div
           class="submenu-container"
           [style.max-height]="submenuStates.acceso ? '100px' : '0'"
         >
@@ -122,20 +131,23 @@
       <!-- Submenú de Premios -->
       <div class="space-y-1">
         <!-- Toggle del submenú -->
-        <div 
+        <div
           (click)="toggleSubmenu('rewards')"
-          [class]="'submenu-toggle ' + (submenuStates.rewards ? 'submenu-toggle-active' : '')"
+          [class]="
+            'submenu-toggle ' +
+            (submenuStates.rewards ? 'submenu-toggle-active' : '')
+          "
         >
           <i class="ph-trophy text-white text-xl"></i>
           <span class="flex-1">Premios</span>
-          <i 
+          <i
             class="ph-caret-right text-white text-sm submenu-arrow"
             [class.submenu-arrow-expanded]="submenuStates.rewards"
           ></i>
         </div>
-        
+
         <!-- Submenú items -->
-        <div 
+        <div
           class="submenu-container"
           [style.max-height]="submenuStates.rewards ? '100px' : '0'"
         >

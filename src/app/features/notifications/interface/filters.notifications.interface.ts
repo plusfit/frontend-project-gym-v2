@@ -1,12 +1,14 @@
+import { NotificationReason, NotificationStatus } from "../enums/notifications.enum";
+
 export interface FiltersNotification {
     name?: string;
-    status?: string;
-    reason?: string;
+    status?: NotificationStatus;
+    reason?: NotificationReason;
 }
 
 export interface PageNotification {
     page: number;
     pageSize: number;
     searchQ?: string;
-    status?: string;
+    status?: NotificationStatus | "";
 }

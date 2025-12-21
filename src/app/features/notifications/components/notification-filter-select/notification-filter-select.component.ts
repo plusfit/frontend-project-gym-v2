@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { NotificationStatus } from '../../enums/notifications.enum';
 
 interface ValueSelect {
     value: string;
@@ -38,7 +39,7 @@ export class NotificationFilterSelectComponent {
 
     filters: ValueSelect[] = [
         { value: 'all', viewValue: 'Todas' },
-        { value: 'pending', viewValue: 'Pendientes' },
-        { value: 'completed', viewValue: 'Completadas' },
+        { value: NotificationStatus.PENDING, viewValue: 'Pendientes' },
+        { value: NotificationStatus.COMPLETED, viewValue: 'Completadas' },
     ];
 }
