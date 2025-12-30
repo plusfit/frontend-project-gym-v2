@@ -66,6 +66,18 @@ export class ClientService {
     });
   }
 
+  /**
+   * Create a client with email and password (for admin registration without invitation code)
+   * This method is used after Firebase registration to create the client in MongoDB
+   */
+  createClientWithEmail(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.api}/clients/create`, {
+      email,
+      password,
+      role: 'Client',
+    });
+  }
+
   updateClient(id: string, client: Client): Observable<any> {
     return this.http.patch<any>(`${environment.api}/clients/${id}`, {
       userInfo: client,

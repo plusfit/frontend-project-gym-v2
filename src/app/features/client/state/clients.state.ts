@@ -269,17 +269,17 @@ export class ClientsState {
   register(
     ctx: StateContext<ClientsStateModel>,
     action: RegisterClient,
-  ): Observable<RegisterResponse> {
+  ): Observable<any> {
     ctx.patchState({ loading: true });
-    const { identifier, password, recaptchaToken } = action.payload as any;
+    const { identifier, password } = action.payload as any;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-        return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
-          tap((res: RegisterResponse) => {
+        return this.clientService.createClientWithEmail(firebaseResponse.user.email, password).pipe(
+          tap((res: any) => {
             ctx.patchState({
               registerClient: {
                 _id: res.data._id,
-                identifier: res.data.identifier,
+                identifier: res.data.email,
                 role: res.data.role,
               },
             });
