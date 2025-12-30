@@ -4,6 +4,8 @@ import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { Client, CreateClientResponse, UserPasswordResponse } from "../interface/clients.interface";
 
+import { EClientRole } from "../../../core/enums/client-role.enum";
+
 @Injectable({
   providedIn: "root",
 })
@@ -24,7 +26,7 @@ export class ClientService {
     limit: number,
     name?: string,
     email?: string,
-    role?: string,
+    role?: EClientRole,
     CI?: string,
     withoutPlan?: boolean,
     disabled?: boolean,
@@ -74,7 +76,7 @@ export class ClientService {
     return this.http.post<CreateClientResponse>(`${environment.api}/clients/create`, {
       email,
       password,
-      role: 'Client',
+      role: EClientRole.CLIENT,
     });
   }
 
