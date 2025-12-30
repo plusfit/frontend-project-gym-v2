@@ -1,3 +1,5 @@
+import { EClientRole } from "../../../core/enums/client-role.enum";
+
 export class Client {
   _id!: string;
   name!: string;
@@ -58,7 +60,7 @@ export interface RegisterResponse {
   data: {
     _id: string;
     identifier: string;
-    role: string;
+    role: EClientRole;
   };
 }
 
@@ -72,7 +74,8 @@ export interface UserPasswordResponse {
 export class RegisterClient {
   _id!: string;
   identifier!: string;
-  role!: string;
+  role!: EClientRole;
+
 }
 
 /**
@@ -83,7 +86,7 @@ export interface CreateClientResponse {
   data: {
     _id: string;
     email: string;
-    role: string;
+    role: EClientRole;
   };
 }
 

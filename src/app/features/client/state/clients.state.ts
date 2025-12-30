@@ -18,6 +18,7 @@ import {
   throwError,
 } from "rxjs";
 import { Client, ClientApiResponse, CreateClientResponse, RegisterResponse, UserPasswordResponse } from "../interface/clients.interface";
+import { EClientRole } from "../../../core/enums/client-role.enum";
 import { ClientService } from "../services/client.service";
 import {
   AddAvailableDays,
@@ -162,7 +163,7 @@ export class ClientsState {
 
     const nameFilter = searchQ ?? "";
     const emailFilter = searchQ ?? "";
-    const role = "User";
+    const role = EClientRole.CLIENT;
     const CIFilter = searchQ ?? "";
     const withoutPlanFilter = withoutPlan ?? false;
     const disabledFilter = disabled ?? false;
