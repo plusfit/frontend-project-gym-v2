@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
-import { Client, UserPasswordResponse } from "../interface/clients.interface";
+import { Client, CreateClientResponse, UserPasswordResponse } from "../interface/clients.interface";
 
 @Injectable({
   providedIn: "root",
@@ -70,8 +70,8 @@ export class ClientService {
    * Create a client with email and password (for admin registration without invitation code)
    * This method is used after Firebase registration to create the client in MongoDB
    */
-  createClientWithEmail(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${environment.api}/clients/create`, {
+  createClientWithEmail(email: string, password: string): Observable<CreateClientResponse> {
+    return this.http.post<CreateClientResponse>(`${environment.api}/clients/create`, {
       email,
       password,
       role: 'Client',
