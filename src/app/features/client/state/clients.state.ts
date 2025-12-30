@@ -17,7 +17,7 @@ import {
   tap,
   throwError,
 } from "rxjs";
-import { Client, ClientApiResponse, RegisterResponse, UserPasswordResponse } from "../interface/clients.interface";
+import { Client, ClientApiResponse, CreateClientResponse, RegisterResponse, UserPasswordResponse } from "../interface/clients.interface";
 import { ClientService } from "../services/client.service";
 import {
   AddAvailableDays,
@@ -269,17 +269,17 @@ export class ClientsState {
   register(
     ctx: StateContext<ClientsStateModel>,
     action: RegisterClient,
-  ): Observable<RegisterResponse> {
+  ): Observable<CreateClientResponse> {
     ctx.patchState({ loading: true });
-    const { identifier, password, recaptchaToken } = action.payload as any;
+    const { identifier, password } = action.payload;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-        return this.authService.register(firebaseResponse.user.email, recaptchaToken).pipe(
-          tap((res: RegisterResponse) => {
+        return this.clientService.createClientWithEmail(firebaseResponse.user.email, password).pipe(
+          tap((res: CreateClientResponse) => {
             ctx.patchState({
               registerClient: {
                 _id: res.data._id,
-                identifier: res.data.identifier,
+                identifier: res.data.email,
                 role: res.data.role,
               },
             });

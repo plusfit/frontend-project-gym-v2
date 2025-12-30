@@ -74,3 +74,16 @@ export class RegisterClient {
   identifier!: string;
   role!: string;
 }
+
+/**
+ * Response from POST /clients/create endpoint
+ */
+export interface CreateClientResponse {
+  success: boolean;
+  data: {
+    _id: string;
+    email: string;
+    role: string;
+  };
+}
+
