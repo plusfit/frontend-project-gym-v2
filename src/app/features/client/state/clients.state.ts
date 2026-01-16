@@ -159,7 +159,7 @@ export class ClientsState {
   ): Observable<ClientApiResponse> {
     ctx.patchState({ loading: true, clients: [], error: null });
 
-    const { page, pageSize, searchQ, withoutPlan, disabled } = payload;
+    const { page, pageSize, searchQ, withoutPlan, disabled, overdue } = payload;
 
     const nameFilter = searchQ ?? "";
     const emailFilter = searchQ ?? "";
@@ -167,6 +167,7 @@ export class ClientsState {
     const CIFilter = searchQ ?? "";
     const withoutPlanFilter = withoutPlan ?? false;
     const disabledFilter = disabled ?? false;
+    const overdueFilter = overdue ?? false;
 
     const getClientsObservable = this.clientService.getClientsByName(
       page,
@@ -177,6 +178,7 @@ export class ClientsState {
       CIFilter,
       withoutPlanFilter,
       disabledFilter,
+      overdueFilter,
     );
 
     return getClientsObservable.pipe(

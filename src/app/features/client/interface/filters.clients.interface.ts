@@ -10,4 +10,5 @@ export interface PageClient {
   withoutPlan?: boolean;
   disabled?: boolean;
   role?: string;
+  overdue?: boolean;
 }
