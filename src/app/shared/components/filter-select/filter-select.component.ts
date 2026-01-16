@@ -26,8 +26,8 @@ export class FilterSelectComponent {
   @Input() options!: any[];
   @Input() placeholder!: string;
   @Input() value!: string;
-  
-  @Output() filterChange = new EventEmitter<{withoutPlan: boolean, disabled: boolean, overdue: boolean}>();
+
+  @Output() filterChange = new EventEmitter<{ withoutPlan: boolean, disabled: boolean, overdue: boolean }>();
 
   filters: ValueSelect[] = [
     { value: 'all', viewValue: 'Todos' },
