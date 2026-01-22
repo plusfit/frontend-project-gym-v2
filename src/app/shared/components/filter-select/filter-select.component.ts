@@ -26,26 +26,30 @@ export class FilterSelectComponent {
   @Input() options!: any[];
   @Input() placeholder!: string;
   @Input() value!: string;
-  
-  @Output() filterChange = new EventEmitter<{withoutPlan: boolean, disabled: boolean}>();
+
+  @Output() filterChange = new EventEmitter<{ withoutPlan: boolean, disabled: boolean, overdue: boolean }>();
 
   filters: ValueSelect[] = [
     { value: 'all', viewValue: 'Todos' },
     { value: 'withoutPlan', viewValue: 'Sin Plan' },
     { value: 'disabled', viewValue: 'Deshabilitados' },
+    { value: 'overdue', viewValue: 'Atrasados' },
   ];
 
   onFilterChange(event: any): void {
     const selected = event.value;
     let withoutPlan = false;
     let disabled = false;
+    let overdue = false;
 
     if (selected === 'disabled') {
       disabled = true;
     } else if (selected === 'withoutPlan') {
       withoutPlan = true;
+    } else if (selected === 'overdue') {
+      overdue = true;
     }
 
-    this.filterChange.emit({ withoutPlan, disabled });
+    this.filterChange.emit({ withoutPlan, disabled, overdue });
   }
 }

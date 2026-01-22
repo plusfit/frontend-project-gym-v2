@@ -70,6 +70,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       searchQ: "",
       withoutPlan: false,
       disabled: false,
+      overdue: false,
       role: "User",
     };
     this.store.dispatch(new GetClients(this.filterValues));
@@ -105,12 +106,13 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetClients(this.filterValues));
   }
 
-  onFilterChange(filters: { withoutPlan: boolean; disabled: boolean }): void {
+  onFilterChange(filters: { withoutPlan: boolean; disabled: boolean; overdue: boolean }): void {
     this.filterValues = {
       ...this.filterValues,
       page: 1,
       withoutPlan: filters.withoutPlan,
       disabled: filters.disabled,
+      overdue: filters.overdue,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));
@@ -119,11 +121,14 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   private applyFilterFromControl(selectedValue: string): void {
     let withoutPlan = false;
     let disabled = false;
+    let overdue = false;
 
     if (selectedValue === "disabled") {
       disabled = true;
     } else if (selectedValue === "withoutPlan") {
       withoutPlan = true;
+    } else if (selectedValue === "overdue") {
+      overdue = true;
     }
 
     this.filterValues = {
@@ -131,6 +136,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       page: 1,
       withoutPlan,
       disabled,
+      overdue,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));

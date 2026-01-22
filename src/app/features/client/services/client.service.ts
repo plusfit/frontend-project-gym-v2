@@ -30,6 +30,7 @@ export class ClientService {
     CI?: string,
     withoutPlan?: boolean,
     disabled?: boolean,
+    overdue?: boolean,
   ): Observable<any> {
     let params = new HttpParams().set("page", page.toString()).set("limit", limit.toString());
 
@@ -55,6 +56,10 @@ export class ClientService {
 
     if (disabled !== undefined) {
       params = params.set("disabled", disabled);
+    }
+
+    if (overdue) {
+      params = params.set("overdue", overdue);
     }
 
     return this.http.get<any>(`${environment.api}/clients`, {
