@@ -137,7 +137,7 @@ export class PlanFormComponent implements OnInit, OnDestroy, OnChanges {
       if (this.plan) {
         this.planForm.patchValue({
           ...this.plan,
-          defaultRoutine: this.plan.defaultRoutine.name,
+          defaultRoutine: this.plan.defaultRoutine?.name || null,
         });
       }
     }
