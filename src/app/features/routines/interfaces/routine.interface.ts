@@ -6,6 +6,7 @@ export interface Routine {
   description: string;
   isCustom: boolean;
   isGeneral: boolean;
+  showOnScreen: boolean;
   type: string;
   subRoutines: SubRoutine[];
   //TODO: agregar campos de fecha
@@ -18,6 +19,7 @@ export interface RoutinePayload {
   description: string;
   isCustom: boolean;
   isGeneral: boolean;
+  showOnScreen: boolean;
   type: string;
   subRoutines: string[];
 }

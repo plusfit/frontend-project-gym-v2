@@ -6,13 +6,11 @@ import { UtilsService } from '@core/services/utils.service';
 import { environment } from '../../../../environments/environment';
 import { FiltersRoutine } from '../interfaces/filters.routine.interface';
 import {
-  Routine,
-  RoutineApiResponse,
-  RoutinePayload,
-  RoutinesApiResponse,
-  RoutinesBySubRoutineApiResponse,
+    RoutineApiResponse,
+    RoutinePayload,
+    RoutinesApiResponse,
+    RoutinesBySubRoutineApiResponse
 } from '../interfaces/routine.interface';
-import { SubRoutineApiResponse } from '@features/sub-routines/interfaces/sub-routine.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +24,13 @@ export class RoutineService {
   getRoutinesByPage(
     page: number,
     limit: number,
+    showOnScreen?: boolean,
   ): Observable<RoutinesApiResponse> {
-    const url = `/routines?page=${page}&limit=${limit}`;
-    return this.http.get<any>(`${environment.api}${url}`);
+    let url = `/routines?page=${page}&limit=${limit}`;
+    if (showOnScreen !== undefined) {
+      url += `&showOnScreen=${showOnScreen}`;
+    }
+    return this.http.get<RoutinesApiResponse>(`${environment.api}${url}`);
   }
   getRoutinesByName(
     page: number,
@@ -42,10 +44,10 @@ export class RoutineService {
     if (filters.type) {
       url += `&type=${filters.type}`;
     }
-    return this.http.get<any>(`${environment.api}${url}`);
+    return this.http.get<RoutinesApiResponse>(`${environment.api}${url}`);
   }
-  createRoutine(payload: RoutinePayload): Observable<any> {
-    return this.http.post<any>(`${environment.api}/routines`, payload);
+  createRoutine(payload: RoutinePayload): Observable<RoutineApiResponse> {
+    return this.http.post<RoutineApiResponse>(`${environment.api}/routines`, payload);
   }
   deleteRoutine(id: string): Observable<RoutineApiResponse> {
     return this.http.delete<RoutineApiResponse>(
@@ -61,8 +63,8 @@ export class RoutineService {
     payload: RoutinePayload,
     id: string,
     clientId: string,
-  ): Observable<any> {
-    return this.http.put<any>(
+  ): Observable<RoutineApiResponse> {
+    return this.http.put<RoutineApiResponse>(
       `${environment.api}/routines/${id}?clientId=${clientId}`,
       payload,
     );
