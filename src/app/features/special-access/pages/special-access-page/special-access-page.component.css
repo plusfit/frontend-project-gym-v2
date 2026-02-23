@@ -318,3 +318,154 @@ input:focus {
     padding: 0.5rem;
   }
 }
+
+/* ===== BIRTHDAY CELEBRATION STYLES ===== */
+
+/* Birthday container */
+.birthday-container {
+  position: relative;
+  overflow: visible;
+}
+
+/* Birthday badge/banner */
+.birthday-banner {
+  background: linear-gradient(135deg, #FF1493 0%, #FF69B4 50%, #FFB6C1 100%);
+  box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+  animation: birthdayGlow 2s ease-in-out infinite;
+}
+
+@keyframes birthdayGlow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(255, 20, 147, 0.6), 0 0 40px rgba(255, 105, 180, 0.3);
+  }
+}
+
+/* Fireworks animation */
+.fireworks-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: fireworkExplode 1.5s ease-out forwards;
+}
+
+/* Different colored fireworks */
+.firework-1 { background: #FF1493; }
+.firework-2 { background: #FFD700; }
+.firework-3 { background: #00FF7F; }
+.firework-4 { background: #FF69B4; }
+.firework-5 { background: #87CEEB; }
+.firework-6 { background: #FF8C00; }
+
+@keyframes fireworkExplode {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, 0)) scale(0);
+  }
+}
+
+/* Confetti animation */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #FF1493;
+  animation: confettiFall 3s linear forwards;
+}
+
+.confetti:nth-child(2n) { background: #FFD700; }
+.confetti:nth-child(3n) { background: #00FF7F; }
+.confetti:nth-child(4n) { background: #87CEEB; }
+.confetti:nth-child(5n) { background: #FF69B4; }
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Birthday message pulse */
+.birthday-message {
+  animation: birthdayPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes birthdayPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Birthday icon bounce */
+.birthday-icon {
+  display: inline-block;
+  animation: birthdayBounce 1s ease-in-out infinite;
+}
+
+@keyframes birthdayBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Sparkle effect */
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: sparkleAnimation 2s ease-in-out infinite;
+  box-shadow: 0 0 10px #FFD700;
+}
+
+@keyframes sparkleAnimation {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Disable birthday animations for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .birthday-banner,
+  .birthday-message,
+  .birthday-icon,
+  .firework,
+  .confetti,
+  .sparkle {
+    animation: none !important;
+  }
+}

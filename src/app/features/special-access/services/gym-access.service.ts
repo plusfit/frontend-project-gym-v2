@@ -16,7 +16,7 @@ import {
 export class GymAccessService {
   private readonly apiUrl = `${environment.api}/gym-access`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Validates gym access for a client using their cedula
@@ -110,13 +110,14 @@ export class GymAccessService {
         authorize: response.data.authorize,
         client: response.data.client
           ? {
-              name: response.data.client.name || "Cliente",
-              photo: response.data.client.photo,
-              plan: response.data.client.plan,
-              consecutiveDays: response.data.client.consecutiveDays || 0,
-              totalAccesses: response.data.client.totalAccesses || 0,
-              availableDays: response.data.client.availableDays || 0,
-            }
+            name: response.data.client.name || "Cliente",
+            photo: response.data.client.photo,
+            plan: response.data.client.plan,
+            consecutiveDays: response.data.client.consecutiveDays || 0,
+            totalAccesses: response.data.client.totalAccesses || 0,
+            availableDays: response.data.client.availableDays || 0,
+            isBirthday: response.data.client.isBirthday || false,
+          }
           : undefined,
       };
     }
@@ -131,13 +132,14 @@ export class GymAccessService {
         authorize: response.data.authorize || false,
         client: response.data.client
           ? {
-              name: response.data.client.name || "Cliente",
-              photo: response.data.client.photo,
-              plan: response.data.client.plan,
-              consecutiveDays: response.data.client.consecutiveDays || 0,
-              totalAccesses: response.data.client.totalAccesses || 0,
-              availableDays: response.data.client.availableDays || 0,
-            }
+            name: response.data.client.name || "Cliente",
+            photo: response.data.client.photo,
+            plan: response.data.client.plan,
+            consecutiveDays: response.data.client.consecutiveDays || 0,
+            totalAccesses: response.data.client.totalAccesses || 0,
+            availableDays: response.data.client.availableDays || 0,
+            isBirthday: response.data.client.isBirthday || false,
+          }
           : undefined,
         denialType: denialType,
       };
@@ -158,13 +160,14 @@ export class GymAccessService {
         authorize: response.data.authorize,
         client: response.data.client
           ? {
-              name: response.data.client.name || "Cliente",
-              photo: response.data.client.photo,
-              plan: response.data.client.plan,
-              consecutiveDays: response.data.client.consecutiveDays || 0,
-              totalAccesses: response.data.client.totalAccesses || 0,
-              availableDays: response.data.client.availableDays || 0,
-            }
+            name: response.data.client.name || "Cliente",
+            photo: response.data.client.photo,
+            plan: response.data.client.plan,
+            consecutiveDays: response.data.client.consecutiveDays || 0,
+            totalAccesses: response.data.client.totalAccesses || 0,
+            availableDays: response.data.client.availableDays || 0,
+            isBirthday: response.data.client.isBirthday || false,
+          }
           : undefined,
         denialType: denialType,
       };

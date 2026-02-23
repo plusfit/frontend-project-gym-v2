@@ -33,6 +33,7 @@ export interface ClientAccessInfo {
   consecutiveDays: number;
   totalAccesses: number;
   availableDays?: number;
+  isBirthday?: boolean;
 }
 
 export interface RewardInfo {

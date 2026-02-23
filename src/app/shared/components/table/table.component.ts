@@ -440,6 +440,8 @@ export class TableComponent implements OnInit {
         return EColorBadge.INFO;
       case "Inactividad":
         return EColorBadge.ERROR;
+      case "Cumpleaños":
+        return EColorBadge.PINK;
       default:
         return EColorBadge.NEUTRAL;
     }
