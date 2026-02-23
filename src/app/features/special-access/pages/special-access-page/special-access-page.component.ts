@@ -51,7 +51,7 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
     private gymAccessService: GymAccessService,
     private loadingService: LoadingOverlayService,
     private snackbarService: SnackBarService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.updateTime();
