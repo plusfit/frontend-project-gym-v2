@@ -131,8 +131,8 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
 
     onChangeStatus(notification: NotificationData): void {
         // Toggle status: if COMPLETED -> PENDING, if PENDING -> COMPLETED
-        const newStatus = notification.status === NotificationStatus.COMPLETED 
-            ? NotificationStatus.PENDING 
+        const newStatus = notification.status === NotificationStatus.COMPLETED
+            ? NotificationStatus.PENDING
             : NotificationStatus.COMPLETED;
         const statusText = newStatus === NotificationStatus.COMPLETED ? "completada" : "pendiente";
 
@@ -188,7 +188,15 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             return;
         }
         const phoneNumber = notification.phone.replace(/\D/g, "");
-        const message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+
+        // Mensaje personalizado para cumpleaños
+        let message: string;
+        if (notification.reason === NotificationReason.BIRTHDAY) {
+            message = `¡Feliz cumpleaños ${notification.name}! Todo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!`;
+        } else {
+            message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+        }
+
         const url = `https://wa.me/598${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, "_blank");
     }
@@ -217,6 +225,11 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             return {
                 text: "Inactividad",
                 class: "text-orange-700 bg-orange-100 px-3 py-1 rounded-full text-xs font-semibold",
+            };
+        } else if (reason === NotificationReason.BIRTHDAY) {
+            return {
+                text: "Cumpleaños",
+                class: "text-pink-700 bg-pink-100 px-3 py-1 rounded-full text-xs font-semibold",
             };
         }
 
