@@ -51,7 +51,7 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
     private gymAccessService: GymAccessService,
     private loadingService: LoadingOverlayService,
     private snackbarService: SnackBarService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.updateTime();
@@ -154,6 +154,10 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
         .toPromise();
       this.formState.response = response;
       this.formState.showResult = true;
+
+      console.log('✅ Response received in component:', response);
+      console.log('🎂 isBirthday value:', response?.client?.isBirthday);
+      console.log('🎂 isBirthday getter:', this.isBirthday);
 
       // Play success/error sound (if available)
       if (response) {
@@ -298,5 +302,9 @@ export class SpecialAccessPageComponent implements OnInit, OnDestroy {
       return "Sin información de autorización";
     }
     return this.formState.response.authorize ? "Autorizado" : "No autorizado";
+  }
+
+  get isBirthday(): boolean {
+    return this.formState.response?.client?.isBirthday === true;
   }
 }

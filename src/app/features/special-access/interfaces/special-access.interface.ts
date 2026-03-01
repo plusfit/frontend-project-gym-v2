@@ -33,6 +33,7 @@ export interface ClientAccessInfo {
   consecutiveDays: number;
   totalAccesses: number;
   availableDays?: number;
+  isBirthday?: boolean;
 }
 
 export interface RewardInfo {
@@ -49,25 +50,25 @@ export interface GymAccessResponse {
   reward?: RewardInfo;
   reason?: string;
   denialType?:
-    | "client_not_found"
-    | "client_disabled"
-    | "already_accessed"
-    | "outside_hours"
-    | "system_error";
+  | "client_not_found"
+  | "client_disabled"
+  | "already_accessed"
+  | "outside_hours"
+  | "system_error";
 }
 
 // Raw API Response Structure
 export interface ApiResponse {
   success: boolean;
   data?:
-    | {
-        message: string;
-        authorize?: boolean;
-        client?: ClientAccessInfo;
-        reward?: RewardInfo;
-        reason?: string;
-      }
-    | string; // data can be an object or a string for errors
+  | {
+    message: string;
+    authorize?: boolean;
+    client?: ClientAccessInfo;
+    reward?: RewardInfo;
+    reason?: string;
+  }
+  | string; // data can be an object or a string for errors
 }
 
 export interface GymAccessFormState {

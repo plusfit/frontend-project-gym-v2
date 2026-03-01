@@ -131,8 +131,8 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
 
     onChangeStatus(notification: NotificationData): void {
         // Toggle status: if COMPLETED -> PENDING, if PENDING -> COMPLETED
-        const newStatus = notification.status === NotificationStatus.COMPLETED 
-            ? NotificationStatus.PENDING 
+        const newStatus = notification.status === NotificationStatus.COMPLETED
+            ? NotificationStatus.PENDING
             : NotificationStatus.COMPLETED;
         const statusText = newStatus === NotificationStatus.COMPLETED ? "completada" : "pendiente";
 
@@ -188,7 +188,21 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             return;
         }
         const phoneNumber = notification.phone.replace(/\D/g, "");
-        const message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+
+        // Mensaje personalizado según la razón de la notificación
+        let message: string;
+        if (notification.reason === NotificationReason.BIRTHDAY) {
+            message = `¡Feliz cumpleaños ${notification.name}! Todo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!`;
+        } else if (notification.reason === NotificationReason.FIRST_TIME) {
+            message = `¡Hola ${notification.name}! ¿Cómo estás?
+
+Te escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.
+
+¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
+        } else {
+            message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
+        }
+
         const url = `https://wa.me/598${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, "_blank");
     }
@@ -217,6 +231,11 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             return {
                 text: "Inactividad",
                 class: "text-orange-700 bg-orange-100 px-3 py-1 rounded-full text-xs font-semibold",
+            };
+        } else if (reason === NotificationReason.BIRTHDAY) {
+            return {
+                text: "Cumpleaños",
+                class: "text-pink-700 bg-pink-100 px-3 py-1 rounded-full text-xs font-semibold",
             };
         }
 
