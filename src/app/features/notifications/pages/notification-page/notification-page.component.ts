@@ -189,10 +189,16 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         }
         const phoneNumber = notification.phone.replace(/\D/g, "");
 
-        // Mensaje personalizado para cumpleaños
+        // Mensaje personalizado según la razón de la notificación
         let message: string;
         if (notification.reason === NotificationReason.BIRTHDAY) {
             message = `¡Feliz cumpleaños ${notification.name}! Todo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!`;
+        } else if (notification.reason === NotificationReason.FIRST_TIME) {
+            message = `¡Hola ${notification.name}! ¿Cómo estás?
+
+Te escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.
+
+¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
         } else {
             message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
         }
