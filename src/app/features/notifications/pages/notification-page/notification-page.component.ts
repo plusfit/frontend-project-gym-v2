@@ -191,14 +191,11 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
 
         // Mensaje personalizado según la razón de la notificación
         let message: string;
+
         if (notification.reason === NotificationReason.BIRTHDAY) {
-            message = `¡Feliz cumpleaños ${notification.name}! Todo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!`;
+            message = `¡Feliz cumpleaños, ${notification.name}!\n\nTodo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!\n\nEntra a nuestra app, que te dejamos un detalle especial...`;
         } else if (notification.reason === NotificationReason.FIRST_TIME) {
-            message = `¡Hola ${notification.name}! ¿Cómo estás?
-
-Te escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.
-
-¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
+            message = `¡Hola ${notification.name}! ¿Cómo estás?\n\nTe escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.\n\n¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
         } else {
             message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
         }
