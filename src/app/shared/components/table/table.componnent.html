@@ -5,7 +5,7 @@
   <!-- Contenedor scrollable -->
   <div class="max-h-[30rem] overflow-auto">
     <table
-      class="w-full"
+      class="w-full border-separate border-spacing-0"
       cdk-table
       aria-describedby="table"
       [dataSource]="data || []"
@@ -14,7 +14,7 @@
         <th
           cdk-header-cell
           *cdkHeaderCellDef
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2 sticky top-0 z-10"
+          class="bg-blue-600 bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-2 sticky top-0 z-20"
         >
           <mat-checkbox
             type="checkbox"
@@ -45,7 +45,7 @@
           cdk-header-cell
           *cdkHeaderCellDef
           [ngClass]="headerCssClass"
-          class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4 sticky top-0 z-10"
+          class="bg-blue-600 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold uppercase text-xs p-4 sticky top-0 z-20"
         >
           {{ column | translation | camelToTitle }}
         </th>
