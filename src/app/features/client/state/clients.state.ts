@@ -258,6 +258,7 @@ export class ClientsState {
           totalAccesses: response.data.totalAccesses,
           availableDays: response.data.availableDays,
           schedules: response.data.schedules,
+          avatarUrl: response.data.userInfo?.avatarUrl,
         };
         ctx.patchState({ selectedClient: selectedClient, loading: false });
       }),

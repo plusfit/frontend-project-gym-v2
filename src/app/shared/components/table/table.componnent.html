@@ -54,7 +54,36 @@
           *cdkCellDef="let element"
           class="pl-4 p-1 border-b border-gray-100 hover:bg-blue-50 transition-colors"
         >
-          @if (column.includes(".")) {
+          @if (column === 'userInfo.avatarUrl') {
+          <div class="flex items-center justify-center py-1">
+            @if (resolveNestedProperty(element, column) && resolveNestedProperty(element, column) !== 'N/A') {
+            <div class="relative w-12 h-12">
+              <!-- Shimmer skeleton: visible mientras carga -->
+              <div #skeleton class="w-12 h-12 rounded-full avatar-skeleton absolute inset-0 z-10"></div>
+              <!-- Imagen: arranca invisible, se muestra al cargar -->
+              <img
+                [src]="resolveNestedProperty(element, column)"
+                [alt]="resolveNestedProperty(element, 'userInfo.name') || 'Avatar'"
+                class="w-12 h-12 rounded-full object-cover border-2 border-blue-200 shadow-sm hover:shadow-md hover:border-blue-400 transition-all duration-200 opacity-0 absolute inset-0 z-20 cursor-pointer"
+                style="transition: opacity 0.4s ease;"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+                (load)="onAvatarLoad($event, skeleton)"
+                (error)="onAvatarError($event, skeleton)"
+                (click)="openLightbox(
+                  resolveNestedProperty(element, column),
+                  resolveNestedProperty(element, 'userInfo.name')
+                ); $event.stopPropagation()"
+              />
+            </div>
+            } @else {
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center border-2 border-blue-200 shadow-sm">
+              <i class="ph-user text-white" style="font-size: 18px;"></i>
+            </div>
+            }
+          </div>
+          } @else if (column.includes(".")) {
           <span
             class="{{ column === 'userInfo.name' ? 'font-bold text-gray-800 text-base' : 'text-gray-700' }}"
           >
@@ -428,3 +457,42 @@
   </div>
   <ng-content></ng-content>
 </div>
+
+<!-- ===== Avatar Lightbox ===== -->
+@if (lightboxUrl) {
+<div
+  class="avatar-lightbox-overlay"
+  (click)="closeLightbox()"
+  (keydown.escape)="closeLightbox()"
+  tabindex="0"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="'Foto de ' + lightboxName"
+>
+  <!-- Botón cerrar -->
+  <button
+    class="avatar-lightbox-close"
+    (click)="closeLightbox(); $event.stopPropagation()"
+    aria-label="Cerrar"
+    type="button"
+  >
+    <i class="ph-x"></i>
+  </button>
+
+  <!-- Contenido centrado -->
+  <div
+    class="flex flex-col items-center"
+    (click)="$event.stopPropagation()"
+  >
+    <img
+      [src]="lightboxUrl"
+      [alt]="lightboxName || 'Avatar'"
+      class="avatar-lightbox-img"
+      referrerpolicy="no-referrer"
+    />
+    @if (lightboxName && lightboxName !== 'N/A') {
+    <span class="avatar-lightbox-name">{{ lightboxName }}</span>
+    }
+  </div>
+</div>
+}

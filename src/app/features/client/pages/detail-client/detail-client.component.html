@@ -6,24 +6,50 @@
     <!-- Premium Header Section -->
     <div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200 mb-6">
       <!-- Enhanced Header with animated gradient -->
-      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 border-b border-gray-200 relative overflow-visible">
         
         <div class="relative flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <!-- Icon with pulse animation -->
-            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
-              <i class="ph-user text-white" style="font-size: 40px;"></i>
-            </div>
+
+            <ng-container *ngIf="client$ | async as client">
+              <!-- Avatar real si tiene foto -->
+              <ng-container *ngIf="client.avatarUrl; else iconFallback">
+                <div class="relative w-20 h-20">
+                  <!-- Shimmer skeleton -->
+                  <div #detailSkeleton class="w-20 h-20 rounded-xl avatar-skeleton absolute inset-0 z-10"></div>
+                  <!-- Imagen -->
+                  <img
+                    [src]="client.avatarUrl"
+                    [alt]="client.name || 'Avatar'"
+                    class="w-20 h-20 rounded-xl object-cover border-2 border-white shadow-lg opacity-0 absolute inset-0 z-20 cursor-pointer"
+                    style="transition: opacity 0.4s ease;"
+                    referrerpolicy="no-referrer"
+                    (load)="onDetailAvatarLoad($event, detailSkeleton)"
+                    (click)="openLightbox(client.avatarUrl!, client.name)"
+                  />
+                </div>
+              </ng-container>
+              <!-- Fallback: ícono animado si no tiene foto -->
+              <ng-template #iconFallback>
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
+                  <i class="ph-user text-white" style="font-size: 40px;"></i>
+                </div>
+              </ng-template>
+            </ng-container>
+
+            <!-- Mientras el observable no emitió -->
+            <ng-container *ngIf="!(client$ | async)">
+              <div class="w-20 h-20 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg animate-pulse">
+                <i class="ph-user text-white" style="font-size: 40px;"></i>
+              </div>
+            </ng-container>
             
             <div class="flex flex-col">
               <div class="flex items-center space-x-3 mb-2">
                 <h3 class="font-bold text-white tracking-tight" style="font-size: 2.5rem; line-height: 1.2;">
                   Detalle del Cliente
                 </h3>
-             
               </div>
-              
-              
             </div>
           </div>
         </div>
@@ -57,3 +83,29 @@
     </div>
   </div>
 </section>
+
+<!-- ===== Lightbox ===== -->
+@if (lightboxUrl) {
+<div
+  class="avatar-lightbox-overlay"
+  (click)="closeLightbox()"
+  (keydown.escape)="closeLightbox()"
+  tabindex="0"
+  role="dialog"
+>
+  <button class="avatar-lightbox-close" (click)="closeLightbox(); $event.stopPropagation()" type="button" aria-label="Cerrar">
+    <i class="ph-x"></i>
+  </button>
+  <div class="flex flex-col items-center" (click)="$event.stopPropagation()">
+    <img
+      [src]="lightboxUrl"
+      [alt]="lightboxName || 'Avatar'"
+      class="avatar-lightbox-img"
+      referrerpolicy="no-referrer"
+    />
+    @if (lightboxName) {
+    <span class="avatar-lightbox-name">{{ lightboxName }}</span>
+    }
+  </div>
+</div>
+}

@@ -1,6 +1,6 @@
 import { CdkTableModule } from "@angular/cdk/table";
 import { DatePipe, NgClass, NgFor, NgIf } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
@@ -105,6 +105,15 @@ export class TableComponent implements OnInit {
    */
   selection: any[] = [];
 
+  // ── Lightbox ──────────────────────────────────────────────
+  lightboxUrl: string | null = null;
+  lightboxName: string | null = null;
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.closeLightbox();
+  }
+
   get tableColumns(): string[] {
     const isSelect = this.isSelect;
     const tableColums = isSelect ? ["select", ...this.displayedColumns] : this.displayedColumns;
@@ -152,6 +161,17 @@ export class TableComponent implements OnInit {
 
   resolveNestedProperty(object: any, path: string): any {
     return path.split(".").reduce((o, key) => (o ? o[key] : null), object) || "N/A";
+  }
+
+  openLightbox(url: string, name: string): void {
+    if (!url || url === 'N/A') return;
+    this.lightboxUrl = url;
+    this.lightboxName = name;
+  }
+
+  closeLightbox(): void {
+    this.lightboxUrl = null;
+    this.lightboxName = null;
   }
 
   toggleSelection(element: any): void {
@@ -328,6 +348,42 @@ export class TableComponent implements OnInit {
 
     // Use the same safe placeholder
     target.src = this.getPlaceholderImage();
+  }
+
+  /**
+   * Fired when an avatar image finishes loading.
+   * Hides the shimmer skeleton and fades in the image.
+   */
+  onAvatarLoad(event: Event, skeleton: HTMLElement): void {
+    const img = event.target as HTMLImageElement;
+    // Ocultar el skeleton
+    skeleton.style.display = 'none';
+    // Hacer aparecer la imagen con fade-in
+    img.style.opacity = '1';
+  }
+
+  /**
+   * Fired when an avatar image fails to load.
+   * Hides both the skeleton and the broken image; shows a user-icon fallback.
+   */
+  onAvatarError(event: Event, skeleton: HTMLElement): void {
+    const img = event.target as HTMLImageElement;
+    if (img.dataset['errorHandled']) return;
+    img.dataset['errorHandled'] = 'true';
+
+    // Ocultar skeleton y la imagen rota
+    skeleton.style.display = 'none';
+    img.style.display = 'none';
+
+    // Insertar ícono de usuario como fallback en el contenedor
+    const container = img.parentElement;
+    if (container && !container.querySelector('.avatar-fallback')) {
+      const fallback = document.createElement('div');
+      fallback.className =
+        'avatar-fallback w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center border-2 border-blue-200 shadow-sm';
+      fallback.innerHTML = '<i class="ph-user text-white" style="font-size: 18px;"></i>';
+      container.appendChild(fallback);
+    }
   }
 
   /**

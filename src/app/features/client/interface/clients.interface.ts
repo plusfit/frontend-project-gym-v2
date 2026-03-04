@@ -21,6 +21,7 @@ export class Client {
   routineId?: string;
   password?: string; // Password del usuario (solo se obtiene cuando se solicita específicamente)
   schedules?: { [key: string]: string }; // Horarios del cliente (key: día, value: horario)
+  avatarUrl?: string; // URL del avatar del cliente
 }
 
 export interface ClientInfo {
@@ -37,6 +38,7 @@ export interface ClientInfo {
     bloodPressure: string;
     respiratoryHistory: string;
     respiratoryHistoryInput: string;
+    avatarUrl?: string; // URL del avatar del cliente
   };
   email: string;
   disabled: boolean;

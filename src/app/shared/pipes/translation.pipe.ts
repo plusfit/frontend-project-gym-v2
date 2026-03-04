@@ -13,6 +13,8 @@ export class TranslationPipe implements PipeTransform {
 
     switch (key) {
       // Standard fields
+      case "avatarUrl":
+        return "Foto";
       case "name":
         return "Nombre";
       case "CI":

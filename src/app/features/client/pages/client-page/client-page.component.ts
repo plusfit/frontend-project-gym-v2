@@ -42,6 +42,7 @@ export class ClientPageComponent implements OnInit, OnDestroy {
   pageSize = environment.config.pageSize;
   filterValues: any | null = null;
   displayedColumns: string[] = [
+    "userInfo.avatarUrl",
     "userInfo.name",
     "userInfo.CI",
     "email",

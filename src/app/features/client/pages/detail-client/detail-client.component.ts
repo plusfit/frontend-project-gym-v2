@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -6,8 +7,10 @@ import {
   PlanClient,
   RoutineClient,
 } from '@features/client/state/clients.actions';
+import { ClientsState } from '@features/client/state/clients.state';
+import { Client } from '@features/client/interface/clients.interface';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { ClientDetailInfoComponent } from '../../components/client-detail-info/client-detail-info.component';
 import { ClientDetailRoutineComponent } from '../../components/client-detail-routine/client-detail-routine.component';
 import { ClientDetailPlanComponent } from '../../components/client-detail-plan/client-detail-plan.component';
@@ -18,6 +21,8 @@ import { ClientDetailSchedulesComponent } from '../../components/client-detail-s
   standalone: true,
   imports: [
     MatTabsModule,
+    AsyncPipe,
+    NgIf,
     ClientDetailInfoComponent,
     ClientDetailRoutineComponent,
     ClientDetailPlanComponent,
@@ -28,6 +33,14 @@ import { ClientDetailSchedulesComponent } from '../../components/client-detail-s
 })
 export class DetailClientComponent implements OnInit, OnDestroy {
   id: string = '';
+  client$!: Observable<Client | null>;
+
+  // ── Lightbox ──────────────────────────────────────────────
+  lightboxUrl: string | null = null;
+  lightboxName: string | null = null;
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void { this.closeLightbox(); }
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -38,6 +51,7 @@ export class DetailClientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') ?? '';
+    this.client$ = this.store.select(ClientsState.getSelectedClient);
     if (this.id) {
       this.store.dispatch(new GetClientById(this.id));
       this.actions
@@ -56,5 +70,22 @@ export class DetailClientComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  onDetailAvatarLoad(event: Event, skeleton: HTMLElement): void {
+    const img = event.target as HTMLImageElement;
+    skeleton.style.display = 'none';
+    img.style.opacity = '1';
+  }
+
+  openLightbox(url: string, name?: string): void {
+    if (!url) return;
+    this.lightboxUrl = url;
+    this.lightboxName = name ?? null;
+  }
+
+  closeLightbox(): void {
+    this.lightboxUrl = null;
+    this.lightboxName = null;
   }
 }
