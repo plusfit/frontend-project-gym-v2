@@ -498,6 +498,8 @@ export class TableComponent implements OnInit {
         return EColorBadge.ERROR;
       case "Cumpleaños":
         return EColorBadge.PINK;
+      case "Meta semanal completada":
+        return EColorBadge.SUCCESS;
       default:
         return EColorBadge.NEUTRAL;
     }
