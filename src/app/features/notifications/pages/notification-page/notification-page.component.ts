@@ -196,6 +196,8 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             message = `¡Feliz cumpleaños, ${notification.name}!\n\nTodo el equipo de +FIT te desea un día increíble. ¡Esperamos verte pronto para celebrar juntos!\n\nEntra a nuestra app, que te dejamos un detalle especial...`;
         } else if (notification.reason === NotificationReason.FIRST_TIME) {
             message = `¡Hola ${notification.name}! ¿Cómo estás?\n\nTe escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.\n\n¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
+        } else if (notification.reason === NotificationReason.WEEKLY_GOAL_COMPLETED) {
+            message = `¡Felicitaciones, ${notification.name}! 🏆\n\nCompletaste tu semana de entrenamiento al 100%. Eso no es fácil y lo sabemos.\n\nSigue así, el esfuerzo de hoy es el resultado de mañana. ¡Nos vemos la semana que viene con más energía! 💪`;
         } else {
             message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
         }
@@ -233,6 +235,11 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
             return {
                 text: "Cumpleaños",
                 class: "text-pink-700 bg-pink-100 px-3 py-1 rounded-full text-xs font-semibold",
+            };
+        } else if (reason === NotificationReason.WEEKLY_GOAL_COMPLETED) {
+            return {
+                text: "Meta semanal",
+                class: "text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs font-semibold",
             };
         }
 
