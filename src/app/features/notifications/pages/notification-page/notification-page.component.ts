@@ -197,7 +197,7 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         } else if (notification.reason === NotificationReason.FIRST_TIME) {
             message = `¡Hola ${notification.name}! ¿Cómo estás?\n\nTe escribimos desde +FIT para agradecerte por haber empezado con nosotros. Queríamos saber cómo te sentiste después de tu primera sesión y cómo viene esa recuperación muscular.\n\n¡Cualquier duda que tengas con los ejercicios, estamos para ayudarte! Nos vemos pronto.`;
         } else if (notification.reason === NotificationReason.WEEKLY_GOAL_COMPLETED) {
-            message = `¡Felicitaciones, ${notification.name}! 🏆\n\nCompletaste tu semana de entrenamiento al 100%. Eso no es fácil y lo sabemos.\n\nSigue así, el esfuerzo de hoy es el resultado de mañana. ¡Nos vemos la semana que viene con más energía! 💪`;
+            message = `¡Felicitaciones, ${notification.name}! 🏆\n\nCompletaste tu semana de entrenamiento al 100%. Sabemos bien que requiere constancia y compromiso, y nos pone muy contentos ver tu evolución de cerca.\n\nGracias por confiar en nuestro equipo para acompañar tu proceso. ¡Nos vemos la semana que viene con la energía de siempre!`;
         } else {
             message = `Holaa ${notification.name}, te contactamos desde el +FIT porque te extrañamos`;
         }
