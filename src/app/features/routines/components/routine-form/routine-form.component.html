@@ -43,8 +43,9 @@
                 ></app-text-area>
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              <div class="h-[80px]">
+            <!-- Campo Es Personalizada (independiente) -->
+            <div class="mt-4">
+              <div class="h-[80px] w-full md:w-1/2">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>¿Es Personalizada?</mat-label>
                   <mat-select formControlName="isCustom">
@@ -53,24 +54,100 @@
                   </mat-select>
                 </mat-form-field>
               </div>
-              <div class="h-[80px] flex items-center">
-                <mat-checkbox
-                  formControlName="isGeneral"
-                  class="text-blue-700 font-medium"
-                  >¿Es general?</mat-checkbox
-                >
-              </div>
             </div>
-            <div *ngIf="isGeneralControl" class="mt-4">
-              <div class="h-[80px] w-full md:w-1/2">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Tipo de rutina</mat-label>
-                  <mat-select formControlName="type">
-                    <mat-option *ngFor="let type of types" [value]="type.value">
-                      {{ type.label }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
+
+            <!-- Sección Es General con campos agrupados -->
+            <div class="mt-6">
+              <div
+                class="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4"
+              >
+                <!-- Checkbox principal -->
+                <div class="flex items-center space-x-3 mb-4">
+                  <mat-checkbox
+                    formControlName="isGeneral"
+                    class="text-blue-700 font-medium"
+                    >¿Es general?</mat-checkbox
+                  >
+                  <div class="hidden sm:block">
+                    <i class="ph-globe text-blue-500 text-lg"></i>
+                  </div>
+                </div>
+
+                <!-- Campos dependientes (solo se muestran si isGeneral está activo) -->
+                <div
+                  *ngIf="isGeneralControl"
+                  class="ml-8 space-y-4 border-l-2 border-blue-300 pl-4"
+                >
+                  <!-- Campo Mostrar en Pantalla -->
+                  <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center space-x-3">
+                        <mat-checkbox
+                          formControlName="showOnScreen"
+                          class="text-blue-700 font-medium"
+                          >¿Mostrar en pantalla?</mat-checkbox
+                        >
+                        <div class="hidden sm:block">
+                          <i class="ph-monitor text-blue-500 text-lg"></i>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span
+                          class="text-sm text-gray-600 font-medium hidden sm:inline"
+                          >Rutinas activas:</span
+                        >
+                        <div
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold"
+                          [class.bg-green-100]="activeScreenRoutines < 3"
+                          [class.text-green-700]="activeScreenRoutines < 3"
+                          [class.bg-red-100]="activeScreenRoutines === 3"
+                          [class.text-red-700]="activeScreenRoutines === 3"
+                        >
+                          <span class="text-lg font-bold">{{
+                            activeScreenRoutines
+                          }}</span>
+                          <span class="mx-1">/</span>
+                          <span class="text-lg font-bold">3</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500 pl-8">
+                      <span *ngIf="activeScreenRoutines < 3">
+                        Puedes agregar {{ 3 - activeScreenRoutines }} rutina(s)
+                        más en pantalla
+                      </span>
+                      <span
+                        *ngIf="activeScreenRoutines === 3"
+                        class="text-orange-600 font-medium"
+                      >
+                        ⚠️ Límite máximo alcanzado
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Campo Tipo de Rutina -->
+                  <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <div class="flex items-center space-x-3 mb-2">
+                      <i class="ph-tag text-blue-500 text-lg"></i>
+                      <span class="text-sm font-medium text-gray-700"
+                        >Configuración de tipo</span
+                      >
+                    </div>
+                    <div class="h-[60px]">
+                      <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Tipo de rutina</mat-label>
+                        <mat-select formControlName="type">
+                          <mat-option
+                            *ngFor="let type of types"
+                            [value]="type.value"
+                          >
+                            {{ type.label }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
