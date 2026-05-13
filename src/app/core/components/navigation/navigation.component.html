@@ -17,7 +17,7 @@
     class="hidden md:block"
     [ngClass]="{ hidden: isMenuOpen(), block: !isMenuOpen() }"
   >
-    <div class="flex flex-col space-y-2">
+    <div class="flex flex-col space-y-2 flex-1 overflow-y-auto">
       <a
         routerLink="clientes"
         routerLinkActive="nav-item-selected"

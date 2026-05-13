@@ -141,10 +141,14 @@
             <img
               [src]="element.rewardImageUrl || element.imageUrl"
               [alt]="element.rewardName || element.name || 'Imagen'"
-              class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               loading="lazy"
               decoding="async"
               (error)="handleImageError($event)"
+              (click)="openLightbox(
+                element.rewardImageUrl || element.imageUrl,
+                element.rewardName || element.name || 'Imagen'
+              ); $event.stopPropagation()"
             />
             } @else {
             <div
@@ -161,10 +165,14 @@
             <img
               [src]="getImageUrl(element[column])"
               [alt]="element.name || 'Premio'"
-              class="w-12 h-12 object-cover rounded-lg border border-gray-200"
+              class="w-12 h-12 object-cover rounded-lg border border-gray-200 cursor-pointer"
               loading="lazy"
               decoding="async"
               (error)="handleImageError($event)"
+              (click)="openLightbox(
+                getImageUrl(element[column]),
+                element.name || 'Premio'
+              ); $event.stopPropagation()"
             />
           </div>
           } @if (column === "pointsRequired") {

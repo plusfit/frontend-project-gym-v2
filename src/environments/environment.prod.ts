@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  env: "Production",
-  api: "https://backend-project-gym-production-9fcf.up.railway.app",
+  env: 'Production',
+  api: 'https://backend-project-gym-production-9fcf.up.railway.app',
   exerciseTableLimit: 5,
   exerciseTableLimitOptions: [8, 5],
   routineTableLimit: 8,
@@ -26,10 +26,10 @@ export const environment = {
    * Google reCAPTCHA v3 configuration
    */
   recaptcha: {
-    siteKey: "6Led5m4rAAAAANjCNb_XFHRocWnlsuGDYKFkjtvf", // TODO: Reemplazar con tu site key de producción
+    siteKey: '6Led5m4rAAAAANjCNb_XFHRocWnlsuGDYKFkjtvf', // TODO: Reemplazar con tu site key de producción
   },
   /**
    * Admin password access code for viewing user passwords
    */
-  adminPasswordCode: "GYM2024ADMIN",
+  adminPasswordCode: 'PLUS1108',
 };

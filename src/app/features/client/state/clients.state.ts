@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
-import { SnackBarService } from "@core/services/snackbar.service";
-import { FirebaseRegisterResponse } from "@features/auth/interfaces/auth";
-import { AuthService } from "@features/auth/services/auth.service";
-import { ExerciseService } from "@features/exercises/services/exercise.service";
-import { PlansService } from "@features/plans/services/plan.service";
-import { RoutineService } from "@features/routines/services/routine.service";
-import { Action, Selector, State, StateContext } from "@ngxs/store";
+import { environment } from '../../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { SnackBarService } from '@core/services/snackbar.service';
+import { FirebaseRegisterResponse } from '@features/auth/interfaces/auth';
+import { AuthService } from '@features/auth/services/auth.service';
+import { ExerciseService } from '@features/exercises/services/exercise.service';
+import { PlansService } from '@features/plans/services/plan.service';
+import { RoutineService } from '@features/routines/services/routine.service';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import {
   catchError,
   exhaustMap,
@@ -16,10 +17,16 @@ import {
   switchMap,
   tap,
   throwError,
-} from "rxjs";
-import { Client, ClientApiResponse, CreateClientResponse, RegisterResponse, UserPasswordResponse } from "../interface/clients.interface";
-import { EClientRole } from "../../../core/enums/client-role.enum";
-import { ClientService } from "../services/client.service";
+} from 'rxjs';
+import {
+  Client,
+  ClientApiResponse,
+  CreateClientResponse,
+  RegisterResponse,
+  UserPasswordResponse,
+} from '../interface/clients.interface';
+import { EClientRole } from '../../../core/enums/client-role.enum';
+import { ClientService } from '../services/client.service';
 import {
   AddAvailableDays,
   CreateClient,
@@ -37,11 +44,11 @@ import {
   UpdateAvailableDays,
   UpdateClient,
   ValidateCI,
-} from "./clients.actions";
-import { ClientsStateModel } from "./clients.model";
+} from './clients.actions';
+import { ClientsStateModel } from './clients.model';
 
 @State<ClientsStateModel>({
-  name: "clients",
+  name: 'clients',
   defaults: {
     clients: [],
     selectedClient: undefined,
@@ -65,7 +72,7 @@ import { ClientsStateModel } from "./clients.model";
   },
 })
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ClientsState {
   @Selector()
@@ -150,7 +157,7 @@ export class ClientsState {
     private exerciseService: ExerciseService,
     private planService: PlansService,
     private snackBarService: SnackBarService,
-  ) { }
+  ) {}
 
   @Action(GetClients, { cancelUncompleted: true })
   getClients(
@@ -161,10 +168,10 @@ export class ClientsState {
 
     const { page, pageSize, searchQ, withoutPlan, disabled, overdue } = payload;
 
-    const nameFilter = searchQ ?? "";
-    const emailFilter = searchQ ?? "";
+    const nameFilter = searchQ ?? '';
+    const emailFilter = searchQ ?? '';
     const role = EClientRole.CLIENT;
-    const CIFilter = searchQ ?? "";
+    const CIFilter = searchQ ?? '';
     const withoutPlanFilter = withoutPlan ?? false;
     const disabledFilter = disabled ?? false;
     const overdueFilter = overdue ?? false;
@@ -243,14 +250,16 @@ export class ClientsState {
           address: response.data.userInfo?.address,
           dateBirthday: response.data.userInfo?.dateBirthday,
           surgicalHistory: response.data.userInfo?.surgicalHistory,
-          historyofPathologicalLesions: response.data.userInfo?.historyofPathologicalLesions,
+          historyofPathologicalLesions:
+            response.data.userInfo?.historyofPathologicalLesions,
           medicalSociety: response.data.userInfo?.medicalSociety,
           sex: response.data.userInfo?.sex,
           cardiacHistory: response.data.userInfo?.cardiacHistory,
           cardiacHistoryInput: response.data.userInfo?.cardiacHistoryInput,
           bloodPressure: response.data.userInfo?.bloodPressure,
           respiratoryHistory: response.data.userInfo?.respiratoryHistory,
-          respiratoryHistoryInput: response.data.userInfo?.respiratoryHistoryInput,
+          respiratoryHistoryInput:
+            response.data.userInfo?.respiratoryHistoryInput,
           CI: response.data.userInfo?.CI,
           planId: response.data.planId,
           routineId: response.data.routineId,
@@ -278,24 +287,29 @@ export class ClientsState {
     const { identifier, password } = action.payload;
     return this.authService.registerFirebase(identifier, password).pipe(
       exhaustMap((firebaseResponse: FirebaseRegisterResponse) => {
-        return this.clientService.createClientWithEmail(firebaseResponse.user.email, password).pipe(
-          tap((res: CreateClientResponse) => {
-            ctx.patchState({
-              registerClient: {
-                _id: res.data._id,
-                identifier: res.data.email,
-                role: res.data.role,
-              },
-            });
-          }),
-        );
+        return this.clientService
+          .createClientWithEmail(firebaseResponse.user.email, password)
+          .pipe(
+            tap((res: CreateClientResponse) => {
+              ctx.patchState({
+                registerClient: {
+                  _id: res.data._id,
+                  identifier: res.data.email,
+                  role: res.data.role,
+                },
+              });
+            }),
+          );
       }),
       tap(() => {
         ctx.patchState({ loading: false });
       }),
       catchError((err: any) => {
         ctx.patchState({ loading: false });
-        this.snackBarService.showError("Error al crear Cliente", this.getFriendlyErrorMessage(err));
+        this.snackBarService.showError(
+          'Error al crear Cliente',
+          this.getFriendlyErrorMessage(err),
+        );
         return throwError(() => err);
       }),
     );
@@ -326,7 +340,8 @@ export class ClientsState {
           CI: response.data.CI,
           planId: response.data.planId,
           surgicalHistory: response.data.surgicalHistory,
-          historyofPathologicalLesions: response.data.historyofPathologicalLesions,
+          historyofPathologicalLesions:
+            response.data.historyofPathologicalLesions,
         };
         ctx.patchState({
           clients: [...clients, mappedClient],
@@ -366,7 +381,8 @@ export class ClientsState {
           CI: response.data.CI,
           planId: response.data.planId,
           surgicalHistory: response.data.surgicalHistory,
-          historyofPathologicalLesions: response.data.historyofPathologicalLesions,
+          historyofPathologicalLesions:
+            response.data.historyofPathologicalLesions,
         };
         const updatedClients = clients.map((client) =>
           client._id === payload._id ? mappedClient : client,
@@ -381,22 +397,26 @@ export class ClientsState {
   }
 
   @Action(DeleteClient, { cancelUncompleted: true })
-  deleteClient(ctx: StateContext<ClientsStateModel>, { id }: DeleteClient): Observable<any> {
+  deleteClient(
+    ctx: StateContext<ClientsStateModel>,
+    { id }: DeleteClient,
+  ): Observable<any> {
     ctx.patchState({ loading: true, error: null });
 
     // Primero obtener los datos del cliente para tener email
     return this.clientService.deleteClientFromMongoDB(id).pipe(
       tap(() => {
         const state = ctx.getState();
-        const clients = state.clients?.filter((client) => client._id !== id) ?? [];
+        const clients =
+          state.clients?.filter((client) => client._id !== id) ?? [];
         const total = Math.max((state.total ?? 0) - 1, 0);
         ctx.patchState({ clients, total, loading: false });
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
         this.snackBarService.showError(
-          "Error",
-          "No se pudo borrar el cliente. Intenta nuevamente.",
+          'Error',
+          'No se pudo borrar el cliente. Intenta nuevamente.',
         );
         return throwError(() => error);
       }),
@@ -451,7 +471,7 @@ export class ClientsState {
           });
         }),
         catchError((error) => {
-          console.error("Error obteniendo la rutina:", error);
+          console.error('Error obteniendo la rutina:', error);
           ctx.patchState({ error, loading: false });
           return throwError(() => error);
         }),
@@ -470,9 +490,14 @@ export class ClientsState {
 
     return this.clientService.toggleDisabledClient(id, disabled).pipe(
       tap(() => {
-        const clients = ctx.getState().clients?.filter((client) => client._id !== id);
+        const clients = ctx
+          .getState()
+          .clients?.filter((client) => client._id !== id);
         ctx.patchState({ clients, loading: false });
-        this.snackBarService.showSuccess("Éxito", "Cliente desactivado correctamente");
+        this.snackBarService.showSuccess(
+          'Éxito',
+          'Cliente desactivado correctamente',
+        );
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
@@ -492,13 +517,13 @@ export class ClientsState {
       tap((response: any) => {
         ctx.patchState({ loading: false });
         this.snackBarService.showSuccess(
-          "Pago Registrado",
+          'Pago Registrado',
           `Se agregaron ${daysToAdd} días disponibles correctamente`,
         );
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
-        this.snackBarService.showError("Error", "Error al procesar el pago");
+        this.snackBarService.showError('Error', 'Error al procesar el pago');
         return throwError(() => error);
       }),
     );
@@ -526,13 +551,16 @@ export class ClientsState {
         });
 
         this.snackBarService.showSuccess(
-          "Días Actualizados",
+          'Días Actualizados',
           `Días disponibles actualizados a ${availableDays} correctamente`,
         );
       }),
       catchError((error) => {
         ctx.patchState({ error, loading: false });
-        this.snackBarService.showError("Error", "Error al actualizar los días disponibles");
+        this.snackBarService.showError(
+          'Error',
+          'Error al actualizar los días disponibles',
+        );
         return throwError(() => error);
       }),
     );
@@ -553,7 +581,7 @@ export class ClientsState {
           });
         }),
         catchError((error) => {
-          console.error("Error obteniendo el plan:", error);
+          console.error('Error obteniendo el plan:', error);
           ctx.patchState({ error, loading: false });
           return throwError(() => error);
         }),
@@ -568,7 +596,24 @@ export class ClientsState {
     ctx: StateContext<ClientsStateModel>,
     { clientId, adminCode }: GetUserPassword,
   ): Observable<UserPasswordResponse> {
-    ctx.patchState({ passwordLoading: true, passwordError: null, userPassword: null });
+    ctx.patchState({
+      passwordLoading: true,
+      passwordError: null,
+      userPassword: null,
+    });
+
+    if (adminCode !== environment.adminPasswordCode) {
+      ctx.patchState({
+        passwordError: 'invalid_code',
+        passwordLoading: false,
+        userPassword: null,
+      });
+      this.snackBarService.showError(
+        'Error',
+        'Código de administrador incorrecto',
+      );
+      return throwError(() => new Error('Código de administrador incorrecto'));
+    }
 
     return this.clientService.getUserPassword(clientId, adminCode).pipe(
       tap((response: UserPasswordResponse) => {
@@ -578,8 +623,8 @@ export class ClientsState {
         });
         if (!response.data.password) {
           this.snackBarService.showError(
-            "Error",
-            "No esta seteada la contraseña para este usuario o el código de administrador es incorrecto"
+            'Error',
+            'No esta seteada la contraseña para este usuario o el código de administrador es incorrecto',
           );
         }
       }),
@@ -587,11 +632,11 @@ export class ClientsState {
         ctx.patchState({
           passwordError: error,
           passwordLoading: false,
-          userPassword: null
+          userPassword: null,
         });
         this.snackBarService.showError(
-          "Error",
-          "Código de administrador incorrecto o error en el servidor"
+          'Error',
+          'Código de administrador incorrecto o error en el servidor',
         );
         return throwError(() => error);
       }),
@@ -603,7 +648,7 @@ export class ClientsState {
     ctx.patchState({
       userPassword: null,
       passwordError: null,
-      passwordLoading: false
+      passwordLoading: false,
     });
   }
 
@@ -615,7 +660,7 @@ export class ClientsState {
     ctx.patchState({
       forgotPasswordLoading: true,
       forgotPasswordError: null,
-      forgotPasswordSuccess: false
+      forgotPasswordSuccess: false,
     });
 
     return this.clientService.sendForgotPasswordEmail(clientId).pipe(
@@ -625,19 +670,20 @@ export class ClientsState {
           forgotPasswordLoading: false,
         });
         this.snackBarService.showSuccess(
-          "Éxito",
-          response.message || "Se ha enviado el email de recuperación de contraseña"
+          'Éxito',
+          response.message ||
+            'Se ha enviado el email de recuperación de contraseña',
         );
       }),
       catchError((error) => {
         ctx.patchState({
           forgotPasswordError: error,
           forgotPasswordLoading: false,
-          forgotPasswordSuccess: false
+          forgotPasswordSuccess: false,
         });
         this.snackBarService.showError(
-          "Error",
-          "No se pudo enviar el email de recuperación. Intenta nuevamente"
+          'Error',
+          'No se pudo enviar el email de recuperación. Intenta nuevamente',
         );
         return throwError(() => error);
       }),
@@ -646,26 +692,26 @@ export class ClientsState {
 
   private mapFirebaseError(errorCode: string): string {
     switch (errorCode) {
-      case "auth/email-already-in-use":
-        return "El email ya existe";
-      case "auth/operation-not-allowed":
-        return "La operación no está permitida";
-      case "auth/invalid-email":
-        return "El email no es válido";
-      case "auth/invalid-api-key":
-        return "API Key inválida o restringida";
-      case "auth/network-request-failed":
-        return "Fallo de red. Verifica tu conexión";
-      case "auth/weak-password":
-        return "La contraseña es demasiado débil (mínimo 6 caracteres)";
-      case "auth/too-many-requests":
-        return "Demasiados intentos. Inténtalo más tarde";
-      case "auth/invalid-password":
-        return "Contraseña inválida";
-      case "auth/user-disabled":
-        return "El usuario está deshabilitado";
+      case 'auth/email-already-in-use':
+        return 'El email ya existe';
+      case 'auth/operation-not-allowed':
+        return 'La operación no está permitida';
+      case 'auth/invalid-email':
+        return 'El email no es válido';
+      case 'auth/invalid-api-key':
+        return 'API Key inválida o restringida';
+      case 'auth/network-request-failed':
+        return 'Fallo de red. Verifica tu conexión';
+      case 'auth/weak-password':
+        return 'La contraseña es demasiado débil (mínimo 6 caracteres)';
+      case 'auth/too-many-requests':
+        return 'Demasiados intentos. Inténtalo más tarde';
+      case 'auth/invalid-password':
+        return 'Contraseña inválida';
+      case 'auth/user-disabled':
+        return 'El usuario está deshabilitado';
       default:
-        return "Ha ocurrido un error. Por favor, inténtalo de nuevo";
+        return 'Ha ocurrido un error. Por favor, inténtalo de nuevo';
     }
   }
 
@@ -698,30 +744,30 @@ export class ClientsState {
   private getFriendlyErrorMessage(err: any): string {
     const code = this.normalizeFirebaseErrorCode(err);
     if (code) return this.mapFirebaseError(code);
-    return "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo";
+    return 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo';
   }
 
   private normalizeFirebaseErrorCode(err: any): string | null {
     // AngularFire FirebaseError: { code: 'auth/...' }
-    if (err?.code && typeof err.code === "string") return err.code;
+    if (err?.code && typeof err.code === 'string') return err.code;
     // REST response via fetch/XHR: { error: { message: 'EMAIL_EXISTS' | 'OPERATION_NOT_ALLOWED' | 'INVALID_EMAIL' | 'WEAK_PASSWORD' | 'INVALID_API_KEY' } }
     const msg = err?.error?.error?.message || err?.message;
-    if (!msg || typeof msg !== "string") return null;
+    if (!msg || typeof msg !== 'string') return null;
     const m = msg.toUpperCase();
     switch (m) {
-      case "EMAIL_EXISTS":
-        return "auth/email-already-in-use";
-      case "OPERATION_NOT_ALLOWED":
-        return "auth/operation-not-allowed";
-      case "INVALID_EMAIL":
-        return "auth/invalid-email";
-      case "WEAK_PASSWORD":
-      case "PASSWORD_LOGIN_DISABLED":
-        return "auth/weak-password";
-      case "INVALID_API_KEY":
-        return "auth/invalid-api-key";
-      case "NETWORK_REQUEST_FAILED":
-        return "auth/network-request-failed";
+      case 'EMAIL_EXISTS':
+        return 'auth/email-already-in-use';
+      case 'OPERATION_NOT_ALLOWED':
+        return 'auth/operation-not-allowed';
+      case 'INVALID_EMAIL':
+        return 'auth/invalid-email';
+      case 'WEAK_PASSWORD':
+      case 'PASSWORD_LOGIN_DISABLED':
+        return 'auth/weak-password';
+      case 'INVALID_API_KEY':
+        return 'auth/invalid-api-key';
+      case 'NETWORK_REQUEST_FAILED':
+        return 'auth/network-request-failed';
       default:
         return null;
     }
