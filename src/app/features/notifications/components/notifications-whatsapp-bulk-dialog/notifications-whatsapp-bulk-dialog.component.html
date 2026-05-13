@@ -1,0 +1,119 @@
+<section class="whatsapp-bulk-dialog" aria-labelledby="whatsapp-bulk-dialog-title">
+    <header class="dialog-heading">
+        <div class="dialog-title-group">
+            <span class="dialog-kicker">+FIT · WhatsApp</span>
+            <h2 id="whatsapp-bulk-dialog-title" mat-dialog-title>Envío masivo por WhatsApp desde CSV</h2>
+            <p>Un solo flujo: primero se confirma la conexión, después se habilita la carga del archivo.</p>
+        </div>
+
+        <button
+            class="icon-close-button"
+            type="button"
+            aria-label="Cerrar modal de envío masivo por WhatsApp"
+            (click)="close()"
+        >
+            <i class="ph-x" aria-hidden="true"></i>
+        </button>
+    </header>
+
+    <mat-dialog-content class="dialog-content">
+          @if (showCsvInfo) {
+            <div class="csv-format-info" role="note" aria-label="Formato requerido para el CSV">
+                <i class="ph-file-csv" aria-hidden="true"></i>
+                <div class="csv-format-copy">
+                    <p class="csv-format-title">Formato del CSV</p>
+                    <p>El archivo debe tener dos columnas: <strong>to</strong> con el teléfono en formato <code>+598...</code> y <strong>message</strong> con el mensaje a enviar.</p>
+                    <button class="csv-template-button" type="button" (click)="downloadCsvTemplate()">
+                        <i class="ph-download-simple" aria-hidden="true"></i>
+                        Descargar plantilla CSV
+                    </button>
+                </div>
+                <button
+                    class="csv-format-close"
+                    type="button"
+                    aria-label="Ocultar información del formato CSV"
+                    (click)="dismissCsvInfo()"
+                >
+                    <i class="ph-x" aria-hidden="true"></i>
+                </button>
+            </div>
+        }
+        <div class="status-card" [class]="statusClass" aria-live="polite" aria-atomic="true">
+            <div class="status-icon" aria-hidden="true">
+                @if (state.loading) {
+                    <i class="ph-circle-notch"></i>
+                } @else if (state.isConnected) {
+                    <i class="ph-check-circle"></i>
+                } @else if (state.status === WhatsAppConnectionStatus.ERROR) {
+                    <i class="ph-warning-circle"></i>
+                } @else {
+                    <i class="ph-qr-code"></i>
+                }
+            </div>
+            <div>
+                <p class="status-label">{{ statusText }}</p>
+                <p class="status-copy">{{ statusDescription }}</p>
+            </div>
+        </div>
+
+        @if (state.loading) {
+            <div class="dialog-panel loading-panel" aria-live="polite">
+                <span class="loading-dot" aria-hidden="true"></span>
+                <p>Verificando si WhatsApp está listo para el envío masivo…</p>
+            </div>
+        } @else if (state.isConnected) {
+            <div class="dialog-panel upload-panel">
+                <div class="panel-copy">
+                    <span class="panel-step">Paso 2</span>
+                    <h3>Listo para enviar mensajes</h3>
+                </div>
+
+                <div class="connected-session-actions" aria-live="polite">
+                    <div>
+                        <p class="session-action-title">Sesión de WhatsApp activa</p>
+                        <p class="session-action-copy">Lista para enviar desde este dispositivo.</p>
+                    </div>
+                    <button
+                        class="disconnect-session-button"
+                        type="button"
+                        aria-label="Desconectar"
+                        [disabled]="state.disconnecting"
+                        (click)="disconnectWhatsApp()"
+                    >
+                        @if (state.disconnecting) {
+                            <span>Desconectando…</span>
+                        } @else {
+                            <span>Desconectar</span>
+                        }
+                    </button>
+                </div>
+
+                @if (state.error) {
+                    <div class="inline-alert" role="alert">
+                        <i class="ph-warning" aria-hidden="true"></i>
+                        <span>{{ state.error }}</span>
+                    </div>
+                }
+
+                <app-bulk-upload></app-bulk-upload>
+            </div>
+        } @else {
+            <div class="dialog-panel connection-panel">
+                <div class="panel-copy">
+                    <span class="panel-step">Paso 1</span>
+                    <h3>Conectá WhatsApp para enviar CSV</h3>
+                    <p>Escaneá el QR. Cuando la sesión quede lista, este modal cambia automáticamente a la carga del CSV.</p>
+                </div>
+
+                @if (state.error) {
+                    <div class="inline-alert" role="alert">
+                        <i class="ph-warning" aria-hidden="true"></i>
+                        <span>{{ state.error }}</span>
+                    </div>
+                }
+
+                <app-whatsapp-connection (statusChange)="onStatusChange($event)"></app-whatsapp-connection>
+            </div>
+        }
+    </mat-dialog-content>
+</section>

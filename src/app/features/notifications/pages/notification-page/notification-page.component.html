@@ -27,6 +27,30 @@
       </div>
     </div>
 
+    <!-- WhatsApp CSV Action Section -->
+    <section class="whatsapp-csv-entry" aria-labelledby="whatsapp-csv-entry-title">
+      <div class="whatsapp-csv-entry__content">
+        <span class="whatsapp-csv-entry__eyebrow">Envío masivo</span>
+        <span class="text-2xl font-bold" id="whatsapp-csv-entry-title">Enviar notificaciones masivas por WhatsApp</span>
+
+      </div>
+
+      <button
+        type="button"
+        class="whatsapp-csv-entry__button"
+        aria-describedby="whatsapp-csv-entry-title whatsapp-csv-entry-help"
+        (click)="openWhatsappBulkDialog()"
+      >
+        <span class="whatsapp-csv-entry__button-icon" aria-hidden="true">
+          <i class="ph-whatsapp-logo"></i>
+        </span>
+        <span>
+          <strong>Abrir envío WhatsApp CSV</strong>
+          <small id="whatsapp-csv-entry-help">Con QR, estado y progreso en un modal</small>
+        </span>
+      </button>
+    </section>
+
     <!-- Enhanced Filter and Table Section -->
     <div class="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
       <!-- Filter Bar Section -->

@@ -1,0 +1,136 @@
+<div class="bulk-upload-container">
+    <!-- Upload Zone -->
+    @if (!(bulkStatus$ | async)) {
+        <div
+            class="upload-zone"
+            [class.dragging]="isDragging"
+            role="group"
+            aria-labelledby="bulk-upload-title"
+            aria-describedby="bulk-upload-help"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+        >
+            <div class="upload-content">
+                <i class="ph-upload-simple" aria-hidden="true" style="font-size: 48px; color: #6b7280;"></i>
+                <p id="bulk-upload-title" class="upload-text">Arrastrá el archivo CSV aquí o</p>
+                <p id="bulk-upload-help" class="upload-help">También podés seleccionarlo desde el explorador de archivos.</p>
+                <label class="upload-button">
+                    <input
+                        #fileInput
+                        type="file"
+                        accept=".csv"
+                        aria-label="Seleccionar archivo CSV para envío masivo por WhatsApp"
+                        (change)="onFileSelect($event)"
+                        hidden
+                    />
+                    Seleccionar archivo
+                </label>
+            </div>
+
+            @if (selectedFile) {
+                <div class="file-info">
+                    <i class="ph-file-csv" style="font-size: 24px; color: #10b981;"></i>
+                    <div class="file-details">
+                        <span class="file-name">{{ selectedFile.name }}</span>
+                        <span class="row-count">{{ rowCount }} filas</span>
+                    </div>
+                    <button class="clear-button" type="button" aria-label="Quitar archivo CSV seleccionado" (click)="clear()">
+                        <i class="ph-x" aria-hidden="true"></i>
+                    </button>
+                </div>
+            }
+
+            @if (error$ | async; as error) {
+                <div class="error-message">
+                    <i class="ph-warning-circle"></i>
+                    <span>{{ error }}</span>
+                </div>
+            }
+
+            @if (selectedFile) {
+                <button
+                    class="upload-submit"
+                    type="button"
+                    (click)="upload()"
+                    [disabled]="isLoading$ | async"
+                    [attr.aria-label]="selectedFile ? 'Subir archivo CSV ' + selectedFile.name : 'Subir archivo CSV'"
+                >
+                    @if (!(isLoading$ | async)) {
+                        <span>Subir CSV</span>
+                    } @else {
+                        <span>Subiendo...</span>
+                    }
+                </button>
+            }
+
+            @if (selectedFile && (isLoading$ | async)) {
+                <div class="upload-loading-feedback" aria-live="polite" aria-atomic="true">
+                    <span>Estamos subiendo el CSV y preparando el lote…</span>
+                    <div class="progress-bar-container indeterminate" role="progressbar" aria-label="Subida de CSV en proceso">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Progress Display -->
+    @if (bulkStatus$ | async; as status) {
+        <div
+            class="progress-container"
+            [class.completed]="isCompleted(status)"
+        >
+            <div class="progress-header" aria-live="polite" aria-atomic="true">
+                <i class="ph-broadcast" aria-hidden="true" style="font-size: 24px;"></i>
+                <div class="progress-info">
+                    <span class="batch-id">Batch: {{ status.batchId }}</span>
+                    <span class="status-badge" [class]="status.status.toString().toLowerCase()">
+                        {{ status.status | bulkStatusLabel }}
+                    </span>
+                </div>
+                <button class="close-button" type="button" aria-label="Limpiar estado del envío masivo" (click)="clear()">
+                    <i class="ph-x" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div
+                class="progress-bar-container"
+                [class.indeterminate]="isProcessingStatus(status)"
+                role="progressbar"
+                [attr.aria-valuenow]="isProcessingStatus(status) ? null : getProgressPercentage(status)"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                [attr.aria-label]="isProcessingStatus(status) ? 'Envío masivo por WhatsApp en proceso' : 'Progreso del envío masivo por WhatsApp'"
+            >
+                <div
+                    class="progress-bar"
+                    [style.width.%]="getProgressPercentage(status)"
+                ></div>
+            </div>
+
+            <div class="progress-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ status.processedRows }}</span>
+                    <span class="stat-label">/ {{ status.totalRows }}</span>
+                </div>
+                <div class="stat success">
+                    <i class="ph-check-circle"></i>
+                    <span>{{ status.successCount }}</span>
+                </div>
+                <div class="stat failure">
+                    <i class="ph-x-circle"></i>
+                    <span>{{ status.failureCount }}</span>
+                </div>
+            </div>
+
+            <div class="progress-percentage">
+                @if (isProcessingStatus(status)) {
+                    Procesando CSV y enviando mensajes… {{ getProgressPercentage(status) }}% registrado
+                } @else {
+                    {{ getProgressPercentage(status) }}% procesado
+                }
+            </div>
+        </div>
+    }
+</div>

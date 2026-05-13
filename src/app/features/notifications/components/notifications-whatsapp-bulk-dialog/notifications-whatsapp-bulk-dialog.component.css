@@ -1,0 +1,385 @@
+:host {
+    display: block;
+}
+
+.whatsapp-bulk-dialog {
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+    color: #111827;
+    max-height: 86vh;
+    overflow: hidden;
+}
+
+.dialog-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 62%, #ecfdf5 100%);
+}
+
+.dialog-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.dialog-kicker {
+    color: #047857;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h2[mat-dialog-title] {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+
+.dialog-title-group p,
+.status-copy,
+.panel-copy p,
+.loading-panel p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.55;
+}
+
+.icon-close-button,
+.secondary-action {
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.78);
+    color: #0f172a;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.icon-close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    font-size: 1.25rem;
+}
+
+.icon-close-button:hover,
+.secondary-action:hover {
+    background: #ffffff;
+    border-color: rgba(14, 165, 233, 0.55);
+    transform: translateY(-1px);
+}
+
+.dialog-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem 0;
+}
+
+.status-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.36);
+    border-radius: 1rem;
+    background: #ffffff;
+}
+
+.status-card.connected {
+    border-color: rgba(5, 150, 105, 0.58);
+    background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+    box-shadow: 0 14px 32px rgba(5, 150, 105, 0.16);
+}
+
+.status-card.pending {
+    border-color: rgba(14, 165, 233, 0.35);
+    background: #f0f9ff;
+}
+
+.status-card.error {
+    border-color: rgba(248, 113, 113, 0.5);
+    background: #fef2f2;
+}
+
+.status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: rgba(37, 211, 102, 0.12);
+    color: #047857;
+    font-size: 1.45rem;
+}
+
+.status-card.connected .status-icon {
+    background: #059669;
+    color: #ffffff;
+}
+
+.status-label {
+    margin: 0 0 0.15rem;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.csv-format-info {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 1rem;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.csv-format-info > i {
+    margin-top: 0.1rem;
+    color: #64748b;
+    font-size: 1.25rem;
+}
+
+.csv-format-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+}
+
+.csv-format-title,
+.csv-format-copy p {
+    margin: 0;
+}
+
+.csv-format-title {
+    color: #334155;
+    font-weight: 800;
+}
+
+.csv-format-copy p:not(.csv-format-title) {
+    color: #334155;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.csv-format-copy code {
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.4rem;
+    background: #ffffff;
+    color: #334155;
+    font-size: 0.85em;
+    font-weight: 800;
+}
+
+.csv-format-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: #64748b;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.csv-format-close:hover {
+    border-color: rgba(100, 116, 139, 0.42);
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.csv-template-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0 0.7rem;
+    border: 1px solid rgba(100, 116, 139, 0.26);
+    border-radius: 999px;
+    background: #ffffff;
+    color: #475569;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 800;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.csv-template-button:hover {
+    border-color: rgba(100, 116, 139, 0.44);
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.csv-template-button:focus-visible {
+    outline: 3px solid rgba(14, 165, 233, 0.85);
+    outline-offset: 3px;
+}
+
+.dialog-panel {
+    padding: 1.15rem;
+    border: 1px solid rgba(148, 163, 184, 0.32);
+    border-radius: 1rem;
+    background: #ffffff;
+}
+
+.panel-copy {
+    margin-bottom: 1rem;
+}
+
+.panel-step {
+    display: inline-flex;
+    margin-bottom: 0.35rem;
+    color: #0369a1;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.panel-copy h3 {
+    margin: 0 0 0.35rem;
+    color: #111827;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.connected-session-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.session-action-title,
+.session-action-copy {
+    margin: 0;
+}
+
+.session-action-title {
+    color: #064e3b;
+    font-weight: 800;
+}
+
+.session-action-copy {
+    color: #475569;
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+
+.disconnect-session-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0 0.7rem;
+    border: 1px solid rgba(220, 38, 38, 0.22);
+    border-radius: 999px;
+    background: transparent;
+    color: #b91c1c;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.disconnect-session-button:hover:not(:disabled) {
+    border-color: rgba(220, 38, 38, 0.42);
+    background: #fef2f2;
+    transform: translateY(-1px);
+}
+
+.disconnect-session-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+}
+
+.loading-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.loading-dot {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 999px;
+    background: #0891b2;
+    box-shadow: 0 0 0 0.45rem rgba(8, 145, 178, 0.12);
+}
+
+.inline-alert {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.85rem;
+    border: 1px solid rgba(248, 113, 113, 0.55);
+    border-radius: 0.85rem;
+    background: #fff7ed;
+    color: #9f1239;
+    font-weight: 600;
+}
+
+.dialog-actions {
+    padding: 1rem 1.5rem 1.25rem;
+}
+
+.secondary-action {
+    min-height: 2.5rem;
+    padding: 0 1rem;
+    font-weight: 700;
+}
+
+button:focus-visible,
+:host ::ng-deep button:focus-visible,
+:host ::ng-deep input:focus-visible,
+:host ::ng-deep label:focus-visible {
+    outline: 3px solid rgba(14, 165, 233, 0.85);
+    outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+    .dialog-heading,
+    .dialog-content,
+    .dialog-actions {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .dialog-heading {
+        gap: 0.75rem;
+    }
+
+    .connected-session-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+}

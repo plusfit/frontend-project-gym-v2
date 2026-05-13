@@ -29,6 +29,7 @@ import { PlansState } from "@features/plans/state/plan.state";
 import { ScreenRoutineState } from "@features/screenRoutine/state/screenRoutine.state";
 import { PaymentsState } from "@features/payments/state/payments.state";
 import { NotificationsState } from "@features/notifications/state/notifications.state";
+import { BulkNotificationsState } from "@features/notifications/state/bulk-notifications.state";
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
@@ -60,6 +61,7 @@ export const appConfig: ApplicationConfig = {
             ScreenRoutineState,
             PaymentsState,
             NotificationsState,
+            BulkNotificationsState,
         ], {
             developmentMode: true,
         })),

@@ -1,0 +1,35 @@
+<div class="whatsapp-connection-container">
+    <div class="status-display" aria-live="polite" aria-atomic="true">
+        <div class="status-indicator" [class]="getStatusClass()">
+            <i class="ph-circle" aria-hidden="true"></i>
+            <span>{{ getStatusText() }}</span>
+        </div>
+
+        @if (errorMessage) {
+            <div class="error-banner">
+                <i class="ph-warning" aria-hidden="true"></i>
+                <span>{{ errorMessage }}</span>
+            </div>
+        }
+    </div>
+
+    @if (qrCode) {
+        <div class="qr-section">
+            <div class="qr-container">
+                <img
+                    [src]="getQrImageUrl()"
+                    alt="Código QR para vincular WhatsApp con el envío masivo de notificaciones"
+                    class="qr-image"
+                />
+            </div>
+            <p class="qr-hint">WhatsApp &gt; Dispositivos vinculados &gt; Vincular dispositivo</p>
+        </div>
+    }
+
+    @if (isConnected) {
+        <button class="disconnect-btn" type="button" aria-label="Desconectar" (click)="disconnect()">
+            <i class="ph-sign-out" aria-hidden="true"></i>
+            Desconectar
+        </button>
+    }
+</div>
