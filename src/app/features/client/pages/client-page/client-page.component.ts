@@ -26,6 +26,9 @@ import { SnackBarService } from "@core/services/snackbar.service";
 import { FilterSelectComponent } from "../../../../shared/components/filter-select/filter-select.component";
 import { TableComponent } from "../../../../shared/components/table/table.component";
 
+import { GenerateCsvDialogComponent } from "../../components/generate-csv-dialog/generate-csv-dialog.component";
+import { firstValueFrom } from "rxjs";
+
 @Component({
   selector: "app-client-page",
   standalone: true,
@@ -81,6 +84,22 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       if (value !== null) {
         this.applyFilterFromControl(value);
       }
+    });
+  }
+
+  async generateCsv(): Promise<void> {
+    const total = await firstValueFrom(this.total);
+    if (!total) {
+      this.snackbar.showError("Error", "No hay clientes para exportar");
+      return;
+    }
+
+    this.dialog.open(GenerateCsvDialogComponent, {
+      width: "500px",
+      data: {
+        filters: this.filterValues,
+        total: total,
+      },
     });
   }
 

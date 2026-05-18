@@ -1,0 +1,43 @@
+<h2 mat-dialog-title class="text-2xl font-bold text-gray-800">Generar CSV de Clientes</h2>
+
+<mat-dialog-content class="mat-typography py-4">
+  <p class="text-gray-600 mb-4">
+    Se generará un archivo CSV con {{ data.total }} clientes basados en los filtros actuales.
+  </p>
+
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Mensaje</mat-label>
+    <textarea
+      matInput
+      placeholder="Escribe el mensaje para el CSV..."
+      [(ngModel)]="message"
+      rows="4"
+      [disabled]="loading"
+    ></textarea>
+    <mat-hint>Este mensaje aparecerá en la columna 'message' del CSV.</mat-hint>
+  </mat-form-field>
+
+  <div *ngIf="loading" class="flex items-center justify-center mt-4">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <span class="ml-2 text-blue-600 font-medium">Generando CSV...</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-4 border-t border-gray-100">
+  <button
+    mat-button
+    (click)="onCancel()"
+    class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+    [disabled]="loading"
+  >
+    Cancelar
+  </button>
+  <button
+    appBtn
+    (click)="onGenerate()"
+    class="px-6 py-2 ml-2"
+    [disabled]="loading || !message.trim()"
+  >
+    Generar
+  </button>
+</mat-dialog-actions>

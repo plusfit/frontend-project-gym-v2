@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  max-width: 500px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}

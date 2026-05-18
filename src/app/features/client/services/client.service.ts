@@ -144,4 +144,22 @@ export class ClientService {
       `${environment.api}/clients/validate/ci/${ci}`,
     );
   }
+
+  exportClientsCsv(filters: any, message: string): Observable<string> {
+    let params = new HttpParams().set("message", message);
+
+    if (filters.withoutPlan) params = params.set("withoutPlan", filters.withoutPlan);
+    if (filters.CI) params = params.set("CI", filters.CI);
+    if (filters.role) params = params.set("role", filters.role);
+    if (filters.name) params = params.set("name", filters.name);
+    if (filters.email) params = params.set("email", filters.email);
+    if (filters.disabled !== undefined) params = params.set("disabled", filters.disabled);
+    if (filters.overdue) params = params.set("overdue", filters.overdue);
+
+    return this.http.get(`${environment.api}/clients/export/csv`, {
+      params,
+      responseType: "text",
+    });
+  }
 }
+
