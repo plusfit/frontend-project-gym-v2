@@ -29,6 +29,7 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { TitleComponent } from '../../../../shared/components/title/title.component';
 import { AddClientListComponent } from '../add-client-list/add-client-list.component';
 import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
+import { ClientNamePipe } from '../../../../shared/pipes/client-name.pipe';
 
 @Component({
   selector: 'app-schedule-form',
@@ -41,6 +42,7 @@ import { LoaderComponent } from '../../../../shared/components/loader/loader.com
     TitleComponent,
     MatDividerModule,
     LoaderComponent,
+    ClientNamePipe,
   ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
@@ -169,5 +171,19 @@ export class ScheduleFormComponent implements OnInit, OnDestroy {
   getAMorPM(time: string) {
     const hour = parseInt(time.split(':')[0]);
     return hour < 12 ? 'AM' : 'PM';
+  }
+
+  getInitials(name: string): string {
+    if (!name) return 'U';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
+  }
+
+  onAvatarError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
   }
 }

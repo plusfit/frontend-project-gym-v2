@@ -10,6 +10,7 @@ import { LoaderComponent } from "@shared/components/loader/loader.component";
 import { CamelToTitlePipe } from "@shared/pipes/camel-to-title.pipe";
 import { TranslationPipe } from "@shared/pipes/translation.pipe";
 import { UtcDatePipe } from "@shared/pipes/utc-date.pipe";
+import { ClientNamePipe } from "@shared/pipes/client-name.pipe";
 import { EColorBadge } from "../../enums/badge-color.enum";
 
 /**
@@ -35,6 +36,7 @@ import { EColorBadge } from "../../enums/badge-color.enum";
     CamelToTitlePipe,
     DatePipe,
     UtcDatePipe,
+    ClientNamePipe,
     MatCheckbox,
     MatIcon,
   ],
