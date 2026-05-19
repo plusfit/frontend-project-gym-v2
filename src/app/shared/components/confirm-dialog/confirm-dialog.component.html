@@ -1,8 +1,8 @@
-<div class="flex flex-col p-6 gap-6 text-center">
+<div class="flex flex-col items-center justify-center p-6 text-center dialog-card bg-white rounded-2xl w-full">
   <!-- Icon Section -->
-  <div class="flex justify-center">
+  <div class="flex justify-center mb-4">
     <div
-      class="w-16 h-16 rounded-full flex items-center justify-center"
+      class="w-16 h-16 rounded-full flex items-center justify-center border-4 border-white shadow-md transition-transform duration-300 hover:scale-105"
       [ngClass]="getIconBackgroundClass()"
     >
       <!-- Phosphor Icons -->
@@ -11,29 +11,29 @@
   </div>
 
   <!-- Content Section -->
-  <div class="space-y-4">
-    <h2 mat-dialog-title class="text-2xl font-bold text-gray-800">
+  <div class="space-y-3 w-full">
+    <h2 mat-dialog-title class="text-xl font-extrabold text-gray-900 tracking-tight leading-tight px-4 block">
       {{ data.title }}
     </h2>
-    <mat-dialog-content class="text-base text-gray-600 leading-relaxed">{{
-      data.contentMessage
-    }}</mat-dialog-content>
+    <mat-dialog-content class="text-sm text-gray-500 leading-relaxed block px-6 max-w-sm mx-auto">
+      {{ data.contentMessage }}
+    </mat-dialog-content>
   </div>
 
   <!-- Actions Section -->
-  <div class="flex justify-center space-x-4 pt-4">
+  <div class="flex justify-center items-center space-x-3 w-full pt-6 mt-2 border-t border-gray-100">
     <button
       appBtn
       color="secondary"
       (click)="handleCancel()"
-      class="px-6 py-2 min-w-[100px]"
+      class="flex-1 max-w-[140px] py-2.5 rounded-xl text-sm font-semibold transition-all"
     >
       Cancelar
     </button>
     <button
       appBtn
       [ngClass]="getConfirmButtonClass()"
-      class="text-white px-6 py-2 min-w-[100px]"
+      class="flex-1 max-w-[140px] text-white py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md"
       (click)="handleConfirm()"
     >
       {{ getConfirmButtonText() }}

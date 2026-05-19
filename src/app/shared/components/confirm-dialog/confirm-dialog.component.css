@@ -1,3 +1,60 @@
-button {
-    margin-right: 8px;
+/* Centrado y límites de tarjeta */
+.dialog-card {
+  box-sizing: border-box;
+}
+
+/* Anular la alineación izquierda de Angular Material Dialog */
+:host ::ng-deep .mat-mdc-dialog-title {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  text-align: center !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+:host ::ng-deep .mat-mdc-dialog-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  text-align: center !important;
+  overflow: visible !important;
+  max-height: none !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+/* Forzar botones elegantes con bordes redondeados (12px) */
+:host ::ng-deep .dialog-card button {
+  border-radius: 12px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  height: auto !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Personalizar el botón secundario (Cancelar) */
+:host ::ng-deep .dialog-card button.btn-secondary {
+  border: 1px solid #e2e8f0 !important;
+  color: #4b5563 !important;
+  background-color: #f8fafc !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+:host ::ng-deep .dialog-card button.btn-secondary:hover {
+  background-color: #f1f5f9 !important;
+  color: #1f2937 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Personalizar el botón de aceptar */
+:host ::ng-deep .dialog-card button.text-white {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+:host ::ng-deep .dialog-card button:hover {
+  transform: translateY(-1px);
+}
+
+:host ::ng-deep .dialog-card button:active {
+  transform: translateY(1px) scale(0.98);
 }
