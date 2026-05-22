@@ -39,7 +39,7 @@ export class NotificationsWhatsappBulkDialogComponent implements OnInit, OnDestr
   constructor(
     private notificationService: NotificationService,
     private dialogRef: MatDialogRef<NotificationsWhatsappBulkDialogComponent>,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadWhatsAppStatus();
@@ -59,7 +59,7 @@ export class NotificationsWhatsappBulkDialogComponent implements OnInit, OnDestr
   }
 
   downloadCsvTemplate(): void {
-    const csvTemplate = "to,message\n+59899123456,Hola este es un mensaje de prueba\n";
+    const csvTemplate = `to,message\n+59899123456,"Hola este es un mensaje de prueba\n"`;
     const blob = new Blob([csvTemplate], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
