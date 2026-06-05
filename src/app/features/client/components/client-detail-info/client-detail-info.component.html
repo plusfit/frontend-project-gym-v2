@@ -223,7 +223,7 @@
           >
             <span class="text-gray-500 text-sm mb-1">Último Acceso</span>
             <span class="text-lg font-medium text-gray-800">
-              {{ clientInfo.lastAccess ? (clientInfo.lastAccess | date: 'd/MM/yyyy, h:mm a') : 'Sin acceso registrado' }}
+              {{ clientInfo.lastAccess ? (clientInfo.lastAccess | date: 'd/MM/yyyy, h:mm a':'UTC') : 'Sin acceso registrado' }}
             </span>
           </div>
           <div

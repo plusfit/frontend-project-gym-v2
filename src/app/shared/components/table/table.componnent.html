@@ -199,7 +199,7 @@
           ></app-badge>
           } @if (column === "lastAccess") {
           <span class="text-gray-700"
-            >{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a') :
+            >{{ element[column] ? (element[column] | date: 'd/MM/y, h:mm a':'UTC') :
             'Sin acceso' }}</span
           >
           } @if (column === "totalAccesses") {
@@ -277,7 +277,7 @@
             *ngIf="column === 'createdAt' || column === 'updatedAt'"
           >
             <span class="text-gray-500 text-sm"
-              >{{ element[column] | date: "d MMM y, h:mm a" }}</span
+              >{{ element[column] | date: "d MMM y, h:mm a":'UTC' }}</span
             >
           </ng-container>
 
