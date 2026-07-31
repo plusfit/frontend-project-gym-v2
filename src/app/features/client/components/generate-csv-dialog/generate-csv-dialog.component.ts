@@ -52,12 +52,22 @@ export class GenerateCsvDialogComponent {
    * immediately, which the dashboard already polls for.
    */
   static readonly MAX_RECIPIENTS_PER_FILE = 45;
-  // Delay between downloads so the browser does not block consecutive file saves
-  private static readonly DOWNLOAD_STAGGER_MS = 300;
   private static readonly REVOKE_DELAY_MS = 1000;
 
   message: string = "";
   loading: boolean = false;
+  exportError: string | null = null;
+
+  /**
+   * Parts pending download. Populated once the export resolves.
+   *
+   * Browsers allow the first programmatic download of a batch and then block
+   * the rest behind a permission prompt, so a multi-file export cannot save
+   * itself. Each part is downloaded from its own click instead, which always
+   * carries user activation.
+   */
+  parts: CsvPart[] = [];
+  private readonly downloadedFilenames = new Set<string>();
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -88,21 +98,42 @@ export class GenerateCsvDialogComponent {
     if (!this.message.trim()) return;
 
     this.loading = true;
+    this.exportError = null;
     const { filters } = this.data;
 
     this.clientService
       .exportClientsCsv(filters, this.message)
       .subscribe({
         next: (csvContent) => {
-          this.downloadCsv(csvContent);
+          this.parts = this.buildCsvParts(csvContent);
           this.loading = false;
-          this.dialogRef.close();
+
+          // The first download of a batch is never blocked, so a lone file can
+          // save itself. Anything more is handed to the user, one click each.
+          if (this.parts.length === 1) {
+            this.downloadPart(this.parts[0]);
+            this.dialogRef.close();
+          }
         },
         error: (err) => {
           console.error("Error exporting clients CSV:", err);
           this.loading = false;
+          this.exportError = "No se pudo generar el CSV. Intentá de nuevo.";
         },
       });
+  }
+
+  downloadPart(part: CsvPart): void {
+    this.triggerDownload(part.content, part.filename);
+    this.downloadedFilenames.add(part.filename);
+  }
+
+  isDownloaded(part: CsvPart): boolean {
+    return this.downloadedFilenames.has(part.filename);
+  }
+
+  get pendingCount(): number {
+    return this.parts.filter((part) => !this.isDownloaded(part)).length;
   }
 
   buildCsvParts(content: string): CsvPart[] {
@@ -127,15 +158,6 @@ export class GenerateCsvDialogComponent {
     }
 
     return parts;
-  }
-
-  private downloadCsv(content: string): void {
-    this.buildCsvParts(content).forEach((part, index) => {
-      setTimeout(
-        () => this.triggerDownload(part.content, part.filename),
-        index * GenerateCsvDialogComponent.DOWNLOAD_STAGGER_MS,
-      );
-    });
   }
 
   private buildBaseFilename(): string {

@@ -1,4 +1,4 @@
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { GenerateCsvDialogComponent } from "./generate-csv-dialog.component";
 
 /**
@@ -146,18 +146,21 @@ describe("GenerateCsvDialogComponent", () => {
     expect(part.filename).toContain("sinPlan_atrasados");
   });
 
+  /**
+   * Browsers permit the first programmatic download of a batch and put the rest
+   * behind a permission prompt, so files 2..N were silently dropped in
+   * production. Multi-file exports must therefore never self-download: each
+   * part waits for its own click, which always carries user activation.
+   */
   describe("download", () => {
     let downloaded: string[];
 
     beforeEach(() => {
-      jasmine.clock().install();
       downloaded = [];
       spyOn(HTMLAnchorElement.prototype, "click").and.callFake(function (this: HTMLAnchorElement) {
         downloaded.push(this.getAttribute("download") ?? "");
       });
     });
-
-    afterEach(() => jasmine.clock().uninstall());
 
     function generate(recipients: number) {
       const { component, clientService, dialogRef } = createComponent(recipients);
@@ -167,18 +170,27 @@ describe("GenerateCsvDialogComponent", () => {
       return { component, dialogRef };
     }
 
-    it("downloads every part, staggered so the browser does not drop them", () => {
-      generate(100);
+    it("never auto-downloads a multi-file export", () => {
+      const { component, dialogRef } = generate(245);
 
-      jasmine.clock().tick(0);
+      expect(component.parts.length).toBe(6);
+      expect(downloaded).toEqual([]);
+      expect(dialogRef.close).not.toHaveBeenCalled();
+      expect(component.pendingCount).toBe(6);
+    });
+
+    it("downloads one file per click and tracks what is still missing", () => {
+      const { component } = generate(100);
+
+      component.downloadPart(component.parts[0]);
       expect(downloaded.length).toBe(1);
+      expect(component.isDownloaded(component.parts[0])).toBeTrue();
+      expect(component.pendingCount).toBe(2);
 
-      jasmine.clock().tick(300);
-      expect(downloaded.length).toBe(2);
+      component.downloadPart(component.parts[1]);
+      component.downloadPart(component.parts[2]);
 
-      jasmine.clock().tick(300);
-      expect(downloaded.length).toBe(3);
-
+      expect(component.pendingCount).toBe(0);
       expect(downloaded).toEqual([
         jasmine.stringMatching(/_parte1de3\.csv$/),
         jasmine.stringMatching(/_parte2de3\.csv$/),
@@ -186,20 +198,37 @@ describe("GenerateCsvDialogComponent", () => {
       ]);
     });
 
-    it("downloads a single unsuffixed file when the export fits in one", () => {
-      generate(45);
+    it("does not double-count a part downloaded twice", () => {
+      const { component } = generate(100);
 
-      jasmine.clock().tick(2000);
+      component.downloadPart(component.parts[0]);
+      component.downloadPart(component.parts[0]);
 
-      expect(downloaded.length).toBe(1);
-      expect(downloaded[0]).not.toContain("parte");
+      expect(downloaded.length).toBe(2);
+      expect(component.pendingCount).toBe(2);
     });
 
-    it("closes the dialog and clears loading once the export resolves", () => {
-      const { component, dialogRef } = generate(100);
+    it("auto-downloads and closes when the export fits in a single file", () => {
+      const { component, dialogRef } = generate(45);
 
-      expect(component.loading).toBeFalse();
+      expect(component.parts.length).toBe(1);
+      expect(downloaded.length).toBe(1);
+      expect(downloaded[0]).not.toContain("parte");
       expect(dialogRef.close).toHaveBeenCalled();
+      expect(component.loading).toBeFalse();
+    });
+
+    it("surfaces a message and stays open when the export fails", () => {
+      const { component, clientService, dialogRef } = createComponent(100);
+      clientService.exportClientsCsv.and.returnValue(throwError(() => new Error("boom")));
+      component.message = "hola";
+
+      component.onGenerate();
+
+      expect(component.exportError).toBeTruthy();
+      expect(component.loading).toBeFalse();
+      expect(component.parts).toEqual([]);
+      expect(dialogRef.close).not.toHaveBeenCalled();
     });
   });
 });
