@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -77,6 +77,7 @@ export class GenerateCsvDialogComponent {
     },
     private clientService: ClientService,
     private dialogRef: MatDialogRef<GenerateCsvDialogComponent>,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   get estimatedFiles(): number {
@@ -107,6 +108,9 @@ export class GenerateCsvDialogComponent {
         next: (csvContent) => {
           this.parts = this.buildCsvParts(csvContent);
           this.loading = false;
+          // This component is OnPush and the response lands outside any template
+          // event, so without this the dialog stays stuck on "Generando CSV...".
+          this.cdr.markForCheck();
 
           // The first download of a batch is never blocked, so a lone file can
           // save itself. Anything more is handed to the user, one click each.
@@ -119,6 +123,7 @@ export class GenerateCsvDialogComponent {
           console.error("Error exporting clients CSV:", err);
           this.loading = false;
           this.exportError = "No se pudo generar el CSV. Intentá de nuevo.";
+          this.cdr.markForCheck();
         },
       });
   }

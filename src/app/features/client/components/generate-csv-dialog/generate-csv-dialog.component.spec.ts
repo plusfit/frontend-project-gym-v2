@@ -1,4 +1,8 @@
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of, throwError } from "rxjs";
+import { ClientService } from "../../services/client.service";
 import { GenerateCsvDialogComponent } from "./generate-csv-dialog.component";
 
 /**
@@ -15,11 +19,13 @@ describe("GenerateCsvDialogComponent", () => {
   function createComponent(total = 0, filters: Record<string, unknown> = {}) {
     const clientService = jasmine.createSpyObj("ClientService", ["exportClientsCsv"]);
     const dialogRef = jasmine.createSpyObj("MatDialogRef", ["close"]);
+    const cdr = jasmine.createSpyObj("ChangeDetectorRef", ["markForCheck", "detectChanges"]);
 
     return {
-      component: new GenerateCsvDialogComponent({ filters, total }, clientService, dialogRef),
+      component: new GenerateCsvDialogComponent({ filters, total }, clientService, dialogRef, cdr),
       clientService,
       dialogRef,
+      cdr,
     };
   }
 
@@ -163,11 +169,11 @@ describe("GenerateCsvDialogComponent", () => {
     });
 
     function generate(recipients: number) {
-      const { component, clientService, dialogRef } = createComponent(recipients);
+      const { component, clientService, dialogRef, cdr } = createComponent(recipients);
       clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(recipients)));
       component.message = "hola";
       component.onGenerate();
-      return { component, dialogRef };
+      return { component, dialogRef, cdr };
     }
 
     it("never auto-downloads a multi-file export", () => {
@@ -219,7 +225,7 @@ describe("GenerateCsvDialogComponent", () => {
     });
 
     it("surfaces a message and stays open when the export fails", () => {
-      const { component, clientService, dialogRef } = createComponent(100);
+      const { component, clientService, dialogRef, cdr } = createComponent(100);
       clientService.exportClientsCsv.and.returnValue(throwError(() => new Error("boom")));
       component.message = "hola";
 
@@ -229,6 +235,101 @@ describe("GenerateCsvDialogComponent", () => {
       expect(component.loading).toBeFalse();
       expect(component.parts).toEqual([]);
       expect(dialogRef.close).not.toHaveBeenCalled();
+      expect(cdr.markForCheck).toHaveBeenCalled();
+    });
+
+    /**
+     * The component is OnPush and the export resolves outside any template
+     * event, so state set in the subscribe callback does not repaint on its
+     * own. Without this the dialog sits on "Generando CSV..." forever and the
+     * part list never appears — which is invisible to model-only assertions.
+     */
+    it("tells the view to repaint once the export resolves", () => {
+      const { cdr } = generate(245);
+
+      expect(cdr.markForCheck).toHaveBeenCalled();
+    });
+  });
+
+  /**
+   * Rendered specs, deliberately separate from the model-only ones above.
+   *
+   * Both production failures in this dialog lived in the view layer: files
+   * silently dropped by the browser, then a list that never painted under
+   * OnPush. Model assertions passed through both. These render the real
+   * template with real change detection so the DOM is what gets asserted.
+   */
+  describe("rendered", () => {
+    let fixture: ComponentFixture<GenerateCsvDialogComponent>;
+    let clientService: jasmine.SpyObj<ClientService>;
+
+    function setup(total: number) {
+      clientService = jasmine.createSpyObj("ClientService", ["exportClientsCsv"]);
+
+      TestBed.configureTestingModule({
+        imports: [GenerateCsvDialogComponent, NoopAnimationsModule],
+        providers: [
+          { provide: MAT_DIALOG_DATA, useValue: { filters: {}, total } },
+          { provide: MatDialogRef, useValue: jasmine.createSpyObj("MatDialogRef", ["close"]) },
+          { provide: ClientService, useValue: clientService },
+        ],
+      });
+
+      fixture = TestBed.createComponent(GenerateCsvDialogComponent);
+      fixture.detectChanges();
+    }
+
+    function text(): string {
+      return (fixture.nativeElement as HTMLElement).textContent ?? "";
+    }
+
+    function downloadButtons(): HTMLButtonElement[] {
+      return Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll("li button"),
+      ) as HTMLButtonElement[];
+    }
+
+    afterEach(() => TestBed.resetTestingModule());
+
+    it("paints the part list instead of staying on the loading state", () => {
+      setup(245);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(245)));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      expect(text()).not.toContain("Generando CSV");
+      expect(downloadButtons().length).toBe(6);
+      expect(text()).toContain("Te faltan 6 archivos");
+    });
+
+    it("ticks off a part once its button is clicked", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(100)));
+      spyOn(HTMLAnchorElement.prototype, "click");
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      downloadButtons()[0].click();
+      fixture.detectChanges();
+
+      expect(text()).toContain("Te faltan 2 archivos");
+      expect(downloadButtons()[0].textContent).toContain("Descargar de nuevo");
+    });
+
+    it("shows the error message when the export fails", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(throwError(() => new Error("boom")));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      expect(text()).toContain("No se pudo generar el CSV");
+      expect(text()).not.toContain("Generando CSV");
     });
   });
 });
