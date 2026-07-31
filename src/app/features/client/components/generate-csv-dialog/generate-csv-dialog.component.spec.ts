@@ -301,7 +301,7 @@ describe("GenerateCsvDialogComponent", () => {
 
       expect(text()).not.toContain("Generando CSV");
       expect(downloadButtons().length).toBe(6);
-      expect(text()).toContain("Te faltan 6 archivos");
+      expect(text()).toContain("0 de 6 descargados");
     });
 
     it("ticks off a part once its button is clicked", () => {
@@ -316,8 +316,21 @@ describe("GenerateCsvDialogComponent", () => {
       downloadButtons()[0].click();
       fixture.detectChanges();
 
-      expect(text()).toContain("Te faltan 2 archivos");
-      expect(downloadButtons()[0].textContent).toContain("Descargar de nuevo");
+      expect(text()).toContain("1 de 3 descargados");
+      expect(downloadButtons()[0].textContent).toContain("De nuevo");
+    });
+
+    it("shows each part's recipient count so short files are obvious", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(100)));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      const items = (fixture.nativeElement as HTMLElement).querySelectorAll("li");
+      expect(items[0].textContent).toContain("45 destinatarios");
+      expect(items[2].textContent).toContain("10 destinatarios");
     });
 
     it("shows the error message when the export fails", () => {

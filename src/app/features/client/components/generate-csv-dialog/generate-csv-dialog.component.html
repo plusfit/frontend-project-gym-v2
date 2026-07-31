@@ -1,106 +1,152 @@
-<h2 mat-dialog-title class="text-2xl font-bold text-gray-800">Generar CSV de Clientes</h2>
+<div class="flex items-center gap-3 px-6 pt-6 pb-3">
+  <span
+    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-100/20 text-primary-500"
+  >
+    <i class="ph-file-csv text-button-lg leading-none"></i>
+  </span>
+  <div class="min-w-0">
+    <h2 mat-dialog-title class="dialog-heading text-display-xs font-semibold text-neutral-1100">
+      Generar CSV de Clientes
+    </h2>
+    <p class="text-body-sm leading-tight text-neutral-700">
+      {{ parts.length > 1 ? "Descargá cada archivo para enviarlos" : "Mensaje masivo por WhatsApp" }}
+    </p>
+  </div>
+</div>
 
-<mat-dialog-content class="mat-typography py-4">
+<mat-dialog-content class="mat-typography !px-6 !pb-2">
   <!-- Step 1: compose the message -->
   <ng-container *ngIf="parts.length === 0">
-    <p class="text-gray-600 mb-4">
-      Se generará un archivo CSV con {{ data.total }} clientes basados en los filtros actuales.
+    <p class="text-body-md text-neutral-800 mb-4">
+      Se generará un archivo CSV con
+      <span class="font-semibold text-neutral-1100">{{ data.total }} clientes</span>
+      según los filtros actuales.
     </p>
 
     <div
       *ngIf="estimatedFiles > 1"
-      class="border border-amber-200 bg-amber-50 rounded-lg p-3 mb-4 text-sm text-amber-800"
+      class="flex gap-3 rounded-md border border-warning-100/30 bg-warning-50 p-3 mb-5"
     >
-      <p class="font-medium mb-1">
-        La descarga se dividirá en hasta {{ estimatedFiles }} archivos de
-        {{ maxRecipientsPerFile }} destinatarios cada uno.
-      </p>
-      <p>Los vas a descargar de a uno, y después los subís de a uno esperando que cada uno termine.</p>
+      <i class="ph-warning-circle text-button-lg text-warning-100 shrink-0"></i>
+      <div class="text-body-sm text-warning-200 space-y-1 min-w-0">
+        <p class="font-semibold text-warning-300">
+          Se dividirá en hasta {{ estimatedFiles }} archivos de {{ maxRecipientsPerFile }}
+          destinatarios
+        </p>
+        <p>Los descargás de a uno, y los subís de a uno esperando que cada envío termine.</p>
+      </div>
     </div>
 
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Mensaje</mat-label>
       <textarea
         matInput
-        placeholder="Escribe el mensaje para el CSV..."
+        placeholder="Escribí el mensaje que recibirán los clientes..."
         [(ngModel)]="message"
         rows="4"
         [disabled]="loading"
       ></textarea>
-      <mat-hint>Este mensaje aparecerá en la columna 'message' del CSV.</mat-hint>
+      <mat-hint>Aparecerá en la columna 'message' del CSV.</mat-hint>
     </mat-form-field>
 
-    <p *ngIf="exportError" class="text-red-600 text-sm mt-4">{{ exportError }}</p>
+    <div
+      *ngIf="exportError"
+      class="flex items-center gap-2 rounded-md border border-error-100/30 bg-error-50 p-3 mt-4"
+    >
+      <i class="ph-x-circle text-button-lg text-error-100 shrink-0"></i>
+      <p class="text-body-sm text-error-200">{{ exportError }}</p>
+    </div>
 
-    <div *ngIf="loading" class="flex items-center justify-center mt-4">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <span class="ml-2 text-blue-600 font-medium">Generando CSV...</span>
+    <div *ngIf="loading" class="flex items-center justify-center gap-2 mt-5 text-primary-500">
+      <span
+        class="h-5 w-5 animate-spin rounded-full border-2 border-primary-100 border-t-primary-500"
+      ></span>
+      <span class="text-body-sm font-medium">Generando CSV...</span>
     </div>
   </ng-container>
 
   <!-- Step 2: download each part with its own click -->
   <ng-container *ngIf="parts.length > 1">
-    <p class="text-gray-600 mb-1">
-      Se generaron {{ parts.length }} archivos. Descargalos todos antes de cerrar.
-    </p>
-    <p class="text-gray-500 text-sm mb-4">
-      Van de a uno porque el navegador bloquea las descargas múltiples automáticas.
-    </p>
+    <div class="mb-4">
+      <div class="flex items-baseline justify-between mb-2">
+        <span class="text-body-sm font-semibold text-neutral-1100">
+          {{ downloadedCount }} de {{ parts.length }} descargados
+        </span>
+        <span
+          class="text-body-xs"
+          [ngClass]="pendingCount === 0 ? 'text-success-100 font-semibold' : 'text-neutral-700'"
+        >
+          {{ pendingCount === 0 ? "Completo" : "Faltan " + pendingCount }}
+        </span>
+      </div>
+      <div class="h-1.5 w-full overflow-hidden rounded-sm bg-neutral-400">
+        <div
+          class="h-full rounded-sm transition-all duration-300"
+          [ngClass]="pendingCount === 0 ? 'bg-success-100' : 'bg-primary-300'"
+          [style.width.%]="downloadedPercent"
+        ></div>
+      </div>
+    </div>
 
-    <ul class="space-y-2">
+    <ul class="space-y-2 max-h-72 overflow-y-auto pr-1">
       <li
         *ngFor="let part of parts; let i = index"
-        class="flex items-center justify-between gap-3 border border-gray-200 rounded-lg p-3"
-        [class.bg-green-50]="isDownloaded(part)"
-        [class.border-green-200]="isDownloaded(part)"
+        class="flex items-center justify-between gap-3 rounded-md border p-3 transition-all duration-300"
+        [ngClass]="
+          isDownloaded(part)
+            ? 'border-success-100/30 bg-success-50'
+            : 'border-neutral-400 bg-neutral-100 hover:border-neutral-500'
+        "
       >
-        <span class="flex items-center gap-2 min-w-0">
+        <span class="flex items-center gap-3 min-w-0">
           <i
-            class="shrink-0"
-            [ngClass]="isDownloaded(part) ? 'ph-check-circle text-green-600' : 'ph-file-csv text-gray-400'"
+            class="text-button-lg shrink-0"
+            [ngClass]="
+              isDownloaded(part) ? 'ph-check-circle text-success-100' : 'ph-file-csv text-neutral-600'
+            "
           ></i>
-          <span class="text-sm text-gray-700 truncate">Parte {{ i + 1 }} de {{ parts.length }}</span>
+          <span class="min-w-0">
+            <span class="block text-body-sm font-medium text-neutral-1100">
+              Parte {{ i + 1 }} de {{ parts.length }}
+            </span>
+            <span class="block text-body-xs text-neutral-700">
+              {{ recipientCount(part) }} destinatarios
+            </span>
+          </span>
         </span>
 
         <button
-          mat-button
+          appBtn
+          [color]="isDownloaded(part) ? 'secondary' : 'primary'"
           type="button"
           (click)="downloadPart(part)"
-          class="shrink-0 px-4 py-1 rounded-lg transition-colors"
-          [ngClass]="
-            isDownloaded(part)
-              ? 'text-green-700 hover:bg-green-100'
-              : 'text-blue-600 hover:bg-blue-50 font-medium'
-          "
+          class="shrink-0 !text-body-xs !px-3 !py-1.5"
         >
-          {{ isDownloaded(part) ? "Descargar de nuevo" : "Descargar" }}
+          {{ isDownloaded(part) ? "De nuevo" : "Descargar" }}
         </button>
       </li>
     </ul>
 
-    <p *ngIf="pendingCount > 0" class="text-amber-600 text-sm mt-4">
-      Te faltan {{ pendingCount }} archivos por descargar.
-    </p>
-    <p *ngIf="pendingCount === 0" class="text-green-700 text-sm mt-4">
-      Descargaste los {{ parts.length }} archivos.
+    <p
+      *ngIf="pendingCount > 0"
+      class="flex items-center gap-2 text-body-xs text-warning-200 mt-4"
+    >
+      <i class="ph-warning-circle shrink-0"></i>
+      No cierres hasta descargarlos todos: los que falten no se envían.
     </p>
   </ng-container>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="p-4 border-t border-gray-100">
+<mat-dialog-actions align="end" class="!px-6 !py-4 gap-2 border-t border-neutral-400">
   <ng-container *ngIf="parts.length === 0">
-    <button
-      mat-button
-      (click)="onCancel()"
-      class="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-      [disabled]="loading"
-    >
+    <button appBtn color="secondary" type="button" (click)="onCancel()" [disabled]="loading">
       Cancelar
     </button>
     <button
       appBtn
+      color="primary"
+      type="button"
       (click)="onGenerate()"
-      class="px-6 py-2 ml-2"
       [disabled]="loading || !message.trim()"
     >
       Generar
@@ -110,8 +156,9 @@
   <button
     *ngIf="parts.length > 1"
     appBtn
+    [color]="pendingCount === 0 ? 'primary' : 'secondary'"
+    type="button"
     (click)="onCancel()"
-    class="px-6 py-2"
   >
     {{ pendingCount === 0 ? "Listo" : "Cerrar igual" }}
   </button>

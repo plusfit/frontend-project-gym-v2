@@ -137,8 +137,21 @@ export class GenerateCsvDialogComponent {
     return this.downloadedFilenames.has(part.filename);
   }
 
+  recipientCount(part: CsvPart): number {
+    return part.content.split("\n").length - 1;
+  }
+
   get pendingCount(): number {
     return this.parts.filter((part) => !this.isDownloaded(part)).length;
+  }
+
+  get downloadedCount(): number {
+    return this.parts.length - this.pendingCount;
+  }
+
+  get downloadedPercent(): number {
+    if (this.parts.length === 0) return 0;
+    return Math.round((this.downloadedCount / this.parts.length) * 100);
   }
 
   buildCsvParts(content: string): CsvPart[] {
