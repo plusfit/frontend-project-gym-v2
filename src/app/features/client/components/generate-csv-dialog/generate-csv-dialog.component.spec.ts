@@ -1,4 +1,8 @@
-import { of } from "rxjs";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { of, throwError } from "rxjs";
+import { ClientService } from "../../services/client.service";
 import { GenerateCsvDialogComponent } from "./generate-csv-dialog.component";
 
 /**
@@ -15,11 +19,13 @@ describe("GenerateCsvDialogComponent", () => {
   function createComponent(total = 0, filters: Record<string, unknown> = {}) {
     const clientService = jasmine.createSpyObj("ClientService", ["exportClientsCsv"]);
     const dialogRef = jasmine.createSpyObj("MatDialogRef", ["close"]);
+    const cdr = jasmine.createSpyObj("ChangeDetectorRef", ["markForCheck", "detectChanges"]);
 
     return {
-      component: new GenerateCsvDialogComponent({ filters, total }, clientService, dialogRef),
+      component: new GenerateCsvDialogComponent({ filters, total }, clientService, dialogRef, cdr),
       clientService,
       dialogRef,
+      cdr,
     };
   }
 
@@ -146,39 +152,51 @@ describe("GenerateCsvDialogComponent", () => {
     expect(part.filename).toContain("sinPlan_atrasados");
   });
 
+  /**
+   * Browsers permit the first programmatic download of a batch and put the rest
+   * behind a permission prompt, so files 2..N were silently dropped in
+   * production. Multi-file exports must therefore never self-download: each
+   * part waits for its own click, which always carries user activation.
+   */
   describe("download", () => {
     let downloaded: string[];
 
     beforeEach(() => {
-      jasmine.clock().install();
       downloaded = [];
       spyOn(HTMLAnchorElement.prototype, "click").and.callFake(function (this: HTMLAnchorElement) {
         downloaded.push(this.getAttribute("download") ?? "");
       });
     });
 
-    afterEach(() => jasmine.clock().uninstall());
-
     function generate(recipients: number) {
-      const { component, clientService, dialogRef } = createComponent(recipients);
+      const { component, clientService, dialogRef, cdr } = createComponent(recipients);
       clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(recipients)));
       component.message = "hola";
       component.onGenerate();
-      return { component, dialogRef };
+      return { component, dialogRef, cdr };
     }
 
-    it("downloads every part, staggered so the browser does not drop them", () => {
-      generate(100);
+    it("never auto-downloads a multi-file export", () => {
+      const { component, dialogRef } = generate(245);
 
-      jasmine.clock().tick(0);
+      expect(component.parts.length).toBe(6);
+      expect(downloaded).toEqual([]);
+      expect(dialogRef.close).not.toHaveBeenCalled();
+      expect(component.pendingCount).toBe(6);
+    });
+
+    it("downloads one file per click and tracks what is still missing", () => {
+      const { component } = generate(100);
+
+      component.downloadPart(component.parts[0]);
       expect(downloaded.length).toBe(1);
+      expect(component.isDownloaded(component.parts[0])).toBeTrue();
+      expect(component.pendingCount).toBe(2);
 
-      jasmine.clock().tick(300);
-      expect(downloaded.length).toBe(2);
+      component.downloadPart(component.parts[1]);
+      component.downloadPart(component.parts[2]);
 
-      jasmine.clock().tick(300);
-      expect(downloaded.length).toBe(3);
-
+      expect(component.pendingCount).toBe(0);
       expect(downloaded).toEqual([
         jasmine.stringMatching(/_parte1de3\.csv$/),
         jasmine.stringMatching(/_parte2de3\.csv$/),
@@ -186,20 +204,145 @@ describe("GenerateCsvDialogComponent", () => {
       ]);
     });
 
-    it("downloads a single unsuffixed file when the export fits in one", () => {
-      generate(45);
+    it("does not double-count a part downloaded twice", () => {
+      const { component } = generate(100);
 
-      jasmine.clock().tick(2000);
+      component.downloadPart(component.parts[0]);
+      component.downloadPart(component.parts[0]);
 
-      expect(downloaded.length).toBe(1);
-      expect(downloaded[0]).not.toContain("parte");
+      expect(downloaded.length).toBe(2);
+      expect(component.pendingCount).toBe(2);
     });
 
-    it("closes the dialog and clears loading once the export resolves", () => {
-      const { component, dialogRef } = generate(100);
+    it("auto-downloads and closes when the export fits in a single file", () => {
+      const { component, dialogRef } = generate(45);
 
-      expect(component.loading).toBeFalse();
+      expect(component.parts.length).toBe(1);
+      expect(downloaded.length).toBe(1);
+      expect(downloaded[0]).not.toContain("parte");
       expect(dialogRef.close).toHaveBeenCalled();
+      expect(component.loading).toBeFalse();
+    });
+
+    it("surfaces a message and stays open when the export fails", () => {
+      const { component, clientService, dialogRef, cdr } = createComponent(100);
+      clientService.exportClientsCsv.and.returnValue(throwError(() => new Error("boom")));
+      component.message = "hola";
+
+      component.onGenerate();
+
+      expect(component.exportError).toBeTruthy();
+      expect(component.loading).toBeFalse();
+      expect(component.parts).toEqual([]);
+      expect(dialogRef.close).not.toHaveBeenCalled();
+      expect(cdr.markForCheck).toHaveBeenCalled();
+    });
+
+    /**
+     * The component is OnPush and the export resolves outside any template
+     * event, so state set in the subscribe callback does not repaint on its
+     * own. Without this the dialog sits on "Generando CSV..." forever and the
+     * part list never appears — which is invisible to model-only assertions.
+     */
+    it("tells the view to repaint once the export resolves", () => {
+      const { cdr } = generate(245);
+
+      expect(cdr.markForCheck).toHaveBeenCalled();
+    });
+  });
+
+  /**
+   * Rendered specs, deliberately separate from the model-only ones above.
+   *
+   * Both production failures in this dialog lived in the view layer: files
+   * silently dropped by the browser, then a list that never painted under
+   * OnPush. Model assertions passed through both. These render the real
+   * template with real change detection so the DOM is what gets asserted.
+   */
+  describe("rendered", () => {
+    let fixture: ComponentFixture<GenerateCsvDialogComponent>;
+    let clientService: jasmine.SpyObj<ClientService>;
+
+    function setup(total: number) {
+      clientService = jasmine.createSpyObj("ClientService", ["exportClientsCsv"]);
+
+      TestBed.configureTestingModule({
+        imports: [GenerateCsvDialogComponent, NoopAnimationsModule],
+        providers: [
+          { provide: MAT_DIALOG_DATA, useValue: { filters: {}, total } },
+          { provide: MatDialogRef, useValue: jasmine.createSpyObj("MatDialogRef", ["close"]) },
+          { provide: ClientService, useValue: clientService },
+        ],
+      });
+
+      fixture = TestBed.createComponent(GenerateCsvDialogComponent);
+      fixture.detectChanges();
+    }
+
+    function text(): string {
+      return (fixture.nativeElement as HTMLElement).textContent ?? "";
+    }
+
+    function downloadButtons(): HTMLButtonElement[] {
+      return Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll("li button"),
+      ) as HTMLButtonElement[];
+    }
+
+    afterEach(() => TestBed.resetTestingModule());
+
+    it("paints the part list instead of staying on the loading state", () => {
+      setup(245);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(245)));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      expect(text()).not.toContain("Generando CSV");
+      expect(downloadButtons().length).toBe(6);
+      expect(text()).toContain("0 de 6 descargados");
+    });
+
+    it("ticks off a part once its button is clicked", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(100)));
+      spyOn(HTMLAnchorElement.prototype, "click");
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      downloadButtons()[0].click();
+      fixture.detectChanges();
+
+      expect(text()).toContain("1 de 3 descargados");
+      expect(downloadButtons()[0].textContent).toContain("De nuevo");
+    });
+
+    it("shows each part's recipient count so short files are obvious", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(of(csvWithRecipients(100)));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      const items = (fixture.nativeElement as HTMLElement).querySelectorAll("li");
+      expect(items[0].textContent).toContain("45 destinatarios");
+      expect(items[2].textContent).toContain("10 destinatarios");
+    });
+
+    it("shows the error message when the export fails", () => {
+      setup(100);
+      clientService.exportClientsCsv.and.returnValue(throwError(() => new Error("boom")));
+
+      fixture.componentInstance.message = "hola";
+      fixture.componentInstance.onGenerate();
+      fixture.detectChanges();
+
+      expect(text()).toContain("No se pudo generar el CSV");
+      expect(text()).not.toContain("Generando CSV");
     });
   });
 });

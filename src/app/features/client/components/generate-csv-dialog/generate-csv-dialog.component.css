@@ -1,6 +1,6 @@
 :host {
   display: block;
-  max-width: 500px;
+  max-width: 520px;
 }
 
 mat-form-field {
@@ -9,4 +9,46 @@ mat-form-field {
 
 textarea {
   resize: none;
+}
+
+/* Material pads the dialog body by default; the template owns spacing here. */
+:host ::ng-deep .mat-mdc-dialog-content {
+  max-height: 65vh;
+}
+
+/*
+ * mat-dialog-title carries MDC's baseline strut:
+ *   .mdc-dialog__title::before { display:inline-block; height:40px; content:"" }
+ * That invisible 40px inline box pushes the heading down inside its own line
+ * box, so the title no longer lines up with the icon beside it. Drop the strut
+ * and own the metrics here.
+ */
+.dialog-heading {
+  margin: 0;
+  padding: 0;
+  line-height: 1.25;
+}
+
+.dialog-heading::before {
+  display: none;
+}
+
+/* The part list can scroll on large exports — keep the scrollbar unobtrusive. */
+ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  /* neutral-500 / borderRadius.sm from tailwind.config.js */
+  background-color: #cdd5df;
+  border-radius: 0.25rem;
+}
+
+ul::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* The global button rule forces px-5; list actions need to stay compact. */
+:host ::ng-deep li button {
+  min-width: 6.5rem;
 }
