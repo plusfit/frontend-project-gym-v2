@@ -5,6 +5,21 @@
     Se generará un archivo CSV con {{ data.total }} clientes basados en los filtros actuales.
   </p>
 
+  <div
+    *ngIf="estimatedFiles > 1"
+    class="border border-amber-200 bg-amber-50 rounded-lg p-3 mb-4 text-sm text-amber-800"
+  >
+    <p class="font-medium mb-1">
+      La descarga se dividirá en hasta {{ estimatedFiles }} archivos de
+      {{ maxRecipientsPerFile }} destinatarios cada uno.
+    </p>
+    <p class="mb-1">
+      Si el navegador pide permiso para descargar varios archivos, aceptá: de lo contrario solo
+      se guardará el primero. Verificá que los recibiste todos antes de continuar.
+    </p>
+    <p>Subí un archivo por vez al enviar, esperando que termine cada uno.</p>
+  </div>
+
   <mat-form-field class="w-full" appearance="outline">
     <mat-label>Mensaje</mat-label>
     <textarea
