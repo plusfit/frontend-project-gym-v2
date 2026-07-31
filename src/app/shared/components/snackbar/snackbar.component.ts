@@ -13,7 +13,7 @@ import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-snackbar',
   templateUrl: './snackbar.component.html',
-  styleUrls: ['./snackbar.component.scss'],
+  styleUrls: ['./snackbar.component.css'],
   standalone: true,
   imports: [NgClass],
 })
