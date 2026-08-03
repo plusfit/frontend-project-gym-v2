@@ -56,35 +56,48 @@ export class PlansPageComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
   ) {}
 
+  currentSearchQuery: string = '';
+
   ngOnInit(): void {
     this.plans = this.store.select(PlansState.getPlans);
     this.loading = this.store.select(PlansState.isLoading);
     this.total = this.store.select(PlansState.getTotal);
-    const payload = {
+    
+    this.filterValues = {
       page: 1,
       pageSize: this.pageSize,
     };
-    this.store.dispatch(new GetPlans(payload));
+    
+    this.store.dispatch(new GetPlans(this.filterValues));
   }
 
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
-    const payload = {
+    
+    this.filterValues = {
       page: currentPage,
       pageSize: currentPageSize,
+      ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
     };
-    this.store.dispatch(new GetPlans(payload));
+    
+    this.store.dispatch(new GetPlans(this.filterValues));
   }
 
   onSearch(searchQuery: { searchQ: string }): void {
+    this.currentSearchQuery = searchQuery.searchQ;
+    
     this.filterValues = {
       page: 1,
       pageSize: this.pageSize,
-      searchQ: searchQuery.searchQ,
+      ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
     };
 
-    this.store.dispatch(new GetPlans({ ...this.filterValues }));
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+
+    this.store.dispatch(new GetPlans(this.filterValues));
   }
 
   createPlan(): void {

@@ -62,25 +62,31 @@ export class SubRoutinePageComponent implements OnInit, OnDestroy {
     this.subRoutines = this.store.select(SubRoutinesState.getSubRoutines);
     this.loading = this.store.select(SubRoutinesState.isLoading);
     this.total = this.store.select(SubRoutinesState.getTotal);
-    const payload = {
+    
+    this.filterValues = {
       page: 1,
       pageSize: this.pageSize,
     };
-    this.store.dispatch(new GetSubRoutines(payload));
+    
+    this.store.dispatch(new GetSubRoutines(this.filterValues));
   }
 
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
-    const payload = {
+    
+    this.filterValues = {
+      ...this.filterValues,
       page: currentPage,
       pageSize: currentPageSize,
     };
-    this.store.dispatch(new GetSubRoutines(payload));
+    
+    this.store.dispatch(new GetSubRoutines({ ...this.filterValues }));
   }
 
   onSearch(searchQuery: { searchQ: string }): void {
     this.filterValues = {
+      ...this.filterValues,
       page: 1,
       pageSize: this.pageSize,
       searchQ: searchQuery.searchQ,

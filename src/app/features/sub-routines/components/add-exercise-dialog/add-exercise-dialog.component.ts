@@ -36,6 +36,7 @@ export class AddExerciseDialogComponent implements OnInit {
   selectedExercises: Exercise[] = [];
   subRoutineExercises: Exercise[] = [];
   pageSize = environment.config.pageSize;
+  currentSearchQuery: string = '';
 
   constructor(
     private store: Store,
@@ -55,13 +56,18 @@ export class AddExerciseDialogComponent implements OnInit {
   }
 
   loadExercises(page: number): void {
-    this.store.dispatch(new GetExercisesByPage({ page }));
+    if (this.currentSearchQuery) {
+      this.store.dispatch(
+        new GetExercisesByName({ page }, { name: this.currentSearchQuery }),
+      );
+    } else {
+      this.store.dispatch(new GetExercisesByPage({ page }));
+    }
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
-    this.store.dispatch(
-      new GetExercisesByName({ page: 1 }, { name: filters.searchQ }),
-    );
+    this.currentSearchQuery = filters.searchQ;
+    this.loadExercises(1);
   }
 
   toggleExercise(element: any): void {

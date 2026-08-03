@@ -103,6 +103,8 @@ export class ClientPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  currentSearchQuery: string = '';
+
   paginate(pageEvent: PageEvent): void {
     const currentPage = pageEvent.pageIndex + 1;
     const currentPageSize = pageEvent.pageSize;
@@ -111,16 +113,19 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       ...this.filterValues,
       page: currentPage,
       pageSize: currentPageSize,
+      ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
     };
 
     this.store.dispatch(new GetClients(this.filterValues));
   }
 
   onSearch(searchQuery: { searchQ: string }): void {
+    this.currentSearchQuery = searchQuery.searchQ;
+
     this.filterValues = {
       ...this.filterValues,
       page: 1,
-      searchQ: searchQuery.searchQ,
+      searchQ: this.currentSearchQuery,
     };
 
     this.store.dispatch(new GetClients(this.filterValues));

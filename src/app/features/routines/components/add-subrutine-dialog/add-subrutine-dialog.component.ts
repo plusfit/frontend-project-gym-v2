@@ -39,6 +39,7 @@ export class AddSubroutineDialogComponent implements OnInit {
   subRoutines: SubRoutine[] = [];
   pageSize = environment.config.pageSize;
   pathClient: boolean = false;
+  currentSearchQuery: string = '';
 
   constructor(
     private store: Store,
@@ -64,18 +65,17 @@ export class AddSubroutineDialogComponent implements OnInit {
 
   loadSubrutines(page: number): void {
     this.store.dispatch(
-      new GetSubRoutines({ page: page, pageSize: this.pageSize }),
+      new GetSubRoutines({
+        page: page,
+        pageSize: this.pageSize,
+        ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
+      }),
     );
   }
 
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
-    this.store.dispatch(
-      new GetSubRoutines({
-        page: 1,
-        searchQ: filters.searchQ,
-        pageSize: this.pageSize,
-      }),
-    );
+    this.currentSearchQuery = filters.searchQ;
+    this.loadSubrutines(1);
   }
 
   toggleRoutine(element: any): void {

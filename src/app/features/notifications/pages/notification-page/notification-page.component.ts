@@ -80,32 +80,37 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    paginate(pageEvent: PageEvent): void {
-        const currentPage = pageEvent.pageIndex + 1;
-        const currentPageSize = pageEvent.pageSize;
+  currentSearchQuery: string = '';
 
-        this.filterValues = {
-            ...this.filterValues,
-            page: currentPage,
-            pageSize: currentPageSize,
-        };
+  paginate(pageEvent: PageEvent): void {
+      const currentPage = pageEvent.pageIndex + 1;
+      const currentPageSize = pageEvent.pageSize;
 
-        this.store.dispatch(new GetNotifications(this.filterValues));
-    }
+      this.filterValues = {
+          ...this.filterValues,
+          page: currentPage,
+          pageSize: currentPageSize,
+          ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
+      };
 
-    onSearch(searchQuery: { searchQ: string }): void {
-        this.filterValues = {
-            ...this.filterValues,
-            page: 1,
-            searchQ: searchQuery.searchQ,
-        };
+      this.store.dispatch(new GetNotifications(this.filterValues));
+  }
 
-        if (this.paginator) {
-            this.paginator.pageIndex = 0;
-        }
+  onSearch(searchQuery: { searchQ: string }): void {
+      this.currentSearchQuery = searchQuery.searchQ;
+      
+      this.filterValues = {
+          ...this.filterValues,
+          page: 1,
+          searchQ: this.currentSearchQuery,
+      };
 
-        this.store.dispatch(new GetNotifications(this.filterValues));
-    }
+      if (this.paginator) {
+          this.paginator.pageIndex = 0;
+      }
+
+      this.store.dispatch(new GetNotifications(this.filterValues));
+  }
 
     openWhatsappBulkDialog(): void {
         this.dialog.open(NotificationsWhatsappBulkDialogComponent, {

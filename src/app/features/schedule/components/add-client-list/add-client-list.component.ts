@@ -124,12 +124,15 @@ export class AddClientListComponent implements OnInit, AfterViewChecked, OnDestr
       : [...clients];
   }
 
+  currentSearchQuery: string = '';
+
   onSearch(filters: { searchQ: string; isActive: boolean }): void {
+    this.currentSearchQuery = filters.searchQ;
     this.store.dispatch(
       new getClientsAssignable({
         page: 1,
         pageSize: this.pageSize,
-        searchQ: filters.searchQ,
+        searchQ: this.currentSearchQuery,
         hourId: this.data.id,
       }),
     );
@@ -141,6 +144,7 @@ export class AddClientListComponent implements OnInit, AfterViewChecked, OnDestr
         page: page,
         pageSize: this.pageSize,
         hourId: this.data.id,
+        ...(this.currentSearchQuery ? { searchQ: this.currentSearchQuery } : {}),
       }),
     );
   }
