@@ -234,6 +234,12 @@ export class TableComponent implements OnInit {
    */
   getTextBadge(value: string): string {
     switch (value) {
+      case "room":
+        return "Sala";
+      case "mix":
+        return "Mixto";
+      case "mixed":
+        return "Mixto";
       case "upper_body":
         return "Tren Superior";
       case "lower_body":
