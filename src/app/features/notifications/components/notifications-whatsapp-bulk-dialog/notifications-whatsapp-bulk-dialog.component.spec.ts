@@ -8,7 +8,7 @@ import {
   WhatsAppStatusResponse,
 } from "../../interface/whatsapp-status.interface";
 import { NotificationService } from "../../services/notification.service";
-import { BulkUploadComponent } from "../bulk-upload/bulk-upload.component";
+import { BulkSendComponent } from "../bulk-send/bulk-send.component";
 import { WhatsAppConnectionComponent } from "../whatsapp-connection/whatsapp-connection.component";
 import { NotificationsWhatsappBulkDialogComponent } from "./notifications-whatsapp-bulk-dialog.component";
 
@@ -29,11 +29,11 @@ class WhatsAppConnectionStubComponent {
 }
 
 @Component({
-  selector: "app-bulk-upload",
+  selector: "app-bulk-send",
   standalone: true,
-  template: "<p>Upload CSV mock</p>",
+  template: "<p>Bulk send mock</p>",
 })
-class BulkUploadStubComponent {}
+class BulkSendStubComponent {}
 
 describe("NotificationsWhatsappBulkDialogComponent", () => {
   let fixture: ComponentFixture<NotificationsWhatsappBulkDialogComponent>;
@@ -51,8 +51,8 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
       ],
     })
       .overrideComponent(NotificationsWhatsappBulkDialogComponent, {
-        remove: { imports: [WhatsAppConnectionComponent, BulkUploadComponent] },
-        add: { imports: [WhatsAppConnectionStubComponent, BulkUploadStubComponent] },
+        remove: { imports: [WhatsAppConnectionComponent, BulkSendComponent] },
+        add: { imports: [WhatsAppConnectionStubComponent, BulkSendStubComponent] },
       })
       .compileComponents();
 
@@ -74,22 +74,22 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
     TestBed.resetTestingModule();
   });
 
-  it("shows QR connection guidance, not CSV upload, when WhatsApp is disconnected", async () => {
+  it("shows QR connection guidance, not the send flow, when WhatsApp is disconnected", async () => {
     await createComponent({ status: WhatsAppConnectionStatus.DISCONNECTED, isConnected: false });
 
-    expect(fixture.nativeElement.textContent).toContain("Conectá WhatsApp para enviar CSV");
+    expect(fixture.nativeElement.textContent).toContain("Conectá WhatsApp para el envío masivo");
     expect(fixture.debugElement.query(By.css("app-whatsapp-connection")))
       .withContext("QR connection flow is active")
       .not.toBeNull();
-    expect(fixture.debugElement.query(By.css("app-bulk-upload"))).toBeNull();
+    expect(fixture.debugElement.query(By.css("app-bulk-send"))).toBeNull();
   });
 
-  it("shows CSV upload, not QR guidance, when WhatsApp is connected", async () => {
+  it("shows the send flow, not QR guidance, when WhatsApp is connected", async () => {
     await createComponent({ status: WhatsAppConnectionStatus.CONNECTED, isConnected: true });
 
     expect(fixture.nativeElement.textContent).toContain("Listo para enviar mensajes");
-    expect(fixture.debugElement.query(By.css("app-bulk-upload")))
-      .withContext("CSV upload flow is active")
+    expect(fixture.debugElement.query(By.css("app-bulk-send")))
+      .withContext("bulk send flow is active")
       .not.toBeNull();
     expect(fixture.debugElement.query(By.css("app-whatsapp-connection"))).toBeNull();
   });
@@ -103,7 +103,7 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
     fixture.detectChanges();
 
     expect(service.logoutWhatsApp).toHaveBeenCalled();
-    expect(fixture.nativeElement.textContent).toContain("Conectá WhatsApp para enviar CSV");
+    expect(fixture.nativeElement.textContent).toContain("Conectá WhatsApp para el envío masivo");
     expect(fixture.debugElement.query(By.css("app-whatsapp-connection"))).not.toBeNull();
   });
 
@@ -117,7 +117,7 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
     expect(disconnectButton.nativeElement.textContent.trim()).toBe("Desconectar");
   });
 
-  it("updates from connection guidance to CSV upload when child status changes", async () => {
+  it("updates from connection guidance to the send flow when child status changes", async () => {
     await createComponent({ status: WhatsAppConnectionStatus.QR_READY, isConnected: false });
 
     const child = fixture.debugElement.query(By.directive(WhatsAppConnectionStubComponent))
@@ -126,7 +126,7 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain("Listo para enviar mensajes");
-    expect(fixture.debugElement.query(By.css("app-bulk-upload"))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css("app-bulk-send"))).not.toBeNull();
   });
 
   it("keeps an understandable error state when status cannot load", async () => {
@@ -140,8 +140,8 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
       ],
     })
       .overrideComponent(NotificationsWhatsappBulkDialogComponent, {
-        remove: { imports: [WhatsAppConnectionComponent, BulkUploadComponent] },
-        add: { imports: [WhatsAppConnectionStubComponent, BulkUploadStubComponent] },
+        remove: { imports: [WhatsAppConnectionComponent, BulkSendComponent] },
+        add: { imports: [WhatsAppConnectionStubComponent, BulkSendStubComponent] },
       })
       .compileComponents();
 
@@ -150,7 +150,7 @@ describe("NotificationsWhatsappBulkDialogComponent", () => {
 
     const alert = fixture.debugElement.query(By.css("[role='alert']"));
     expect(alert.nativeElement.textContent).toContain("No pudimos leer el estado de WhatsApp");
-    expect(fixture.debugElement.query(By.css("app-bulk-upload"))).toBeNull();
+    expect(fixture.debugElement.query(By.css("app-bulk-send"))).toBeNull();
   });
 
   it("closes the modal from the accessible close action", async () => {

@@ -6,7 +6,7 @@ import {
   WhatsAppStatusResponse,
 } from "../../interface/whatsapp-status.interface";
 import { NotificationService } from "../../services/notification.service";
-import { BulkUploadComponent } from "../bulk-upload/bulk-upload.component";
+import { BulkSendComponent } from "../bulk-send/bulk-send.component";
 import { WhatsAppConnectionComponent } from "../whatsapp-connection/whatsapp-connection.component";
 
 export interface WhatsappBulkDialogState {
@@ -20,13 +20,12 @@ export interface WhatsappBulkDialogState {
 @Component({
   selector: "app-notifications-whatsapp-bulk-dialog",
   standalone: true,
-  imports: [MatDialogModule, WhatsAppConnectionComponent, BulkUploadComponent],
+  imports: [MatDialogModule, WhatsAppConnectionComponent, BulkSendComponent],
   templateUrl: "./notifications-whatsapp-bulk-dialog.component.html",
   styleUrls: ["./notifications-whatsapp-bulk-dialog.component.css"],
 })
 export class NotificationsWhatsappBulkDialogComponent implements OnInit, OnDestroy {
   readonly WhatsAppConnectionStatus = WhatsAppConnectionStatus;
-  showCsvInfo = true;
 
   state: WhatsappBulkDialogState = {
     status: WhatsAppConnectionStatus.INITIALIZING,
@@ -52,22 +51,6 @@ export class NotificationsWhatsappBulkDialogComponent implements OnInit, OnDestr
 
   close(): void {
     this.dialogRef.close();
-  }
-
-  dismissCsvInfo(): void {
-    this.showCsvInfo = false;
-  }
-
-  downloadCsvTemplate(): void {
-    const csvTemplate = `to,message\n+59899123456,"Hola este es un mensaje de prueba\n"`;
-    const blob = new Blob([csvTemplate], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "plantilla-notificaciones-whatsapp.csv";
-    link.click();
-    URL.revokeObjectURL(url);
   }
 
   onStatusChange(status: WhatsAppStatusResponse): void {
@@ -128,14 +111,14 @@ export class NotificationsWhatsappBulkDialogComponent implements OnInit, OnDestr
     }
 
     if (this.state.isConnected) {
-      return "Listo para enviar mensajes desde un archivo CSV validado.";
+      return "Listo para elegir destinatarios y enviar el mensaje.";
     }
 
     if (this.state.error) {
       return this.state.error;
     }
 
-    return "Conectá WhatsApp para enviar CSV sin exponer el formulario antes de tiempo.";
+    return "Conectá WhatsApp para habilitar el envío masivo.";
   }
 
   get statusClass(): string {

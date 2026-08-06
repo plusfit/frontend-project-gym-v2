@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { environment } from "../../../../environments/environment";
 import { NotificationReason, NotificationStatus } from "../enums/notifications.enum";
-import { ApiEnvelope, BulkStatusResponse, BulkUploadResponse } from "../interface/bulk-status.interface";
+import { ApiEnvelope, BulkSendResponse, BulkStatusResponse, BulkUploadResponse } from "../interface/bulk-status.interface";
 import { WhatsAppStatusApiResponse, WhatsAppStatusResponse } from "../interface/whatsapp-status.interface";
 
 @Injectable({
@@ -65,6 +65,19 @@ export class NotificationService {
             .post<ApiEnvelope<BulkUploadResponse>>(
                 `${environment.api}/notifications/bulk-upload`,
                 formData,
+            )
+            .pipe(map((response) => response.data));
+    }
+
+    /**
+     * File-less bulk send. Posts the ids the admin selected and lets the backend
+     * resolve the phones, so nothing is written to a file or parsed back.
+     */
+    sendBulkMessage(clientIds: string[], message: string): Observable<BulkSendResponse> {
+        return this.http
+            .post<ApiEnvelope<BulkSendResponse>>(
+                `${environment.api}/notifications/bulk-send`,
+                { clientIds, message },
             )
             .pipe(map((response) => response.data));
     }

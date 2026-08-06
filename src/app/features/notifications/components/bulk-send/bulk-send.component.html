@@ -1,0 +1,247 @@
+<div class="bulk-send-container">
+    <ol class="steps" aria-label="Pasos del envío masivo">
+        <li [class.active]="step === 'select'" [class.done]="step !== 'select'">1. Seleccionar</li>
+        <li [class.active]="step === 'review'" [class.done]="step === 'compose' || step === 'progress'">2. Confirmar</li>
+        <li [class.active]="step === 'compose'" [class.done]="step === 'progress'">3. Mensaje</li>
+    </ol>
+
+    <!-- Step 1: filter and pick -->
+    @if (step === 'select') {
+        <section class="step-panel" aria-labelledby="bulk-send-select-title">
+            <h3 id="bulk-send-select-title" class="step-title">¿A quién le enviamos?</h3>
+            <p class="step-help">
+                Filtrá la lista y destildá a quien no quieras incluir. Empiezan todos seleccionados.
+            </p>
+
+            <div class="filters">
+                <label class="search-field">
+                    <span class="visually-hidden">Buscar cliente por nombre, email o cédula</span>
+                    <i class="ph-magnifying-glass" aria-hidden="true"></i>
+                    <input
+                        type="search"
+                        placeholder="Buscar por nombre, email o cédula"
+                        [ngModel]="filters.searchQ"
+                        (ngModelChange)="applyFilters({ searchQ: $event })"
+                    />
+                </label>
+
+                <div class="filter-toggles">
+                    <label>
+                        <input
+                            type="checkbox"
+                            [ngModel]="filters.withoutPlan"
+                            (ngModelChange)="applyFilters({ withoutPlan: $event })"
+                        />
+                        Sin plan
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            [ngModel]="filters.overdue"
+                            (ngModelChange)="applyFilters({ overdue: $event })"
+                        />
+                        Atrasados
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            [ngModel]="filters.disabled"
+                            (ngModelChange)="applyFilters({ disabled: $event })"
+                        />
+                        Deshabilitados
+                    </label>
+                </div>
+            </div>
+
+            @if (loadingClients) {
+                <p class="loading" role="status">Cargando clientes…</p>
+            } @else if (loadError) {
+                <div class="error-message">
+                    <i class="ph-warning-circle" aria-hidden="true"></i>
+                    <span>{{ loadError }}</span>
+                </div>
+            } @else if (selection.candidates.length === 0) {
+                <p class="empty" role="status">Ningún cliente coincide con este filtro.</p>
+            } @else {
+                <div class="list-header">
+                    <label class="select-all">
+                        <input
+                            type="checkbox"
+                            [checked]="selection.allSelected"
+                            [indeterminate]="!selection.allSelected && !selection.noneSelected"
+                            (change)="toggleAll()"
+                        />
+                        Seleccionar todos ({{ selection.candidates.length }})
+                    </label>
+                    <span class="selected-count">{{ selection.selectedCount }} seleccionados</span>
+                </div>
+
+                <ul class="recipient-list">
+                    @for (candidate of selection.candidates; track candidate._id) {
+                        <li [class.unreachable]="!candidate.phone">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    [checked]="selection.isSelected(candidate._id)"
+                                    (change)="toggle(candidate._id)"
+                                />
+                                <span class="recipient-name">{{ candidate.name }}</span>
+                                @if (candidate.phone) {
+                                    <span class="recipient-phone">{{ candidate.phone }}</span>
+                                } @else {
+                                    <span class="recipient-warning">
+                                        <i class="ph-warning" aria-hidden="true"></i> sin teléfono
+                                    </span>
+                                }
+                            </label>
+                        </li>
+                    }
+                </ul>
+            }
+
+            <div class="step-actions">
+                <button type="button" class="primary" [disabled]="!canGoToReview" (click)="goToReview()">
+                    Continuar
+                </button>
+            </div>
+        </section>
+    }
+
+    <!-- Step 2: confirm -->
+    @if (step === 'review') {
+        <section class="step-panel" aria-labelledby="bulk-send-review-title">
+            <h3 id="bulk-send-review-title" class="step-title">Confirmá los destinatarios</h3>
+
+            <dl class="summary">
+                <div>
+                    <dt>Seleccionados</dt>
+                    <dd>{{ selection.selectedCount }}</dd>
+                </div>
+                <div>
+                    <dt>Van a recibir el mensaje</dt>
+                    <dd class="highlight">{{ selection.reachableCount }}</dd>
+                </div>
+            </dl>
+
+            @if (selection.selectedWithoutPhone.length > 0) {
+                <div class="warning-box">
+                    <p>
+                        <i class="ph-warning" aria-hidden="true"></i>
+                        {{ selection.selectedWithoutPhone.length }} no tienen teléfono registrado y
+                        no van a recibir nada:
+                    </p>
+                    <ul>
+                        @for (candidate of selection.selectedWithoutPhone; track candidate._id) {
+                            <li>{{ candidate.name }}</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="step-actions">
+                <button type="button" class="secondary" (click)="back()">Volver</button>
+                <button type="button" class="primary" (click)="goToCompose()">
+                    Escribir mensaje
+                </button>
+            </div>
+        </section>
+    }
+
+    <!-- Step 3: write and send -->
+    @if (step === 'compose') {
+        <section class="step-panel" aria-labelledby="bulk-send-compose-title">
+            <h3 id="bulk-send-compose-title" class="step-title">
+                Mensaje para {{ selection.reachableCount }} clientes
+            </h3>
+            <p class="step-help">
+                Los saltos de línea se respetan. Usá <code>*negrita*</code>, <code>_cursiva_</code> y
+                <code>- </code> al inicio de la línea para listas.
+            </p>
+
+            <label class="message-field">
+                <span class="visually-hidden">Mensaje a enviar</span>
+                <textarea
+                    rows="12"
+                    placeholder="Pegá acá el mensaje…"
+                    [(ngModel)]="message"
+                ></textarea>
+            </label>
+            <p class="char-count">{{ message.length }} / 4096 caracteres</p>
+
+            @if (sendError$ | async; as error) {
+                <div class="error-message">
+                    <i class="ph-warning-circle" aria-hidden="true"></i>
+                    <span>{{ error }}</span>
+                </div>
+            }
+
+            <div class="step-actions">
+                <button type="button" class="secondary" (click)="back()">Volver</button>
+                <button
+                    type="button"
+                    class="primary"
+                    [disabled]="!canSend || (sending$ | async)"
+                    (click)="send()"
+                >
+                    @if (sending$ | async) {
+                        Enviando…
+                    } @else {
+                        Enviar a {{ selection.reachableCount }}
+                    }
+                </button>
+            </div>
+        </section>
+    }
+
+    <!-- Step 4: progress -->
+    @if (step === 'progress') {
+        <section class="step-panel" aria-labelledby="bulk-send-progress-title">
+            <h3 id="bulk-send-progress-title" class="step-title">Envío en curso</h3>
+
+            @if (bulkStatus$ | async; as status) {
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="status-badge">{{ status.status | bulkStatusLabel }}</span>
+                        <span class="progress-info">
+                            {{ status.processedRows }} de {{ status.totalRows }}
+                        </span>
+                    </div>
+                    <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="status.processedRows" [attr.aria-valuemin]="0" [attr.aria-valuemax]="status.totalRows">
+                        <div
+                            class="progress-fill"
+                            [style.width.%]="status.totalRows ? (status.processedRows / status.totalRows) * 100 : 0"
+                        ></div>
+                    </div>
+                    <p class="progress-counts">
+                        {{ status.successCount }} enviados · {{ status.failureCount }} fallidos
+                    </p>
+                </div>
+            } @else {
+                <p class="loading" role="status">Encolando mensajes…</p>
+            }
+
+            @if (skipped$ | async; as skipped) {
+                @if (skipped.length > 0) {
+                    <div class="warning-box">
+                        <p>
+                            <i class="ph-warning" aria-hidden="true"></i>
+                            {{ skipped.length }} clientes quedaron afuera:
+                        </p>
+                        <ul>
+                            @for (item of skipped; track item.clientId) {
+                                <li>
+                                    {{ item.name || item.clientId }} —
+                                    <span class="skip-reason">{{ skipReasonLabel(item.reason) }}</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+
+            <div class="step-actions">
+                <button type="button" class="secondary" (click)="restart()">Nuevo envío</button>
+            </div>
+        </section>
+    }
+</div>
