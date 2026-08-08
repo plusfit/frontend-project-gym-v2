@@ -24,6 +24,13 @@ export interface ApiEnvelope<T> {
     data: T;
 }
 
+/** Result of sending the campaign body to the admin's own phone. */
+export interface TestSendResponse {
+    jobId: string;
+    status: string;
+    scheduledFor: string;
+}
+
 /** Why a selected client did not make it into the batch. */
 export type BulkSendSkipReason =
     | "not_found"
