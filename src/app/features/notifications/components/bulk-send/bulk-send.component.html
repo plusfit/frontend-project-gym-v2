@@ -10,8 +10,26 @@
         <section class="step-panel" aria-labelledby="bulk-send-select-title">
             <h3 id="bulk-send-select-title" class="step-title">¿A quién le enviamos?</h3>
             <p class="step-help">
-                Filtrá la lista y destildá a quien no quieras incluir. Empiezan todos seleccionados.
+                Buscá y tildá a quien quieras sumar. Lo elegido se mantiene aunque cambies de
+                búsqueda o de filtro.
             </p>
+
+            @if (selection.selectedCount > 0) {
+                <div class="selection-summary" aria-live="polite">
+                    <span class="selection-total">
+                        <i class="ph-shopping-bag-open" aria-hidden="true"></i>
+                        {{ selection.selectedCount }} seleccionados en total
+                        @if (selection.offScreenCount > 0) {
+                            <span class="off-screen">
+                                ({{ selection.offScreenCount }} fuera de este filtro)
+                            </span>
+                        }
+                    </span>
+                    <button type="button" class="clear-selection" (click)="clearSelection()">
+                        Limpiar selección
+                    </button>
+                </div>
+            }
 
             <div class="filters">
                 <label class="search-field">
@@ -21,82 +39,111 @@
                         type="search"
                         placeholder="Buscar por nombre, email o cédula"
                         [ngModel]="filters.searchQ"
-                        (ngModelChange)="applyFilters({ searchQ: $event })"
+                        (ngModelChange)="onSearchQueryChange($event)"
                     />
                 </label>
 
-                <div class="filter-toggles">
-                    <label>
+                <div class="filter-chips" role="group" aria-label="Filtros rápidos">
+                    <label class="filter-chip" [class.on]="filters.withoutPlan">
                         <input
                             type="checkbox"
                             [ngModel]="filters.withoutPlan"
                             (ngModelChange)="applyFilters({ withoutPlan: $event })"
                         />
+                        <i class="ph-clipboard" aria-hidden="true"></i>
                         Sin plan
                     </label>
-                    <label>
+                    <label class="filter-chip" [class.on]="filters.overdue">
                         <input
                             type="checkbox"
                             [ngModel]="filters.overdue"
                             (ngModelChange)="applyFilters({ overdue: $event })"
                         />
+                        <i class="ph-clock-countdown" aria-hidden="true"></i>
                         Atrasados
                     </label>
-                    <label>
+                    <label class="filter-chip" [class.on]="filters.disabled">
                         <input
                             type="checkbox"
                             [ngModel]="filters.disabled"
                             (ngModelChange)="applyFilters({ disabled: $event })"
                         />
+                        <i class="ph-prohibit" aria-hidden="true"></i>
                         Deshabilitados
                     </label>
                 </div>
             </div>
 
             @if (loadingClients) {
-                <p class="loading" role="status">Cargando clientes…</p>
+                <div class="feedback-panel" role="status">
+                    <app-loader text="Cargando clientes…"></app-loader>
+                </div>
             } @else if (loadError) {
                 <div class="error-message">
                     <i class="ph-warning-circle" aria-hidden="true"></i>
                     <span>{{ loadError }}</span>
                 </div>
             } @else if (selection.candidates.length === 0) {
-                <p class="empty" role="status">Ningún cliente coincide con este filtro.</p>
-            } @else {
-                <div class="list-header">
-                    <label class="select-all">
-                        <input
-                            type="checkbox"
-                            [checked]="selection.allSelected"
-                            [indeterminate]="!selection.allSelected && !selection.noneSelected"
-                            (change)="toggleAll()"
-                        />
-                        Seleccionar todos ({{ selection.candidates.length }})
-                    </label>
-                    <span class="selected-count">{{ selection.selectedCount }} seleccionados</span>
+                <div class="feedback-panel empty-state" role="status">
+                    <i class="ph-users-three" aria-hidden="true"></i>
+                    <p>Ningún cliente coincide con este filtro.</p>
+                    <span>Probá con otro término o destildá algún filtro.</span>
                 </div>
+            } @else {
+                <div class="recipient-table">
+                    <div class="recipient-table-head">
+                        <label class="select-all">
+                            <input
+                                type="checkbox"
+                                [checked]="selection.allSelected"
+                                [indeterminate]="!selection.allSelected && !selection.noneSelected"
+                                (change)="toggleAll()"
+                            />
+                            <span>Seleccionar todos</span>
+                            <span class="total-count">({{ selection.candidates.length }})</span>
+                        </label>
+                        <span
+                            class="selected-count"
+                            [class.none]="selection.noneSelected"
+                            aria-live="polite"
+                        >
+                            <i class="ph-check-circle" aria-hidden="true"></i>
+                            {{ visibleSelectedCount }} de {{ selection.candidates.length }} en vista
+                        </span>
+                    </div>
 
-                <ul class="recipient-list">
-                    @for (candidate of selection.candidates; track candidate._id) {
-                        <li [class.unreachable]="!candidate.phone">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    [checked]="selection.isSelected(candidate._id)"
-                                    (change)="toggle(candidate._id)"
-                                />
-                                <span class="recipient-name">{{ candidate.name }}</span>
-                                @if (candidate.phone) {
-                                    <span class="recipient-phone">{{ candidate.phone }}</span>
-                                } @else {
-                                    <span class="recipient-warning">
-                                        <i class="ph-warning" aria-hidden="true"></i> sin teléfono
+                    <ul class="recipient-list">
+                        @for (candidate of selection.candidates; track candidate._id) {
+                            <li
+                                [class.unreachable]="!candidate.phone"
+                                [class.checked]="selection.isSelected(candidate._id)"
+                            >
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        [checked]="selection.isSelected(candidate._id)"
+                                        (change)="toggle(candidate._id)"
+                                    />
+                                    <span class="recipient-avatar" aria-hidden="true">
+                                        {{ initials(candidate.name) }}
                                     </span>
-                                }
-                            </label>
-                        </li>
-                    }
-                </ul>
+                                    <span class="recipient-name">{{ candidate.name }}</span>
+                                    @if (candidate.phone) {
+                                        <span class="recipient-phone">
+                                            <i class="ph-whatsapp-logo" aria-hidden="true"></i>
+                                            {{ candidate.phone }}
+                                        </span>
+                                    } @else {
+                                        <app-badge
+                                            [colorBadge]="EColorBadge.WARNING"
+                                            textBadge="Sin teléfono"
+                                        ></app-badge>
+                                    }
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
             }
 
             <div class="step-actions">
@@ -114,10 +161,16 @@
 
             <dl class="summary">
                 <div>
+                    <span class="summary-icon" aria-hidden="true">
+                        <i class="ph-users-three"></i>
+                    </span>
                     <dt>Seleccionados</dt>
                     <dd>{{ selection.selectedCount }}</dd>
                 </div>
-                <div>
+                <div class="reachable">
+                    <span class="summary-icon" aria-hidden="true">
+                        <i class="ph-paper-plane-tilt"></i>
+                    </span>
                     <dt>Van a recibir el mensaje</dt>
                     <dd class="highlight">{{ selection.reachableCount }}</dd>
                 </div>
@@ -130,7 +183,7 @@
                         {{ selection.selectedWithoutPhone.length }} no tienen teléfono registrado y
                         no van a recibir nada:
                     </p>
-                    <ul>
+                    <ul class="excluded-chips">
                         @for (candidate of selection.selectedWithoutPhone; track candidate._id) {
                             <li>{{ candidate.name }}</li>
                         }
@@ -154,19 +207,107 @@
                 Mensaje para {{ selection.reachableCount }} clientes
             </h3>
             <p class="step-help">
-                Los saltos de línea se respetan. Usá <code>*negrita*</code>, <code>_cursiva_</code> y
-                <code>- </code> al inicio de la línea para listas.
+                Los saltos de línea se respetan. Usá <code>*negrita*</code>, <code>_cursiva_</code>,
+                <code>~tachado~</code> y <code>- </code> al inicio de la línea para listas.
+                <code>{{ NAME_TOKEN }}</code> se reemplaza por el nombre de cada cliente.
             </p>
 
-            <label class="message-field">
-                <span class="visually-hidden">Mensaje a enviar</span>
-                <textarea
-                    rows="12"
-                    placeholder="Pegá acá el mensaje…"
-                    [(ngModel)]="message"
-                ></textarea>
-            </label>
-            <p class="char-count">{{ message.length }} / 4096 caracteres</p>
+            <div class="compose-grid">
+                <div class="compose-editor">
+                    <div class="compose-toolbar">
+                        <button
+                            type="button"
+                            class="token-button"
+                            (click)="insertNameToken()"
+                            title="Inserta el nombre del cliente en el mensaje"
+                        >
+                            <i class="ph-user-circle-plus" aria-hidden="true"></i>
+                            Insertar {{ NAME_TOKEN }}
+                        </button>
+                    </div>
+
+                    <label class="message-field">
+                        <span class="visually-hidden">Mensaje a enviar</span>
+                        <textarea
+                            #composeArea
+                            rows="12"
+                            placeholder="Pegá acá el mensaje…"
+                            [(ngModel)]="message"
+                        ></textarea>
+                    </label>
+                    <p class="char-count">{{ message.length }} / 4096 caracteres</p>
+                </div>
+
+                <aside class="compose-preview" aria-label="Vista previa del mensaje">
+                    <span class="preview-title">
+                        <i class="ph-device-mobile" aria-hidden="true"></i>
+                        Así lo ve {{ sampleName }}
+                    </span>
+                    <div class="chat-mock">
+                        <div class="chat-bubble">
+                            @if (message.trim().length > 0) {
+                                <span
+                                    class="bubble-body"
+                                    [innerHTML]="previewMessage | whatsappFormat"
+                                ></span>
+                            } @else {
+                                <span class="bubble-placeholder">
+                                    Escribí el mensaje y lo ves acá como en WhatsApp…
+                                </span>
+                            }
+                            <span class="bubble-meta" aria-hidden="true">
+                                12:00 <i class="ph-checks"></i>
+                            </span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="test-send-row">
+                <div class="test-send-copy">
+                    <p class="test-title">
+                        <i class="ph-paper-plane" aria-hidden="true"></i>
+                        Probame a mí primero
+                    </p>
+                    <p class="test-help">
+                        Recibí el mensaje en tu WhatsApp antes del envío real.
+                    </p>
+                </div>
+                <div class="test-send-controls">
+                    <input
+                        type="tel"
+                        placeholder="099 123 456"
+                        aria-label="Tu teléfono para la prueba"
+                        [(ngModel)]="testPhone"
+                    />
+                    <button
+                        type="button"
+                        class="test-button"
+                        [disabled]="!canTest"
+                        (click)="sendTest()"
+                    >
+                        @if (testSending) {
+                            Enviando…
+                        } @else {
+                            Enviar prueba
+                        }
+                    </button>
+                </div>
+            </div>
+
+            @if (testFeedback) {
+                <p
+                    class="test-feedback"
+                    [class.error]="testFeedback.kind === 'error'"
+                    role="status"
+                >
+                    <i
+                        [class]="testFeedback.kind === 'ok' ? 'ph-check-circle' : 'ph-warning-circle'"
+                        aria-hidden="true"
+                    ></i>
+                    {{ testFeedback.text }}
+                </p>
+            }
 
             @if (sendError$ | async; as error) {
                 <div class="error-message">
@@ -199,9 +340,17 @@
             <h3 id="bulk-send-progress-title" class="step-title">Envío en curso</h3>
 
             @if (bulkStatus$ | async; as status) {
-                <div class="progress-container">
+                <div class="progress-container" [attr.data-status]="status.status">
                     <div class="progress-header">
-                        <span class="status-badge">{{ status.status | bulkStatusLabel }}</span>
+                        <span class="status-badge" [attr.data-status]="status.status">
+                            @if (status.status === 'processing' || status.status === 'pending') {
+                                <i
+                                    class="ph-circle-notch animate-spin motion-reduce:animate-none"
+                                    aria-hidden="true"
+                                ></i>
+                            }
+                            {{ status.status | bulkStatusLabel }}
+                        </span>
                         <span class="progress-info">
                             {{ status.processedRows }} de {{ status.totalRows }}
                         </span>
@@ -217,7 +366,9 @@
                     </p>
                 </div>
             } @else {
-                <p class="loading" role="status">Encolando mensajes…</p>
+                <div class="feedback-panel" role="status">
+                    <app-loader text="Encolando mensajes…"></app-loader>
+                </div>
             }
 
             @if (skipped$ | async; as skipped) {

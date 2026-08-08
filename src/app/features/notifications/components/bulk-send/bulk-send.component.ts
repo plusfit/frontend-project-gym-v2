@@ -1,9 +1,12 @@
 import { AsyncPipe } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Store } from "@ngxs/store";
-import { Observable, of } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
+import { Observable, Subject, of } from "rxjs";
+import { catchError, debounceTime, distinctUntilChanged, takeUntil, tap } from "rxjs/operators";
+import { BadgeComponent } from "@shared/components/badge/badge.component";
+import { LoaderComponent } from "@shared/components/loader/loader.component";
+import { EColorBadge } from "@shared/enums/badge-color.enum";
 import { EClientRole } from "../../../../core/enums/client-role.enum";
 import { ClientService } from "../../../client/services/client.service";
 import { ClearBulkStatus, SendBulkMessage } from "../../actions/bulk-notifications.actions";
@@ -12,7 +15,10 @@ import {
     BulkSendSkipped,
     BulkStatusResponse,
 } from "../../interface/bulk-status.interface";
+import { NAME_TOKEN, insertToken, interpolateName } from "../../models/message-template";
 import { RecipientSelection, toRecipientCandidates } from "../../models/recipient-selection";
+import { WhatsAppFormatPipe } from "../../pipes/whatsapp-format.pipe";
+import { NotificationService } from "../../services/notification.service";
 import { BulkNotificationsState } from "../../state/bulk-notifications.state";
 import { BulkStatusLabelPipe } from "../bulk-upload/bulk-status-label.pipe";
 
@@ -48,11 +54,18 @@ const SKIP_REASON_LABELS: Record<BulkSendSkipReason, string> = {
 @Component({
     selector: "app-bulk-send",
     standalone: true,
-    imports: [AsyncPipe, FormsModule, BulkStatusLabelPipe],
+    imports: [
+        AsyncPipe,
+        FormsModule,
+        BulkStatusLabelPipe,
+        BadgeComponent,
+        LoaderComponent,
+        WhatsAppFormatPipe,
+    ],
     templateUrl: "./bulk-send.component.html",
     styleUrls: ["./bulk-send.component.css"],
 })
-export class BulkSendComponent implements OnInit {
+export class BulkSendComponent implements OnInit, OnDestroy {
     /**
      * Matches the cap the notifications service accepts in one batch. The modal
      * deliberately does not paginate: the admin narrows with filters and sees
@@ -60,7 +73,22 @@ export class BulkSendComponent implements OnInit {
      */
     static readonly MAX_RECIPIENTS = 1000;
 
+    /** One request per keystroke is a DDoS against our own API. */
+    private static readonly SEARCH_DEBOUNCE_MS = 400;
+
+    /** The admin's own phone survives between campaigns; retyping it invites typos. */
+    private static readonly TEST_PHONE_STORAGE_KEY = "plusfit.bulk-send.test-phone";
+
+    readonly EColorBadge = EColorBadge;
+    readonly NAME_TOKEN = NAME_TOKEN;
+
+    @ViewChild("composeArea")
+    composeArea?: ElementRef<HTMLTextAreaElement>;
+
     step: BulkSendStep = "select";
+    testPhone = "";
+    testSending = false;
+    testFeedback: { kind: "ok" | "error"; text: string } | null = null;
     filters: BulkSendFilters = {
         searchQ: "",
         withoutPlan: false,
@@ -78,9 +106,13 @@ export class BulkSendComponent implements OnInit {
     skipped$!: Observable<BulkSendSkipped[]>;
     requested$!: Observable<number | null>;
 
+    private readonly searchInput$ = new Subject<string>();
+    private readonly destroy$ = new Subject<void>();
+
     constructor(
         private clientService: ClientService,
         private store: Store,
+        private notificationService: NotificationService,
     ) {}
 
     ngOnInit(): void {
@@ -90,7 +122,47 @@ export class BulkSendComponent implements OnInit {
         this.skipped$ = this.store.select(BulkNotificationsState.getSkipped);
         this.requested$ = this.store.select(BulkNotificationsState.getRequested);
 
+        this.searchInput$
+            .pipe(
+                debounceTime(BulkSendComponent.SEARCH_DEBOUNCE_MS),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$),
+            )
+            .subscribe((searchQ) => this.applyFilters({ searchQ }));
+
+        this.testPhone =
+            localStorage.getItem(BulkSendComponent.TEST_PHONE_STORAGE_KEY) ?? "";
+
+        // The batch lives in the store and keeps polling with the dialog closed.
+        // Landing on an empty form would read as "nothing was ever sent", so a
+        // batch that still exists puts us straight back on its progress view.
+        if (this.store.selectSnapshot(BulkNotificationsState.getBulkStatus)) {
+            this.step = "progress";
+        }
+
         this.loadClients();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    /** Template entry point for typed search; collapses keystrokes into one fetch. */
+    onSearchQueryChange(value: string): void {
+        this.searchInput$.next(value);
+    }
+
+    /** Avatar initials: first letter of the first two words of the name. */
+    initials(name: string): string {
+        return (
+            name
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((word) => word[0].toUpperCase())
+                .join("") || "?"
+        );
     }
 
     applyFilters(patch: Partial<BulkSendFilters>): void {
@@ -107,11 +179,23 @@ export class BulkSendComponent implements OnInit {
 
     toggleAll(): void {
         if (this.selection.allSelected) {
-            this.selection.clear();
+            this.selection.clearVisible();
             return;
         }
 
-        this.selection.selectAll();
+        this.selection.selectAllVisible();
+    }
+
+    /** Escape hatch: the count includes picks the current filter hides. */
+    clearSelection(): void {
+        this.selection.clear();
+    }
+
+    /** How many of the rows on screen are ticked, for the list header. */
+    get visibleSelectedCount(): number {
+        return this.selection.candidates.filter((candidate) =>
+            this.selection.isSelected(candidate._id),
+        ).length;
     }
 
     get canGoToReview(): boolean {
@@ -120,6 +204,77 @@ export class BulkSendComponent implements OnInit {
 
     get canSend(): boolean {
         return this.canGoToReview && this.message.trim().length > 0;
+    }
+
+    /**
+     * The client whose name fills {nombre} in the preview and the test send:
+     * the first selected one that will actually receive the campaign.
+     */
+    get sampleName(): string {
+        return this.selection.selectedReachable[0]?.name || "cliente";
+    }
+
+    /** Exactly what the sample client's phone will show. */
+    get previewMessage(): string {
+        return interpolateName(this.message, this.sampleName);
+    }
+
+    get canTest(): boolean {
+        return (
+            this.message.trim().length > 0 &&
+            this.testPhone.trim().length > 0 &&
+            !this.testSending
+        );
+    }
+
+    /** Inserts {nombre} at the cursor, or at the end when there is no textarea. */
+    insertNameToken(): void {
+        const area = this.composeArea?.nativeElement;
+        const start = area?.selectionStart ?? this.message.length;
+        const end = area?.selectionEnd ?? this.message.length;
+
+        const { text, cursor } = insertToken(this.message, NAME_TOKEN, start, end);
+        this.message = text;
+
+        if (area) {
+            queueMicrotask(() => {
+                area.focus();
+                area.setSelectionRange(cursor, cursor);
+            });
+        }
+    }
+
+    /**
+     * Ships the interpolated body to the admin's own phone through the same
+     * pipeline a client hits, so what arrives is what the campaign will say.
+     */
+    sendTest(): void {
+        if (!this.canTest) return;
+
+        const phone = this.testPhone.trim();
+        localStorage.setItem(BulkSendComponent.TEST_PHONE_STORAGE_KEY, phone);
+
+        this.testSending = true;
+        this.testFeedback = null;
+
+        this.notificationService.sendTestMessage(phone, this.previewMessage).subscribe({
+            next: () => {
+                this.testSending = false;
+                this.testFeedback = {
+                    kind: "ok",
+                    text: "Prueba enviada. Llega a tu WhatsApp en menos de 30 segundos.",
+                };
+            },
+            error: (error) => {
+                this.testSending = false;
+                this.testFeedback = {
+                    kind: "error",
+                    text:
+                        error?.error?.message ||
+                        "No pudimos enviar la prueba. Intentá de nuevo.",
+                };
+            },
+        });
     }
 
     goToReview(): void {
@@ -165,6 +320,7 @@ export class BulkSendComponent implements OnInit {
     restart(): void {
         this.step = "select";
         this.message = "";
+        this.testFeedback = null;
         this.store.dispatch(new ClearBulkStatus());
         this.loadClients();
     }
@@ -193,7 +349,9 @@ export class BulkSendComponent implements OnInit {
             )
             .pipe(
                 tap((response: ClientsPageResponse) => {
-                    this.selection.setCandidates(toRecipientCandidates(response?.data?.data ?? []));
+                    this.selection.setCandidates(
+                        toRecipientCandidates(response?.data?.data ?? []),
+                    );
                     this.loadingClients = false;
                 }),
                 catchError(() => {
