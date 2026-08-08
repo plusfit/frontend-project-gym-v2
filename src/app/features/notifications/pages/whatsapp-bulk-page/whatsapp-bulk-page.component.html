@@ -1,0 +1,135 @@
+<section class="bg-gradient-to-br from-blue-50 to-cyan-100 min-h-screen pt-8 pb-6 px-4">
+    <div class="max-w-5xl mx-auto flex flex-col space-y-6">
+        <!-- Page header, matching the other dashboard pages -->
+        <div class="w-full overflow-hidden rounded-xl shadow-xl border border-gray-200">
+            <div
+                class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-6 border-b border-gray-200"
+            >
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="w-16 h-16 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-lg"
+                        >
+                            <i
+                                class="ph-whatsapp-logo text-white"
+                                style="font-size: 34px"
+                                aria-hidden="true"
+                            ></i>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="page-kicker">+FIT · WhatsApp</span>
+                            <h1
+                                class="font-bold text-white tracking-tight"
+                                style="font-size: 2rem; line-height: 1.2"
+                            >
+                                Envío masivo por WhatsApp
+                            </h1>
+                            <p class="text-white text-opacity-90 text-sm mt-1">
+                                Primero se confirma la conexión, después se eligen los
+                                destinatarios.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button
+                        class="back-button"
+                        type="button"
+                        aria-label="Volver a notificaciones"
+                        (click)="goBack()"
+                    >
+                        <i class="ph-arrow-left" aria-hidden="true"></i>
+                        Volver
+                    </button>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="status-card" [class]="statusClass" aria-live="polite" aria-atomic="true">
+                    <div class="status-icon" aria-hidden="true">
+                        @if (state.loading) {
+                            <i class="ph-circle-notch"></i>
+                        } @else if (state.isConnected) {
+                            <i class="ph-check-circle"></i>
+                        } @else if (state.status === WhatsAppConnectionStatus.ERROR) {
+                            <i class="ph-warning-circle"></i>
+                        } @else {
+                            <i class="ph-qr-code"></i>
+                        }
+                    </div>
+                    <div>
+                        <p class="status-label">{{ statusText }}</p>
+                        <p class="status-copy">{{ statusDescription }}</p>
+                    </div>
+                </div>
+
+                @if (state.loading) {
+                    <div class="page-panel loading-panel" aria-live="polite">
+                        <span class="loading-dot" aria-hidden="true"></span>
+                        <p>Verificando si WhatsApp está listo para el envío masivo…</p>
+                    </div>
+                } @else if (state.isConnected) {
+                    <div class="page-panel">
+                        <div class="panel-copy">
+                            <span class="panel-step">Paso 2</span>
+                            <h2>Listo para enviar mensajes</h2>
+                        </div>
+
+                        <div class="connected-session-actions" aria-live="polite">
+                            <div>
+                                <p class="session-action-title">Sesión de WhatsApp activa</p>
+                                <p class="session-action-copy">
+                                    Lista para enviar desde este dispositivo.
+                                </p>
+                            </div>
+                            <button
+                                class="disconnect-session-button"
+                                type="button"
+                                aria-label="Desconectar"
+                                [disabled]="state.disconnecting"
+                                (click)="disconnectWhatsApp()"
+                            >
+                                @if (state.disconnecting) {
+                                    <span>Desconectando…</span>
+                                } @else {
+                                    <span>Desconectar</span>
+                                }
+                            </button>
+                        </div>
+
+                        @if (state.error) {
+                            <div class="inline-alert" role="alert">
+                                <i class="ph-warning" aria-hidden="true"></i>
+                                <span>{{ state.error }}</span>
+                            </div>
+                        }
+
+                        <app-bulk-send></app-bulk-send>
+                    </div>
+                } @else {
+                    <div class="page-panel">
+                        <div class="panel-copy">
+                            <span class="panel-step">Paso 1</span>
+                            <h2>Conectá WhatsApp para el envío masivo</h2>
+                            <p>
+                                Escaneá el QR. Cuando la sesión quede lista, esta página habilita la
+                                selección de destinatarios.
+                            </p>
+                        </div>
+
+                        @if (state.error) {
+                            <div class="inline-alert" role="alert">
+                                <i class="ph-warning" aria-hidden="true"></i>
+                                <span>{{ state.error }}</span>
+                            </div>
+                        }
+
+                        <app-whatsapp-connection
+                            (statusChange)="onStatusChange($event)"
+                        ></app-whatsapp-connection>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

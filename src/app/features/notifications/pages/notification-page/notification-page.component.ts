@@ -23,7 +23,6 @@ import { SnackBarService } from "@core/services/snackbar.service";
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { NotificationFilterSelectComponent } from "../../components/notification-filter-select/notification-filter-select.component";
 import { NotificationReason, NotificationStatus } from "../../enums/notifications.enum";
-import { NotificationsWhatsappBulkDialogComponent } from "../../components/notifications-whatsapp-bulk-dialog/notifications-whatsapp-bulk-dialog.component";
 
 @Component({
     selector: "app-notification-page",
@@ -112,16 +111,8 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
       this.store.dispatch(new GetNotifications(this.filterValues));
   }
 
-    openWhatsappBulkDialog(): void {
-        this.dialog.open(NotificationsWhatsappBulkDialogComponent, {
-            width: "min(720px, 96vw)",
-            maxWidth: "96vw",
-            maxHeight: "92vh",
-            autoFocus: "dialog",
-            restoreFocus: true,
-            panelClass: "notifications-whatsapp-bulk-dialog-panel",
-            ariaLabel: "Envío masivo por WhatsApp desde CSV",
-        });
+    goToWhatsappBulkPage(): void {
+        this.router.navigate(["/notificaciones/envio-masivo"]);
     }
 
     private applyFilterFromControl(selectedValue: string): void {
