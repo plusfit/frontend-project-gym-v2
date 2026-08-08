@@ -30,6 +30,13 @@ export const toRecipientCandidates = (clients: ClientLike[]): RecipientCandidate
 /**
  * Who receives the next bulk message.
  *
+ * The selection is a basket, not a view of the current filter: picking someone,
+ * searching for a second person and picking them too must end with both in the
+ * batch. Every candidate ever seen is therefore remembered, so a client the
+ * current filter hides still resolves to a name and a phone.
+ *
+ * Nothing is ever selected by default — see setCandidates.
+ *
  * Clients with no phone stay visible and selectable so the admin sees them, but
  * they are reported separately: the notifications service rejects a batch whose
  * recipients are all unreachable, so canSend must know the difference.
@@ -37,6 +44,8 @@ export const toRecipientCandidates = (clients: ClientLike[]): RecipientCandidate
 export class RecipientSelection {
     private candidateList: RecipientCandidate[] = [];
     private selectedIdSet = new Set<string>();
+    /** Every candidate ever loaded, so an off-screen pick stays resolvable. */
+    private knownById = new Map<string, RecipientCandidate>();
 
     constructor(candidates: RecipientCandidate[] = []) {
         this.setCandidates(candidates);
@@ -47,17 +56,22 @@ export class RecipientSelection {
     }
 
     /**
-     * Replaces the result set after a new filter and preselects all of it:
-     * filtering is already the act of choosing, so an empty selection would
-     * make the admin re-tick every row they just filtered for.
+     * Replaces the visible result set, keeping the basket intact.
+     *
+     * New rows always arrive unticked. Nothing is ever selected on the admin's
+     * behalf: in a bulk sender an unnoticed preselection is a campaign sent to
+     * people nobody chose, so every recipient must be an explicit act.
      */
     setCandidates(candidates: RecipientCandidate[]): void {
         this.candidateList = candidates ?? [];
-        this.selectedIdSet = new Set(this.candidateList.map((candidate) => candidate._id));
+
+        for (const candidate of this.candidateList) {
+            this.knownById.set(candidate._id, candidate);
+        }
     }
 
     toggle(id: string): void {
-        if (!this.candidateList.some((candidate) => candidate._id === id)) return;
+        if (!this.knownById.has(id)) return;
 
         if (this.selectedIdSet.has(id)) {
             this.selectedIdSet.delete(id);
@@ -67,10 +81,21 @@ export class RecipientSelection {
         this.selectedIdSet.add(id);
     }
 
-    selectAll(): void {
-        this.selectedIdSet = new Set(this.candidateList.map((candidate) => candidate._id));
+    /** Ticks the rows on screen; picks made under other filters are untouched. */
+    selectAllVisible(): void {
+        for (const candidate of this.candidateList) {
+            this.selectedIdSet.add(candidate._id);
+        }
     }
 
+    /** Unticks the rows on screen only — the header checkbox governs the view. */
+    clearVisible(): void {
+        for (const candidate of this.candidateList) {
+            this.selectedIdSet.delete(candidate._id);
+        }
+    }
+
+    /** Empties the whole basket, including picks the current filter hides. */
     clear(): void {
         this.selectedIdSet.clear();
     }
@@ -79,7 +104,7 @@ export class RecipientSelection {
         return this.selectedIdSet.has(id);
     }
 
-    /** Derived from the candidate list, so a stale id can never leak out. */
+    /** Derived from what is known, so a stale id can never leak out. */
     get selectedIds(): string[] {
         return this.selectedCandidates.map((candidate) => candidate._id);
     }
@@ -88,12 +113,21 @@ export class RecipientSelection {
         return this.selectedCandidates.length;
     }
 
+    /** Picks the current filter hides, so the batch is never bigger than it looks. */
+    get offScreenCount(): number {
+        const visible = new Set(this.candidateList.map((candidate) => candidate._id));
+        return this.selectedIds.filter((id) => !visible.has(id)).length;
+    }
+
     get allSelected(): boolean {
-        return this.candidateList.length > 0 && this.selectedCount === this.candidateList.length;
+        return (
+            this.candidateList.length > 0 &&
+            this.candidateList.every((candidate) => this.selectedIdSet.has(candidate._id))
+        );
     }
 
     get noneSelected(): boolean {
-        return this.selectedCount === 0;
+        return !this.candidateList.some((candidate) => this.selectedIdSet.has(candidate._id));
     }
 
     /** Surfaced before sending so nothing looks silently dropped afterwards. */
@@ -101,15 +135,22 @@ export class RecipientSelection {
         return this.selectedCandidates.filter((candidate) => !hasPhone(candidate));
     }
 
+    get selectedReachable(): RecipientCandidate[] {
+        return this.selectedCandidates.filter(hasPhone);
+    }
+
     get reachableCount(): number {
-        return this.selectedCandidates.filter(hasPhone).length;
+        return this.selectedReachable.length;
     }
 
     get canSend(): boolean {
         return this.reachableCount > 0;
     }
 
+    /** Selection order, so the batch reads the way it was assembled. */
     private get selectedCandidates(): RecipientCandidate[] {
-        return this.candidateList.filter((candidate) => this.selectedIdSet.has(candidate._id));
+        return [...this.selectedIdSet]
+            .map((id) => this.knownById.get(id))
+            .filter((candidate): candidate is RecipientCandidate => candidate !== undefined);
     }
 }
