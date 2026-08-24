@@ -1,6 +1,20 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import {
+    ConfirmDialogComponent,
+    DialogType,
+} from "@shared/components/confirm-dialog/confirm-dialog.component";
+import {
+    Observable,
+    ReplaySubject,
+    Subject,
+    finalize,
+    map,
+    merge,
+    take,
+    takeUntil,
+} from "rxjs";
 import { BulkSendComponent } from "../../components/bulk-send/bulk-send.component";
 import { WhatsAppConnectionComponent } from "../../components/whatsapp-connection/whatsapp-connection.component";
 import {
@@ -8,6 +22,7 @@ import {
     WhatsAppStatusResponse,
 } from "../../interface/whatsapp-status.interface";
 import { NotificationService } from "../../services/notification.service";
+import { describeWhatsAppStatus } from "../../utils/whatsapp-status.util";
 
 export interface WhatsappBulkPageState {
     status: WhatsAppConnectionStatus;
@@ -32,8 +47,14 @@ export interface WhatsappBulkPageState {
     templateUrl: "./whatsapp-bulk-page.component.html",
     styleUrls: ["./whatsapp-bulk-page.component.css"],
 })
-export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
+export class WhatsappBulkPageComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly WhatsAppConnectionStatus = WhatsAppConnectionStatus;
+
+    @ViewChild("pageTitle")
+    pageTitle?: ElementRef<HTMLElement>;
+
+    @ViewChild(BulkSendComponent)
+    bulkSend?: BulkSendComponent;
 
     state: WhatsappBulkPageState = {
         status: WhatsAppConnectionStatus.INITIALIZING,
@@ -41,15 +62,40 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
         loading: true,
     };
 
+    /**
+     * The status the connection panel starts from, so mounting it does not
+     * repeat the request this page just answered.
+     *
+     * Kept as a memoized field rather than a getter: the template reads it on
+     * every check, and a getter returning a fresh object literal each time
+     * trips ExpressionChangedAfterItHasBeenCheckedError while the panel is
+     * rendered. `refreshConnectionSeed()` only replaces the reference when
+     * the underlying status actually changes.
+     */
+    connectionSeed?: WhatsAppStatusResponse;
+
     private destroy$ = new Subject<void>();
+
+    /** Guards against stacking a second confirm dialog while one is pending. */
+    private pendingDiscardConfirmation$?: Observable<boolean>;
 
     constructor(
         private notificationService: NotificationService,
         private router: Router,
+        private dialog: MatDialog,
     ) {}
 
     ngOnInit(): void {
         this.loadWhatsAppStatus();
+    }
+
+    /**
+     * The dialog this page replaced moved focus into itself on open. A routed
+     * page moves nothing, so a screen reader keeps announcing the list we just
+     * left: focus goes to the heading, which is where the new page begins.
+     */
+    ngAfterViewInit(): void {
+        this.pageTitle?.nativeElement.focus();
     }
 
     ngOnDestroy(): void {
@@ -57,8 +103,22 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
+    /**
+     * Guards the draft on the way out — browser back included. Answering true
+     * when there is nothing in progress keeps the common exit instant.
+     */
+    canDeactivate(): boolean | Observable<boolean> {
+        if (!this.bulkSend?.hasUnsavedDraft()) {
+            return true;
+        }
+
+        return this.askToDiscardDraft();
+    }
+
     goBack(): void {
-        this.router.navigate(["/notificaciones"]);
+        // The trigger that opened this page is where focus belonged all along;
+        // the list restores it when it sees the flag.
+        this.router.navigate(["/notificaciones"], { state: { focusBulkTrigger: true } });
     }
 
     onStatusChange(status: WhatsAppStatusResponse): void {
@@ -85,6 +145,7 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
                         loading: false,
                         disconnecting: false,
                     };
+                    this.refreshConnectionSeed();
                 },
                 error: () => {
                     this.state = {
@@ -97,42 +158,78 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
     }
 
     get statusText(): string {
-        switch (this.state.status) {
-            case WhatsAppConnectionStatus.CONNECTED:
-                return "WhatsApp conectado";
-            case WhatsAppConnectionStatus.CONNECTING:
-                return "Conectando WhatsApp";
-            case WhatsAppConnectionStatus.QR_READY:
-                return "QR listo para escanear";
-            case WhatsAppConnectionStatus.INITIALIZING:
-                return "Verificando conexión";
-            case WhatsAppConnectionStatus.ERROR:
-                return "Requiere atención";
-            default:
-                return "WhatsApp desconectado";
-        }
+        return describeWhatsAppStatus(this.state.status).label;
     }
 
     get statusDescription(): string {
         if (this.state.loading) {
-            return "Estamos leyendo el estado actual antes de habilitar el flujo correcto.";
+            return describeWhatsAppStatus(WhatsAppConnectionStatus.INITIALIZING).description;
         }
 
         if (this.state.isConnected) {
-            return "Listo para elegir destinatarios y enviar el mensaje.";
+            return describeWhatsAppStatus(WhatsAppConnectionStatus.CONNECTED).description;
         }
 
+        // What actually went wrong beats any generic sentence about the status.
         if (this.state.error) {
             return this.state.error;
         }
 
-        return "Conectá WhatsApp para habilitar el envío masivo.";
+        return describeWhatsAppStatus(this.state.status).description;
     }
 
     get statusClass(): string {
         if (this.state.isConnected) return "connected";
-        if (this.state.status === WhatsAppConnectionStatus.ERROR) return "error";
-        return "pending";
+
+        return describeWhatsAppStatus(this.state.status).cssClass;
+    }
+
+    /**
+     * Asks before dropping the draft.
+     *
+     * The dialog can also be dismissed with Escape or a backdrop click, which
+     * never reaches confirm: afterClosed then answers for it, and staying is
+     * the safe reading of a dialog nobody answered.
+     *
+     * canDeactivate() can fire again before the first confirmation settles
+     * (e.g. two rapid navigation attempts). While one is pending, the same
+     * observable is handed back instead of opening a second, orphaned dialog.
+     */
+    private askToDiscardDraft(): Observable<boolean> {
+        if (this.pendingDiscardConfirmation$) {
+            return this.pendingDiscardConfirmation$;
+        }
+
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: "500px",
+            data: {
+                title: "Salir del envío masivo",
+                contentMessage:
+                    "Si salís ahora se pierden los destinatarios seleccionados y el mensaje escrito. ¿Querés salir igual?",
+                type: DialogType.GENERAL,
+                confirmButtonText: "Salir sin enviar",
+            },
+        });
+
+        const confirmed$ = new ReplaySubject<boolean>(1);
+        const confirmSubscription = dialogRef.componentInstance.confirm.subscribe((confirmed) =>
+            confirmed$.next(confirmed),
+        );
+
+        const pendingConfirmation$ = merge(
+            confirmed$,
+            dialogRef.afterClosed().pipe(map(() => false)),
+        ).pipe(
+            take(1),
+            finalize(() => {
+                confirmSubscription.unsubscribe();
+                this.pendingDiscardConfirmation$ = undefined;
+            }),
+        );
+
+        this.pendingDiscardConfirmation$ = pendingConfirmation$;
+
+        return pendingConfirmation$;
     }
 
     private loadWhatsAppStatus(): void {
@@ -149,6 +246,7 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
                         error:
                             "No pudimos leer el estado de WhatsApp. Revisá la conexión o intentá nuevamente.",
                     };
+                    this.refreshConnectionSeed();
                 },
             });
     }
@@ -160,6 +258,40 @@ export class WhatsappBulkPageComponent implements OnInit, OnDestroy {
             loading: false,
             disconnecting: false,
             error: status.error,
+        };
+        this.refreshConnectionSeed();
+    }
+
+    /**
+     * Withheld when our own read failed: there is nothing worth handing
+     * down, and the panel's own fetch may well succeed where ours did not.
+     *
+     * Only replaces `connectionSeed` when the underlying status actually
+     * changed, so the template keeps the same object reference across ticks
+     * and Angular's change detection does not flag it as a fresh value.
+     */
+    private refreshConnectionSeed(): void {
+        const shouldWithholdSeed =
+            this.state.loading ||
+            this.state.error ||
+            this.state.status === WhatsAppConnectionStatus.ERROR;
+
+        if (shouldWithholdSeed) {
+            this.connectionSeed = undefined;
+            return;
+        }
+
+        if (
+            this.connectionSeed &&
+            this.connectionSeed.status === this.state.status &&
+            this.connectionSeed.isConnected === this.state.isConnected
+        ) {
+            return;
+        }
+
+        this.connectionSeed = {
+            status: this.state.status,
+            isConnected: this.state.isConnected,
         };
     }
 }

@@ -57,7 +57,8 @@
     box-shadow: 0 14px 32px rgba(5, 150, 105, 0.16);
 }
 
-.status-card.pending {
+.status-card.pending,
+.status-card.disconnected {
     border-color: rgba(14, 165, 233, 0.35);
     background: #f0f9ff;
 }
@@ -208,6 +209,12 @@
     font-weight: 600;
 }
 
+/* The heading takes focus on entry; that is orientation, not a focus ring. */
+.page-title:focus {
+    outline: none;
+}
+
+.page-title:focus-visible,
 button:focus-visible,
 :host ::ng-deep button:focus-visible,
 :host ::ng-deep input:focus-visible,

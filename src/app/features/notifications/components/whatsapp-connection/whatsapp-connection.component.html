@@ -1,8 +1,8 @@
 <div class="whatsapp-connection-container">
     <div class="status-display" aria-live="polite" aria-atomic="true">
-        <div class="status-indicator" [class]="getStatusClass()">
+        <div class="status-indicator" [class]="statusDescriptor.cssClass">
             <i class="ph-circle" aria-hidden="true"></i>
-            <span>{{ getStatusText() }}</span>
+            <span>{{ statusDescriptor.label }}</span>
         </div>
 
         @if (errorMessage) {

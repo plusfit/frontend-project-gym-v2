@@ -202,6 +202,20 @@ export class BulkSendComponent implements OnInit, OnDestroy {
         return this.selection.canSend;
     }
 
+    /**
+     * Whether leaving now would throw away work the admin cannot get back.
+     *
+     * Recipients and message live in memory only, so a stray browser back wipes
+     * a campaign that took minutes to assemble. Once the batch is on its way the
+     * form holds nothing worth keeping: the progress view reads from the store
+     * and survives on its own.
+     */
+    hasUnsavedDraft(): boolean {
+        if (this.step === "progress") return false;
+
+        return this.selection.selectedCount > 0 || this.message.trim().length > 0;
+    }
+
     get canSend(): boolean {
         return this.canGoToReview && this.message.trim().length > 0;
     }

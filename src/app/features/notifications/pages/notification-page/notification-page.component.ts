@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Router } from "@angular/router";
@@ -31,8 +31,9 @@ import { NotificationReason, NotificationStatus } from "../../enums/notification
     templateUrl: "./notification-page.component.html",
     styleUrl: "./notification-page.component.css",
 })
-export class NotificationPageComponent implements OnInit, OnDestroy {
+export class NotificationPageComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild("bulkTrigger") bulkTrigger?: ElementRef<HTMLButtonElement>;
 
     notifications!: Observable<NotificationData[] | null>;
     loading!: Observable<boolean | null>;
@@ -110,6 +111,18 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
 
       this.store.dispatch(new GetNotifications(this.filterValues));
   }
+
+    /**
+     * Returning from the bulk send page, focus belongs on the control that
+     * opened it — the courtesy the dialog's restoreFocus used to provide before
+     * the flow became a route. The flag travels in the navigation state so only
+     * a deliberate return moves focus, never a fresh visit to the list.
+     */
+    ngAfterViewInit(): void {
+        if (!history.state?.focusBulkTrigger) return;
+
+        this.bulkTrigger?.nativeElement.focus();
+    }
 
     goToWhatsappBulkPage(): void {
         this.router.navigate(["/notificaciones/envio-masivo"]);

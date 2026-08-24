@@ -1,3 +1,4 @@
+import { ElementRef } from "@angular/core";
 import { NotificationPageComponent } from "./notification-page.component";
 
 describe("NotificationPageComponent", () => {
@@ -42,5 +43,48 @@ describe("NotificationPageComponent", () => {
             "acciones",
         ]);
         expect(component.pageSize).toBeGreaterThan(0);
+    });
+
+    describe("focus on return from the bulk send page", () => {
+        let trigger: HTMLButtonElement;
+
+        beforeEach(() => {
+            trigger = document.createElement("button");
+            document.body.appendChild(trigger);
+        });
+
+        afterEach(() => {
+            trigger.remove();
+            history.replaceState({}, "");
+        });
+
+        function mountTrigger(component: NotificationPageComponent) {
+            component.bulkTrigger = new ElementRef(trigger);
+        }
+
+        /**
+         * The dialog this flow replaced restored focus on close. A route change
+         * leaves focus on the document, so the keyboard lands back at the top of
+         * the page instead of where the journey started.
+         */
+        it("focuses the bulk send trigger when returning from the bulk page", () => {
+            const { component } = createComponent();
+            mountTrigger(component);
+            history.replaceState({ focusBulkTrigger: true }, "");
+
+            component.ngAfterViewInit();
+
+            expect(document.activeElement).toBe(trigger);
+        });
+
+        it("leaves focus alone on a plain visit to the notifications list", () => {
+            const { component } = createComponent();
+            mountTrigger(component);
+            history.replaceState({}, "");
+
+            component.ngAfterViewInit();
+
+            expect(document.activeElement).not.toBe(trigger);
+        });
     });
 });

@@ -632,4 +632,56 @@ describe("BulkSendComponent", () => {
             expect(component.message).toBe("");
         });
     });
+
+    /**
+     * Nothing here is persisted anywhere: a browser back drops a campaign that
+     * took minutes to assemble, so the page has to know when to ask first.
+     */
+    describe("warning before the draft is lost", () => {
+        it("has nothing to lose on an untouched form", () => {
+            const { component } = setup();
+
+            expect(component.hasUnsavedDraft()).toBeFalse();
+        });
+
+        it("counts picked recipients as work worth keeping", () => {
+            const { component } = setup();
+
+            component.toggle("1");
+
+            expect(component.hasUnsavedDraft()).toBeTrue();
+        });
+
+        it("counts a typed message as work worth keeping", () => {
+            const { component } = setup();
+
+            component.message = "Hola {nombre}";
+
+            expect(component.hasUnsavedDraft()).toBeTrue();
+        });
+
+        /** Whitespace is not a draft. */
+        it("ignores a message that is only blank space", () => {
+            const { component } = setup();
+
+            component.message = "   \n  ";
+
+            expect(component.hasUnsavedDraft()).toBeFalse();
+        });
+
+        /**
+         * Once the batch is with the backend the form holds nothing: the
+         * progress view reads from the store and survives on its own.
+         */
+        it("stops asking once the batch is on its way", () => {
+            const { component } = setup();
+            component.toggle("1");
+            component.message = "Hola {nombre}";
+
+            component.send();
+
+            expect(component.step).toBe("progress");
+            expect(component.hasUnsavedDraft()).toBeFalse();
+        });
+    });
 });

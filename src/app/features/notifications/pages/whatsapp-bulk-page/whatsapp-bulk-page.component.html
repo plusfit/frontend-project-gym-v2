@@ -20,7 +20,9 @@
                         <div class="flex flex-col">
                             <span class="page-kicker">+FIT · WhatsApp</span>
                             <h1
-                                class="font-bold text-white tracking-tight"
+                                #pageTitle
+                                tabindex="-1"
+                                class="page-title font-bold text-white tracking-tight"
                                 style="font-size: 2rem; line-height: 1.2"
                             >
                                 Envío masivo por WhatsApp
@@ -125,6 +127,7 @@
                         }
 
                         <app-whatsapp-connection
+                            [initialStatus]="connectionSeed"
                             (statusChange)="onStatusChange($event)"
                         ></app-whatsapp-connection>
                     </div>
