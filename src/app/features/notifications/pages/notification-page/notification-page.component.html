@@ -37,10 +37,11 @@
       </div>
 
       <button
+        #bulkTrigger
         type="button"
         class="whatsapp-csv-entry__button"
         aria-describedby="whatsapp-csv-entry-title whatsapp-csv-entry-help"
-        (click)="openWhatsappBulkDialog()"
+        (click)="goToWhatsappBulkPage()"
       >
         <span class="whatsapp-csv-entry__button-icon" aria-hidden="true">
           <i class="ph-whatsapp-logo"></i>

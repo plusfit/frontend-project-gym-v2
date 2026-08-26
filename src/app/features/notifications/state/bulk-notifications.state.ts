@@ -6,17 +6,26 @@ import { catchError, tap, switchMap, takeWhile } from "rxjs/operators";
 import { NotificationService } from "../services/notification.service";
 import {
     UploadBulkCSV,
+    SendBulkMessage,
     PollBulkStatus,
     ClearBulkStatus,
     SetBulkStatus,
     SetBulkError,
 } from "../actions/bulk-notifications.actions";
-import { BulkStatus, BulkStatusResponse } from "../interface/bulk-status.interface";
+import {
+    BulkSendSkipped,
+    BulkStatus,
+    BulkStatusResponse,
+} from "../interface/bulk-status.interface";
 
 interface BulkNotificationsStateModel {
     bulkStatus: BulkStatusResponse | null;
     bulkLoading: boolean;
     bulkError: string | null;
+    /** Selected clients the backend could not reach, from the direct send. */
+    skipped: BulkSendSkipped[];
+    /** Clients selected, so the dialog can contrast selected with sent. */
+    requested: number | null;
 }
 
 @State<BulkNotificationsStateModel>({
@@ -25,6 +34,8 @@ interface BulkNotificationsStateModel {
         bulkStatus: null,
         bulkLoading: false,
         bulkError: null,
+        skipped: [],
+        requested: null,
     },
 })
 @Injectable({
@@ -46,6 +57,16 @@ export class BulkNotificationsState {
     @Selector()
     static getBulkError(state: BulkNotificationsStateModel): string | null {
         return state.bulkError;
+    }
+
+    @Selector()
+    static getSkipped(state: BulkNotificationsStateModel): BulkSendSkipped[] {
+        return state.skipped;
+    }
+
+    @Selector()
+    static getRequested(state: BulkNotificationsStateModel): number | null {
+        return state.requested;
     }
 
     constructor(
@@ -78,6 +99,41 @@ export class BulkNotificationsState {
                     bulkError: error.error?.message || "Error al subir el archivo CSV",
                 });
                 this.snackbar.showError("Error", error.error?.message || "Error al subir el archivo CSV");
+                throw error;
+            }),
+        );
+    }
+
+    /**
+     * File-less bulk send. Seeds a pending batch on success so PollBulkStatus
+     * and the progress bar behave exactly as they do for the CSV flow, and keeps
+     * the unreachable clients so the dialog can name them.
+     */
+    @Action(SendBulkMessage)
+    sendBulkMessage(ctx: StateContext<BulkNotificationsStateModel>, action: SendBulkMessage) {
+        ctx.patchState({ bulkLoading: true, bulkError: null, skipped: [], requested: null });
+
+        return this.notificationService.sendBulkMessage(action.clientIds, action.message).pipe(
+            tap((response) => {
+                ctx.patchState({
+                    bulkStatus: {
+                        batchId: response.batchId,
+                        status: BulkStatus.PENDING,
+                        totalRows: response.total,
+                        processedRows: 0,
+                        successCount: 0,
+                        failureCount: 0,
+                    },
+                    bulkLoading: false,
+                    skipped: response.skipped ?? [],
+                    requested: response.requested,
+                });
+                ctx.dispatch(new PollBulkStatus(response.batchId));
+            }),
+            catchError((error) => {
+                const message = error.error?.message || "Error al enviar el mensaje masivo";
+                ctx.patchState({ bulkLoading: false, bulkError: message });
+                this.snackbar.showError("Error", message);
                 throw error;
             }),
         );
@@ -136,6 +192,8 @@ export class BulkNotificationsState {
             bulkStatus: null,
             bulkError: null,
             bulkLoading: false,
+            skipped: [],
+            requested: null,
         });
     }
 

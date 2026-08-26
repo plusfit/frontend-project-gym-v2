@@ -38,7 +38,8 @@
     color: #075985;
 }
 
-.status-indicator.disconnected {
+.status-indicator.disconnected,
+.status-indicator.error {
     background: #fee2e2;
     border-color: rgba(248, 113, 113, 0.35);
     color: #991b1b;

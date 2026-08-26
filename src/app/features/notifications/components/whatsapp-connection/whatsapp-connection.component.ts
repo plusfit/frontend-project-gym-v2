@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { AuthState } from "@features/auth/state/auth.state";
 import { Store } from "@ngxs/store";
@@ -7,6 +15,7 @@ import { takeUntil } from "rxjs/operators";
 import { environment } from "../../../../../environments/environment";
 import { WhatsAppConnectionStatus, WhatsAppStatusResponse } from "../../interface/whatsapp-status.interface";
 import { NotificationService } from "../../services/notification.service";
+import { WhatsAppStatusDescriptor, describeWhatsAppStatus } from "../../utils/whatsapp-status.util";
 
 const STATUS_POLL_MS = 3000;
 
@@ -18,6 +27,13 @@ const STATUS_POLL_MS = 3000;
     styleUrls: ["./whatsapp-connection.component.css"],
 })
 export class WhatsAppConnectionComponent implements OnInit, OnDestroy {
+    /**
+     * A status the host already fetched. Given one, this panel skips its own
+     * first request: two identical reads a few milliseconds apart tell nobody
+     * anything new. Absent, it behaves as it always did and asks for itself.
+     */
+    @Input() initialStatus?: WhatsAppStatusResponse;
+
     @Output() statusChange = new EventEmitter<WhatsAppStatusResponse>();
 
     status: string = "disconnected";
@@ -37,6 +53,11 @@ export class WhatsAppConnectionComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        if (this.initialStatus) {
+            this.adoptStatus(this.initialStatus);
+            return;
+        }
+
         this.loadStatus(true);
     }
 
@@ -46,6 +67,25 @@ export class WhatsAppConnectionComponent implements OnInit, OnDestroy {
         this.stopPolling$.next();
         this.stopPolling$.complete();
         this.stopQrListener();
+    }
+
+    /**
+     * Starts from the host's reading instead of a request of our own.
+     *
+     * The QR stream and the polling still start exactly as they would after a
+     * first fetch — only the round trip is skipped. No connection snackbar
+     * either: nothing connected just now, it already was.
+     */
+    private adoptStatus(status: WhatsAppStatusResponse): void {
+        this.status = status.status || "disconnected";
+        this.isConnected = status.isConnected || false;
+        this.errorMessage = status.error || null;
+        this.emitStatusChange();
+
+        if (!this.isConnected) {
+            this.startQrListener();
+            this.startStatusPolling();
+        }
     }
 
     private loadStatus(initial: boolean = false): void {
@@ -157,40 +197,9 @@ export class WhatsAppConnectionComponent implements OnInit, OnDestroy {
         });
     }
 
-    getStatusClass(): string {
-        const statusLower = this.status.toLowerCase();
-        switch (statusLower) {
-            case "connected":
-                return "connected";
-            case "connecting":
-            case "qr_ready":
-            case "initializing":
-                return "pending";
-            case "error":
-            case "disconnected":
-            default:
-                return "disconnected";
-        }
-    }
-
-    getStatusText(): string {
-        const statusLower = this.status.toLowerCase();
-        switch (statusLower) {
-            case "connected":
-                return "Conectado";
-            case "connecting":
-                return "Preparando conexión";
-            case "qr_ready":
-                return "QR listo para escanear";
-            case "initializing":
-                return "Preparando QR";
-            case "error":
-                return "Error";
-            case "disconnected":
-                return "Desconectado";
-            default:
-                return "Estado desconocido";
-        }
+    /** Same reading of the status the bulk send page shows, from one place. */
+    get statusDescriptor(): WhatsAppStatusDescriptor {
+        return describeWhatsAppStatus(this.status);
     }
 
     getQrImageUrl(): string {

@@ -26,6 +26,8 @@ import { SpecialAccessPageComponent } from "@features/special-access/pages/speci
 import { GymAccessPageComponent } from "@features/gym-access/pages/gym-access-page/gym-access-page.component";
 import { PaymentsPageComponent } from "@features/payments/pages/payments-page/payments-page.component";
 import { NotificationPageComponent } from "@features/notifications/pages/notification-page/notification-page.component";
+import { WhatsappBulkPageComponent } from "@features/notifications/pages/whatsapp-bulk-page/whatsapp-bulk-page.component";
+import { whatsappBulkDraftGuard } from "@features/notifications/guards/whatsapp-bulk-draft.guard";
 
 export const routes: Routes = [
   {
@@ -112,6 +114,11 @@ export const routes: Routes = [
       {
         path: "notificaciones",
         component: NotificationPageComponent,
+      },
+      {
+        path: "notificaciones/envio-masivo",
+        component: WhatsappBulkPageComponent,
+        canDeactivate: [whatsappBulkDraftGuard], // 📝 Confirma antes de perder el borrador
       },
       {
         path: "rewards",

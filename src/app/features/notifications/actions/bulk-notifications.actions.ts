@@ -5,6 +5,15 @@ export class UploadBulkCSV {
     constructor(public readonly file: File) {}
 }
 
+/** File-less bulk send: the backend resolves phones from the selected ids. */
+export class SendBulkMessage {
+    static readonly type = "[BulkNotification] SendBulkMessage";
+    constructor(
+        public readonly clientIds: string[],
+        public readonly message: string,
+    ) {}
+}
+
 export class PollBulkStatus {
     static readonly type = "[BulkNotification] PollBulkStatus";
     constructor(public readonly batchId: string) {}
