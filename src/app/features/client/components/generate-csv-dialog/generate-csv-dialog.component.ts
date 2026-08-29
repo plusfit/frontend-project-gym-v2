@@ -9,6 +9,7 @@ import {
   MatDialogTitle,
 } from "@angular/material/dialog";
 import { BtnDirective } from "@shared/directives/btn/btn.directive";
+import { splitCsvRecords } from "@shared/helper/csv.helper";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -138,7 +139,7 @@ export class GenerateCsvDialogComponent {
   }
 
   recipientCount(part: CsvPart): number {
-    return part.content.split("\n").length - 1;
+    return splitCsvRecords(part.content).length - 1;
   }
 
   get pendingCount(): number {
@@ -155,8 +156,11 @@ export class GenerateCsvDialogComponent {
   }
 
   buildCsvParts(content: string): CsvPart[] {
-    const lines = content.split("\n").filter((line) => line.trim() !== "");
-    const [header, ...rows] = lines;
+    // Quote-aware on purpose: a WhatsApp message keeps its line breaks inside a
+    // single quoted field, so splitting on every "\n" would cut one recipient
+    // into fragments and emit files the notifications service cannot parse.
+    const records = splitCsvRecords(content);
+    const [header, ...rows] = records;
     const baseFilename = this.buildBaseFilename();
     const maxPerFile = GenerateCsvDialogComponent.MAX_RECIPIENTS_PER_FILE;
 

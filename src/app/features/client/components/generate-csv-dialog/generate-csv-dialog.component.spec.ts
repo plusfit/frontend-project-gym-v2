@@ -137,6 +137,65 @@ describe("GenerateCsvDialogComponent", () => {
     expect(part.content).toContain(escaped);
   });
 
+  /**
+   * The backend used to flatten every message to one line so this splitter
+   * could not corrupt it. Now that campaigns keep their paragraphs and bullet
+   * lists, a recipient spans several lines inside one quoted field and the
+   * split must follow CSV quoting rather than newlines.
+   */
+  describe("multiline messages", () => {
+    const MULTILINE = '"*PLUSFIT A CORRER!!!*\n\n- Todos vamos por los 7 km\n- Medallas"';
+
+    function csvWithMultilineRecipients(count: number): string {
+      const rows = Array.from({ length: count }, (_, i) => `+5989900000${i},${MULTILINE}`);
+      return [HEADER, ...rows].join("\n");
+    }
+
+    it("counts one recipient per row instead of one per line", () => {
+      const { component } = createComponent();
+
+      const [part] = component.buildCsvParts(csvWithMultilineRecipients(3));
+
+      expect(component.recipientCount(part)).toBe(3);
+    });
+
+    it("still caps each file at 45 recipients", () => {
+      const { component } = createComponent();
+
+      const parts = component.buildCsvParts(csvWithMultilineRecipients(46));
+
+      expect(parts.length).toBe(2);
+      expect(parts.map((part) => component.recipientCount(part))).toEqual([45, 1]);
+    });
+
+    it("never cuts a message in half across two files", () => {
+      const { component } = createComponent();
+
+      for (const part of component.buildCsvParts(csvWithMultilineRecipients(100))) {
+        const quotes = (part.content.match(/"/g) ?? []).length;
+        expect(quotes % 2).toBe(0);
+        expect(part.content.split("\n")[0]).toBe(HEADER);
+      }
+    });
+
+    it("keeps every line break of the message intact", () => {
+      const { component } = createComponent();
+
+      const [part] = component.buildCsvParts(csvWithMultilineRecipients(2));
+
+      expect(part.content).toContain("*PLUSFIT A CORRER!!!*\n\n- Todos vamos por los 7 km");
+    });
+
+    it("preserves every recipient exactly once across the split files", () => {
+      const { component } = createComponent();
+
+      const parts = component.buildCsvParts(csvWithMultilineRecipients(97));
+      const total = parts.reduce((sum, part) => sum + component.recipientCount(part), 0);
+
+      expect(total).toBe(97);
+    });
+  });
+
   it("estimates the file count shown to the user before generating", () => {
     expect(createComponent(45).component.estimatedFiles).toBe(1);
     expect(createComponent(46).component.estimatedFiles).toBe(2);
