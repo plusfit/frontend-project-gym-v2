@@ -116,6 +116,13 @@ export const routes: Routes = [
         component: NotificationPageComponent,
       },
       {
+        path: "notificaciones/recordatorios",
+        loadComponent: () =>
+          import("@features/reminders/pages/reminders-page/reminders-page.component").then(
+            (m) => m.RemindersPageComponent,
+          ),
+      },
+      {
         path: "notificaciones/envio-masivo",
         component: WhatsappBulkPageComponent,
         canDeactivate: [whatsappBulkDraftGuard], // 📝 Confirma antes de perder el borrador

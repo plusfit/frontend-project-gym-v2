@@ -91,6 +91,17 @@
               </button>
             </div>
             <mat-divider></mat-divider>
+            <!-- The order below is what the "hoy toca X" reminder maps onto the
+                 days each client attends, so reordering changes what everyone
+                 on this routine is told to train. -->
+            <div class="my-3 flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+              <i class="ph-warning-circle mt-0.5"></i>
+              <span>
+                El orden de las subrutinas define qué le toca a cada cliente según los días que
+                asiste. Si lo cambiás, cambia el recordatorio diario de todos los clientes con
+                esta rutina.
+              </span>
+            </div>
             <div class="h-50 overflow-y-auto">
               <app-drag-and-drop-sorting
                 [additionalInfo]="'day'"
