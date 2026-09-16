@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { Subject, takeUntil, debounceTime, Observable, finalize } from 'rxjs';
@@ -38,6 +38,8 @@ import {
   PaymentsStats,
   PaymentsSummary
 } from '../../interfaces/payments.interface';
+
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-payments-page',
@@ -90,6 +92,11 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
     limit: 8
   };
 
+  // Admin Code
+  adminCodeForm: FormGroup;
+  isAdminCodeValid = false;
+  showStatsSection = false;
+
   constructor(
     private store: Store,
     private actions: Actions,
@@ -106,6 +113,10 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterForm = this.fb.group({
       startDate: [this.startDate],
       endDate: [this.endDate]
+    });
+
+    this.adminCodeForm = this.fb.group({
+      adminCode: ['', [Validators.required, Validators.minLength(1)]]
     });
 
     // Initialize observables from NGXS store
@@ -138,6 +149,30 @@ export class PaymentsPageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  toggleStatsSection(): void {
+    this.showStatsSection = !this.showStatsSection;
+    if (!this.showStatsSection) {
+      this.clearAdminCode();
+    }
+  }
+
+  checkAdminCode(): void {
+    if (this.adminCodeForm.valid) {
+      const adminCode = this.adminCodeForm.get('adminCode')?.value;
+      if (adminCode === environment.adminPasswordCode) {
+        this.isAdminCodeValid = true;
+      } else {
+        this.isAdminCodeValid = false;
+        // Podríamos mostrar un mensaje de error si fuera necesario
+      }
+    }
+  }
+
+  clearAdminCode(): void {
+    this.adminCodeForm.reset();
+    this.isAdminCodeValid = false;
   }
 
   private setupFilters() {
