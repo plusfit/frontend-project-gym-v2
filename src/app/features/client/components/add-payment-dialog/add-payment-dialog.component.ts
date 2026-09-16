@@ -42,9 +42,9 @@ export class AddPaymentDialogComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   paymentOptions: PaymentOption[] = [
-    { days: 32, label: "1 mes", selected: false },
-    { days: 92, label: "3 meses", selected: false },
-    { days: 182, label: "6 meses", selected: false },
+    { days: 30, label: "1 mes", selected: false },
+    { days: 90, label: "3 meses", selected: false },
+    { days: 180, label: "6 meses", selected: false },
   ];
 
   selectedOption: PaymentOption | null = null;
@@ -91,7 +91,7 @@ export class AddPaymentDialogComponent implements OnInit {
     if (this.selectedOption) {
       // Obtener la información del plan del store
       const selectedPlan = this.store.selectSnapshot(PlansState.getSelectedPlan);
-
+    
       const monthsSelected = this.getMonthsFromDays(this.selectedOption.days);
       const planPrice = selectedPlan?.price || 0;
       const totalPrice = planPrice * monthsSelected;
@@ -108,9 +108,9 @@ export class AddPaymentDialogComponent implements OnInit {
   }
 
   private getMonthsFromDays(days: number): number {
-    if (days === 32) return 1;
-    if (days === 92) return 3;
-    if (days === 182) return 6;
+    if (days === 30) return 1;
+    if (days === 90) return 3;
+    if (days === 180 ) return 6;
     return 0;
   }
 
