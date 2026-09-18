@@ -1,0 +1,71 @@
+<div class="p-6">
+	<header class="mb-6">
+		<h1 class="text-2xl font-semibold">Recordatorios automáticos</h1>
+		<p class="text-sm text-gray-600">
+			Se envían por notificación push a los clientes que la tengan activada. Cada cliente
+			puede desactivar los que no quiera recibir.
+		</p>
+	</header>
+
+	<div *ngIf="loading" class="flex justify-center py-10">
+		<mat-spinner diameter="40"></mat-spinner>
+	</div>
+
+	<div *ngIf="!loading" class="flex flex-col gap-4">
+		<mat-card *ngFor="let row of rows" class="p-4">
+			<div class="flex items-start justify-between gap-4">
+				<div>
+					<h2 class="text-lg font-medium">{{ row.rule.label }}</h2>
+					<p class="text-sm text-gray-600">{{ row.rule.description }}</p>
+				</div>
+
+				<mat-slide-toggle [(ngModel)]="row.settings.enabled" [disabled]="row.saving">
+					{{ row.settings.enabled ? 'Activo' : 'Inactivo' }}
+				</mat-slide-toggle>
+			</div>
+
+			<div class="mt-4 flex flex-wrap items-center gap-4">
+				<mat-form-field appearance="outline" class="w-40">
+					<mat-label>Hora de envío</mat-label>
+					<mat-select [(ngModel)]="row.settings.sendHour" [disabled]="row.saving">
+						<mat-option *ngFor="let hour of hours" [value]="hour">
+							{{ formatHour(hour) }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<!-- Tunables are declared by the backend, so a new threshold needs
+				     no change here. -->
+				<mat-form-field
+					appearance="outline"
+					class="w-56"
+					*ngFor="let param of row.rule.params"
+				>
+					<mat-label>{{ param.label }}</mat-label>
+					<input
+						matInput
+						type="number"
+						[min]="param.min"
+						[max]="param.max"
+						[(ngModel)]="row.settings[param.name]"
+						[disabled]="row.saving"
+					/>
+				</mat-form-field>
+
+				<button
+					mat-flat-button
+					color="primary"
+					class="ml-auto"
+					[disabled]="row.saving"
+					(click)="save(row)"
+				>
+					{{ row.saving ? 'Guardando...' : 'Guardar' }}
+				</button>
+			</div>
+		</mat-card>
+
+		<p *ngIf="!rows.length" class="text-sm text-gray-500">
+			No hay recordatorios configurables.
+		</p>
+	</div>
+</div>

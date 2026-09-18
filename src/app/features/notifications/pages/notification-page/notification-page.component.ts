@@ -124,6 +124,11 @@ export class NotificationPageComponent implements OnInit, AfterViewInit, OnDestr
         this.bulkTrigger?.nativeElement.focus();
     }
 
+    /** Automated push reminders live on their own screen. */
+    goToRemindersPage(): void {
+        this.router.navigate(["/notificaciones/recordatorios"]);
+    }
+
     goToWhatsappBulkPage(): void {
         this.router.navigate(["/notificaciones/envio-masivo"]);
     }
